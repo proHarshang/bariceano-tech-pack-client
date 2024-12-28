@@ -1,4 +1,5 @@
 import React from 'react';
+import '../style/TechPackTable.css';
 
 const TechPackDataTable = () => {
     return (

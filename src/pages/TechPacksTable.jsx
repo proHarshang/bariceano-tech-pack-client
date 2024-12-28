@@ -1,9 +1,8 @@
-import React from 'react';
 import TechPackDataTable from '../components/TechPackDataTable';
 
 const TechPacksTable = () => {
     return (
-        <div>
+        <div >
             <TechPackDataTable />
         </div>
     );
