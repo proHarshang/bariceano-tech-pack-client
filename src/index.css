@@ -3,12 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -17,8 +14,106 @@ body {
   padding: 0px 20px;
 }
 
-
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  outline: none;
+  background: var(--background);
+  border: none;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 0px;
+  transition: box-shadow 0.3s;
+  box-shadow: inset 0 0 0 var(--s, 1px) var(--b, var(--border));
+
+  &:hover {
+    --s: 2px;
+    --b: var(--border-hover);
+  }
+
+  &:checked {
+    --b: var(--border-active);
+  }
+}
+
+form {
+  input {
+    border-radius: 0;
+  }
+
+  .form__group {
+    position: relative;
+    padding: 15px 0 0;
+    margin-top: 10px;
+
+    select {
+      padding: 7px 0px !important;
+
+      option {
+        &:hover {
+          background-color: black !important;
+          color: #fff;
+        }
+      }
+    }
+
+    .form__field {
+      font-family: inherit;
+      width: 100%;
+      border-bottom: 1px solid black;
+      outline: 0;
+      font-size: 1rem !important;
+      color: black;
+      padding: 4px 0px;
+      margin-top: 5px;
+      background: transparent;
+
+      &::placeholder {
+        color: transparent;
+      }
+
+      &:placeholder-shown {
+        ~ .form__label {
+          padding: 0px 0px;
+          font-size: inherit;
+          cursor: text;
+          top: 20px;
+          pointer-events: none;
+          color: #000;
+        }
+      }
+
+      &:focus {
+        ~ .form__label {
+          position: absolute;
+          top: 0;
+          display: block;
+          transition: 0.2s;
+          font-size: 0.85rem;
+          font-weight: 100;
+          color: grey;
+        }
+      }
+
+      &:required,
+      &:invalid {
+        box-shadow: none;
+      }
+    }
+
+    .form__label {
+      position: absolute;
+      top: 0;
+      display: block;
+      transition: 0.2s;
+      font-size: 0.85rem;
+      font-weight: 100;
+      color: grey;
+    }
+  }
 }

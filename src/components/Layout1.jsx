@@ -15,58 +15,104 @@ const Layout1 = () => {
             reader.readAsDataURL(file);
         }
     };
+
+    const handleImageClick = (setImage) => {
+        setImage(null);
+    };
+
     return (
         <article>
-            <div className='flex justify-between w-full gap-10'>
-                <div className='w-[25%] flex flex-col justify-between gap-5 h-full'>
-                    <div className='w-full h-full'>
-                        <h1>Fabric colour</h1>
-                        <div className='rounded-lg border-2 border-dashed bg-[#F3F3F3] h-[120px] w-[100px] flex items-center justify-center'>
+            <div className='flex justify-evenly w-full gap-10'>
+                <div className='flex flex-col justify-evenly gap-5 h-full'>
+                    <div className='w-full'>
+                        <h1 className='mb-2'>Fabric Colour</h1>
+                        <div className='rounded-2xl border-2 border-dashed bg-[#F3F3F3] h-[120px] w-full flex items-center justify-center'>
                             {fabricImage ? (
-                                <img src={fabricImage} alt='Fabric' className='object-contain h-full rounded-lg' />
+                                <img
+                                    src={fabricImage}
+                                    alt='Fabric'
+                                    className='object-contain h-full w-full rounded-2xl cursor-pointer'
+                                    onClick={() => handleImageClick(setFabricImage)}
+                                />
                             ) : (
                                 <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
                                     <span className="text-xs">Drop an Image here</span>
-                                    <input type='file' accept='image/*' onChange={(e) => handleImageChange(e, setFabricImage)} className='hidden' />
+                                    <input
+                                        type='file'
+                                        accept='image/*'
+                                        onChange={(e) => handleImageChange(e, setFabricImage)}
+                                        className='hidden'
+                                    />
                                 </label>
                             )}
                         </div>
                     </div>
-                    <div className='w-full h-full'>
-                        <h1>Thread colour</h1>
-                        <div className='rounded-lg border-2 border-dashed bg-[#F3F3F3] h-[120px] w-[100px] flex items-center justify-center'>
+                    <div className='w-full'>
+                        <h1 className='mb-2'>Thread Colour</h1>
+                        <div className='rounded-2xl border-2 border-dashed bg-[#F3F3F3] h-[120px] w-full flex items-center justify-center'>
                             {threadImage ? (
-                                <img src={threadImage} alt='Thread' className='object-contain h-full w-full rounded-lg' />
+                                <img
+                                    src={threadImage}
+                                    alt='Thread'
+                                    className='object-contain h-full w-full rounded-2xl cursor-pointer'
+                                    onClick={() => handleImageClick(setThreadImage)}
+                                />
                             ) : (
                                 <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
                                     <span className="text-xs">Drop an Image here</span>
-                                    <input type='file' accept='image/*' onChange={(e) => handleImageChange(e, setThreadImage)} className='hidden' />
+                                    <input
+                                        type='file'
+                                        accept='image/*'
+                                        onChange={(e) => handleImageChange(e, setThreadImage)}
+                                        className='hidden'
+                                    />
                                 </label>
                             )}
                         </div>
                     </div>
                 </div>
-                <div className='w-[37%] border-2 border-dashed bg-[#F3F3F3] h-[310px]'>
+                <div className='w-[37%] border-2 border-dashed bg-[#F3F3F3] h-[310px] flex items-center justify-center rounded-2xl'>
                     {mainImage1 ? (
-                        <img src={mainImage1} alt='Main 1' className='object-fill' />
+                        <img
+                            src={mainImage1}
+                            alt='Main 1'
+                            className='object-fill w-fit h-full rounded-2xl cursor-pointer'
+                            onClick={() => handleImageClick(setMainImage1)}
+                        />
                     ) : (
                         <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
                             <span>Drop an Image here</span>
-                            <input type='file' accept='image/*' onChange={(e) => handleImageChange(e, setMainImage1)} className='hidden' />
+                            <input
+                                type='file'
+                                accept='image/*'
+                                onChange={(e) => handleImageChange(e, setMainImage1)}
+                                className='hidden'
+                            />
                         </label>
                     )}
                 </div>
-                <div className='w-[37%] border-2 border-dashed bg-[#F3F3F3] h-[310px]'>
+                <div className='w-[37%] border-2 border-dashed bg-[#F3F3F3] h-[310px] flex items-center justify-center rounded-2xl'>
                     {mainImage2 ? (
-                        <img src={mainImage2} alt='Main 2' className='object-fill' />
+                        <img
+                            src={mainImage2}
+                            alt='Main 2'
+                            className='object-fill w-fit h-full rounded-2xl cursor-pointer'
+                            onClick={() => handleImageClick(setMainImage2)}
+                        />
                     ) : (
                         <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
                             <span>Drop an Image here</span>
-                            <input type='file' accept='image/*' onChange={(e) => handleImageChange(e, setMainImage2)} className='hidden' />
+                            <input
+                                type='file'
+                                accept='image/*'
+                                onChange={(e) => handleImageChange(e, setMainImage2)}
+                                className='hidden'
+                            />
                         </label>
                     )}
                 </div>
             </div>
+
         </article>
     )
 }
