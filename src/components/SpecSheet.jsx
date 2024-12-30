@@ -64,7 +64,7 @@ const SpecSheet = () => {
                 </div>
                 <div className='form__group field w-full flex gap-10'>
                     <div className='form__group field w-1/2'>
-                        <textarea type="text" className='form__field text-wrap' />
+                        <textarea type="text" className='form__field text-wrap' rows={1}/>
                         <label htmlFor="TRIM" className='form__label uppercase' plceholder="TRIM">TRIM</label>
                     </div>
                     <div className='form__group field w-1/2'>
@@ -79,7 +79,7 @@ const SpecSheet = () => {
                 </div>
                 <div className='form__group field w-full flex gap-10'>
                     <div className='form__group field w-1/2'>
-                        <textarea type="text" className='form__field' />
+                        <textarea type="text" className='form__field' rows={1}/>
                         <label htmlFor="FABRIC" className='form__label uppercase' plceholder="FABRIC">FABRIC</label>
                     </div>
                     <div className='form__group field w-1/2'>
@@ -94,7 +94,7 @@ const SpecSheet = () => {
                 </div>
                 <div className='form__group field w-full flex gap-10'>
                     <div className='form__group field w-1/2'>
-                        <textarea type="text" className='form__field' />
+                        <textarea type="text" className='form__field' rows={1} />
                         <label htmlFor="DESCRIPTION" className='form__label uppercase' plceholder="DESCRIPTION">DESCRIPTION</label>
                     </div>
                     <div className='form__group field w-1/2'>
@@ -107,7 +107,7 @@ const SpecSheet = () => {
                 </div>
                 <div className='form__group field w-full flex gap-10'>
                     <div className='form__group field w-1/2'>
-                        <textarea type="text" className='form__field' />
+                        <textarea type="text" className='form__field' rows={1} />
                         <label htmlFor="NOTE" className='form__label uppercase' plceholder="NOTE">NOTE</label>
                     </div>
                 </div>

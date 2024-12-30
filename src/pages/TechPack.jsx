@@ -1,5 +1,7 @@
 import LayoutSelection from '../components/LayoutSelection'
 import SpecSheet from '../components/SpecSheet'
+import ArtworkPlacementSheet from '../components/ArtworkPlacementSheet'
+import ArtworkSheet from '../components/ArtworkSheet'
 import Header from '../common/header'
 import Footer from '../common/footer'
 
@@ -15,6 +17,18 @@ const TechPack = () => {
       <div className='border-2 border-black mt-20'>
         <Header />
         <SpecSheet />
+        <Footer />
+      </div>
+
+      <div className='border-2 border-black mt-20'>
+        <Header />
+        <ArtworkPlacementSheet />
+        <Footer />
+      </div>
+
+      <div className='border-2 border-black mt-20'>
+        <Header />
+        <ArtworkSheet />
         <Footer />
       </div>
 
