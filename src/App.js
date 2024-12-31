@@ -5,12 +5,7 @@ import MainHeader from './common/main-header';
 import TechPack from './pages/TechPack';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import TechPacksTable from './pages/TechPacksTable';
-
-// Import React Query components
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-// Create a new QueryClient instance
-const queryClient = new QueryClient();
+import TechPackPdfGenerator from './TechPackPdfGenerator';
 
 function App() {
   return (
