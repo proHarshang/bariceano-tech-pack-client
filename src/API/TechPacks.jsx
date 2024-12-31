@@ -1,7 +1,6 @@
+const apiURL = process.env.REACT_APP_API_URL;
+const apiKey = process.env.REACT_APP_ADMIN_KEY;
 const getTechPacks = async () => {
-    const apiURL = process.env.REACT_APP_API_URL;
-    const apiKey = process.env.REACT_APP_ADMIN_KEY;
-    console.log(apiURL, apiKey);
 
     const response = await fetch(`${apiURL}/design/techpacks`, {
         method: 'POST',
@@ -20,5 +19,27 @@ const getTechPacks = async () => {
     return response.json();
 
 }
+const handleCommentSubmit = async (orderId, comment) => {
+    try {
+        const response = await fetch(`${apiURL}/orders/comment`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "OrderId": orderId,
+                "comment": comment
+            }),
+        });
 
-export { getTechPacks }
+        if (response.ok) {
+            window.location.reload(); // Reload the page after successful submission
+        } else {
+            console.error('Failed to submit comment');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+
+export { getTechPacks ,handleCommentSubmit}
