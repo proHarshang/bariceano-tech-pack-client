@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getTechPacks } from '../API/TechPacks';
 import TechPackDataTable from '../components/TechPackDataTable';
+import TechPackPdfGenerator from '../TechPackPdfGenerator';
 
 const TechPacksTable = () => {
     const [techPacks, setTechPacks] = useState([]);
@@ -28,7 +29,8 @@ const TechPacksTable = () => {
 
 
     return (
-        <div >
+        <div>
+            <TechPackPdfGenerator data={techPacks[1]}/>
             <TechPackDataTable data={techPacks} />
         </div>
     );

@@ -1,112 +1,157 @@
 import { jsPDF } from 'jspdf';
 
-const TechPackPdfGenerator = () => {
-    const generatePdf = () => {
+const TechPackPdfGenerator = (data) => {
+    console.log(data);
 
-        const pdf = new jsPDF();
+    const pageWidth = 297;
+    const pageHeight = 210;
 
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        
-        // header section starts
-        // Set font size and add bold text
+    // Initialize jsPDF 
+    const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: [pageWidth, pageHeight],
+    });
+
+
+    let lineY;
+    let secondColorImgY;
+    const colorImgHeight = 50;
+
+    function headerSection(pageNumber) {
         pdf.setFontSize(12);
         pdf.setFont('helvetica', 'bold');
-        pdf.text('BARISCEANO', 10, 8); // Align "BARISCEANO" to the left
+        pdf.text('BARISCEANO', 10, 8);
 
-        // Add normal text next to it
         pdf.setFont('helvetica', 'normal');
-        pdf.text('Spec. sheet', 10, 14); // Position it a bit further down
+        pdf.text('Spec. sheet', 10, 14);
 
-        // Center the image horizontally
-        const imgWidth = 16; // Set desired image width
-        const imgHeight = 16; // Set desired image height
-        const imgX = (pageWidth - imgWidth) / 2; // Center horizontally
-        const imgY = 2; // Align vertically with the line
+        const imgWidth = 16;
+        const imgHeight = 16;
+        const imgX = (pageWidth - imgWidth) / 2;
+        const imgY = 2;
         pdf.addImage('/logo512.png', 'PNG', imgX, imgY, imgWidth, imgHeight);
 
-        // Add "Pg.-01" to the right corner
         pdf.setFontSize(12);
-        const pgX = pageWidth - 30; // Right alignment with padding
-        const pgY = 8; // Align with the line
-        pdf.text('Pg.- 01', pgX, pgY);
+        const pgX = pageWidth - 30;
+        const pgY = 8;
+        pdf.text(`Pg.- ${pageNumber}`, pgX, pgY);
 
-        // Add "BR-00-00" below "Pg.-01"
         pdf.text('BR-00-00', pgX, pgY + 5);
 
-        // Add horizontal line
-        const lineY = 19; // Position for the line below the text and image
-        pdf.line(0, lineY, pageWidth, lineY); // Full-width horizontal line
+        lineY = 19; // Update lineY value
+        pdf.line(0, lineY, pageWidth, lineY);
+    }
 
+    function footerSection() {
+        const bottomLineY = secondColorImgY + colorImgHeight + 64;
+        pdf.line(0, bottomLineY, pageWidth, bottomLineY);
 
-
-
-        // Define dimensions for images
-        const colorImgWidth = 40;
-        const colorImgHeight = 50;
-
-        const frontBackImgWidth = 60; // Width for front and back images
-        const frontBackImgHeight = 110;
-
-        // Positions
-        const colorImgX = 10; // Color image on the far left
-        const firstRowY = lineY + 10; // Row position for the first set of images
-
-        const frontImgX = colorImgX + colorImgWidth + 10; // Next to color image
-        const backImgX = frontImgX + frontBackImgWidth + 10; // Next to front image
-
-        const secondColorImgY = firstRowY + colorImgHeight + 6; // Below the first color image
-
-        // Add the first row of images
-        pdf.addImage('/color.jpeg', 'JPEG', colorImgX, firstRowY, colorImgWidth, colorImgHeight); // Color image
-        pdf.setFont('helvetica', 'bold');
-        pdf.setTextColor('black')
-        pdf.text('Fabric Iamge', 10, firstRowY + 55)
-        pdf.addImage('/front.jpeg', 'JPEG', frontImgX, firstRowY, frontBackImgWidth, frontBackImgHeight); // Front image
-        pdf.addImage('/back.jpeg', 'JPEG', backImgX, firstRowY, frontBackImgWidth, frontBackImgHeight); // Back image
-
-        // Add the second color image below the first
-        pdf.addImage('/color.jpeg', 'JPEG', colorImgX, secondColorImgY + 5, colorImgWidth, colorImgHeight);
-        pdf.text('Thread Color', 10, firstRowY + 116)
-
-        // Add a horizontal line below the second color image
-        const bottomLineY = secondColorImgY + colorImgHeight + 16; // Position for the bottom horizontal line
-        pdf.line(0, bottomLineY, pageWidth, bottomLineY); // Full-width horizontal line
-
-        // Add "IMPORTANT NOTE" text
         pdf.setFontSize(8);
         pdf.setFont('helvetica', 'normal');
-        const leftMargin = 10; // Left margin
-        const rightMargin = 10; // Right margin
-        const noteWidth = pageWidth - leftMargin - rightMargin; // Calculate usable width
+        const leftMargin = 10;
+        const rightMargin = 10;
+        const noteWidth = pageWidth - leftMargin - rightMargin;
 
         const importantNote =
             'IMPORTANT NOTE: This tech pack is confidential and is the sole property of BARISCEANO, to be utilised only for the purpose for which it has been sent and intended only for the information of the individual/entity to whom it is addressed. All artwork appearing in this bundle are trademarks owned by BARISCEANO and cannot be used, distributed, or copied.';
 
-        // Wrap the text within the margins
         pdf.text(importantNote, leftMargin, bottomLineY + 5, { maxWidth: noteWidth, align: 'justify' });
+    }
+    function drawCell(pdf, x, y, width, height, text, isBold = false, align = 'left') {
 
-        // Save the PDF
-        pdf.save('example.pdf');
+        // Draw cell border
+        pdf.rect(x, y, width, height);
 
+        // Set font style
+        pdf.setFont('helvetica', isBold ? 'bold' : 'normal');
 
-        // Add a new page
+        // Align text within the cell
+        const textX = align === 'left' ? x + 2 : x + width - 2; // Adjust for padding
+        const textY = y + height / 2 + 2.5; // Adjust vertical alignment
+        pdf.text(text, textX, textY, { align });
+
+    }
+    function generatePdf() {
+        headerSection(1);
+
+        const colorImgWidth = 40;
+
+        const frontBackImgWidth = 60;
+        const frontBackImgHeight = 110;
+
+        const colorImgX = 20;
+        const firstRowY = lineY + 10;
+
+        const frontImgX = colorImgX + colorImgWidth + 10;
+        const backImgX = frontImgX + frontBackImgWidth + 10;
+
+        secondColorImgY = firstRowY + colorImgHeight + 6; // Update secondColorImgY value
+
+        pdf.addImage('/color.jpeg', 'JPEG', colorImgX, firstRowY + 10, colorImgWidth, colorImgHeight);
+        pdf.setFont('helvetica', 'bold');
+        pdf.setTextColor('black');
+        pdf.text('Fabric Image', 20, firstRowY + 66);
+        pdf.addImage('/front.jpeg', 'JPEG', frontImgX + 44, firstRowY + 10, frontBackImgWidth + 20, frontBackImgHeight);
+        pdf.addImage('/back.jpeg', 'JPEG', backImgX + 64, firstRowY + 10, frontBackImgWidth + 20, frontBackImgHeight);
+
+        pdf.addImage('/color.jpeg', 'JPEG', colorImgX, secondColorImgY + 20, colorImgWidth, colorImgHeight);
+        pdf.text('Thread Color', 20, firstRowY + 133);
+
+        footerSection();
+
         pdf.addPage();
+        headerSection(2);
+        // Define column positions and widths
+        const col1X = 10; // Start position for the first column
+        const col1Width = 40; // First column width
+        const col2X = col1X + col1Width; // Second column starts after the first
+        const col2Width = 140; // Increased width for merged columns
+        const col3X = col2X + col2Width; // Third column starts after the second
+        const col3Width = 40; // Third column width
+        const col4X = col3X + col3Width; // Fourth column starts after the third
+        const col4Width = 70; // Fourth column width
 
-        // Add text on the second page
-        pdf.text('This is some text on page 2', 10, 20);
+        const cellHeight = 15; // Increased height for each cell
+        let currentY = 28; // Start Y position for the first row
 
-        // Add another image on the second page
-        pdf.addImage(
-            'https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png', // Replace with another image URL
-            'PNG',
-            10,
-            30,
-            100,
-            100
-        );
+        const rowData = [
+            ['STYLE No.', `${data.data.style_number}`, 'STYLE', `${data.data.style_Name}`],
+            ['FABRIC COLOUR', 'Bright White', 'CATEGORY', `${data.data.category}`],
+            ['GENDER', `${data.data.gender}`, 'SIZE', 'S , M ,L ,XL'],
+            ['FIT', `${data.data.fit}`, 'RATIO', `${data.data.ratio}`],
+            ['SEASON', `${data.data.season}`, 'DESIGNER', `${data.data.designerName}`],
+            ['STATE', `${data.data.state}`, 'COLLECTION', `${data.data.collectionName}`],
+            // Rows with only two columns (merge second and fourth columns)
+            ['TRIM', `${data.data.trim[0] || 'N/A'}`, '', ''],
+            ['FABRIC', `${data.data.fabric[0] || 'N/A'}`, '', ''],
+            ['DESCRIPTION', `${data.data.description}`, '', ''],
+            ['NOTE', `${data.data.note}`, '', ''],
+        ];
 
-        // Save the PDF
+        rowData.forEach((row, index) => {
+            if (index < 6) {
+                // Standard 4-column rows
+                drawCell(pdf, col1X, currentY, col1Width, cellHeight, row[0], true, 'left');
+                drawCell(pdf, col2X, currentY, col2Width, cellHeight, row[1], false, 'left');
+                drawCell(pdf, col3X, currentY, col3Width, cellHeight, row[2], true, 'left');
+                drawCell(pdf, col4X, currentY, col4Width, cellHeight, row[3], false, 'left');
+            } else {
+                // Two-column rows (merge columns 2 and 4)
+                drawCell(pdf, col1X, currentY, col1Width, cellHeight, row[0], true, 'left');
+                drawCell(pdf, col2X, currentY, col2Width + col4Width + col3Width, cellHeight, row[1], false, 'left');
+            }
+
+            // Move to the next row
+            currentY += cellHeight;
+        });
+        footerSection();
+
+        pdf.addPage();
+        headerSection(3);
+        pdf.addImage('/img.png','png',10 , 25 , pageWidth -10 , 167)
+        footerSection();
+
         pdf.save('example.pdf');
     };
 
@@ -115,6 +160,6 @@ const TechPackPdfGenerator = () => {
             <button onClick={generatePdf}>Generate PDF</button>
         </div>
     );
-}
+};
 
 export default TechPackPdfGenerator;
