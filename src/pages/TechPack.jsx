@@ -6,32 +6,24 @@ import Header from '../common/header'
 import Footer from '../common/footer'
 
 const TechPack = () => {
+
+  const pageComponent = [
+    <LayoutSelection />,
+    <SpecSheet />,
+    <ArtworkPlacementSheet />,
+    <ArtworkSheet />
+  ]
   return (
     <div className='w-[841px] mx-auto '>
-      <div className='border-2 border-black'>
-        <Header />
-        <LayoutSelection />
-        <Footer />
-      </div>
-
-      <div className='border-2 border-black mt-20'>
-        <Header />
-        <SpecSheet />
-        <Footer />
-      </div>
-
-      <div className='border-2 border-black mt-20'>
-        <Header />
-        <ArtworkPlacementSheet />
-        <Footer />
-      </div>
-
-      <div className='border-2 border-black mt-20'>
-        <Header />
-        <ArtworkSheet />
-        <Footer />
-      </div>
-
+      {pageComponent.map((component, index) => (
+        <div className='border-2 border-black mb-20'>
+          <div key={index}>
+            <Header />
+            {component}
+            <Footer />
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

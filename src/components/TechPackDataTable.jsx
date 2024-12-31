@@ -2,13 +2,14 @@ import '../style/TechPackTable.css';
 import { useState, useCallback } from 'react';
 import { useRef, useEffect } from 'react';
 import { handleCommentSubmit } from '../APi/TechPacks';
-
+import { useNavigate } from 'react-router-dom';
 const TechPackDataTable = ({ data = [] }) => {
     const [selectedLabels, setSelectedLabels] = useState([]);
     const [showCategories, setShowCategories] = useState(false);
     const [currentCategory, setCurrentCategory] = useState(null);
     const [currentSubCategory, setCurrentSubCategory] = useState(null);
     const sidebarRef = useRef(null);
+    const navigate = useNavigate();
 
     const formatDate = (dateString) => {
         if (!dateString) return "Not Modified Yet";
@@ -48,6 +49,7 @@ const TechPackDataTable = ({ data = [] }) => {
     };
 
     const handleApply = () => {
+        navigate('/tech-pack');
         console.log('Selected Labels:', selectedLabels);
     };
 
