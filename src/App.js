@@ -3,14 +3,13 @@ import Auth from './pages/Auth';
 import { AuthProvider } from './context/AuthContext';
 import MainHeader from './common/main-header';
 import TechPack from './pages/TechPack';
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import TechPacksTable from './pages/TechPacksTable';
-import TechPackPdfGenerator from './TechPackPdfGenerator';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
 
 function App() {
   return (
     <AuthProvider>
-      <QueryClientProvider client={queryClient}>
         <Router>
           <MainHeader />
           <Routes>
@@ -19,7 +18,6 @@ function App() {
             <Route path='/tech-pack-data' element={<TechPacksTable />} />
           </Routes>
         </Router>
-      </QueryClientProvider>
     </AuthProvider>
   );
 }
