@@ -125,3 +125,49 @@ input[type="checkbox"]:checked::after {
    background-color: rgb(0, 0, 0);
    padding: 0px 6px;
 }
+
+/* Dropdown container with relative position */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+  width: 250px; /* Adjust width as needed */
+}
+
+/* Custom dropdown styling */
+.custom-dropdown {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #5d5d5d;
+  border: 2px solid #797979; /* White border */
+  border-radius: 8px;
+  background: white;
+  outline: none;
+  appearance: none; /* Remove default browser styling */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Add custom arrow to the container */
+.dropdown-container::after {
+  content: "▼"; /* Unicode arrow */
+  font-size: 14px;
+  color: #5d5d5d; /* Arrow color */
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Prevent interaction with the arrow */
+}
+
+/* Hover effect for the dropdown */
+.custom-dropdown:hover {
+  border-color: #dcdcdc; /* Light gray on hover */
+}
+
+/* Dropdown options styling (optional) */
+.custom-dropdown option {
+  padding: 10px;
+  color: #5d5d5d;
+  background: white;
+}

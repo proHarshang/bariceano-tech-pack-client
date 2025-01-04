@@ -1,8 +1,6 @@
 import { jsPDF } from 'jspdf';
 
 const TechPackPdfGenerator = (data) => {
-    console.log(data);
-
     const pageWidth = 297;
     const pageHeight = 210;
 
