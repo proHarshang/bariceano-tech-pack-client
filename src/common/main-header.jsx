@@ -43,15 +43,18 @@ const MainHeader = () => {
 
     const handleApply = () => {
         navigate('/tech-pack');
-        console.log('Selected Labels:', selectedLabels);
+        setShowCategories(false);
+        setCurrentCategory(false);
+        setCurrentSubCategory(false);
     };
+
     return (
         <div className="p-5 flex justify-between border-b pl-16 pr-12">
             <div className='flex gap-5 items-center'>
                 <button
                     className={`flex gap-3 items-center border-[1px] text-sm font-bold px-3 py-2 rounded-2xl uppercase ${currentPath === "/tech-pack-data"
-                            ? "bg-black text-white"
-                            : "border text-black"
+                        ? "bg-black text-white"
+                        : "border text-black"
                         }`}
                 >
                     <select
@@ -60,7 +63,7 @@ const MainHeader = () => {
                         className={`${currentPath === "/tech-pack-data"
                             ? "bg-black text-white"
                             : ""
-                        }`}
+                            }`}
                         onChange={(e) => {
                             if (e.target.value === "Collection 1") {
                                 window.location.href = "/tech-pack-data";
@@ -76,8 +79,8 @@ const MainHeader = () => {
                 <a href="/setting">
                     <button
                         className={`border-[1px] text-sm font-bold px-3 py-2 rounded-2xl uppercase ${currentPath === "/setting"
-                                ? "bg-black text-white"
-                                : "border-black"
+                            ? "bg-black text-white"
+                            : "border-black"
                             }`}
                     >
                         Setting
