@@ -126,6 +126,11 @@ input[type="checkbox"]:checked::after {
    padding: 0px 6px;
 }
 
+select:focus-visible {
+  outline: none;
+  border: none;
+}
+
 /* Dropdown container with relative position */
 .dropdown-container {
   position: relative;
