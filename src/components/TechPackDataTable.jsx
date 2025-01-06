@@ -2,15 +2,10 @@ import '../style/TechPackTable.css';
 import { useState, useCallback } from 'react';
 import { useRef, useEffect } from 'react';
 import { handleCommentSubmit } from '../APi/TechPacks';
-import { useNavigate } from 'react-router-dom';
-const TechPackDataTable = ({ data = [] }) => {
-    const [selectedLabels, setSelectedLabels] = useState([]);
-    const [showCategories, setShowCategories] = useState(false);
-    const [currentCategory, setCurrentCategory] = useState(null);
-    const [currentSubCategory, setCurrentSubCategory] = useState(null);
-    const sidebarRef = useRef(null);
-    const navigate = useNavigate();
+import TechPackPdfGenerator from '../TechPackPdfGenerator';
 
+const TechPackDataTable = ({ data = [] }) => {
+    const sidebarRef = useRef(null);
     const formatDate = (dateString) => {
         if (!dateString) return "Not Modified Yet";
         const date = new Date(dateString);
@@ -23,34 +18,6 @@ const TechPackDataTable = ({ data = [] }) => {
             hour12: true
         };
         return new Intl.DateTimeFormat('en-US', options).format(date);
-    };
-    const categories = ['T-Shirt', 'Hoodie', 'Sweat-Shirt'];
-    const subCategories = ['Men', 'Women'];
-    const labels = [
-        'Silicon Label',
-        'Wash Care Label',
-        'Size Label',
-        'Main Label',
-        'Sewing Thread',
-        'Hand Tag',
-        'Blank Tag'
-    ];
-
-    const handleLabelChange = (label) => {
-        setSelectedLabels((prev) =>
-            prev.includes(label)
-                ? prev.filter((item) => item !== label)
-                : [...prev, label]
-        );
-    };
-
-    const handleClear = () => {
-        setSelectedLabels([]);
-    };
-
-    const handleApply = () => {
-        navigate('/tech-pack');
-        console.log('Selected Labels:', selectedLabels);
     };
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(null); // Use `null` as initial state for clarity
@@ -76,7 +43,6 @@ const TechPackDataTable = ({ data = [] }) => {
                 toggleSidebar(false);
             }
         }
-
         if (isSidebarOpen) {
             document.addEventListener('mousedown', handleClickOutside);
         } else {
@@ -88,116 +54,84 @@ const TechPackDataTable = ({ data = [] }) => {
         };
     }, [isSidebarOpen, toggleSidebar]);
 
+    // search logic 
+    const [searchTerm, setSearchTerm] = useState('');
+    const filteredBySearch = data.filter(techpack =>
+        techpack.style_Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        techpack.designerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        techpack.poNumber.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // shorting logic
+    const [isAscending, setIsAscending] = useState(true);
+    const handleSort = () => {
+        setIsAscending(!isAscending); // Toggle sorting order
+    };
+    const sortedData = [...filteredBySearch].sort((a, b) => {
+        if (isAscending) {
+            return new Date(a.modifiedAt) - new Date(b.modifiedAt); // Oldest to newest
+        } else {
+            return new Date(b.modifiedAt) - new Date(a.modifiedAt); // Newest to oldest
+        }
+    });
+
+    // filter logic
+    const [selectedDesigner, setSelectedDesigner] = useState(""); // State for dropdown filter
+
+    // Extract unique designer names
+    const uniqueDesigners = Array.from(new Set(sortedData.map(item => item.designerName)));
+
+    // Filter data based on selected designer
+    const filteredData = selectedDesigner
+        ? sortedData.filter(item => item.designerName === selectedDesigner)
+        : sortedData;
+
+    
     return (
         <>
-            <div className='px-20 max-w-[1400px] mx-auto'>
-                <div className='flex gap-5 items-center my-7'>
-                    <button className='flex gap-3 items-center border-[1px] text-sm font-bold border-black px-3 py-2 rounded-2xl uppercase'>
-                        <select name="Collection" id="">
-                            <option value="Collection 1">Collection 1</option>
-                            <option value="Collection 2">Collection 2</option>
-                        </select>
-                    </button>
-                    <button className='border-[1px] text-sm font-bold border-black px-3 py-2 rounded-2xl uppercase'>
-                        Setting
-                    </button>
-                    <div className="relative">
-                        <button
-                            className="flex gap-2 bg-black text-white items-center text-sm font-bold px-3 py-2 rounded-2xl uppercase"
-                            onClick={() => setShowCategories(!showCategories)}
-                        >
-                            <svg
-                                width="13"
-                                height="13"
-                                viewBox="0 0 13 13"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path d="M6.5 0V13" stroke="white" strokeWidth="2" />
-                                <path d="M0 6.5L13 6.5" stroke="white" strokeWidth="2" />
-                            </svg>
-                            <span>New</span>
-                        </button>
-
-                        {showCategories && (
-                            <div className="absolute mt-2 w-48 bg-white border border-gray-300 rounded shadow-md z-10">
-                                <div className="p-2 space-y-2">
-                                    {categories.map((category) => (
-                                        <div
-                                            key={category}
-                                            className={`p-2 cursor-pointer hover:bg-gray-200 ${currentCategory === category && 'bg-gray-300'}`}
-                                            onClick={() => setCurrentCategory(category)}
-                                        >
-                                            {category}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {currentCategory && (
-                            <div className="absolute mt-2 left-52 w-48 bg-white border border-gray-300 rounded shadow-md z-10">
-                                <div className="p-2 space-y-2">
-                                    {subCategories.map((subCategory) => (
-                                        <div
-                                            key={subCategory}
-                                            className={`p-2 cursor-pointer hover:bg-gray-200 ${currentSubCategory === subCategory && 'bg-gray-300'}`}
-                                            onClick={() => setCurrentSubCategory(subCategory)}
-                                        >
-                                            {subCategory}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {currentSubCategory && (
-                            <div className="absolute mt-2 -right-[600px] w-64 bg-white border border-gray-300 rounded shadow-md z-10">
-                                <div className="py-4 space-y-2">
-                                    {labels.map((label) => (
-                                        <>
-                                            <div key={label} className="flex px-4 mb-3 w-full justify-between items-center">
-                                                <label className='text-[#AEAEAE]'>{label}</label>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={selectedLabels.includes(label)}
-                                                    onChange={() => handleLabelChange(label)}
-                                                    className={`mr-2 w-7 h-7 pl-[1px] bg-slate-200 pointer-events-auto`}
-                                                />
-                                            </div>
-                                            <hr className='w-full h-1 !px-0' />
-                                        </>
-                                    ))}
-                                    <div className="flex gap-2 !mt-5 justify-center">
-                                        <button
-                                            className="px-3 py-[2px] text-sm border-2 border-[#868686] rounded-lg"
-                                            onClick={handleClear}
-                                        >
-                                            Clear
-                                        </button>
-                                        <button
-                                            className="bg-black px-3 py-[2px] text-sm text-white rounded-lg"
-                                            onClick={handleApply}
-                                        >
-                                            Apply
-                                        </button>
-                                    </div>
-                                </div>
-
-                            </div>
-                        )}
+            <div className='px-20 py-10 max-w-[1400px] mx-auto flex flex-col gap-10'>
+                <div className='w-full flex gap-10'>
+                    <div className="flex flex-col w-1/2 gap-2">
+                        <span>Search</span>
+                        <div className="border bg-white border-black px-1 w-full md:px-[7px] h-8 md:h-8 flex justify-start">
+                            <input
+                                type="text"
+                                placeholder="Enter Order Id or Transaction Id"
+                                value={searchTerm}
+                                onChange={e => setSearchTerm(e.target.value)} // Ensure state update
+                                className="w-full"
+                            />
+                        </div>
                     </div>
+                    <div className='flex flex-col gap-2 w-full'>
+                        <span>Designer</span>
+                        <div className='border bg-white border-black px-2 w-[200px] h-8 flex items-center'>
+
+                            <select
+                                id="designer-filter"
+                                value={selectedDesigner}
+                                onChange={(e) => setSelectedDesigner(e.target.value)}
+                                className="w-full h-full"
+                            >
+                                <option value="">All Designers</option>
+                                {uniqueDesigners.map((designer, index) => (
+                                    <option key={index} value={designer}>{designer}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
-                <div className="m-auto">
+                <div className='w-full'>
                     <span>
-                        Total {data?.length} Tech Packs
+                        Total {filteredData?.length} Tech Packs
                     </span>
                     <table className='techPack-table'>
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
-                                <th>Last Edited</th>
+                                <th onClick={handleSort}>Last Edited {isAscending ? '▼' : '▲'}</th>
                                 <th>Designer Name</th>
                                 <th>Status</th>
                                 <th>Gender</th>
@@ -208,7 +142,7 @@ const TechPackDataTable = ({ data = [] }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {data?.map((item, index) => (
+                            {filteredData?.map((item, index) => (
                                 <tr key={item._id}>
                                     <td>{index + 1}</td>
                                     <td>{item.style_Name}</td>
@@ -239,7 +173,9 @@ const TechPackDataTable = ({ data = [] }) => {
                                         </div>
                                     </td>
                                     <td>
-                                        <button className="download-button">Download</button>
+                                        <button className="download-button">
+                                            <TechPackPdfGenerator data={filteredData[index]} />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
