@@ -155,7 +155,7 @@ const TechPackPdfGenerator = (data) => {
 
     return (
         <div>
-            <button onClick={generatePdf}>Generate PDF</button>
+            <button onClick={generatePdf}>Download</button>
         </div>
     );
 };
