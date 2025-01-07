@@ -3,7 +3,7 @@ import React from 'react'
 function header({ name, pageNo, showButton }) {
     return (
         <section className='border-b-2 border-black'>
-            <article className='relative flex items-center justify-between py-5 px-10'>
+            <article className='relative flex items-start justify-between py-5 px-10'>
                 <div>
                     <h1 className='font-bold'>BARISCEANO</h1>
                     <h5>{name}</h5>
@@ -16,7 +16,7 @@ function header({ name, pageNo, showButton }) {
                         <h5>Pg - 0{pageNo}</h5>
                         <h5>BR-00-00</h5>
                     </div>
-                    <div className='flex gap-5 items-center mt-2'>
+                    <div className='flex gap-5 absolute top-12 pr-2 right-0 items-center mt-2'>
                         {showButton &&
                             <div>
                                 <svg width="20" height="24" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -26,9 +26,6 @@ function header({ name, pageNo, showButton }) {
                                     <path d="M7.58398 6.5V10.0455" stroke="black" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                             </div>}
-                        <button className='border text-xs border-black px-3 py-1 rounded-xl'>
-                            Preview
-                        </button>
                     </div>
                 </div>
             </article>
