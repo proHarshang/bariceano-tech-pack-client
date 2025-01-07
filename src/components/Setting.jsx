@@ -102,21 +102,12 @@ export default function Setting() {
     const [selectedOption, setSelectedOption] = useState("");
     const [images, setImages] = useState({});
     const [isEditing, setIsEditing] = useState(false);
-    const [showModal, setShowModal] = useState(false);
     const [newOptionName, setNewOptionName] = useState("");
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             setImages({ ...images, [selectedOption]: URL.createObjectURL(file) });
-        }
-    };
-
-    const handleAddOption = () => {
-        if (newOptionName.trim() && !options.includes(newOptionName)) {
-            setOptions([...options, newOptionName]);
-            setNewOptionName("");
-            setShowModal(false);
         }
     };
     const handleDragOver = (e) => {
@@ -138,11 +129,6 @@ export default function Setting() {
     ]);
     const [popup, setPopup] = useState({ visible: false, id: null });
     const [formData, setFormData] = useState({ name: '', image: null });
-
-    const handleAdd = () => {
-        setPopup({ visible: true, id: null });
-        setFormData({ name: '', image: null });
-    };
 
     const handleEdit = (id) => {
         const box = boxes.find((box) => box.id === id);
@@ -255,11 +241,6 @@ export default function Setting() {
         { id: 3, name: 'Hoodie', image: '' },
     ]);
     const [parameterspopup, setParametersPopup] = useState({ visible: false, id: null });
-
-    const handleAddParameter = () => {
-        setParametersPopup({ visible: true, id: null });
-        setFormData({ name: '', image: null });
-    };
 
     const handleEditParameter = (id) => {
         const parameter = parameters.find((param) => param.id === id);
@@ -472,10 +453,6 @@ export default function Setting() {
                         <div>
                             <h1 className="font-bold text-xl">Gender (size chart)</h1>
                         </div>
-                        <div className="flex gap-3">
-                            <button className="underline" onClick={() => setShowModal(true)}>Add</button>
-                            <button className="underline">Delete</button>
-                        </div>
                     </div>
                     <div className="w-full flex gap-10 items-center">
                         <div className="dropdown-container">
@@ -544,36 +521,6 @@ export default function Setting() {
                         </div>
                     )}
 
-
-                    {/* Modal for adding new option */}
-                    {showModal && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                            <div className="bg-white p-6 rounded shadow-lg">
-                                <h2 className="text-lg mb-4">Add Size Chart</h2>
-                                <input
-                                    type="text"
-                                    value={newOptionName}
-                                    onChange={(e) => setNewOptionName(e.target.value)}
-                                    placeholder="Enter option name"
-                                    className="border border-gray-300 p-2 rounded w-full mb-4"
-                                />
-                                <div className="flex justify-center">
-                                    <button
-                                        onClick={() => setShowModal(false)}
-                                        className="mr-4 px-4 py-2 border border-b rounded-lg"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        onClick={handleAddOption}
-                                        className="px-4 py-2 bg-black text-white rounded-lg"
-                                    >
-                                        Apply
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
 
@@ -583,10 +530,6 @@ export default function Setting() {
                         <div className="flex gap-10 pb-5">
                             <div>
                                 <h1 className="font-bold text-xl">Constriction Sheet</h1>
-                            </div>
-                            <div className="flex gap-3">
-                                <button className="underline" onClick={handleAdd}>Add</button>
-                                <button className="underline">Delete</button>
                             </div>
                         </div>
                     </div>
@@ -854,10 +797,6 @@ export default function Setting() {
                     <div className="flex gap-10">
                         <div>
                             <h1 className="font-bold text-xl">Required Parameters</h1>
-                        </div>
-                        <div className="flex gap-3">
-                            <button className="underline" onClick={handleAddParameter}>Add</button>
-                            <button className="underline">Delete</button>
                         </div>
                     </div>
                 </div>

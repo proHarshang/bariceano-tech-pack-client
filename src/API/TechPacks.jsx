@@ -19,7 +19,8 @@ const getTechPacks = async () => {
     return response.json();
 
 }
-const handleCommentSubmit = async (orderId, comment) => {
+
+const handleCommentSubmit = async (techPachId, comment) => {
     try {
         const response = await fetch(`${apiURL}/design/comment`, {
             method: 'POST',
@@ -27,7 +28,7 @@ const handleCommentSubmit = async (orderId, comment) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "OrderId": orderId,
+                "techPachId": techPachId,
                 "comment": comment
             }),
         });
