@@ -1,4 +1,3 @@
-import './App.css';
 import Auth from './pages/Auth';
 import { AuthProvider } from './context/AuthContext';
 import MainHeader from './common/main-header';
