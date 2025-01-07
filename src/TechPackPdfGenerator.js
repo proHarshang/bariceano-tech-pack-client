@@ -104,7 +104,7 @@ const TechPackPdfGenerator = (data) => {
         const col1X = 10; // Start position for the first column
         const col1Width = 40; // First column width
         const col2X = col1X + col1Width; // Second column starts after the first
-        const col2Width = 140; // Increased width for merged columns
+        const col2Width = 120; // Increased width for merged columns
         const col3X = col2X + col2Width; // Third column starts after the second
         const col3Width = 40; // Third column width
         const col4X = col3X + col3Width; // Fourth column starts after the third
@@ -147,7 +147,138 @@ const TechPackPdfGenerator = (data) => {
 
         pdf.addPage();
         headerSection(3);
-        pdf.addImage('/img.png','png',10 , 25 , pageWidth -10 , 167)
+        pdf.addImage('/img.png', 'png', 10, 25, 297 - 10, 167)
+        footerSection();
+
+        pdf.addPage();
+        headerSection(4);
+        // Adjusted margins and table settings
+        const leftMargin = 10; // Left margin
+        const rightMargin = 10; // Right margin
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const availableWidth = pageWidth - leftMargin - rightMargin;
+
+        // Adjust column widths to fit within available width
+        const columnWidths = [10, 50, 80, 60, 60, 80];
+        const totalWidth = columnWidths.reduce((a, b) => a + b, 0);
+
+        // Scale column widths to fit available space
+        const scaleFactor = availableWidth / totalWidth;
+        for (let i = 0; i < columnWidths.length; i++) {
+            columnWidths[i] *= scaleFactor;
+        }
+
+        const rows = [
+            {
+                placement: 'Front',
+                technique: 'Rubber Print',
+                color: 'Bright White',
+            },
+            {
+                placement: 'Back',
+                technique: 'Rubber Print',
+                color: 'Bright White',
+            },
+        ];
+
+        // Increased row height
+        const rowHeight = 50; // Increased height for better readability
+        const startY = 30; // Start position for the table
+
+        // Table headers
+        const headers = ['#', 'Placement', 'Artwork', 'Technique', 'Colour', 'Placement'];
+
+// Header styling
+pdf.setFontSize(14);
+
+// Set the text color (White)
+pdf.setTextColor(255, 255, 255); // RGB for white
+
+// Draw headers
+let currentX = leftMargin;
+headers.forEach((header, i) => {
+    // Draw the background rectangle for each header cell (Black background)
+    pdf.setFillColor(0, 0, 0); // Black color for background
+    pdf.rect(currentX, startY, columnWidths[i], rowHeight / 2, 'F'); // 'F' fills the rectangle
+
+    // Set text color for the text (White text on the black background)
+    pdf.setTextColor(255, 255, 255); // White text color
+
+    // Add the header text (centered horizontally and vertically)
+    pdf.text(
+        header,
+        currentX + columnWidths[i] / 2, // Center the text horizontally
+        startY + rowHeight / 4 + 2, // Adjust vertical alignment slightly to fit within the cell
+        { align: 'center' } // Center align the text
+    );
+
+    // Move to the next column position
+    currentX += columnWidths[i];
+});
+
+
+        // Table content
+
+        // Draw table rows
+        let ccurrentY = startY + rowHeight / 2; // Start below headers
+        rows.forEach((row, index) => {
+            currentX = leftMargin; // Reset to left margin for each row
+
+            // Row number
+            pdf.setFontSize(13);
+            pdf.setTextColor(0, 0, 0);
+            pdf.rect(currentX, ccurrentY, columnWidths[0], rowHeight);
+            pdf.text((index + 1).toString(), currentX + columnWidths[0] / 2, ccurrentY + rowHeight / 2, {
+                align: 'center',
+            });
+            currentX += columnWidths[0];
+
+            // Placement
+            pdf.rect(currentX, ccurrentY, columnWidths[1], rowHeight);
+            pdf.text(row.placement, currentX + 5, ccurrentY + rowHeight / 2, {
+                baseline: 'middle',
+            });
+            currentX += columnWidths[1];
+
+            // Artwork (image placeholder)
+            pdf.rect(currentX, ccurrentY, columnWidths[2], rowHeight);
+            pdf.setFillColor(243, 243, 243); // #F3F3F3
+            pdf.rect(currentX + 5, ccurrentY + 5, columnWidths[2] - 10, rowHeight - 10, 'F'); // Placeholder cell
+            pdf.setDrawColor(150, 150, 150);
+            pdf.rect(currentX + 5, ccurrentY + 5, columnWidths[2] - 10, rowHeight - 10, 'D'); // Placeholder border
+            pdf.setFontSize(13);
+            pdf.addImage('/front.jpeg', 'JPEG', currentX + columnWidths[2] / 2, ccurrentY , 20 + 20, 40);
+            currentX += columnWidths[2];
+
+            // Technique
+            pdf.rect(currentX, ccurrentY, columnWidths[3], rowHeight);
+            pdf.text(row.technique, currentX + 5, ccurrentY + rowHeight / 2, {
+                baseline: 'middle',
+            });
+            currentX += columnWidths[3];
+
+            // Colour
+            pdf.rect(currentX, ccurrentY, columnWidths[4], rowHeight);
+            pdf.text(row.color, currentX + 5, ccurrentY + rowHeight / 2, {
+                baseline: 'middle',
+            });
+            currentX += columnWidths[4];
+
+            // Placement (image placeholder)
+            pdf.rect(currentX, ccurrentY, columnWidths[5], rowHeight);
+            pdf.setFillColor(243, 243, 243); // #F3F3F3
+            pdf.rect(currentX + 5, ccurrentY + 5, columnWidths[5] - 10, rowHeight - 10, 'F'); // Placeholder cell
+            pdf.setDrawColor(150, 150, 150);
+            pdf.rect(currentX + 5, ccurrentY + 5, columnWidths[5] - 10, rowHeight - 10, 'D'); // Placeholder border
+            pdf.setFontSize(13);
+            pdf.text('Drop an Image here', currentX + columnWidths[5] / 2, ccurrentY + rowHeight / 2, {
+                align: 'center',
+            });
+
+            // Move to next row
+            ccurrentY += rowHeight;
+        });
+
         footerSection();
 
         pdf.save('example.pdf');
