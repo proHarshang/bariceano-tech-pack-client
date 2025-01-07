@@ -1,4 +1,3 @@
-import '../style/TechPackTable.css';
 import { useState, useCallback } from 'react';
 import { useRef, useEffect } from 'react';
 import { handleCommentSubmit } from '../APi/TechPacks';
