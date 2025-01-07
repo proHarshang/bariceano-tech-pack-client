@@ -54,7 +54,7 @@ export default function Setting() {
             setCategory((prev) => prev.filter((Category) => Category.id !== Categoryid));
         }
     };
-   
+
 
     const [GenderCategory, setGenderCategory] = useState([
         { id: 1, value: "Men", isEditable: false, color: "#3FC1C9" },
@@ -310,8 +310,49 @@ export default function Setting() {
         }
     };
 
+
+
+    const [finishing, setFinishing] = useState([
+        { id: 1, name: 'T-shirt', image: [] },
+        { id: 2, name: 'Sweatshirt', image: [] },
+        { id: 3, name: 'Hoodie', image: [] },
+    ]);
+    const [finishingData, setFinishingData] = useState({ name: '', images: [] });
+
+    const [finishingpopup, setFinishingPopup] = useState({ visible: false, id: null });
+
+    const handleEditFinishing = (id) => {
+        const finising = finishing.find((param) => param.id === id);
+        setFinishingPopup({ visible: true, id });
+        setFinishingData({ name: finising.name, images: finising.image });
+    };
+    const handleSaveFinising = () => {
+        if (finishingpopup.id) {
+            // Edit an existing parameter
+            setFinishing((prev) =>
+                prev.map((finishing) =>
+                    finishing.id === finishingpopup.id
+                        ? { ...finishing, name: finishingData.name, image: finishingData.images }
+                        : finishing
+                )
+            );
+        } else {
+            // Add a new parameter
+            const newFinising = {
+                id: Date.now(),
+                name: finishingData.name,
+                image: finishingData.images,
+            };
+            setFinishing((prev) => [...prev, newFinising]);
+        }
+        setFinishingPopup({ visible: false, id: null });
+        setFinishingData({ name: '', images: [] });
+    };
+
+
     return (
         <section className="container mx-auto">
+
             <div className="border-b p-10 flex flex-col gap-10">
                 <div>
                     <div className="flex gap-10 pb-5">
@@ -977,93 +1018,6 @@ export default function Setting() {
                 <div>
                     <div className="flex gap-10">
                         <div>
-                            <h1 className="font-bold text-2xl">Collection</h1>
-                        </div>
-                        <div className="flex gap-3">
-                            <button className="underline" onClick={handleAddCollection}>Add</button>
-                        </div>
-                    </div>
-                </div>
-                <div className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {collections.map((collection) => (
-                            <div
-                                key={collection.id}
-                                className="p-4 bg-gray-200 border relative rounded-lg flex items-center"
-                            >
-                                <input
-                                    type="text"
-                                    value={collection.name}
-                                    disabled={!collection.isEditing}  // Disable input when isEditing is false
-                                    className="flex-1 border text-center p-2 rounded"
-                                    onChange={(e) =>
-                                        setCollections((prev) =>
-                                            prev.map((item) =>
-                                                item.id === collection.id
-                                                    ? { ...item, name: e.target.value }
-                                                    : item
-                                            )
-                                        )
-                                    }
-                                />
-                                <div className="absolute right-0 p-3 bottom-0">
-                                    {collection.isEditing ? (
-                                        <button
-                                            onClick={() => handleSaveCollection(collection.id, collection.name)}
-                                        >
-                                            <LiaSaveSolid className="size-5" />
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={() => handleEditCollection(collection.id)}
-                                        >
-                                            <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z" stroke="#0C2F2F" stroke-linecap="round" stroke-linejoin="round" />
-                                                <path d="M11.875 9.375V11.25C11.875 11.9404 11.3154 12.5 10.625 12.5H3.75C3.05964 12.5 2.5 11.9404 2.5 11.25V4.375C2.5 3.68464 3.05964 3.125 3.75 3.125H5.625" stroke="#0C2F2F" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-
-
-                    </div>
-
-                    {/* Popup for new collection */}
-                    {showPopup && (
-                        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-                            <div className="bg-white p-6 rounded-lg">
-                                <h3 className="mb-4">New collection</h3>
-                                <input
-                                    type="text"
-                                    placeholder="Enter Collection Name"
-                                    value={newCollectionName}
-                                    onChange={(e) => setNewCollectionName(e.target.value)}
-                                    className="p-2 rounded w-full mb-4"
-                                />
-                                <button
-                                    onClick={() => setShowPopup(false)}
-                                    className="border px-4 text-sm py-2 rounded-lg"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleSaveNewCollection}
-                                    className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
-                                >
-                                    Save Collection
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            <div className="border-b p-10 space-y-10">
-                <div>
-                    <div className="flex gap-10">
-                        <div>
                             <h1 className="font-bold text-xl">Required Parameters</h1>
                         </div>
                     </div>
@@ -1196,6 +1150,231 @@ export default function Setting() {
 
                 </div>
             </div>
+
+            <div className="border-b p-10 space-y-10">
+                <div>
+                    <div className="flex gap-10">
+                        <div>
+                            <h1 className="font-bold text-xl">Finishing</h1>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {finishing.map((item) => (
+                                <div key={item.id} className="p-4 border border-gray-400">
+                                    <div className="flex gap-10 items-center justify-between pb-2">
+                                        <h1 className="text-xl text-center mb-3">{item.name}</h1>
+                                        <button onClick={() => handleEditFinishing(item.id)}>
+                                            <svg
+                                                width="20"
+                                                height="20"
+                                                viewBox="0 0 15 15"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
+                                                    stroke="#0C2F2F"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                />
+                                                <path
+                                                    d="M11.875 9.375V11.25C11.875 11.9404 11.3154 12.5 10.625 12.5H3.75C3.05964 12.5 2.5 11.9404 2.5 11.25V4.375C2.5 3.68464 3.05964 3.125 3.75 3.125H5.625"
+                                                    stroke="#0C2F2F"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    {/* Display images in grid */}
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {item.image?.map((img, index) => (
+                                            <img
+                                                key={index}
+                                                src={img}
+                                                alt={`Parameter ${item.id} Image ${index}`}
+                                                className="h-24 w-24 object-cover"
+                                            />
+                                        ))}
+                                    </div>
+
+                                </div>
+                            ))}
+                        </div>
+                        {/* Popup Modal */}
+                        {finishingpopup.visible && (
+                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                                <div className="bg-white p-6 rounded shadow-md w-[400px]">
+                                    <h2 className="text-lg font-bold mb-4">{finishingpopup.id ? 'Edit Finishing' : 'Add Finishing'}</h2>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Name"
+                                        value={finishingData.name}
+                                        onChange={(e) => setFinishingData({ ...finishingData, name: e.target.value })}
+                                        className="w-full p-2 border bg-slate-100 rounded mb-4"
+                                    />
+                                    <div className="mb-4">
+                                        <label className="block mb-2 font-semibold">Images:</label>
+                                        {finishingData.images?.map((image, index) => (
+                                            <div
+                                                key={index}
+                                                className="flex items-center justify-between gap-2 mb-2 border p-2 rounded"
+                                            >
+                                                <img
+                                                    src={image}
+                                                    alt={`Preview ${index + 1}`}
+                                                    className="w-28 h-16 object-cover rounded"
+                                                />
+                                                <button
+                                                    className="text-red-500 text-sm"
+                                                    onClick={() => {
+                                                        const updatedImages = finishingData.images.filter(
+                                                            (_, i) => i !== index
+                                                        );
+                                                        setFinishingData({
+                                                            ...finishingData,
+                                                            images: updatedImages,
+                                                        });
+                                                    }}
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
+                                        ))}
+                                        <input
+                                            type="file"
+                                            accept="image/ .jpg,.jpeg,.png"
+                                            onChange={(e) => {
+                                                if (e.target.files[0]) {
+                                                    const newImage = URL.createObjectURL(e.target.files[0]);
+                                                    setFinishingData({
+                                                        ...finishingData,
+                                                        images: [...(finishingData.images || []), newImage],
+                                                    });
+                                                }
+                                            }}
+                                            className="w-full"
+                                        />
+                                        <button
+                                            className="mt-5 px-3 py-1 bg-black text-white rounded-lg text-xs"
+                                            onClick={() => {
+                                                // Add logic for additional image functionality if required.
+                                            }}
+                                        >
+                                            Add More
+                                        </button>
+                                    </div>
+                                    <div className="flex justify-end gap-2">
+                                        <button
+                                            className="px-4 py-2 border text-black rounded-lg text-sm"
+                                            onClick={() => setFinishingPopup({ visible: false, id: null })}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            className="px-4 py-2 bg-black text-white rounded-lg text-sm"
+                                            onClick={handleSaveFinising}
+                                        >
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <div className="border-b p-10 space-y-10">
+                <div>
+                    <div className="flex gap-10">
+                        <div>
+                            <h1 className="font-bold text-2xl">Collection</h1>
+                        </div>
+                        <div className="flex gap-3">
+                            <button className="underline" onClick={handleAddCollection}>Add</button>
+                        </div>
+                    </div>
+                </div>
+                <div className="p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {collections.map((collection) => (
+                            <div
+                                key={collection.id}
+                                className="p-4 bg-gray-200 border relative rounded-lg flex items-center"
+                            >
+                                <input
+                                    type="text"
+                                    value={collection.name}
+                                    disabled={!collection.isEditing}  // Disable input when isEditing is false
+                                    className="flex-1 border text-center p-2 rounded"
+                                    onChange={(e) =>
+                                        setCollections((prev) =>
+                                            prev.map((item) =>
+                                                item.id === collection.id
+                                                    ? { ...item, name: e.target.value }
+                                                    : item
+                                            )
+                                        )
+                                    }
+                                />
+                                <div className="absolute right-0 p-3 bottom-0">
+                                    {collection.isEditing ? (
+                                        <button
+                                            onClick={() => handleSaveCollection(collection.id, collection.name)}
+                                        >
+                                            <LiaSaveSolid className="size-5" />
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={() => handleEditCollection(collection.id)}
+                                        >
+                                            <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z" stroke="#0C2F2F" stroke-linecap="round" stroke-linejoin="round" />
+                                                <path d="M11.875 9.375V11.25C11.875 11.9404 11.3154 12.5 10.625 12.5H3.75C3.05964 12.5 2.5 11.9404 2.5 11.25V4.375C2.5 3.68464 3.05964 3.125 3.75 3.125H5.625" stroke="#0C2F2F" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+
+
+                    </div>
+
+                    {/* Popup for new collection */}
+                    {showPopup && (
+                        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+                            <div className="bg-white p-6 rounded-lg">
+                                <h3 className="mb-4">New collection</h3>
+                                <input
+                                    type="text"
+                                    placeholder="Enter Collection Name"
+                                    value={newCollectionName}
+                                    onChange={(e) => setNewCollectionName(e.target.value)}
+                                    className="p-2 rounded w-full mb-4"
+                                />
+                                <button
+                                    onClick={() => setShowPopup(false)}
+                                    className="border px-4 text-sm py-2 rounded-lg"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleSaveNewCollection}
+                                    className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
+                                >
+                                    Save Collection
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
         </section >
     );
 };
