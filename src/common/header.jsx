@@ -1,6 +1,6 @@
 import React from 'react'
 
-function header({ name, pageNo, showButton }) {
+function header({ name, pageNo, showButton, onDelete }) {
     return (
         <section className='border-b-2 border-black'>
             <article className='relative flex items-start justify-between py-5 px-10'>
@@ -20,12 +20,11 @@ function header({ name, pageNo, showButton }) {
                         {showButton && (
                             <div
                                 onClick={() => {
-                                    const isConfirmed = window.confirm("Are you sure you want to delete this page?");
+                                    const isConfirmed = window.confirm(
+                                        'Are you sure you want to delete this page?'
+                                    );
                                     if (isConfirmed) {
-                                        // Handle the deletion logic here
-                                        console.log("Page deleted.");
-                                    } else {
-                                        console.log("Deletion canceled.");
+                                        onDelete();
                                     }
                                 }}
                                 style={{ cursor: "pointer" }} // Optional: Add pointer cursor for better UX
