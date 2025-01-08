@@ -1,116 +1,109 @@
 import React from 'react'
+import { MdDelete } from "react-icons/md";
+import { useState } from 'react';
 
 const SpecSheet = () => {
+    const [fields, setFields] = useState([
+        { id: 1, label: "STYLE No", type: "text", value: "" },
+        { id: 2, label: "Gender", type: "select", options: ["Male", "Female"] },
+        { id: 3, label: "FABRIC COLOUR", type: "text", value: "" },
+        { id: 4, label: "FIT", type: "select", options: ["Oversize", "Regular"] },
+        { id: 5, label: "SEASON", type: "text", value: "" },
+        { id: 6, label: "status", type: "select", options: ["Development", "Production", "Selected"] },
+        { id: 7, label: "RATIO", type: "text", value: "" },
+        { id: 8, label: "Style", type: "select", options: ["Sweat Shirt", "Hoodie", "T shirt"] },
+        { id: 9, label: "TRIM", type: "textarea", value: "" },
+        { id: 10, label: "CATEGORY", type: "select", options: ["Top", "Bottom", "Shirt", "T-Shirt"] },
+        { id: 11, label: "FABRIC", type: "textarea", value: "" },
+        { id: 12, label: "SIZE", type: "text", value: "S, M, L, XL" },
+        { id: 13, label: "DESCRIPTION", type: "textarea", value: "" },
+        { id: 14, label: "Designer", type: "select", options: ["Harshita", "Ritika"] },
+        { id: 15, label: "NOTE", type: "textarea", value: "" },
+    ]);
+
+    // Add new field
+    const addField = () => {
+        const newField = {
+            id: fields.length + 1,
+            label: "New Field",
+            type: "text",
+            value: "",
+        };
+        setFields([...fields, newField]);
+    };
+
+    // Delete a field
+    const deleteField = (id) => {
+        const updatedFields = fields.filter((field) => field.id !== id);
+        setFields(updatedFields);
+    };
+
+    // Handle input changes
+    const handleChange = (id, value) => {
+        const updatedFields = fields.map((field) =>
+            field.id === id ? { ...field, value } : field
+        );
+        setFields(updatedFields);
+    };
+
     return (
         <section className='mx-auto mb-20 px-10'>
-            <div className='text-xs flex gap-5 justify-end mt-10'>
-                <button className='px-3 py-1 border rounded-lg border-black'>Add new</button>
-                <button className='px-3 py-1 border rounded-lg border-black'>Delete</button>
+            <div className="text-xs flex gap-5 justify-end mt-10">
+                <button
+                    className="px-3 py-1 border rounded-lg border-black"
+                    onClick={addField}
+                >
+                    Add new
+                </button>
             </div>
-            <form action="">
-                <div className='form__group field w-full flex gap-10'>
-                    <div className='form__group field w-1/2'>
-                        <input type="text" className='form__field' />
-                        <label htmlFor="STYLE No" className='form__label uppercase' plceholder="STYLE No">STYLE No.</label>
+            <form className="flex flex-wrap gap-10">
+                {fields.map((field) => (
+                    <div key={field.id} className="form__group field w-[45%] relative group">
+                        {field.type === "text" && (
+                            <input
+                                type="text"
+                                className="form__field"
+                                value={field.value}
+                                onChange={(e) => handleChange(field.id, e.target.value)}
+                            />
+                        )}
+                        {field.type === "textarea" && (
+                            <textarea
+                                className="form__field"
+                                rows={1}
+                                value={field.value}
+                                onChange={(e) => handleChange(field.id, e.target.value)}
+                            ></textarea>
+                        )}
+                        {field.type === "select" && (
+                            <select
+                                className="form__field"
+                                value={field.value}
+                                onChange={(e) => handleChange(field.id, e.target.value)}
+                            >
+                                <option value="">Select</option>
+                                {field.options.map((option, idx) => (
+                                    <option key={idx} value={option}>
+                                        {option}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
+                        <button
+                            className="text-xs text-right w-full hidden leading-[10px] group-hover:flex absolute left-[95%]"
+                            onClick={() => deleteField(field.id)}
+                            type="button"
+                        >
+                            <MdDelete />
+                        </button>
+                        <input
+                            type="text"
+                            value={field.label}
+                            className="form__label uppercase"
+                            placeholder={field.label}
+                        />
                     </div>
-                    <div className='form__group field w-1/2'>
-                        <select name="Gender" className='form__field' id="">
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-                        <label htmlFor="Gender" className='form__label uppercase' plceholder="Gender">Gender</label>
-                    </div>
-                </div>
-                <div className='form__group field w-full flex gap-10'>
-                    <div className='form__group field w-1/2'>
-                        <input type="text" className='form__field' />
-                        <label htmlFor="FABRIC COLOUR" className='form__label uppercase' plceholder="FABRIC COLOUR">FABRIC COLOUR</label>
-                    </div>
-                    <div className='form__group field w-1/2'>
-                        <select name="FIT" className='form__field' id="">
-                            <option value="Oversize">Oversize</option>
-                            <option value="Regular">Regular</option>
-                        </select>
-                        <label htmlFor="FIT" className='form__label uppercase' plceholder="FIT">FIT</label>
-                    </div>
-                </div>
-                <div className='form__group field w-full flex gap-10'>
-                    <div className='form__group field w-1/2'>
-                        <input type="text" className='form__field' />
-                        <label htmlFor="SEASON" className='form__label uppercase' plceholder="SEASON">SEASON</label>
-                    </div>
-                    <div className='form__group field w-1/2'>
-                        <select name="status" className='form__field' id="">
-                            <option value="Development">Development</option>
-                            <option value="Production">Production</option>
-                            <option value="Selected">Selected</option>
-                        </select>
-                        <label htmlFor="status" className='form__label uppercase' plceholder="status">status</label>
-                    </div>
-                </div>
-                <div className='form__group field w-full flex gap-10'>
-                    <div className='form__group field w-1/2'>
-                        <input type="text" className='form__field' />
-                        <label htmlFor="RATIO" className='form__label uppercase' plceholder="RATIO">RATIO</label>
-                    </div>
-                    <div className='form__group field w-1/2'>
-                        <select name="Style" className='form__field' id="">
-                            <option value="Sweat Shirt">Sweat Shirt</option>
-                            <option value="Hoodie">Hoodie</option>
-                            <option value="T shirt">T shirt</option>
-                        </select>
-                        <label htmlFor="Style" className='form__label uppercase' plceholder="Style">Style</label>
-                    </div>
-                </div>
-                <div className='form__group field w-full flex gap-10'>
-                    <div className='form__group field w-1/2'>
-                        <textarea type="text" className='form__field text-wrap' rows={1}/>
-                        <label htmlFor="TRIM" className='form__label uppercase' plceholder="TRIM">TRIM</label>
-                    </div>
-                    <div className='form__group field w-1/2'>
-                        <select name="Style" className='form__field' id="">
-                            <option value="Top">Top</option>
-                            <option value="Bottom">Bottom</option>
-                            <option value="Shirt">Shirt</option>
-                            <option value="T-Shirt">T-Shirt</option>
-                        </select>
-                        <label htmlFor="CATEGORY" className='form__label uppercase' plceholder="CATEGORY">CATEGORY</label>
-                    </div>
-                </div>
-                <div className='form__group field w-full flex gap-10'>
-                    <div className='form__group field w-1/2'>
-                        <textarea type="text" className='form__field' rows={1}/>
-                        <label htmlFor="FABRIC" className='form__label uppercase' plceholder="FABRIC">FABRIC</label>
-                    </div>
-                    <div className='form__group field w-1/2'>
-                        <select name="SIZE" className='form__field' id="">
-                            <option value="S">S</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                        </select>
-                        <label htmlFor="SIZE" className='form__label uppercase' plceholder="SIZE">SIZE</label>
-                    </div>
-                </div>
-                <div className='form__group field w-full flex gap-10'>
-                    <div className='form__group field w-1/2'>
-                        <textarea type="text" className='form__field' rows={1} />
-                        <label htmlFor="DESCRIPTION" className='form__label uppercase' plceholder="DESCRIPTION">DESCRIPTION</label>
-                    </div>
-                    <div className='form__group field w-1/2'>
-                        <select name="Designer" className='form__field' id="">
-                            <option value="Harshita">Harshita</option>
-                            <option value="Ritika">Ritika</option>
-                        </select>
-                        <label htmlFor="Designer" className='form__label uppercase' plceholder="Designer">Designer</label>
-                    </div>
-                </div>
-                <div className='form__group field w-full flex gap-10'>
-                    <div className='form__group field w-1/2'>
-                        <textarea type="text" className='form__field' rows={1} />
-                        <label htmlFor="NOTE" className='form__label uppercase' plceholder="NOTE">NOTE</label>
-                    </div>
-                </div>
+                ))}
             </form>
         </section>
     )
