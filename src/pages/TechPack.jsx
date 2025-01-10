@@ -13,12 +13,14 @@ const TechPack = () => {
 
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
 
+
   // Check if the state exists and if any value is falsy
   useEffect(() => {
     if (!selectedLabels || !currentCategory || !currentSubCategory) {
       // If any of the values is falsy, redirect to the home page
       navigate('/', { replace: true });
     }
+    console.log(selectedLabels, currentCategory, currentSubCategory)
   }, [selectedLabels, currentCategory, currentSubCategory, navigate]);
 
   const [isHovered, setIsHovered] = useState(false);
@@ -88,7 +90,7 @@ const TechPack = () => {
           <div className="border-2 border-black mb-7">
             <div
               onMouseEnter={() => setIsHovered(true)}
-                  onMouseLeave={() => setIsHovered(false)}
+              onMouseLeave={() => setIsHovered(false)}
             >
               <Header name={item.name} pageNo={index + 1} showButton={isHovered} onDelete={() => handleDelete(item.position)} />
               {item.component}
