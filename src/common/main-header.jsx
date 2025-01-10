@@ -1,58 +1,64 @@
 import React from 'react';
 import { CgProfile } from 'react-icons/cg';
 import { useAuth } from '../context/AuthContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { fetchAll } from '../API/TechPacks';
 
 const MainHeader = () => {
     const { user } = useAuth();  // Get user from context
     const location = useLocation();
     const currentPath = location.pathname;
     const navigate = useNavigate();
-    const [selectedLabels, setSelectedLabels] = useState([]);
-    const [showCategories, setShowCategories] = useState(false);
+
+    const [menu, setMenu] = useState([]);
+    const [subCategories, setSubCategories] = useState([]);
+    const [labels, setLabels] = useState([]);
     const [currentCategory, setCurrentCategory] = useState(null);
     const [currentSubCategory, setCurrentSubCategory] = useState(null);
-    const categories = ['T-Shirt', 'Hoodie', 'Sweat-Shirt'];
-    const subCategories = ['Men', 'Women'];
-    const labels = [
-        'Silicon Label',
-        'Wash Care Label',
-        'Size Label',
-        'Main Label',
-        'Sewing Thread',
-        'Hand Tag',
-        'Blank Tag'
-    ];
+    const [selectedLabels, setSelectedLabels] = useState([]);
+    const [showCategories, setShowCategories] = useState(false);
+
+    useEffect(() => {
+        const fetchMenuData = async () => {
+            try {
+                const data = await fetchAll();
+                if (data.status && data.techPack) {
+                    // Update menu and other state variables based on the API structure
+                    setMenu(data.techPack.category || []);
+                    setSubCategories(data.techPack.gender || []);
+                    setLabels(data.techPack.trims.map(trim => trim.name) || []);
+                } else {
+                    console.error('Failed to fetch menu');
+                }
+            } catch (error) {
+                console.error('Error fetching menu:', error);
+            }
+        };
+
+        fetchMenuData();
+    }, []);
 
     const handleLabelChange = (label) => {
-        setSelectedLabels((prev) =>
-            prev.includes(label)
-                ? prev.filter((item) => item !== label)
-                : [...prev, label]
-        );
+        if (selectedLabels.includes(label)) {
+            setSelectedLabels(selectedLabels.filter(l => l !== label));
+        } else {
+            setSelectedLabels([...selectedLabels, label]);
+        }
     };
 
     const handleClear = () => {
         setSelectedLabels([]);
-        setShowCategories(false);
-        setCurrentCategory(false);
-        setCurrentSubCategory(false);
+        setCurrentCategory(false)
+        setShowCategories(false)
+        setCurrentSubCategory(false)
     };
 
     const handleApply = () => {
-        navigate('/tech-pack', {
-            state: {
-                selectedLabels,
-                currentCategory,
-                currentSubCategory
-            }
-        });
-        setShowCategories(false);
-        setCurrentCategory(false);
-        setCurrentSubCategory(false);
+        console.log('Selected Labels:', selectedLabels);
     };
+
 
     return (
         <div className="p-5 flex justify-between border-b pl-16 pr-12">
@@ -114,7 +120,7 @@ const MainHeader = () => {
                     {showCategories && (
                         <div className="absolute mt-2 w-48 bg-white border border-gray-300 rounded shadow-md z-10">
                             <div className="p-2 space-y-2">
-                                {categories.map((category) => (
+                                {menu.map((category) => (
                                     <div
                                         key={category}
                                         className={`p-2 cursor-pointer hover:bg-gray-200 ${currentCategory === category && 'bg-gray-300'}`}
@@ -146,21 +152,25 @@ const MainHeader = () => {
                     {currentSubCategory && (
                         <div className="absolute mt-2 -right-[600px] w-64 bg-white border border-gray-300 rounded shadow-md z-10">
                             <div className="py-4 space-y-2">
-                                {labels.map((label) => (
-                                    <>
-                                        <div key={label} checked={selectedLabels.includes(label)} className="flex px-4 mb-3 w-full justify-between items-center">
-                                            <label className='text-[#AEAEAE]'>{label}</label>
-                                            <input
-                                                type="checkbox"
-                                                name="checkbox"
-                                                checked={selectedLabels.includes(label)}
-                                                onChange={() => handleLabelChange(label)}
-                                                className={`mr-2 w-7 h-7 pl-[1px] bg-slate-200 pointer-events-auto`}
-                                            />
-                                        </div>
-                                        <hr className='w-full h-1 !px-0' />
-                                    </>
-                                ))}
+                                {labels.length > 0 ? (
+                                    labels.map((label) => (
+                                        <React.Fragment key={label}>
+                                            <div className="flex px-4 mb-3 w-full justify-between items-center">
+                                                <label className="text-[#AEAEAE]">{label}</label>
+                                                <input
+                                                    type="checkbox"
+                                                    name="checkbox"
+                                                    checked={selectedLabels.includes(label)}
+                                                    onChange={() => handleLabelChange(label)}
+                                                    className="mr-2 w-7 h-7 pl-[1px] bg-slate-200 pointer-events-auto"
+                                                />
+                                            </div>
+                                            <hr className="w-full h-1 !px-0" />
+                                        </React.Fragment>
+                                    ))
+                                ) : (
+                                    <p className="text-gray-500 text-center">No labels available</p>
+                                )}
                                 <div className="flex gap-2 !mt-5 justify-center">
                                     <button
                                         className="px-3 py-[2px] text-sm border-2 border-[#868686] rounded-lg"
@@ -176,7 +186,6 @@ const MainHeader = () => {
                                     </button>
                                 </div>
                             </div>
-
                         </div>
                     )}
                 </div>
