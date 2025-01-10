@@ -1,12 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LayoutSelection from '../components/LayoutSelection';
 import SpecSheet from '../components/SpecSheet';
 import ArtworkPlacementSheet from '../components/ArtworkPlacementSheet';
 import BlankSheet from '../components/BlankSheet';
 import Header from '../common/header';
 import Footer from '../common/footer';
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const TechPack = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
+
+  // Check if the state exists and if any value is falsy
+  useEffect(() => {
+    if (!selectedLabels || !currentCategory || !currentSubCategory) {
+      // If any of the values is falsy, redirect to the home page
+      navigate('/', { replace: true });
+    }
+  }, [selectedLabels, currentCategory, currentSubCategory, navigate]);
+
   const [isHovered, setIsHovered] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [artworkPlacementSheetIndex, setArtworkPlacementSheetIndex] = useState(0)
@@ -74,7 +88,7 @@ const TechPack = () => {
           <div className="border-2 border-black mb-7">
             <div
               onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+                  onMouseLeave={() => setIsHovered(false)}
             >
               <Header name={item.name} pageNo={index + 1} showButton={isHovered} onDelete={() => handleDelete(item.position)} />
               {item.component}
