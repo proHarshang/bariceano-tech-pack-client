@@ -72,6 +72,7 @@ const MainHeader = () => {
                             }
                         }}
                     >
+                        <option value="">Select Collection</option>
                         <option value="Collection 1">Collection 1</option>
                         <option value="Collection 2">Collection 2</option>
                     </select>
@@ -141,10 +142,11 @@ const MainHeader = () => {
                             <div className="py-4 space-y-2">
                                 {labels.map((label) => (
                                     <>
-                                        <div key={label} className="flex px-4 mb-3 w-full justify-between items-center">
+                                        <div key={label} checked={selectedLabels.includes(label)} className="flex px-4 mb-3 w-full justify-between items-center">
                                             <label className='text-[#AEAEAE]'>{label}</label>
                                             <input
                                                 type="checkbox"
+                                                name="checkbox"
                                                 checked={selectedLabels.includes(label)}
                                                 onChange={() => handleLabelChange(label)}
                                                 className={`mr-2 w-7 h-7 pl-[1px] bg-slate-200 pointer-events-auto`}
