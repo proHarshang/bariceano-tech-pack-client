@@ -4,9 +4,23 @@ import ArtworkPlacementSheet from '../components/ArtworkPlacementSheet'
 import ArtworkSheet from '../components/ArtworkSheet'
 import Header from '../common/header'
 import Footer from '../common/footer'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const TechPack = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
+
+  // Check if the state exists and if any value is falsy
+  useEffect(() => {
+    if (!selectedLabels || !currentCategory || !currentSubCategory) {
+      // If any of the values is falsy, redirect to the home page
+      navigate('/', { replace: true });
+    }
+  }, [selectedLabels, currentCategory, currentSubCategory, navigate]);
+
   const [isHovered, setIsHovered] = useState(false);
   const pageComponent = [
     {
@@ -33,8 +47,8 @@ const TechPack = () => {
         <div>
           <div className='border-2 border-black mb-7'>
             <div key={index} className='' onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}>
-              <Header name={item.name} pageNo={index + 1} showButton={isHovered}  />
+              onMouseLeave={() => setIsHovered(false)}>
+              <Header name={item.name} pageNo={index + 1} showButton={isHovered} />
               {item.component}
               <Footer />
             </div>

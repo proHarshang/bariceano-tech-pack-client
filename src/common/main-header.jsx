@@ -42,7 +42,13 @@ const MainHeader = () => {
     };
 
     const handleApply = () => {
-        navigate('/tech-pack');
+        navigate('/tech-pack', {
+            state: {
+                selectedLabels,
+                currentCategory,
+                currentSubCategory
+            }
+        });
         setShowCategories(false);
         setCurrentCategory(false);
         setCurrentSubCategory(false);

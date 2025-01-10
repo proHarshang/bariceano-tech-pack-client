@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useRef, useEffect } from 'react';
-import { handleCommentSubmit } from '../APi/TechPacks';
+import { handleCommentSubmit } from '../api/TechPacks';
 import TechPackPdfGenerator from '../TechPackPdfGenerator';
 
 const TechPackDataTable = ({ data = [] }) => {
