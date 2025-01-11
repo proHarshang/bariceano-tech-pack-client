@@ -10,13 +10,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+  scrollbar-width: none !important;
+}
+
 .container {
   padding: 0px 20px;
 }
 
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
+
 input {
   position: relative;
   outline: none;
@@ -76,7 +82,7 @@ form {
       }
 
       &:placeholder-shown {
-        ~ .form__label {
+        ~.form__label {
           padding: 0px 0px;
           font-size: inherit;
           cursor: text;
@@ -87,7 +93,7 @@ form {
       }
 
       &:focus {
-        ~ .form__label {
+        ~.form__label {
           position: absolute;
           top: 0;
           display: block;
@@ -133,7 +139,8 @@ select:focus-visible {
 .dropdown-container {
   position: relative;
   display: inline-block;
-  width: 250px; /* Adjust width as needed */
+  width: 250px;
+  /* Adjust width as needed */
 }
 
 /* Custom dropdown styling */
@@ -142,30 +149,36 @@ select:focus-visible {
   padding: 10px 15px;
   font-size: 16px;
   color: #5d5d5d;
-  border: 2px solid #797979; /* White border */
+  border: 2px solid #797979;
+  /* White border */
   border-radius: 8px;
   background: white;
   outline: none;
-  appearance: none; /* Remove default browser styling */
+  appearance: none;
+  /* Remove default browser styling */
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 /* Add custom arrow to the container */
 .dropdown-container::after {
-  content: "▼"; /* Unicode arrow */
+  content: "▼";
+  /* Unicode arrow */
   font-size: 14px;
-  color: #5d5d5d; /* Arrow color */
+  color: #5d5d5d;
+  /* Arrow color */
   position: absolute;
   right: 15px;
   top: 50%;
   transform: translateY(-50%);
-  pointer-events: none; /* Prevent interaction with the arrow */
+  pointer-events: none;
+  /* Prevent interaction with the arrow */
 }
 
 /* Hover effect for the dropdown */
 .custom-dropdown:hover {
-  border-color: #dcdcdc; /* Light gray on hover */
+  border-color: #dcdcdc;
+  /* Light gray on hover */
 }
 
 /* Dropdown options styling (optional) */
@@ -224,10 +237,12 @@ select:focus-visible {
     opacity: 1;
   }
 }
+
 .action-buttons {
   display: flex;
   flex-direction: column;
-  gap: 5px; /* Space between buttons */
+  gap: 5px;
+  /* Space between buttons */
 }
 
 .copy-button,
@@ -241,7 +256,8 @@ select:focus-visible {
 
 .no-comment-icon {
   font-size: 18px;
-  color: #888; /* Adjust color as needed */
+  color: #888;
+  /* Adjust color as needed */
 }
 
 .techPack-table tbody tr:nth-child(even) {
