@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { LiaSaveSolid } from "react-icons/lia";
-import { categoryFetch, categoryAdd, categoryEdit, categoryDelete, genderFetch, genderAdd, genderEdit, genderDelete, constructionSheetsFetch, constructionEdit, trimFetch, trimAdd } from "../API/TechPacks";
+import { categoryFetch, fetchAll, categoryAdd, categoryEdit, categoryDelete, genderFetch, genderAdd, genderEdit, genderDelete, constructionSheetsFetch, constructionEdit, trimFetch, trimAdd } from "../API/TechPacks";
 
 export default function Setting() {
 
