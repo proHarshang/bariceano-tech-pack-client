@@ -162,7 +162,7 @@ const TechPackDataTable = ({ data = [] }) => {
                                 className="w-full text-left py-1"
                                 onClick={() => setShowGenderOptions(!showGenderOptions)}
                             >
-                                {selectedGender.length > 0 ? `${selectedGender.length} Selected` : 'Select Gender'}
+                                Select Gender
                             </button>
 
                             {showGenderOptions && (
@@ -280,12 +280,12 @@ const TechPackDataTable = ({ data = [] }) => {
                                     </td>
                                     <td>
                                         <div className="action-buttons">
-                                            <button className="copy-button">Copy</button>
-                                            <button className="edit-button">Edit</button>
+                                            <button className="copy-button hover:bg-gray-300">Copy</button>
+                                            <button className="edit-button hover:bg-slate-300">Edit</button>
                                         </div>
                                     </td>
                                     <td>
-                                        <button className="download-button">
+                                        <button className="download-button hover:bg-slate-300">
                                             <TechPackPdfGenerator data={filteredData[index]} />
                                         </button>
                                     </td>

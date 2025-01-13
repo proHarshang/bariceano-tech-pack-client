@@ -4,18 +4,29 @@ import { categoryFetch, categoryAdd, categoryEdit, categoryDelete, genderFetch, 
 
 export default function Setting() {
 
-    // Category
+
     const [categories, setCategories] = useState([]);
-    const [editedCategory, setEditedCategory] = useState('');
-    const [showCategoryPopup, setShowCategoryPopup] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [genders, setGenders] = useState([]);
+    const [sizecharts, setSizeCharts] = useState([]);
+    const [construction, setConstructionSheets] = useState([]);
+    const [trims, setTrims] = useState([]);
+    const [requirements, setRequirements] = useState([]);
+    const [finishing, setFinishing] = useState([]);
+    const [collections, setCollections] = useState([]);
 
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchAllSetting = async () => {
             try {
-                const data = await categoryFetch(); // Use the categoryFetch hook
+                const data = await fetchAll(); // Use the categoryFetch hook                                    
                 if (data.status) {
-                    setCategories(data.data); // Set the fetched categories
+                    setCategories(data.techPack.category); // Set the fetched categories
+                    setGenders(data.techPack.gender); // Set the fetched categories
+                    setSizeCharts(data.techPack.sizeCharts); // Set the fetched categories
+                    setConstructionSheets(data.techPack.constructionSheets); // Set the fetched categories
+                    setTrims(data.techPack.trims); // Set the fetched categories
+                    setRequirements(data.techPack.requirements); // Set the fetched categories
+                    setFinishing(data.techPack.finishing); // Set the fetched categories
+                    setCollections(data.techPack.collections); // Set the fetched categories
                 } else {
                     console.error('Failed to fetch categories');
                 }
@@ -23,9 +34,14 @@ export default function Setting() {
                 console.error('Error fetching categories:', error);
             }
         };
-
-        fetchCategories();
+        fetchAllSetting();
     }, []);
+
+
+    // Category
+    const [editedCategory, setEditedCategory] = useState('');
+    const [showCategoryPopup, setShowCategoryPopup] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleAddCategory = async () => {
         setShowCategoryPopup(true);
@@ -80,26 +96,8 @@ export default function Setting() {
 
     // ----------------------------------
 
-    const [genders, setGenders] = useState([]);
     const [editedGender, setEditedGender] = useState('');
     const [showGenderPopup, setShowGenderPopup] = useState(false);
-
-    useEffect(() => {
-        const fetchGenders = async () => {
-            try {
-                const data = await genderFetch(); // Use the categoryFetch hook                                    
-                if (data.status) {
-                    setGenders(data.data); // Set the fetched categories
-                } else {
-                    console.error('Failed to fetch categories');
-                }
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-            }
-        };
-
-        fetchGenders();
-    }, []);
 
     const handleAddGender = async () => {
         setShowGenderPopup(true);
@@ -153,99 +151,7 @@ export default function Setting() {
     };
 
     // ----------------------------------
-    const [constructionSheet, setConstructionSheet] = useState([]);
-    const [secondPopup, setSecondPopup] = useState({ visible: false, id: null });
-    const [secondFormData, setSecondFormData] = useState({
-        name: "",
-        images: [],
-        imageFiles: [],
-    });
-    const [error, setError] = useState("");
 
-    // Fetch construction sheets on mount
-    useEffect(() => {
-        const fetchConstructionSheets = async () => {
-            try {
-                const data = await constructionSheetsFetch();
-                if (data.status) {
-                    setConstructionSheet(data.data);
-                } else {
-                    setError("Failed to fetch construction sheets");
-                }
-            } catch (error) {
-                setError(error.message);
-            }
-        };
-
-        fetchConstructionSheets();
-    }, []);
-
-    // Open the popup and populate the form
-    const handleSecondEdit = (id) => {
-        const selectedSheet = constructionSheet.find((sheet) => sheet.id === id);
-        if (!selectedSheet) return;
-
-        setSecondFormData({
-            name: selectedSheet.name,
-            images: selectedSheet.images?.src ? [selectedSheet.images.src] : [],
-            imageFiles: [],
-        });
-        setSecondPopup({ visible: true, id });
-    };
-
-    const handleSecondSave = async () => {
-        try {
-            setLoading(true);
-            const formData = new FormData();
-            formData.append("name", secondFormData.name);
-
-            // Append images to formData
-            secondFormData.imageFiles.forEach((file) => {
-                formData.append("image", file);
-            });
-
-            const data = await constructionEdit(secondFormData.name, formData); // use the hook function here
-
-            if (data.status) {
-                console.log("Successfully saved:", data);
-                // Do something on success (like closing the popup or re-fetching data)
-            } else {
-                throw new Error(data.message || 'Failed to save construction sheet');
-            }
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // Remove image from form data
-    const handleSecondRemoveImage = (index) => {
-        setSecondFormData((prev) => ({
-            ...prev,
-            images: prev.images.filter((_, i) => i !== index),
-        }));
-    };
-
-    // ----------------------------------
-    const [trims, setTrims] = useState([]);
-
-    useEffect(() => {
-        const fetchTrims = async () => {
-            try {
-                const data = await trimFetch(); // Use the categoryFetch hook
-                if (data.status) {
-                    setTrims(data.data); // Set the fetched categories
-                } else {
-                    console.error('Failed to fetch categories');
-                }
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-            }
-        };
-
-        fetchTrims();
-    }, []);
 
     const handleTrimsSave = async () => {
         const trimData = {
@@ -255,7 +161,7 @@ export default function Setting() {
                 file: image.file,
             })),
         };
-    
+
         try {
             await trimAdd(trimData);
             alert("Trim added successfully!");
@@ -266,10 +172,7 @@ export default function Setting() {
             alert(error.message || "Failed to add trim");
         }
     };
-    
 
-
-    // ----------------------------------
 
     const [options, setOptions] = useState([
         "Men T-shirt",
@@ -400,9 +303,6 @@ export default function Setting() {
         }
     };
 
-    const [collections, setCollections] = useState([
-        { id: 1, name: "Collection 1", isEditing: false },
-    ]);
     const [newCollectionName, setNewCollectionName] = useState("");
     const [showPopup, setShowPopup] = useState(false);
 
@@ -477,24 +377,6 @@ export default function Setting() {
         setFormData({ name: '', images: [] });
     };
 
-    const handleParameterChange = (e) => {
-        const files = e.target.files;
-        if (files) {
-            const newImages = [...formData.images];
-            Array.from(files).forEach((file) => {
-                newImages.push(URL.createObjectURL(file));
-            });
-            setFormData({ ...formData, images: newImages });
-        }
-    };
-
-
-
-    const [finishing, setFinishing] = useState([
-        { id: 1, name: 'T-shirt', image: [] },
-        { id: 2, name: 'Sweatshirt', image: [] },
-        { id: 3, name: 'Hoodie', image: [] },
-    ]);
     const [finishingData, setFinishingData] = useState({ name: '', images: [] });
 
     const [finishingpopup, setFinishingPopup] = useState({ visible: false, id: null });
@@ -573,7 +455,14 @@ export default function Setting() {
                                     </button>
 
                                     {/* Delete Button */}
-                                    <button onClick={() => handleDeleteCategory(cat)}>
+                                    <button onClick={() => {
+                                        const confirmDelete = window.confirm(
+                                            "Are you sure you want to delete this category?"
+                                        );
+                                        if (confirmDelete) {
+                                            handleDeleteCategory(cat);
+                                        }
+                                    }}>
                                         <span><svg
                                             width="18"
                                             height="18"
@@ -691,7 +580,16 @@ export default function Setting() {
                                         </button>
 
                                         {/* Delete Button */}
-                                        <button onClick={() => handleDeleteGender(gen)}>
+                                        <button onClick={() => {
+                                            const confirmDeleteGen = window.confirm(
+                                                "Are you sure you want to delete this Gender?"
+                                            );
+                                            if (confirmDeleteGen) {
+                                                handleDeleteGender(gen);
+                                            }
+                                        }}
+
+                                        >
                                             <span><svg
                                                 width="18"
                                                 height="18"
@@ -931,19 +829,18 @@ export default function Setting() {
                 <div>
                     <h1 className="font-bold text-xl">Construction Sheet</h1>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {constructionSheet.map((box) => (
+                        {construction.map((box) => (
                             <div key={box.id} className="p-4 border border-gray-400">
                                 <div className="flex justify-between items-center pb-2">
                                     <h1 className="text-xl text-center">{box.name}</h1>
                                     <button
-                                        onClick={() => handleSecondEdit(box.id)}
                                         className="text-gray-600 hover:text-black"
                                     >
                                         Edit
                                     </button>
                                 </div>
                                 <img
-                                    src={`${process.env.REACT_APP_API_URL}/${box.images?.src}` || "images.jpg"}
+                                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${box.images?.src}` || "images.jpg"}
                                     alt={box.name}
                                     className="w-24 h-20 object-cover bg-[#FCFCFC] border border-dashed border-[#CACACA] rounded"
                                 />
@@ -951,7 +848,7 @@ export default function Setting() {
                         ))}
                     </div>
 
-                    {secondPopup.visible && (
+                    {/* {secondPopup.visible && (
                         <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
                             <div className="bg-white p-6 rounded shadow-md w-[400px] h-[85vh] overflow-scroll">
                                 <h2 className="text-lg font-bold mb-4">Edit Construction Sheet</h2>
@@ -1021,7 +918,7 @@ export default function Setting() {
                             </div>
 
                         </div>
-                    )}
+                    )} */}
                 </div>
             </div>
 
@@ -1041,28 +938,35 @@ export default function Setting() {
                     </div>
                     <div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {trims.map((trims) => (
-                                <div key={trims.id} className="p-4 border border-gray-400 group">
+                            {trims.map((trim) => (
+                                <div key={trim.id} className="p-4 border border-gray-400 group">
                                     <div className="flex justify-between items-center pb-2">
-                                        <h1 className="text-xl whitespace-nowrap">{trims.name}</h1>
+                                        <h1 className="text-xl whitespace-nowrap">{trim.name}</h1>
                                         <div className="hidden gap-2 group-hover:flex">
-                                            <button onClick={() => handleTrimsEdit(trims.id)}>
-                                                Edit
-                                            </button>
-                                            <button onClick={() => handleDeleteTrimBox(trims.id)}>
-                                                Delete                                          </button>
+                                            <button onClick={() => handleTrimsEdit(trim.id)}>Edit</button>
+                                            <button onClick={() => handleDeleteTrimBox(trim.id)}>Delete</button>
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-3 gap-2">
-                                        {trims.images.map((image, index) => (
-                                            <div key={index} className="relative">
-                                                <img
-                                                    src={image}
-                                                    alt={`${trims.name} ${index + 1}`}
-                                                    className="w-24 h-20 object-cover bg-[#FCFCFC] border border-dashed border-[#CACACA] rounded"
-                                                />
-                                            </div>
-                                        ))}
+                                        {Array.isArray(trim.images)
+                                            ? trim.images.map((image, index) => (
+                                                <div key={index} className="relative">
+                                                    <img
+                                                        src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
+                                                        alt={`${trim.name} ${index + 1}`}
+                                                        className="w-24 h-20 object-cover bg-[#FCFCFC] border border-dashed border-[#CACACA] rounded"
+                                                    />
+                                                </div>
+                                            ))
+                                            : trim.images && (
+                                                <div className="relative">
+                                                    <img
+                                                        src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${trim.images.src}`}
+                                                        alt={`${trim.name} 1`}
+                                                        className="w-24 h-20 object-cover bg-[#FCFCFC] border border-dashed border-[#CACACA] rounded"
+                                                    />
+                                                </div>
+                                            )}
                                     </div>
                                 </div>
                             ))}
@@ -1126,7 +1030,7 @@ export default function Setting() {
                                                     });
                                                 }
                                             }}
-                                            
+
                                             className="w-full"
                                         />
                                         <button
@@ -1173,11 +1077,12 @@ export default function Setting() {
                 <div>
                     <div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {parameters.map((parameter) => (
-                                <div key={parameter.id} className="p-4 border border-gray-400">
+                            {requirements.map((requirement) => (
+                                <div key={requirement._id} className="p-4 border border-gray-400">
+                                    {/* Item Header */}
                                     <div className="flex gap-10 items-center justify-between pb-2">
-                                        <h1 className="text-xl text-center mb-3">{parameter.name}</h1>
-                                        <button onClick={() => handleEditParameter(parameter.id)}>
+                                        <h1 className="text-xl text-center mb-3">{requirement.name}</h1>
+                                        <button onClick={() => handleEditParameter(requirement._id)}>
                                             <svg
                                                 width="20"
                                                 height="20"
@@ -1188,28 +1093,28 @@ export default function Setting() {
                                                 <path
                                                     d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
                                                     stroke="#0C2F2F"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
                                                 />
                                                 <path
                                                     d="M11.875 9.375V11.25C11.875 11.9404 11.3154 12.5 10.625 12.5H3.75C3.05964 12.5 2.5 11.9404 2.5 11.25V4.375C2.5 3.68464 3.05964 3.125 3.75 3.125H5.625"
                                                     stroke="#0C2F2F"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
                                                 />
                                             </svg>
                                         </button>
                                     </div>
-                                    {/* Display images in grid */}
+
+                                    {/* Images Grid */}
                                     <div className="grid grid-cols-3 gap-2">
-                                        {parameter.image.map((img, index) => (
+                                        {requirement.images && requirement.images.src && (
                                             <img
-                                                key={index}
-                                                src={img}
-                                                alt={`Parameter ${parameter.id} Image ${index}`}
+                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${requirement.images.src}`}
+                                                alt={`Image of ${requirement.name}`}
                                                 className="h-24 w-24 object-cover"
                                             />
-                                        ))}
+                                        )}
                                     </div>
                                 </div>
                             ))}
@@ -1295,7 +1200,6 @@ export default function Setting() {
                             </div>
                         )}
                     </div>
-
                 </div>
             </div>
 
@@ -1339,14 +1243,13 @@ export default function Setting() {
                                     </div>
                                     {/* Display images in grid */}
                                     <div className="grid grid-cols-3 gap-2">
-                                        {item.image?.map((img, index) => (
+                                        {item.images && item.images.src && (
                                             <img
-                                                key={index}
-                                                src={img}
-                                                alt={`Parameter ${item.id} Image ${index}`}
+                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${item.images.src}`}
+                                                alt={`Image of ${item.name}`}
                                                 className="h-24 w-24 object-cover"
                                             />
-                                        ))}
+                                        )}
                                     </div>
 
                                 </div>
@@ -1456,7 +1359,7 @@ export default function Setting() {
                             >
                                 <input
                                     type="text"
-                                    value={collection.name}
+                                    value={collection}
                                     disabled={!collection.isEditing}  // Disable input when isEditing is false
                                     className="flex-1 border text-center p-2 rounded"
                                     onChange={(e) =>
@@ -1472,7 +1375,7 @@ export default function Setting() {
                                 <div className="absolute right-0 p-3 bottom-0">
                                     {collection.isEditing ? (
                                         <button
-                                            onClick={() => handleSaveCollection(collection.id, collection.name)}
+                                            onClick={() => handleSaveCollection(collection.id, collection)}
                                         >
                                             <LiaSaveSolid className="size-5" />
                                         </button>

@@ -1,12 +1,12 @@
 const apiURL = process.env.REACT_APP_API_URL;
-const apiKey = process.env.REACT_APP_ADMIN_KEY;
+const apiKey = process.env.REACT_APP_API_KEY;
 
 const getTechPacks = async () => {
 
     const response = await fetch(`${apiURL}/design/techpacks`, {
-        method: 'POST',
+        method: 'GET',
         headers: {
-            'admin-key': apiKey,
+            'api-Key': apiKey,
         },
     })
     if (!response.ok) {
@@ -89,7 +89,7 @@ export const categoryAdd = async (name) => {
 export const categoryEdit = async (oldName, newName) => {
     try {
         const response = await fetch(`${apiURL}/design/setting/category/update`, {
-            method: 'PUT',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'api-key': apiKey,
@@ -173,7 +173,7 @@ export const genderAdd = async (name) => {
 export const genderEdit = async (oldName, newName) => {
     try {
         const response = await fetch(`${apiURL}/design/setting/gender/update`, {
-            method: 'PUT',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'api-key': apiKey,
@@ -209,52 +209,6 @@ export const genderDelete = async (name) => {
         }
     } catch (error) {
         throw new Error(error.message || 'An error occurred while deleting the Gender');
-    }
-};
-
-export const constructionSheetsFetch = async () => {
-    try {
-        const response = await fetch(`${apiURL}/design/setting/constructionSheet`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'api-key': apiKey,
-            },
-        });
-
-        if (response.ok) {
-            return await response.json();
-        } else {
-            const text = await response.text(); // Log the raw response
-            console.error('Response Text:', text);
-            throw new Error('Failed to fetch categories');
-        }
-    } catch (error) {
-        console.error('Fetch Error:', error);
-        throw new Error(error.message || 'An error occurred while fetching Construction Sheet');
-    }
-};
-
-
-export const constructionEdit = async (name, formData) => {
-    try {
-        const response = await fetch(`${apiURL}/design/setting/constructionSheet/update/${name}`, {
-            method: 'PUT',
-            headers: {
-                'api-key': apiKey,
-                // Optional: You may need to add 'Content-Type': 'multipart/form-data' but FormData sets it automatically.
-            },
-            body: formData,
-        });
-
-        if (response.ok) {
-            return await response.json(); // Return the JSON response
-        } else {
-            const errorResponse = await response.json();
-            throw new Error(errorResponse.message || 'Failed to update construction sheet');
-        }
-    } catch (error) {
-        throw new Error(error.message || 'An error occurred while updating the construction sheet');
     }
 };
 
@@ -304,6 +258,91 @@ export const trimAdd = async ({ name, images }) => {
         }
     } catch (error) {
         throw new Error(error.message || "An error occurred while adding the trim");
+    }
+};
+
+export const requirementsFetch = async () => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/requirements`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw new Error('Failed to fetch Reqirements');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while fetching Reqirements');
+    }
+};
+
+export const finishingFetch = async () => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/finishing`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw new Error('Failed to fetch Finishing');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while fetching Finishing');
+    }
+};
+
+export const collectionFetch = async () => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/collection`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw new Error('Failed to fetch Collection');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while fetching Collection');
+    }
+};
+
+// Hook to fetch all details
+export const fetchAll = async () => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/fetch/all`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data; // Return the entire response
+        } else {
+            throw new Error('Failed to fetch all settings');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while fetching all settings');
     }
 };
 

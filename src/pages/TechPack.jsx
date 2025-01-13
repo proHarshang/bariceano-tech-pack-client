@@ -20,6 +20,7 @@ const TechPack = () => {
     if (!selectedLabels || !currentCategory || !currentSubCategory) {
       navigate('/', { replace: true });
     }
+    console.log(selectedLabels, currentCategory, currentSubCategory)
   }, [selectedLabels, currentCategory, currentSubCategory, navigate]);
 
   const [isHovered, setIsHovered] = useState(false);
