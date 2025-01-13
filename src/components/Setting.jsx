@@ -36,7 +36,6 @@ export default function Setting() {
         };
         fetchAllSetting();
     }, []);
-    console.log("first", sizecharts)
 
 
     // Category
