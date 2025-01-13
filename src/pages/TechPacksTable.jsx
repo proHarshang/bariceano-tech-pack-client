@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getTechPacks } from '../api/TechPacks';
+import { getTechPacks } from '../API/TechPacks';
 import TechPackDataTable from '../components/TechPackDataTable';
 
 const TechPacksTable = () => {

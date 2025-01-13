@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useRef, useEffect } from 'react';
-import { handleCommentSubmit } from '../api/TechPacks';
+import { handleCommentSubmit } from '../API/TechPacks';
 import TechPackPdfGenerator from '../TechPackPdfGenerator';
 import { useForm } from "react-hook-form";
 
