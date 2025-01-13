@@ -231,7 +231,7 @@ const TechPackPdfGenerator = (data) => {
             ['SEASON', `${data.data.season}`, 'DESIGNER', `${data.data.designerName}`],
             ['STATE', `${data.data.state}`, 'COLLECTION', `${data.data.collectionName}`],
             // Rows with only two columns (merge second and fourth columns)
-            ['TRIM', `${data.data.trim[1] || 'N/A'}`, '', ''],
+            ['TRIM', `${data.data.trim[0] || 'N/A'}`, '', ''],
             ['FABRIC', `${data.data.fabric[0] || 'N/A'}`, '', ''],
             ['DESCRIPTION', `${data.data.description}`, '', ''],
             ['NOTE', `${data.data.note}`, '', ''],

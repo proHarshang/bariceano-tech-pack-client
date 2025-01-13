@@ -36,6 +36,7 @@ export default function Setting() {
         };
         fetchAllSetting();
     }, []);
+    console.log("first", sizecharts)
 
 
     // Category
@@ -174,16 +175,14 @@ export default function Setting() {
     };
 
 
-    const [options, setOptions] = useState([
-        "Men T-shirt",
-        "Men Sweat shirt",
-        "Men Hoodie",
-        "Women T-shirt",
-        "Women Hoodie",
-    ]);
-
     const [selectedOption, setSelectedOption] = useState("");
-    const [images, setImages] = useState({});
+    const options = sizecharts.map((item) => item.name);
+    const images = sizecharts.reduce((acc, item) => {
+        acc[item.name] = item.images.src;
+        return acc;
+    }, {});
+
+
     const [isEditing, setIsEditing] = useState(false);
     const [editedOption, setEditedOption] = useState(""); // To store the edited name
     const [editedImage, setEditedImage] = useState(null); // To store the edited image
@@ -198,24 +197,6 @@ export default function Setting() {
         }
     };
 
-    const handleApplyChanges = () => {
-        if (editedOption.trim() !== "") {
-            // Update the options list with the new name
-            setOptions((prevOptions) =>
-                prevOptions.map((option) =>
-                    option === selectedOption ? editedOption.trim() : option
-                )
-            );
-            // Update the image for the selected option
-            if (editedImage) {
-                setImages({ ...images, [editedOption]: editedImage });
-            }
-
-            // Close the editing form
-            setIsEditing(false);
-            setSelectedOption(editedOption); // Update selected option with the new name
-        }
-    };
 
     const handleCancelEdit = () => {
         // Close the editing form without applying changes
@@ -235,41 +216,10 @@ export default function Setting() {
         setEditedImage(null); // Reset the image preview
     };
 
-    // Handle confirming adding a new option
-    const handleConfirmAddOption = () => {
-        if (editedOption.trim() !== "") {
-            // Add the new option name to the list if it's not already present
-            if (!options.includes(editedOption)) {
-                setOptions((prevOptions) => [...prevOptions, editedOption.trim()]);
-                // Add the image to the images object if uploaded
-                if (editedImage) {
-                    setImages((prevImages) => ({
-                        ...prevImages,
-                        [editedOption]: editedImage,
-                    }));
-                }
-
-                setIsAdding(false); // Close the "add option" modal
-            } else {
-                alert("Option already exists.");
-            }
-        }
-    };
-
     const handleCancelAddOption = () => {
         setIsAdding(false); // Close the "add option" modal
     };
-
-    // Handle deleting the selected option
-    const handleDeleteOption = () => {
-        if (selectedOption) {
-            const confirmDelete = window.confirm("Are you sure you want to delete this option?");
-            if (confirmDelete) {
-                setOptions((prevOptions) => prevOptions.filter((option) => option !== selectedOption));
-                setSelectedOption(""); // Reset selected option after deletion
-            }
-        }
-    };
+    
 
     const [trimsBoxes, setTrimsBoxes] = useState([
         { id: 1, name: 'Silicone Tag', images: ['https://via.placeholder.com/346x163?text=Silicone+Tag'] },
@@ -681,9 +631,7 @@ export default function Setting() {
                                 Add
                             </button>
                             <button
-                                className="underline"
-                                onClick={handleDeleteOption}
-                            >
+                                className="underline">
                                 Delete
                             </button>
                             <button
@@ -720,8 +668,8 @@ export default function Setting() {
                         >
                             {images[selectedOption] ? (
                                 <img
-                                    src={images[selectedOption]}
-                                    alt="Preview"
+                                    src={`http://localhost:3001/uploads/techpack/${images[selectedOption]}`}
+                                    alt={selectedOption}
                                     className="h-full object-fill"
                                 />
                             ) : (
@@ -761,7 +709,6 @@ export default function Setting() {
                                 />
                                 <div className="flex gap-4">
                                     <button
-                                        onClick={handleConfirmAddOption}
                                         className="bg-black text-white px-4 py-2 rounded-lg"
                                     >
                                         Add Option
@@ -807,7 +754,7 @@ export default function Setting() {
                                 />
                                 <div className="flex gap-4">
                                     <button
-                                        onClick={handleApplyChanges}
+
                                         className="bg-black text-white px-4 py-2 rounded-lg"
                                     >
                                         Apply
