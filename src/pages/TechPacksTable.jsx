@@ -22,7 +22,7 @@ const TechPacksTable = () => {
 
         fetchTechPacks();
     }, []); // Empty dependency array to run only once on mount
-
+console.log("techPacks",techPacks)
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 

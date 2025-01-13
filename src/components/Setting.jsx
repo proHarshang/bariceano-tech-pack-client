@@ -1,21 +1,32 @@
 import { useState, useEffect } from "react";
 import { LiaSaveSolid } from "react-icons/lia";
-import { categoryFetch, categoryAdd, categoryEdit, categoryDelete, genderFetch, genderAdd, genderEdit, genderDelete, trimFetch, trimAdd, requirementsFetch, finishingFetch, collectionFetch } from "../API/TechPacks";
+import { categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, fetchAll } from "../API/TechPacks";
 
 export default function Setting() {
 
-    // Category
+
     const [categories, setCategories] = useState([]);
-    const [editedCategory, setEditedCategory] = useState('');
-    const [showCategoryPopup, setShowCategoryPopup] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [genders, setGenders] = useState([]);
+    const [sizecharts, setSizeCharts] = useState([]);
+    const [construction, setConstructionSheets] = useState([]);
+    const [trims, setTrims] = useState([]);
+    const [requirements, setRequirements] = useState([]);
+    const [finishing, setFinishing] = useState([]);
+    const [collections, setCollections] = useState([]);
 
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchAllSetting = async () => {
             try {
-                const data = await categoryFetch(); // Use the categoryFetch hook
+                const data = await fetchAll(); // Use the categoryFetch hook                                    
                 if (data.status) {
-                    setCategories(data.data); // Set the fetched categories
+                    setCategories(data.techPack.category); // Set the fetched categories
+                    setGenders(data.techPack.gender); // Set the fetched categories
+                    setSizeCharts(data.techPack.sizeCharts); // Set the fetched categories
+                    setConstructionSheets(data.techPack.constructionSheets); // Set the fetched categories
+                    setTrims(data.techPack.trims); // Set the fetched categories
+                    setRequirements(data.techPack.requirements); // Set the fetched categories
+                    setFinishing(data.techPack.finishing); // Set the fetched categories
+                    setCollections(data.techPack.collections); // Set the fetched categories
                 } else {
                     console.error('Failed to fetch categories');
                 }
@@ -23,9 +34,14 @@ export default function Setting() {
                 console.error('Error fetching categories:', error);
             }
         };
-
-        fetchCategories();
+        fetchAllSetting();
     }, []);
+
+
+    // Category
+    const [editedCategory, setEditedCategory] = useState('');
+    const [showCategoryPopup, setShowCategoryPopup] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleAddCategory = async () => {
         setShowCategoryPopup(true);
@@ -80,26 +96,8 @@ export default function Setting() {
 
     // ----------------------------------
 
-    const [genders, setGenders] = useState([]);
     const [editedGender, setEditedGender] = useState('');
     const [showGenderPopup, setShowGenderPopup] = useState(false);
-
-    useEffect(() => {
-        const fetchGenders = async () => {
-            try {
-                const data = await genderFetch(); // Use the categoryFetch hook                                    
-                if (data.status) {
-                    setGenders(data.data); // Set the fetched categories
-                } else {
-                    console.error('Failed to fetch categories');
-                }
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-            }
-        };
-
-        fetchGenders();
-    }, []);
 
     const handleAddGender = async () => {
         setShowGenderPopup(true);
@@ -154,56 +152,6 @@ export default function Setting() {
 
     // ----------------------------------
 
-    const [construction, setConstructionSheets] = useState([]);
-
-    useEffect(() => {
-        const fetchConstructionSheets = async () => {
-            try {
-                const response = await fetch(`${process.env.REACT_APP_API_URL}/design/setting/constructionSheet`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'api-key': process.env.REACT_APP_API_KEY,
-                    },
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    setConstructionSheets(data.data); // Assuming the data is in the 'data' field
-                    setLoading(false);
-                } else {
-                    const text = await response.text();
-                    console.error('Response Text:', text);
-                    throw new Error('Failed to fetch construction sheets');
-                }
-            } catch (error) {
-                console.error('Fetch Error:', error);
-                setLoading(false);
-            }
-        };
-
-        fetchConstructionSheets();
-    }, []);
-    // ----------------------------------
-    const [trims, setTrims] = useState([]);
-
-    useEffect(() => {
-        const fetchTrims = async () => {
-            try {
-                const data = await trimFetch(); // Use the categoryFetch hook
-                if (data.status) {
-                    setTrims(data.data);
-                    // Set the fetched categories
-                } else {
-                    console.error('Failed to fetch categories');
-                }
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-            }
-        };
-
-        fetchTrims();
-    }, []);
 
     const handleTrimsSave = async () => {
         const trimData = {
@@ -225,72 +173,6 @@ export default function Setting() {
         }
     };
 
-
-
-    // ----------------------------------
-
-    const [requirements, setRequirements] = useState([]);
-
-    useEffect(() => {
-        const fetchRequirements = async () => {
-            try {
-                const data = await requirementsFetch(); // Use the categoryFetch hook
-                if (data.status) {
-                    setRequirements(data.data); // Set the fetched Requirements
-                } else {
-                    console.error('Failed to fetch Requirements');
-                }
-            } catch (error) {
-                console.error('Error fetching Requirements:', error);
-            }
-        };
-
-        fetchRequirements();
-    }, []);
-    console.log("first,", requirements)
-    // ----------------------------------
-
-    const [finishing, setFinishing] = useState([]);
-
-    useEffect(() => {
-        const fetchFinishing = async () => {
-            try {
-                const data = await finishingFetch();
-                if (data.status) {
-                    setFinishing(data.data); // Set the fetched Finishing
-                } else {
-                    console.error('Failed to fetch Finishing');
-                }
-            } catch (error) {
-                console.error('Error fetching Finishing:', error);
-            }
-        };
-
-        fetchFinishing();
-    }, []);
-
-    // ----------------------------------
-
-    const [collections, setCollections] = useState([]);
-
-    useEffect(() => {
-        const fetchCollections = async () => {
-            try {
-                const data = await collectionFetch();
-                if (data) {
-                    setCollections(data.collections); // Set the fetched Collections
-                } else {
-                    console.error('Failed to fetch Collections');
-                }
-            } catch (error) {
-                console.error('Error fetching Collections:', error);
-            }
-        };
-
-        fetchCollections();
-    }, []);
-
-    // ----------------------------------
 
     const [options, setOptions] = useState([
         "Men T-shirt",
@@ -495,18 +377,6 @@ export default function Setting() {
         setFormData({ name: '', images: [] });
     };
 
-    const handleParameterChange = (e) => {
-        const files = e.target.files;
-        if (files) {
-            const newImages = [...formData.images];
-            Array.from(files).forEach((file) => {
-                newImages.push(URL.createObjectURL(file));
-            });
-            setFormData({ ...formData, images: newImages });
-        }
-    };
-
-
     const [finishingData, setFinishingData] = useState({ name: '', images: [] });
 
     const [finishingpopup, setFinishingPopup] = useState({ visible: false, id: null });
@@ -585,7 +455,14 @@ export default function Setting() {
                                     </button>
 
                                     {/* Delete Button */}
-                                    <button onClick={() => handleDeleteCategory(cat)}>
+                                    <button onClick={() => {
+                                        const confirmDelete = window.confirm(
+                                            "Are you sure you want to delete this category?"
+                                        );
+                                        if (confirmDelete) {
+                                            handleDeleteCategory(cat);
+                                        }
+                                    }}>
                                         <span><svg
                                             width="18"
                                             height="18"
@@ -703,7 +580,16 @@ export default function Setting() {
                                         </button>
 
                                         {/* Delete Button */}
-                                        <button onClick={() => handleDeleteGender(gen)}>
+                                        <button onClick={() => {
+                                            const confirmDeleteGen = window.confirm(
+                                                "Are you sure you want to delete this Gender?"
+                                            );
+                                            if (confirmDeleteGen) {
+                                                handleDeleteGender(gen);
+                                            }
+                                        }}
+
+                                        >
                                             <span><svg
                                                 width="18"
                                                 height="18"
