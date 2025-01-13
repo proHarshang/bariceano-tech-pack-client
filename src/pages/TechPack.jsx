@@ -6,18 +6,18 @@ import BlankSheet from '../components/BlankSheet';
 import Header from '../common/header';
 import Footer from '../common/footer';
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useTechPack } from '../context/TechPackContext';
 
 const TechPack = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { handleSubmit } = useTechPack();
+
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
 
-
-  // Check if the state exists and if any value is falsy
   useEffect(() => {
     if (!selectedLabels || !currentCategory || !currentSubCategory) {
-      // If any of the values is falsy, redirect to the home page
       navigate('/', { replace: true });
     }
     console.log(selectedLabels, currentCategory, currentSubCategory)
@@ -30,22 +30,22 @@ const TechPack = () => {
   const [pageComponent, setPageComponent] = useState([
     {
       name: "Spec Sheet",
-      position: 0,
+      page: 0,
       component: <LayoutSelection />,
     },
     {
       name: "Spec Sheet",
-      position: 1,
+      page: 1,
       component: <SpecSheet />,
     },
     {
       name: "Artwork Placement Sheet",
-      position: 2,
+      page: 2,
       component: <ArtworkPlacementSheet artworkPlacementSheetIndex={artworkPlacementSheetIndex} setArtworkPlacementSheetIndex={setArtworkPlacementSheetIndex} />,
     },
     {
       name: "Add Sheet Name",
-      position: 3,
+      page: 3,
       component: <BlankSheet />,
     },
   ]);
@@ -56,7 +56,7 @@ const TechPack = () => {
     if (selectedIndex !== null && selectedPage) {
       const newPage = {
         name: selectedPage,
-        position: selectedIndex + 1,
+        page: selectedIndex + 1,
         component: selectedPage === "Artwork Placement Sheet" ? (
           <ArtworkPlacementSheet artworkPlacementSheetIndex={artworkPlacementSheetIndex} setArtworkPlacementSheetIndex={setArtworkPlacementSheetIndex} />
         ) : (
@@ -69,7 +69,7 @@ const TechPack = () => {
         newPage,
         ...pageComponent.slice(selectedIndex + 1).map((item, index) => ({
           ...item,
-          position: selectedIndex + 2 + index,
+          page: selectedIndex + 2 + index,
         })),
       ];
 
@@ -78,21 +78,21 @@ const TechPack = () => {
     setShowPopup(false);
     setSelectedPage(null);
   };
-  const handleDelete = (position) => {
-    const updatedComponents = pageComponent.filter((item) => item.position !== position);
+  const handleDelete = (page) => {
+    const updatedComponents = pageComponent.filter((item) => item.page !== page);
     setPageComponent(updatedComponents);
   };
 
   return (
     <div className="w-[841px] mx-auto mt-10">
       {pageComponent.map((item, index) => (
-        <div key={item.position}>
+        <div key={item.page}>
           <div className="border-2 border-black mb-7">
             <div
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
-              <Header name={item.name} pageNo={index + 1} showButton={isHovered} onDelete={() => handleDelete(item.position)} />
+              <Header name={item.name} pageNo={index + 1} showButton={isHovered} onDelete={() => handleDelete(item.page)} />
               {item.component}
               <Footer />
             </div>
@@ -171,7 +171,7 @@ const TechPack = () => {
 
       <div className="flex justify-center gap-5 mb-10">
         <button className="text-sm px-6 py-2 rounded-full border border-black">Reset</button>
-        <button className="text-white bg-black text-sm px-6 py-2 rounded-full">Save</button>
+        <button className="text-white bg-black text-sm px-6 py-2 rounded-full" onClick={handleSubmit}>Save</button>
         <button className="text-white bg-black text-sm px-6 py-2 rounded-full">Save & Download</button>
       </div>
     </div>

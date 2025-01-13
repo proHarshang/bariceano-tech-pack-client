@@ -5,11 +5,12 @@ import TechPack from './pages/TechPack';
 import TechPacksTable from './pages/TechPacksTable';
 import Setting from './components/Setting';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
+import { TechPackProvider } from './context/TechPackContext';
 
 function App() {
   return (
     <AuthProvider>
+      <TechPackProvider>
         <Router>
           <MainHeader />
           <Routes>
@@ -19,6 +20,7 @@ function App() {
             <Route path='/setting' element={<Setting />} />
           </Routes>
         </Router>
+      </TechPackProvider>
     </AuthProvider>
   );
 }
