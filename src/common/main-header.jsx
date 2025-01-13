@@ -13,6 +13,7 @@ const MainHeader = () => {
     const navigate = useNavigate();
 
     const [menu, setMenu] = useState([]);
+    const [collection, setCollection] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
     const [labels, setLabels] = useState([]);
     const [currentCategory, setCurrentCategory] = useState(null);
@@ -27,6 +28,7 @@ const MainHeader = () => {
                 if (data.status && data.techPack) {
                     // Update menu and other state variables based on the API structure
                     setMenu(data.techPack.category || []);
+                    setCollection(data.techPack.collections || []);
                     setSubCategories(data.techPack.gender || []);
                     setLabels(data.techPack.trims.map(trim => trim.name) || []);
                 } else {
@@ -56,6 +58,7 @@ const MainHeader = () => {
     };
 
     const handleApply = () => {
+        navigate("/tech-pack")
         console.log('Selected Labels:', selectedLabels);
     };
 
@@ -63,35 +66,41 @@ const MainHeader = () => {
     return (
         <div className="p-5 flex justify-between border-b pl-16 pr-12">
             <div className='flex gap-5 items-center'>
-                <button
-                    className={`flex gap-3 items-center border-[1px] text-sm font-bold px-3 py-2 rounded-2xl uppercase ${currentPath === "/tech-pack-data"
-                        ? "bg-black text-white"
-                        : "border text-black"
-                        }`}
-                >
-                    <select
-                        name="Collection"
-                        id="collectionSelect"
-                        className={`${currentPath === "/tech-pack-data"
-                            ? "bg-black text-white"
-                            : ""
+                {collection.map((item) => (
+                    <button
+                        key={item.id} // Assuming each collection item has a unique ID
+                        className={`flex gap-3 items-center border-black text-sm font-bold px-3 py-2 rounded-2xl uppercase hover:bg-black hover:text-white ${currentPath === "/tech-pack-data"
+                                ? "bg-black text-white"
+                                : "border text-black"
                             }`}
-                        onChange={(e) => {
-                            if (e.target.value === "Collection 1") {
-                                window.location.href = "/tech-pack-data";
-                            } else if (e.target.value === "Collection 2") {
-                                // Handle Collection 2 link
-                            }
-                        }}
                     >
-                        <option value="">Select Collection</option>
-                        <option value="Collection 1">Collection 1</option>
-                        <option value="Collection 2">Collection 2</option>
-                    </select>
-                </button>
+                        <select
+                            name="Collection"
+                            id="collectionSelect"
+                            className={`bg-transparent ${currentPath === "/tech-pack-data" ? "bg-black text-white" : ""
+                                }`}
+                            onChange={(e) => {
+                                if (e.target.value === "Collection 1") {
+                                    window.location.href = "/tech-pack-data";
+                                } else if (e.target.value === "Collection 2") {
+                                    // Handle Collection 2 link
+                                }
+                                // Handle other cases dynamically if needed
+                            }}
+                        >
+                            <option value="" className='bg-black text-white'>Select Collection</option>
+                            {collection.map((option, index) => (
+                                <option className='bg-black text-white' key={index} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
+                    </button>
+                ))}
+
                 <a href="/setting">
                     <button
-                        className={`border-[1px] text-sm font-bold px-3 py-2 rounded-2xl uppercase ${currentPath === "/setting"
+                        className={`border-[1px] text-sm font-bold px-3 py-2 rounded-2xl uppercase hover:bg-black hover:text-white  ${currentPath === "/setting"
                             ? "bg-black text-white"
                             : "border-black"
                             }`}
@@ -100,6 +109,7 @@ const MainHeader = () => {
                     </button>
                 </a>
                 <div className="relative">
+
                     <button
                         className="flex gap-2 invert hover:invert-0 border bg-black text-white items-center text-sm font-bold px-3 py-2 rounded-2xl uppercase"
                         onClick={() => setShowCategories(!showCategories)}
@@ -116,6 +126,7 @@ const MainHeader = () => {
                         </svg>
                         <span>New</span>
                     </button>
+
 
                     {showCategories && (
                         <div className="absolute mt-2 w-48 bg-white border border-gray-300 rounded shadow-md z-10">

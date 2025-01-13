@@ -294,14 +294,14 @@ const TechPackPdfGenerator = (data) => {
                 technique: 'Rubber Print',
                 color: 'Bright White',
                 artwork: '/Front1.png',
-                placementImage: '/Front1.png',
+                placementImage: '/color.jpeg',
             },
             {
                 placement: 'Back',
                 technique: 'Rubber Print',
                 color: 'Bright White',
                 artwork: '/Back1.png',
-                placementImage: '/Back1.png',
+                placementImage: '/color.jpg',
             },
         ];
 
@@ -372,7 +372,7 @@ const TechPackPdfGenerator = (data) => {
 
             if (row.artwork) {
                 // Add image if provided
-                pdf.addImage(row.artwork, 'JPEG', currentX + 10, ccurrentY + 5, columnWidths[2] - 25, rowHeight - 10);
+                pdf.addImage(row.artwork, 'JPEG', currentX + 13, ccurrentY + 5, columnWidths[2] - 25, rowHeight - 10);
             } else {
                 // Placeholder text if no image
                 pdf.setTextColor(150, 150, 150);
@@ -401,7 +401,7 @@ const TechPackPdfGenerator = (data) => {
 
             if (row.placementImage) {
                 // Add image if provided
-                pdf.addImage(row.placementImage, 'JPEG', currentX + 10, ccurrentY + 5, columnWidths[5] - 25, rowHeight - 10);
+                pdf.addImage(row.placementImage, 'JPEG', currentX + 13, ccurrentY + 5, columnWidths[5] - 25, rowHeight - 10);
             } else {
                 // Placeholder text if no image
                 pdf.setTextColor(150, 150, 150);
