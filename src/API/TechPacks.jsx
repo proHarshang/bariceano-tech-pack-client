@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const apiURL = process.env.REACT_APP_API_URL;
 const apiKey = process.env.REACT_APP_API_KEY;
 
@@ -21,7 +23,7 @@ const getTechPacks = async () => {
 
 }
 
-const handleCommentSubmit = async (techPachId, comment) => {
+const handleCommentSubmit = async (styleNo, comment) => {
     try {
         const response = await fetch(`${apiURL}/design/comment`, {
             method: 'POST',
@@ -29,7 +31,7 @@ const handleCommentSubmit = async (techPachId, comment) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "techPachId": techPachId,
+                "styleNo": styleNo,
                 "comment": comment
             }),
         });
@@ -346,9 +348,40 @@ export const fetchAll = async () => {
     }
 };
 
+const useAddSizeChart = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const addSizeChart = async (formData) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${apiURL}/design/setting/sizeChart/add`, {
+                method: "POST",
+                body: formData, // Ensure FormData is passed
+                headers: {
+                    'api-key': apiKey,
+                },
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to add size chart");
+            }
+
+            return result;
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return { addSizeChart, isLoading, error };
+};
 
 
 
-
-
-export { getTechPacks, handleCommentSubmit, }
+export { getTechPacks, handleCommentSubmit, useAddSizeChart }

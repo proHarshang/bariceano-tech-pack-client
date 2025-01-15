@@ -1,6 +1,7 @@
 import Auth from './pages/Auth';
 import { AuthProvider } from './context/AuthContext';
 import MainHeader from './common/main-header';
+import MainLayout from './layout/MainLayout';
 import TechPack from './pages/TechPack';
 import TechPacksTable from './pages/TechPacksTable';
 import Setting from './components/Setting';
@@ -11,13 +12,14 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <MainHeader />
-        <Routes>
-          <Route path="/" element={<Auth />} />
-          <Route path="/tech-pack" element={<TechPackProvider><TechPack /></TechPackProvider>} />
-          <Route path='/tech-pack-data' element={<TechPacksTable />} />
-          <Route path='/setting' element={<Setting />} />
-        </Routes>
+        <MainLayout>
+          <Routes>
+            <Route path="/" element={<Auth />} />
+            <Route path="/tech-pack" element={<TechPackProvider><TechPack /></TechPackProvider>} />
+            <Route path='/tech-pack-data' element={<TechPacksTable />} />
+            <Route path='/setting' element={<Setting />} />
+          </Routes>
+          </MainLayout>
       </Router>
     </AuthProvider>
   );

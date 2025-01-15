@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { LiaSaveSolid } from "react-icons/lia";
-import { categoryFetch, fetchAll, categoryAdd, categoryEdit, categoryDelete, genderFetch, genderAdd, genderEdit, genderDelete, constructionSheetsFetch, constructionEdit, trimFetch, trimAdd } from "../API/TechPacks";
+import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart } from "../API/TechPacks";
 
 export default function Setting() {
-
 
     const [categories, setCategories] = useState([]);
     const [genders, setGenders] = useState([]);
@@ -36,7 +35,6 @@ export default function Setting() {
         };
         fetchAllSetting();
     }, []);
-    console.log("first", sizecharts)
 
 
     // Category
@@ -178,9 +176,51 @@ export default function Setting() {
     const [selectedOption, setSelectedOption] = useState("");
     const options = sizecharts.map((item) => item.name);
     const images = sizecharts.reduce((acc, item) => {
-        acc[item.name] = item.images.src;
+        acc[item.name] = item.images?.src || ""; // Fallback to an empty string
         return acc;
     }, {});
+
+
+
+    const { addSizeChart, error, success } = useAddSizeChart();
+    const [formValues, setFormValues] = useState({
+        name: '',
+        category: '',
+        gender: '',
+        position: '',
+    });
+    const [imageFile, setImageFile] = useState(null);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormValues((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setImageFile(file);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // Form data to send to API
+        const formData = new FormData();
+        formData.append('name', formValues.name);
+        formData.append('category', formValues.category);
+        formData.append('gender', formValues.gender);
+        formData.append('position', formValues.position);
+        if (imageFile) formData.append('image', imageFile);
+
+        try {
+            await addSizeChart(formData);
+            alert('Size guide added successfully!');
+            handleCancelAddOption(); // Close the modal
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
 
 
     const [isEditing, setIsEditing] = useState(false);
@@ -203,13 +243,6 @@ export default function Setting() {
         setIsEditing(false);
     };
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setEditedImage(URL.createObjectURL(file)); // Set the new image for editing
-        }
-    };
-
     const handleAddOption = () => {
         setIsAdding(true); // Open the "add option" modal
         setEditedOption(""); // Reset the input fields
@@ -219,7 +252,7 @@ export default function Setting() {
     const handleCancelAddOption = () => {
         setIsAdding(false); // Close the "add option" modal
     };
-    
+
 
     const [trimsBoxes, setTrimsBoxes] = useState([
         { id: 1, name: 'Silicone Tag', images: ['https://via.placeholder.com/346x163?text=Silicone+Tag'] },
@@ -668,7 +701,7 @@ export default function Setting() {
                         >
                             {images[selectedOption] ? (
                                 <img
-                                    src={`http://localhost:3001/uploads/techpack/${images[selectedOption]}`}
+                                    src={`http://localhost:3001/${images[selectedOption]}`}
                                     alt={selectedOption}
                                     className="h-full object-fill"
                                 />
@@ -682,18 +715,73 @@ export default function Setting() {
                     {isAdding && (
                         <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
                             <div className="bg-white p-6 rounded shadow-lg w-96">
-                                <h2 className="text-xl mb-4">Add Option</h2>
+                                <h2 className="text-xl mb-4">Add Size Guide</h2>
+
+                                {/* Select Category */}
+                                <div className="mb-3">
+                                    <h3 className="mb-1">Select Category</h3>
+                                    <div className="flex gap-5">
+                                        {categories.map((cat) => (
+                                            <div key={cat} className="flex gap-2 items-center">
+                                                <input
+                                                    type="radio"
+                                                    name="category"
+                                                    value={cat}
+                                                    onChange={handleInputChange}
+                                                    checked={formValues.category === cat}
+                                                />
+                                                <label>{cat}</label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Select Gender */}
+                                <div className="mb-3">
+                                    <h3 className="mb-1">Select Gender</h3>
+                                    <div className="flex gap-5">
+                                        {genders.map((gen) => (
+                                            <div key={gen} className="flex gap-2 items-center">
+                                                <input
+                                                    type="radio"
+                                                    name="gender"
+                                                    value={gen}
+                                                    onChange={handleInputChange}
+                                                    checked={formValues.gender === gen}
+                                                />
+                                                <label>{gen}</label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Option Name */}
                                 <input
                                     type="text"
-                                    value={editedOption}
-                                    onChange={(e) => setEditedOption(e.target.value)}
+                                    name="name"
+                                    value={formValues.name}
+                                    onChange={handleInputChange}
                                     className="outline p-2 rounded mb-4 w-full"
-                                    placeholder="Enter option name"
+                                    placeholder="Enter size guide name"
+                                    required
                                 />
+
+                                {/* Position */}
+                                <input
+                                    type="text"
+                                    name="position"
+                                    value={formValues.position}
+                                    onChange={handleInputChange}
+                                    className="outline p-2 rounded mb-4 w-full"
+                                    placeholder="Enter image position"
+                                    required
+                                />
+
+                                {/* Image Preview */}
                                 <div className="border-2 w-full h-40 border-dashed border-gray-300 bg-[#FCFCFC] flex items-center justify-center">
-                                    {editedImage ? (
+                                    {imageFile ? (
                                         <img
-                                            src={editedImage}
+                                            src={URL.createObjectURL(imageFile)}
                                             alt="Preview"
                                             className="h-full object-contain"
                                         />
@@ -701,17 +789,24 @@ export default function Setting() {
                                         <p className="text-gray-400">No image selected</p>
                                     )}
                                 </div>
+
+                                {/* File Input */}
                                 <input
                                     type="file"
                                     accept="image/*"
                                     className="my-4"
                                     onChange={handleImageChange}
+                                    required
                                 />
+
+                                {/* Buttons */}
                                 <div className="flex gap-4">
                                     <button
+                                        onClick={handleSubmit}
+                                        disabled={loading}
                                         className="bg-black text-white px-4 py-2 rounded-lg"
                                     >
-                                        Add Option
+                                        {loading ? 'Adding...' : 'Add Size Guide'}
                                     </button>
                                     <button
                                         onClick={handleCancelAddOption}
@@ -720,6 +815,12 @@ export default function Setting() {
                                         Cancel
                                     </button>
                                 </div>
+
+                                {/* Error Message */}
+                                {error && <p className="text-red-500 mt-2">{error}</p>}
+
+                                {/* Success Message */}
+                                {success && <p className="text-green-500 mt-2">Size guide added successfully!</p>}
                             </div>
                         </div>
                     )}
