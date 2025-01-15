@@ -7,7 +7,7 @@ export const TechPackProvider = ({ children }) => {
         specSheet: {
             page: 1,
             name: "Spec. Sheet",
-            layout: "",
+            layout: "layout1",
             fabricColorImages: [],
             threadColorImages: [],
             images: [],
@@ -39,25 +39,73 @@ export const TechPackProvider = ({ children }) => {
         }));
     };
 
+    // Handle image uploads
+    const handleImageUpload = (section, field, position, files) => {
+        const newImages = Array.from(files).map((file) => ({
+            position: position,
+            src: URL.createObjectURL(file), // Temporary preview
+            file,
+        }));
+
+        const existingImages = formData[section][field] || [];
+
+        // Merge new images, replacing ones with the same position
+        const updatedImages = [...existingImages];
+
+        newImages.forEach((newImage) => {
+            const existingIndex = updatedImages.findIndex(
+                (img) => img.position === newImage.position
+            );
+            if (existingIndex >= 0) {
+                updatedImages[existingIndex] = newImage; // Replace existing image
+            } else {
+                updatedImages.push(newImage); // Add new image
+            }
+        });
+
+        updateFormData(section, { [field]: updatedImages });
+    };
+
     const handleSubmit = async () => {
-        // Transform formData to fit API requirements
-        const structuredData = { ...formData }; // Modify if needed
-        console.log("formData", formData);
-        try {
-            const response = await fetch('/api/techpack', {
-                method: 'POST',
-                body: JSON.stringify(structuredData),
-                headers: { 'Content-Type': 'application/json' },
-            });
-            const result = await response.json();
-            console.log('Submission Success:', result);
-        } catch (error) {
-            console.error('Submission Error:', error);
-        }
+        const structuredData = new FormData();
+
+        Object.entries(formData).forEach(([section, data]) => {
+            console.log("section:", section, "data:", data);
+            if (typeof data === 'object' && !Array.isArray(data)) {
+                Object.entries(data).forEach(([key, value]) => {
+                    if (Array.isArray(value)) {
+                        // console.log("key:", key, "value:", value);
+                        // Handle arrays like images
+                        value.forEach((item, index) => {
+                            // console.log("item:", item, "index:", index);
+                            if (item.file) {
+                                structuredData.append(`${section}.${key}[${index}].src`, item.file);
+                            } else {
+                                structuredData.append(`${section}.${key}[${index}].src`, item.src);
+                            }
+                        });
+                    } else {
+                        structuredData.append(`${section}.${key}`, value);
+                    }
+                });
+            }
+        });
+
+        console.log("structuredData", structuredData);
+        // try {
+        //     const response = await fetch('/api/techpack', {
+        //         method: 'POST',
+        //         body: structuredData,        
+        //     });
+        //     const result = await response.json();
+        //     console.log('Submission Success:', result);
+        // } catch (error) {
+        //     console.error('Submission Error:', error);
+        // }
     };
 
     return (
-        <TechPackContext.Provider value={{ formData, updateFormData, handleSubmit }}>
+        <TechPackContext.Provider value={{ formData, updateFormData, handleImageUpload, handleSubmit }}>
             {children}
         </TechPackContext.Provider>
     );

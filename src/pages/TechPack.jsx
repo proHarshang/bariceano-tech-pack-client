@@ -15,14 +15,14 @@ const TechPack = () => {
 
   const { handleSubmit } = useTechPack();
 
-  const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
+  // const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
 
-  useEffect(() => {
-    if (!selectedLabels || !currentCategory || !currentSubCategory) {
-      navigate('/', { replace: true });
-    }
-    console.log(selectedLabels, currentCategory, currentSubCategory)
-  }, [selectedLabels, currentCategory, currentSubCategory, navigate]);
+  // // useEffect(() => {
+  // //   if (!selectedLabels || !currentCategory || !currentSubCategory) {
+  // //     navigate('/', { replace: true });
+  // //   }
+  // //   console.log(selectedLabels, currentCategory, currentSubCategory)
+  // // }, [selectedLabels, currentCategory, currentSubCategory, navigate]);
 
   const [isHovered, setIsHovered] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
@@ -90,7 +90,7 @@ const TechPack = () => {
   };
 
   return (
-    <div className="w-[841px] mx-auto mt-10">
+    <form className="w-[841px] mx-auto mt-10" >
       {pageComponent.map((item, index) => (
         <div key={item.page}>
           <div className="border-2 border-black mb-7">
@@ -176,11 +176,11 @@ const TechPack = () => {
       )}
 
       <div className="flex justify-center gap-5 mb-10">
-        <button className="text-sm px-6 py-2 rounded-full border border-black">Reset</button>
-        <button className="text-white bg-black text-sm px-6 py-2 rounded-full" onClick={handleSubmit}>Save</button>
-        <button className="text-white bg-black text-sm px-6 py-2 rounded-full">Save & Download</button>
+        <button type='button' className="text-sm px-6 py-2 rounded-full border border-black">Reset</button>
+        <button type='button' className="text-white bg-black text-sm px-6 py-2 rounded-full" onClick={handleSubmit}>Save</button>
+        <button type='button' className="text-white bg-black text-sm px-6 py-2 rounded-full">Save & Download</button>
       </div>
-    </div>
+    </form>
   );
 };
 

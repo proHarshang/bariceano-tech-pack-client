@@ -1,23 +1,11 @@
-import { useState } from "react";
+import { useTechPack } from '../context/TechPackContext';
+
 const Layout1 = () => {
-    const [fabricImage, setFabricImage] = useState(null);
-    const [threadImage, setThreadImage] = useState(null);
-    const [mainImage1, setMainImage1] = useState(null);
-    const [mainImage2, setMainImage2] = useState(null);
+    const { formData, handleImageUpload } = useTechPack();
+    const { specSheet } = formData;
 
-    const handleImageChange = (e, setImage) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImage(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const handleImageClick = (setImage) => {
-        setImage(null);
+    const handleAddImage = (field, position, files) => {
+        handleImageUpload("specSheet", field, position, files);
     };
 
     return (
@@ -27,12 +15,11 @@ const Layout1 = () => {
                     <div className='w-full'>
                         <h1 className='mb-2'>Fabric Colour</h1>
                         <div className='rounded-2xl border-2 border-dashed bg-[#F3F3F3] h-[120px] w-full flex items-center justify-center'>
-                            {fabricImage ? (
+                            {specSheet?.fabricColorImages.find((item) => item.position === 0) ? (
                                 <img
-                                    src={fabricImage}
+                                    src={specSheet?.fabricColorImages.find((item) => item.position === 0).src}
                                     alt='Fabric'
                                     className='object-contain h-full w-full rounded-2xl cursor-pointer'
-                                    onClick={() => handleImageClick(setFabricImage)}
                                 />
                             ) : (
                                 <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
@@ -40,7 +27,7 @@ const Layout1 = () => {
                                     <input
                                         type='file'
                                         accept='image/*'
-                                        onChange={(e) => handleImageChange(e, setFabricImage)}
+                                        onChange={(e) => handleAddImage("fabricColorImages", 0, e.target.files)}
                                         className='hidden'
                                     />
                                 </label>
@@ -50,12 +37,11 @@ const Layout1 = () => {
                     <div className='w-full'>
                         <h1 className='mb-2'>Thread Colour</h1>
                         <div className='rounded-2xl border-2 border-dashed bg-[#F3F3F3] h-[120px] w-full flex items-center justify-center'>
-                            {threadImage ? (
+                            {specSheet?.threadColorImages.find((item) => item.position === 0) ? (
                                 <img
-                                    src={threadImage}
+                                    src={specSheet?.threadColorImages.find((item) => item.position === 0).src}
                                     alt='Thread'
                                     className='object-contain h-full w-full rounded-2xl cursor-pointer'
-                                    onClick={() => handleImageClick(setThreadImage)}
                                 />
                             ) : (
                                 <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
@@ -63,7 +49,7 @@ const Layout1 = () => {
                                     <input
                                         type='file'
                                         accept='image/*'
-                                        onChange={(e) => handleImageChange(e, setThreadImage)}
+                                        onChange={(e) => handleAddImage("threadColorImages", 0, e.target.files)}
                                         className='hidden'
                                     />
                                 </label>
@@ -72,12 +58,11 @@ const Layout1 = () => {
                     </div>
                 </div>
                 <div className='w-[37%] border-2 border-dashed bg-[#F3F3F3] h-[310px] flex items-center justify-center rounded-2xl'>
-                    {mainImage1 ? (
+                    {specSheet?.images.find((item) => item.position === 0) ? (
                         <img
-                            src={mainImage1}
+                            src={specSheet?.images.find((item) => item.position === 0).src}
                             alt='Main 1'
                             className='object-fill w-fit h-full rounded-2xl cursor-pointer'
-                            onClick={() => handleImageClick(setMainImage1)}
                         />
                     ) : (
                         <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
@@ -85,19 +70,18 @@ const Layout1 = () => {
                             <input
                                 type='file'
                                 accept='image/*'
-                                onChange={(e) => handleImageChange(e, setMainImage1)}
+                                onChange={(e) => handleAddImage("images", 0, e.target.files)}
                                 className='hidden'
                             />
                         </label>
                     )}
                 </div>
                 <div className='w-[37%] border-2 border-dashed bg-[#F3F3F3] h-[310px] flex items-center justify-center rounded-2xl'>
-                    {mainImage2 ? (
+                    {specSheet?.images.find((item) => item.position === 1) ? (
                         <img
-                            src={mainImage2}
+                            src={specSheet?.images.find((item) => item.position === 1).src}
                             alt='Main 2'
                             className='object-fill w-fit h-full rounded-2xl cursor-pointer'
-                            onClick={() => handleImageClick(setMainImage2)}
                         />
                     ) : (
                         <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
@@ -105,7 +89,7 @@ const Layout1 = () => {
                             <input
                                 type='file'
                                 accept='image/*'
-                                onChange={(e) => handleImageChange(e, setMainImage2)}
+                                onChange={(e) => handleAddImage("images", 1, e.target.files)}
                                 className='hidden'
                             />
                         </label>
