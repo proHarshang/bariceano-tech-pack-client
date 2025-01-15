@@ -45,7 +45,6 @@ input {
   }
 }
 
-form {
   input {
     border-radius: 0;
   }
@@ -120,7 +119,6 @@ form {
       color: grey;
     }
   }
-}
 
 /* input[type="checkbox"]:checked::after {
   content: "✔";

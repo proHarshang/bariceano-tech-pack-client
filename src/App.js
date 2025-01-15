@@ -10,17 +10,15 @@ import { TechPackProvider } from './context/TechPackContext';
 function App() {
   return (
     <AuthProvider>
-      <TechPackProvider>
-        <Router>
-          <MainHeader />
-          <Routes>
-            <Route path="/" element={<Auth />} />
-            <Route path="/tech-pack" element={<TechPack />} />
-            <Route path='/tech-pack-data' element={<TechPacksTable />} />
-            <Route path='/setting' element={<Setting />} />
-          </Routes>
-        </Router>
-      </TechPackProvider>
+      <Router>
+        <MainHeader />
+        <Routes>
+          <Route path="/" element={<Auth />} />
+          <Route path="/tech-pack" element={<TechPackProvider><TechPack /></TechPackProvider>} />
+          <Route path='/tech-pack-data' element={<TechPacksTable />} />
+          <Route path='/setting' element={<Setting />} />
+        </Routes>
+      </Router>
     </AuthProvider>
   );
 }
