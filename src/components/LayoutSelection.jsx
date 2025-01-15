@@ -1,6 +1,7 @@
 import Layout1 from "./Layout1"
 import Layout2 from "./Layout2"
 import Layout3 from "./Layout3"
+import BlankSheet from "./BlankSheet"
 import { useTechPack } from '../context/TechPackContext';
 
 const LayoutSelection = () => {
@@ -24,7 +25,7 @@ const LayoutSelection = () => {
             {formData.specSheet.layout === 'layout1' && <Layout1 />}
             {formData.specSheet.layout === 'layout2' && <Layout2 />}
             {formData.specSheet.layout === 'layout3' && <Layout3 />}
-            {formData.specSheet.layout === 'blank' && <div>blank</div>}
+            {formData.specSheet.layout === 'blank' && <BlankSheet/>}
         </section>
     )
 }
