@@ -382,6 +382,87 @@ const useAddSizeChart = () => {
     return { addSizeChart, isLoading, error };
 };
 
+const useDeleteSizeChart = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
+
+    const deleteSizeChart = async (name) => {
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+
+        try {
+            const response = await fetch(`${apiURL}/design/setting/sizeChart/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'api-key': apiKey,
+                },
+                body: JSON.stringify({ name }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                setSuccess(result.message);
+            } else {
+                setError(result.message);
+            }
+        } catch (err) {
+            setError("An error occurred while deleting the size chart.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { deleteSizeChart, loading, error, success, };
+};
+
+const useEditSizeChart = () => {
+    const [loadingEditSize, setLoading] = useState(false);
+    const [errorEditSize, setError] = useState(null);
+    const [successEditSize, setSuccess] = useState(null);
+
+    const editSizeChart = async (name, newData) => {
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+
+        try {
+            const response = await fetch(`${apiURL}/design/setting/sizeChart/update`, {
+                method: 'POST',  // Assuming your API uses PUT for updates
+                headers: {
+                    'Content-Type': 'application/json',
+                    'api-key': apiKey,
+                },
+                body: JSON.stringify({
+                    name, // the name of the size chart you're editing
+                    ...newData, // any other data you're updating (e.g., image or name)
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setSuccess(data.message);
+            } else {
+                setError(data.message);
+            }
+        } catch (err) {
+            setError('Error updating size chart. Please try again later.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return {
+        editSizeChart,
+        loadingEditSize,
+        errorEditSize,
+        successEditSize,
+    };
+};
 
 
-export { getTechPacks, handleCommentSubmit, useAddSizeChart }
+export { getTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart }

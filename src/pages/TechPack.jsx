@@ -3,6 +3,7 @@ import LayoutSelection from '../components/LayoutSelection';
 import SpecSheet from '../components/SpecSheet';
 import ArtworkPlacementSheet from '../components/ArtworkPlacementSheet';
 import BlankSheet from '../components/BlankSheet';
+import SiliconLabel from '../components/SiliconeLabel';
 import Header from '../common/header';
 import Footer from '../common/footer';
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -44,8 +45,13 @@ const TechPack = () => {
       component: <ArtworkPlacementSheet artworkPlacementSheetIndex={artworkPlacementSheetIndex} setArtworkPlacementSheetIndex={setArtworkPlacementSheetIndex} />,
     },
     {
-      name: "Add Sheet Name",
+      name: "Silicon Tag Sheet",
       page: 3,
+      component: <SiliconLabel />,
+    },
+    {
+      name: "Add Sheet Name",
+      page: 4,
       component: <BlankSheet />,
     },
   ]);

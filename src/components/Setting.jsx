@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { LiaSaveSolid } from "react-icons/lia";
-import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart } from "../API/TechPacks";
+import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart } from "../API/TechPacks";
 
 export default function Setting() {
 
@@ -174,15 +174,6 @@ export default function Setting() {
 
 
     const [selectedOption, setSelectedOption] = useState("");
-    const options = sizecharts.map((item) => item.name);
-    const images = sizecharts.reduce((acc, item) => {
-        acc[item.name] = item.images?.src || ""; // Fallback to an empty string
-        return acc;
-    }, {});
-
-
-
-    const { addSizeChart, error, success } = useAddSizeChart();
     const [formValues, setFormValues] = useState({
         name: '',
         category: '',
@@ -190,21 +181,36 @@ export default function Setting() {
         position: '',
     });
     const [imageFile, setImageFile] = useState(null);
+    const [isAdding, setIsAdding] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedOption, setEditedOption] = useState('');
+    const [editedImage, setEditedImage] = useState(null);
 
+    const options = sizecharts.map(item => item.name);
+    const images = sizecharts.reduce((acc, item) => {
+        acc[item.name] = item.images?.src || "";  // Default to empty string if no image found
+        return acc;
+    }, {});
+
+    const { addSizeChart, success, error } = useAddSizeChart();
+    const { editSizeChart, successEditSize, errorEditSize } = useEditSizeChart();
+    const { deleteSizeChart } = useDeleteSizeChart();
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormValues((prev) => ({ ...prev, [name]: value }));
+        setFormValues(prev => ({ ...prev, [name]: value }));
     };
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        setImageFile(file);
+        setImageFile(file);  // Store the new image file temporarily
+        setEditedImage(null); // Clear the existing image preview
     };
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Form data to send to API
         const formData = new FormData();
         formData.append('name', formValues.name);
         formData.append('category', formValues.category);
@@ -215,25 +221,68 @@ export default function Setting() {
         try {
             await addSizeChart(formData);
             alert('Size guide added successfully!');
-            handleCancelAddOption(); // Close the modal
+            setIsAdding(false); // Close modal
         } catch (err) {
             console.error(err);
         }
     };
 
+    useEffect(() => {
+        if (isEditing && selectedOption) {
+            const selectedData = sizecharts.find(item => item.name === selectedOption);
+            if (selectedData) {
+                setFormValues({
+                    name: selectedData.name,
+                    category: selectedData.category,
+                    gender: selectedData.gender,
+                    position: selectedData.images?.position || "", // Set default if not available
+                });
+                setEditedImage(selectedData.images?.src || null);
+            }
+        }
+    }, [isEditing, selectedOption, sizecharts]);
 
-
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedOption, setEditedOption] = useState(""); // To store the edited name
-    const [editedImage, setEditedImage] = useState(null); // To store the edited image
-    const [isAdding, setIsAdding] = useState(false); // To handle adding new options
-
-    const handleEditOption = () => {
+    const handleEditOption = async () => {
         if (selectedOption) {
-            // Open the edit modal with the current option data
-            setEditedOption(selectedOption);
-            setEditedImage(images[selectedOption] || null); // Set the current image
-            setIsEditing(true); // Open the editing form
+            const formData = new FormData();
+    
+            // Append name, category, gender, position
+            formData.append('name', formValues.name);
+            formData.append('category', formValues.category);
+            formData.append('gender', formValues.gender);
+            formData.append('position', formValues.position);
+    
+            // Check if there's a new image and append it
+            if (editedImage) {
+                formData.append('image', editedImage);  // Ensure 'image' is the field name
+            }
+    
+            // Debugging: log the FormData content
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
+    
+            try {
+                await editSizeChart(selectedOption, formData);
+                alert("Size guide updated successfully!");
+            } catch (err) {
+                console.error(err);
+            }
+        } else {
+            alert("Please select a size chart to edit.");
+        }
+    };
+    
+
+    const handleDelete = async () => {
+        if (selectedOption) {
+            const confirmed = window.confirm("Are you sure you want to delete this size chart?");
+            if (confirmed) {
+                await deleteSizeChart(selectedOption);
+                alert("Size chart deleted successfully!");
+            }
+        } else {
+            alert("Please select a size chart to delete.");
         }
     };
 
@@ -657,22 +706,13 @@ export default function Setting() {
                             <h1 className="font-bold text-xl">Gender (size chart)</h1>
                         </div>
                         <div className="flex gap-5">
-                            <button
-                                className="underline"
-                                onClick={handleAddOption}
-                            >
+                            <button className="underline" onClick={handleAddOption}>
                                 Add
                             </button>
-                            <button
-                                className="underline">
+                            <button className="underline" onClick={handleDelete}>
                                 Delete
                             </button>
-                            <button
-                                className="underline"
-                                onClick={handleEditOption}
-                            >
-                                Edit
-                            </button>
+                            <button className="underline" onClick={() => setIsEditing(true)}>Edit</button>
                         </div>
                     </div>
 
@@ -701,7 +741,7 @@ export default function Setting() {
                         >
                             {images[selectedOption] ? (
                                 <img
-                                    src={`http://localhost:3001/${images[selectedOption]}`}
+                                    src={`${process.env.REACT_APP_API_URL}/${images[selectedOption]}`}
                                     alt={selectedOption}
                                     className="h-full object-fill"
                                 />
@@ -710,6 +750,12 @@ export default function Setting() {
                             )}
                         </div>
                     </div>
+
+                    {/* Success and Error Messages */}
+                    {loading && <p>Loading...</p>}
+                    {error && <p className="text-red-500">{error}</p>}
+                    {success && <p className="text-green-500">{success}</p>}
+
 
                     {/* Modal for adding an option */}
                     {isAdding && (
@@ -825,40 +871,107 @@ export default function Setting() {
                         </div>
                     )}
 
-                    {/* Modal for editing an option */}
+                    {/* Modal for editing a size guide */}
                     {isEditing && (
-                        <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
+                        <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
                             <div className="bg-white p-6 rounded shadow-lg w-96">
-                                <h2 className="text-xl mb-4">Edit Option</h2>
+                                <h2 className="text-xl mb-4">Edit Size Guide</h2>
+
+                                {/* Name Input */}
                                 <input
                                     type="text"
-                                    value={editedOption}
-                                    onChange={(e) => setEditedOption(e.target.value)}
+                                    name="name"
+                                    value={formValues.name}
+                                    onChange={handleInputChange}
                                     className="outline p-2 rounded mb-4 w-full"
+                                    placeholder="Enter updated size guide name"
                                 />
-                                <div className="border-2 w-full h-40 border-dashed border-gray-300 bg-[#FCFCFC] flex items-center justify-center">
-                                    {editedImage ? (
-                                        <img
-                                            src={editedImage}
-                                            alt="Preview"
-                                            className="h-full object-contain"
-                                        />
-                                    ) : (
-                                        <p className="text-gray-400">No image selected</p>
-                                    )}
+
+                                {/* Category Radio Buttons */}
+                                <div className="mb-4">
+                                    <h3>Select Category</h3>
+                                    <div className="flex gap-5">
+                                        {categories.map((cat) => (
+                                            <div key={cat} className="flex gap-2 items-center">
+                                                <input
+                                                    type="radio"
+                                                    name="category"
+                                                    value={cat}
+                                                    onChange={handleInputChange}
+                                                    checked={formValues.category === cat}
+                                                />
+                                                <label>{cat}</label>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
+
+                                {/* Gender Radio Buttons */}
+                                <div className="mb-4">
+                                    <h3>Select Gender</h3>
+                                    <div className="flex gap-5">
+                                        {genders.map((gen) => (
+                                            <div key={gen} className="flex gap-2 items-center">
+                                                <input
+                                                    type="radio"
+                                                    name="gender"
+                                                    value={gen}
+                                                    onChange={handleInputChange}
+                                                    checked={formValues.gender === gen}
+                                                />
+                                                <label>{gen}</label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Position Input */}
+                                <input
+                                    type="text"
+                                    name="position"
+                                    value={formValues.position}
+                                    onChange={handleInputChange}
+                                    className="outline p-2 rounded mb-4 w-full"
+                                    placeholder="Enter position"
+                                />
+
                                 <input
                                     type="file"
                                     accept="image/*"
-                                    className="my-4"
                                     onChange={handleImageChange}
+                                    className="my-4"
                                 />
+                                {/* Current Image (if exists) */}
+                                {editedImage && !imageFile && (
+                                    <div className="mb-4 h-[100px] mx-auto">
+                                        <img
+                                            src={`${process.env.REACT_APP_API_URL}/${editedImage}`}
+                                            alt="Current"
+                                            className="h-full object-fill"
+                                        />
+                                    </div>
+                                )}
+
+                                {/* New Image Preview (if new image is uploaded) */}
+                                {imageFile && (
+                                    <div className="mb-4 h-[100px] mx-auto">
+                                        <img
+                                            src={URL.createObjectURL(imageFile)}  // Temporary preview of the uploaded image
+                                            alt="Uploaded Preview"
+                                            className="h-full object-fill"
+                                        />
+                                    </div>
+                                )}
+
+
+
+                                {/* Buttons */}
                                 <div className="flex gap-4">
                                     <button
-
+                                        onClick={handleEditOption}
                                         className="bg-black text-white px-4 py-2 rounded-lg"
                                     >
-                                        Apply
+                                        {loading ? 'Updating...' : 'Update Size Guide'}
                                     </button>
                                     <button
                                         onClick={handleCancelEdit}
@@ -870,12 +983,13 @@ export default function Setting() {
                             </div>
                         </div>
                     )}
+
                 </div>
             </div>
 
             <div className="border-b p-10 space-y-10">
                 <div>
-                    <h1 className="font-bold text-xl">Construction Sheet</h1>
+                    <h1 className="font-bold text-xl mb-4">Construction Sheet</h1>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {construction.map((box) => (
                             <div key={box.id} className="p-4 border border-gray-400">

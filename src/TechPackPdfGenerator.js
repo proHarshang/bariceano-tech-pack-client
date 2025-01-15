@@ -368,7 +368,7 @@ const TechPackPdfGenerator = (data) => {
 
             // Colour
             pdf.rect(currentX, ccurrentY, columnWidths[4], rowHeight);
-            pdf.text(row.color, currentX + 5, ccurrentY + rowHeight / 2, {
+            pdf.text(row.color, currentX + 5, row.color.length > 49 ? ccurrentY - 7 : ccurrentY - 4  + rowHeight / 2, {
                 baseline: 'middle',
             });
             currentX += columnWidths[4];
