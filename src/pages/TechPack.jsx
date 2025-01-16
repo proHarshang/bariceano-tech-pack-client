@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import LayoutSelection from '../components/LayoutSelection';
 import SpecSheet from '../components/SpecSheet';
 import ArtworkPlacementSheet from '../components/ArtworkPlacementSheet';
@@ -6,12 +6,9 @@ import BlankSheet from '../components/BlankSheet';
 import SiliconLabel from '../components/SiliconeLabel';
 import Header from '../common/header';
 import Footer from '../common/footer';
-import { useLocation, useNavigate } from 'react-router-dom'
 import { useTechPack } from '../context/TechPackContext';
 
 const TechPack = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const { handleSubmit } = useTechPack();
 

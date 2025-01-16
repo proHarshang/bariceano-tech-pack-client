@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { LiaSaveSolid } from "react-icons/lia";
-import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart } from "../API/TechPacks";
+import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims } from "../API/TechPacks";
 
 export default function Setting() {
 
@@ -245,23 +245,23 @@ export default function Setting() {
     const handleEditOption = async () => {
         if (selectedOption) {
             const formData = new FormData();
-    
+
             // Append name, category, gender, position
             formData.append('name', formValues.name);
             formData.append('category', formValues.category);
             formData.append('gender', formValues.gender);
             formData.append('position', formValues.position);
-    
+
             // Check if there's a new image and append it
             if (editedImage) {
                 formData.append('image', editedImage);  // Ensure 'image' is the field name
             }
-    
+
             // Debugging: log the FormData content
             for (let [key, value] of formData.entries()) {
                 console.log(key, value);
             }
-    
+
             try {
                 await editSizeChart(selectedOption, formData);
                 alert("Size guide updated successfully!");
@@ -272,7 +272,7 @@ export default function Setting() {
             alert("Please select a size chart to edit.");
         }
     };
-    
+
 
     const handleDelete = async () => {
         if (selectedOption) {
@@ -303,14 +303,6 @@ export default function Setting() {
     };
 
 
-    const [trimsBoxes, setTrimsBoxes] = useState([
-        { id: 1, name: 'Silicone Tag', images: ['https://via.placeholder.com/346x163?text=Silicone+Tag'] },
-        { id: 2, name: 'Main Label', images: ['https://via.placeholder.com/346x163?text=Main+Label'] },
-        { id: 3, name: 'Wash Care Label (T-shirt)', images: ['https://via.placeholder.com/346x163?text=Wash+Care+Label+(T-shirt)'] },
-        { id: 4, name: 'Wash Care Label (Hood/Sweat)', images: ['https://via.placeholder.com/346x163?text=Wash+Care+Label+(Hood/Sweat)'] },
-    ]);
-
-
     const [trimsPopup, setTrimsPopup] = useState({ visible: false, id: null });
     const [trimsFormData, setTrimsFormData] = useState({
         name: '',
@@ -321,20 +313,19 @@ export default function Setting() {
         setTrimsFormData({ name: '', images: [] }); // Initialize with empty array
     };
 
-    const handleTrimsEdit = (id) => {
-        const box = trimsBoxes.find((box) => box.id === id);
-        setTrimsPopup({ visible: true, id });
-        setTrimsFormData({ name: box.name, images: box.images });
-    };
-
-
-    const handleDeleteTrimBox = (boxId) => {
-        // Delete the entire trim box after confirmation
-        if (window.confirm('Are you sure you want to delete this trim box?')) {
-            setTrimsBoxes((prev) => prev.filter((box) => box.id !== boxId));
+    const { deleteTrims, errorTrims } = useDeleteTrims();
+    const handleDeleteTrimBox = async (id) => {
+        console.log("Deleting trim with ID:", id); // Log the ID being passed
+        const confirmed = window.confirm("Are you sure you want to delete this trim?");
+        if (!confirmed) return;
+    
+        await deleteTrims(id); // Pass the ID to the hook
+    
+        if (!errorTrims) {
+            setTrims((prevTrims) => prevTrims.filter((trim) => trim._id !== id));
         }
     };
-
+    
     const [newCollectionName, setNewCollectionName] = useState("");
     const [showPopup, setShowPopup] = useState(false);
 
@@ -1101,12 +1092,12 @@ export default function Setting() {
                     <div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {trims.map((trim) => (
-                                <div key={trim.id} className="p-4 border border-gray-400 group">
+                                <div key={trim._id} className="p-4 border border-gray-400 group">
                                     <div className="flex justify-between items-center pb-2">
                                         <h1 className="text-xl whitespace-nowrap">{trim.name}</h1>
                                         <div className="hidden gap-2 group-hover:flex">
-                                            <button onClick={() => handleTrimsEdit(trim.id)}>Edit</button>
-                                            <button onClick={() => handleDeleteTrimBox(trim.id)}>Delete</button>
+                                            <button>Edit</button>
+                                            <button onClick={() => handleDeleteTrimBox(trim._id)}>Delete</button>
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-3 gap-2">
@@ -1132,6 +1123,7 @@ export default function Setting() {
                                     </div>
                                 </div>
                             ))}
+
                         </div>
 
 
