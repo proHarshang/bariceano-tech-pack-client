@@ -5,7 +5,7 @@ const Layout1 = () => {
     const { specSheet } = formData;
 
     const handleAddImage = (field, position, files) => {
-        handleImageUpload("specSheet", field, position, files);
+        handleImageUpload("specSheet", field, files, position);
     };
 
     return (

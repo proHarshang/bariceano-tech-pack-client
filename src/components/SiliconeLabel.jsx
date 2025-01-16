@@ -1,16 +1,17 @@
-import React, { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useTechPack } from '../context/TechPackContext';
 
 const SiliconLabel = () => {
-    const [image, setImage] = useState(null);
+    const { formData, updateFormData, handleImageUpload } = useTechPack();
+    const { siliconLabelSheet } = formData;
+
+    const handleInputChange = (field, value) => {
+        updateFormData("siliconLabelSheet", { [field]: value });
+    };
 
     const onDrop = useCallback((acceptedFiles) => {
-        const file = acceptedFiles[0];
-        const reader = new FileReader();
-        reader.onload = () => {
-            setImage(reader.result);
-        };
-        reader.readAsDataURL(file);
+        handleImageUpload("siliconLabelSheet", "images", acceptedFiles);
     }, []);
 
     const { getRootProps, getInputProps, open } = useDropzone({
@@ -18,19 +19,21 @@ const SiliconLabel = () => {
         accept: 'image/*',
         noClick: true,
         noKeyboard: true,
+        multiple: false
     });
 
     return (
         <div className="w-full h-full p-10 pt-6">
             <div className='flex flex-col mb-5'>
                 <label htmlFor="">Add Title</label>
-                <input type="text" className='text-sm mx-[2px] outline outline-gray-400 p-2' />
+                <input type="text" className='text-sm mx-[2px] outline outline-1 p-2' value={siliconLabelSheet.title}
+                    onChange={(e) => handleInputChange("title", e.target.value)} />
             </div>
             <div className='h-[430px]'>
-                {image ? (
+                {siliconLabelSheet.images[0] ? (
                     <div className="flex flex-col items-center w-full h-full">
                         <img
-                            src={image}
+                            src={siliconLabelSheet.images[0].src}
                             alt="Preview"
                             className="mb-4 w-full h-full object-contain cursor-pointer"
                             onClick={open}

@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-const ArtworkSheet = () => {
+const BlankSheet = () => {
   const [image, setImage] = useState(null);
 
   const onDrop = useCallback((acceptedFiles) => {
@@ -24,9 +24,9 @@ const ArtworkSheet = () => {
     <div className="w-full h-[461px] p-10">
       {image ? (
         <div className="flex flex-col items-center w-full h-full">
-          <img 
-            src={image} 
-            alt="Preview" 
+          <img
+            src={image}
+            alt="Preview"
             className="mb-4 w-full h-full object-contain cursor-pointer"
             onClick={open}
           />
@@ -46,4 +46,4 @@ const ArtworkSheet = () => {
   );
 };
 
-export default ArtworkSheet;
+export default BlankSheet;
