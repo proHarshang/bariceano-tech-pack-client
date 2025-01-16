@@ -22,7 +22,7 @@ const TechPack = () => {
   // // }, [selectedLabels, currentCategory, currentSubCategory, navigate]);
 
   const [isHovered, setIsHovered] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
+  const [showPopup, setShowPopup] = useState();
   const [artworkPlacementSheetIndex, setArtworkPlacementSheetIndex] = useState(0)
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [pageComponent, setPageComponent] = useState([
