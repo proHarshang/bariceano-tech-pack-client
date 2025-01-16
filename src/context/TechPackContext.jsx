@@ -40,9 +40,9 @@ export const TechPackProvider = ({ children }) => {
     };
 
     // Handle image uploads
-    const handleImageUpload = (section, field, position, files) => {
+    const handleImageUpload = (section, field, files, position = null) => {
         const newImages = Array.from(files).map((file) => ({
-            position: position,
+            position: position ? position : null,
             src: URL.createObjectURL(file), // Temporary preview
             file,
         }));

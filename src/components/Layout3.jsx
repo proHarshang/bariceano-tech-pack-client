@@ -10,7 +10,7 @@ const Layout3 = () => {
     };
 
     const handleAddImage = (field, position, files) => {
-        handleImageUpload("specSheet", field, position, files);
+        handleImageUpload("specSheet", field, files, position);
     };
 
     return (
