@@ -193,7 +193,7 @@ export default function Setting() {
     }, {});
 
     const { addSizeChart, success, error } = useAddSizeChart();
-    const { editSizeChart, successEditSize, errorEditSize } = useEditSizeChart();
+    const { editSizeChart, } = useEditSizeChart();
     const { deleteSizeChart } = useDeleteSizeChart();
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -1265,7 +1265,7 @@ export default function Setting() {
                                         {requirement.images && requirement.images.src && (
                                             <img
                                                 src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${requirement.images.src}`}
-                                                alt={`Image of ${requirement.name}`}
+                                                alt={`${requirement.name}`}
                                                 className="h-24 w-24 object-cover"
                                             />
                                         )}
@@ -1400,7 +1400,7 @@ export default function Setting() {
                                         {item.images && item.images.src && (
                                             <img
                                                 src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${item.images.src}`}
-                                                alt={`Image of ${item.name}`}
+                                                alt={`${item.name}`}
                                                 className="h-24 w-24 object-cover"
                                             />
                                         )}
