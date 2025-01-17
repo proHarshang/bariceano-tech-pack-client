@@ -256,9 +256,9 @@ const TechPackPdfGenerator = (data) => {
             ['STYLE No.', `${data.data.specSheetTable.info.styleNo}`, 'STYLE', `${data.data.specSheetTable.info.style}`],
             ['FABRIC COLOUR', 'Bright White', 'CATEGORY', `${data.data.specSheetTable.info.category}`],
             ['GENDER', `${data.data.specSheetTable.info.gender}`, 'SIZE', 'S , M ,L ,XL'],
-            ['FIT', `${data.data.specSheetTable.info.fit}`, 'RATIO', `${data.data.specSheetTable.info.ratio}`],
-            ['SEASON', `${data.data.specSheetTable.info.season}`, 'DESIGNER', `${data.data.specSheetTable.info.designer}`],
-            ['STATE', `${data.data.specSheetTable.info.state}`, 'COLLECTION', `${data.data.specSheetTable.info.collection}`],
+            ['FIT', `${data.data.specSheetTable.info.fit}`, 'RATIO', (data.data.specSheetTable.info.ratio ? data.data.specSheetTable.info.ratio : "            -")],
+            // ['SEASON', `${data.data.specSheetTable.info.season}`, 'DESIGNER', `${data.data.specSheetTable.info.designer}`],
+            // ['STATE', `${data.data.specSheetTable.info.state}`, 'COLLECTION', `${data.data.specSheetTable.info.collection}`],
             // Rows with only two columns (merge second and fourth columns)
             ['TRIM', `${data.data.specSheetTable.info.trim || 'N/A'}`, '', ''],
             ['FABRIC', `${data.data.specSheetTable.info.fabric || 'N/A'}`, '', ''],
@@ -269,7 +269,7 @@ const TechPackPdfGenerator = (data) => {
         rowData.forEach((row, index) => {
             let rowHeight = cellHeight; // Default row height
 
-            if (index < 6) {
+            if (index < 4) {
                 // Standard 4-column rows
                 drawCell(pdf, col1X, currentY, col1Width, rowHeight, row[0], true, 'left');
                 drawCell(pdf, col2X, currentY, col2Width, rowHeight, row[1], false, 'left');
