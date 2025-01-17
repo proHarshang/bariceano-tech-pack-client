@@ -29,7 +29,16 @@ export const TechPackProvider = ({ children }) => {
             title: "",
             images: [],
         },
-        Pages: [],
+        Pages: [{
+            page: 5,
+            name: "pAgE",
+            src: "asdad.jpg"
+        },
+        {
+            page: 5,
+            name: "pAgE",
+            src: "asdad.jpg"
+        }],
     });
 
     const updateFormData = (section, data) => {
@@ -64,6 +73,16 @@ export const TechPackProvider = ({ children }) => {
         });
 
         updateFormData(section, { [field]: updatedImages });
+    };
+
+    // Function to update a page in Pages array
+    const updatePageInArray = (pageIndex, updatedData) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            Pages: prevData.Pages.map((page, index) =>
+                index === pageIndex ? { ...page, ...updatedData } : page
+            ),
+        }));
     };
 
     const handleSubmit = async () => {
@@ -105,7 +124,7 @@ export const TechPackProvider = ({ children }) => {
     };
 
     return (
-        <TechPackContext.Provider value={{ formData, updateFormData, handleImageUpload, handleSubmit }}>
+        <TechPackContext.Provider value={{ formData, updateFormData, handleImageUpload, updatePageInArray, handleSubmit }}>
             {children}
         </TechPackContext.Provider>
     );
