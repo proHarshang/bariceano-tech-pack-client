@@ -15,11 +15,11 @@ const Layout3 = () => {
 
     return (
         <div className='flex flex-col gap-10'>
-            <div className='w-full flex justify-between gap-10'>
+            <div className='w-full flex justify-center gap-10'>
                 {[0, 1].map((key, index) => (
                     <div
                         key={index}
-                        className='w-1/2 h-[230px] border-2 border-dashed rounded-2xl bg-[#F3F3F3] flex items-center justify-center'
+                        className='w-[230px] h-[300px] border-2 border-dashed rounded-2xl bg-[#F3F3F3] flex items-center justify-center'
                         onClick={() => handleClick(index)}
                     >
                         {specSheet?.images.find((item) => item.position === index) ? (
@@ -39,8 +39,8 @@ const Layout3 = () => {
                     </div>
                 ))}
             </div>
-            <div className='flex justify-between gap-10'>
-                <div className='w-1/2 h-[180px]'>
+            <div className='flex justify-center gap-24'>
+                <div className='w-[35%] h-[150px]'>
                     <h1>Thread colour</h1>
                     <div className='w-full h-full flex justify-between gap-5'>
                         {[0, 1].map((key, index) => (
@@ -48,7 +48,7 @@ const Layout3 = () => {
                                 {specSheet?.threadColorImages.find((item) => item.position === index) ? (
                                     <img src={specSheet?.threadColorImages.find((item) => item.position === index).src} alt={`thread-img-${index}`} className='object-cover h-full w-full rounded-2xl' />
                                 ) : (
-                                    <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
+                                    <label className='text-sm flex flex-col items-center justify-center w-full h-full cursor-pointer'>
                                         <span>Drop an Image here</span>
                                     </label>
                                 )}
@@ -57,7 +57,7 @@ const Layout3 = () => {
                         ))}
                     </div>
                 </div>
-                <div className='w-1/2 h-[180px]'>
+              <div className='w-[35%] h-[150px]'>
                     <h1>Fabric colour</h1>
                     <div className='w-full h-full flex justify-between gap-5'>
                         {[0, 1].map((key, index) => (
@@ -65,7 +65,7 @@ const Layout3 = () => {
                                 {specSheet?.fabricColorImages.find((item) => item.position === index) ? (
                                     <img src={specSheet?.fabricColorImages.find((item) => item.position === index).src} alt={`fabric-img-${index}`} className='object-cover h-full w-full rounded-2xl' />
                                 ) : (
-                                    <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
+                                    <label className='text-sm flex flex-col items-center justify-center w-full h-full cursor-pointer'>
                                         <span>Drop an Image here</span>
                                     </label>
                                 )}

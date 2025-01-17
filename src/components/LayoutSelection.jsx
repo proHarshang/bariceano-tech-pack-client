@@ -13,7 +13,7 @@ const LayoutSelection = () => {
 
     return (
         <section className='mx-auto mb-20 px-10'>
-            <div className='flex justify-end my-10'>
+            <div className='flex justify-end my-5'>
                 <select name="Select Layout" value={formData.specSheet.layout}
                     onChange={handleChange} className='border-black rounded-lg px-2 py-1'>
                     <option value="layout1">Layout 1</option>
