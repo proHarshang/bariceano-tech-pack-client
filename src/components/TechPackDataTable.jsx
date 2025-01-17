@@ -69,9 +69,8 @@ const TechPackDataTable = ({ data = [] }) => {
         techpack.specSheetTable.info.styleNo?.includes(searchTerm) ||
         techpack.specSheetTable?.info?.designer.includes(searchTerm));
 
-    console.log("filteredBySearch", filteredBySearch)
     // shorting logic
-    const [isAscending, setIsAscending] = useState(true);
+    const [isAscending, setIsAscending] = useState(false);
     const handleSort = () => {
         setIsAscending(!isAscending); // Toggle sorting order
     };

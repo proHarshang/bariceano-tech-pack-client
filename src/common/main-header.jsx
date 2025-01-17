@@ -59,7 +59,9 @@ const MainHeader = () => {
 
     const handleApply = () => {
         navigate("/tech-pack")
-        console.log('Selected Labels:', selectedLabels);
+        setCurrentCategory(false)
+        setShowCategories(false)
+        setCurrentSubCategory(false)
     };
 
 
@@ -70,8 +72,8 @@ const MainHeader = () => {
                     <button
                         key={item.id} // Assuming each collection item has a unique ID
                         className={`flex gap-3 items-center border-black text-sm font-bold px-3 py-2 rounded-2xl uppercase hover:bg-black hover:text-white ${currentPath === "/tech-pack-data"
-                                ? "bg-black text-white"
-                                : "border text-black"
+                            ? "bg-black text-white"
+                            : "border text-black"
                             }`}
                     >
                         <select

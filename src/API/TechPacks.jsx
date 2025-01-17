@@ -465,4 +465,43 @@ const useEditSizeChart = () => {
 };
 
 
-export { getTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart }
+const useDeleteTrims = () => {
+    const [loadingTrims, setLoading] = useState(false);
+    const [errorTrims, setError] = useState(null);
+    const [successTrims, setSuccess] = useState(null);
+
+    const deleteTrims = async (id) => {
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+
+        try {
+            const response = await fetch(`${apiURL}/design/setting/trims/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'api-key': apiKey,
+                },
+                body: JSON.stringify({ id }), // Use "id" as required by the backend
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                setSuccess(result.message);
+            } else {
+                setError(result.message);
+            }
+        } catch (err) {
+            setError("An error occurred while deleting the trims.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { deleteTrims, loadingTrims, errorTrims, successTrims };
+};
+
+
+
+export { getTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims }

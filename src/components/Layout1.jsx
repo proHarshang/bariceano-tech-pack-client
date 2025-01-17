@@ -1,11 +1,69 @@
 import { useTechPack } from '../context/TechPackContext';
+import React, { useState } from 'react';
+import Cropper from 'react-easy-crop';
+import Slider from '@mui/material/Slider';
 
 const Layout1 = () => {
-    const { formData, handleImageUpload } = useTechPack();
+    const { formData } = useTechPack();
     const { specSheet } = formData;
 
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => setImage(reader.result);
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleAddImage = (field, position, files) => {
-        handleImageUpload("specSheet", field, files, position);
+        handleImageUpload("specSheet", field, position, files);
+    };
+
+    const [image, setImage] = useState(null);
+    const [crop, setCrop] = useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(1);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+    const [croppedImage, setCroppedImage] = useState(null);
+
+    const onCropComplete = (croppedArea, croppedAreaPixels) => {
+        setCroppedAreaPixels(croppedAreaPixels);
+    };
+
+
+    const cropImage = async () => {
+        const cropped = await getCroppedImg(image, croppedAreaPixels);
+        setCroppedImage(cropped);
+    };
+
+    const getCroppedImg = (imageSrc, crop) => {
+        const image = new Image();
+        image.src = imageSrc;
+        return new Promise((resolve) => {
+            image.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                canvas.width = crop.width;
+                canvas.height = crop.height;
+
+                ctx.drawImage(
+                    image,
+                    crop.x,
+                    crop.y,
+                    crop.width,
+                    crop.height,
+                    0,
+                    0,
+                    crop.width,
+                    crop.height
+                );
+
+                canvas.toBlob((blob) => {
+                    resolve(URL.createObjectURL(blob));
+                });
+            };
+        });
     };
 
     return (
@@ -76,21 +134,48 @@ const Layout1 = () => {
                         </label>
                     )}
                 </div>
-                <div className='w-[37%] border-2 border-dashed bg-[#F3F3F3] h-[310px] flex items-center justify-center rounded-2xl'>
-                    {specSheet?.images.find((item) => item.position === 1) ? (
+                <div className="w-[37%] border-2 border-dashed bg-[#F3F3F3] h-[310px] flex items-center justify-center rounded-2xl">
+                    {image && !croppedImage ? (
+                        <div className="relative w-full h-full">
+                            <Cropper
+                                image={image}
+                                crop={crop}
+                                zoom={zoom}
+                                aspect={1} // Aspect ratio for WhatsApp DP-style cropping
+                                onCropChange={setCrop}
+                                onZoomChange={setZoom}
+                                onCropComplete={onCropComplete}
+                            />
+                            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                                <Slider
+                                    min={1}
+                                    max={3}
+                                    step={0.1}
+                                    value={zoom}
+                                    onChange={(e, zoom) => setZoom(zoom)}
+                                />
+                                <button
+                                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                                    onClick={cropImage}
+                                >
+                                    Crop
+                                </button>
+                            </div>
+                        </div>
+                    ) : croppedImage ? (
                         <img
-                            src={specSheet?.images.find((item) => item.position === 1).src}
-                            alt='Main 2'
-                            className='object-fill w-fit h-full rounded-2xl cursor-pointer'
+                            src={croppedImage}
+                            alt="Cropped"
+                            className="object-fill w-full h-full rounded-2xl"
                         />
                     ) : (
-                        <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
+                        <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer">
                             <span>Drop an Image here</span>
                             <input
-                                type='file'
-                                accept='image/*'
-                                onChange={(e) => handleAddImage("images", 1, e.target.files)}
-                                className='hidden'
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                className="hidden"
                             />
                         </label>
                     )}

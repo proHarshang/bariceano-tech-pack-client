@@ -5,7 +5,9 @@ function Header({ name, index, onDelete }) {
             <article className='relative flex items-start justify-between py-5 px-10'>
                 <div>
                     <h1 className='font-bold'>BARISCEANO</h1>
-                    <h5>{name}</h5>
+                    <div className='absolute z-50'>
+                        <input type="text" placeholder={name} value={name} className='mt-2 w-full border' name="" id="" />
+                    </div>
                 </div>
                 <div className='h-[46px] absolute right-0 w-full'>
                     <img src="/logo192.png" alt="Bariceano" draggable="false" className='select-none w-full h-full object-contain' />
