@@ -10,7 +10,7 @@ import { useTechPack } from '../context/TechPackContext';
 
 const TechPack = () => {
 
-  const { handleSubmit } = useTechPack();
+  const { formData, handleSubmit, updatePageInArray, updateFormData } = useTechPack();
 
   // const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
 
@@ -21,35 +21,49 @@ const TechPack = () => {
   // //   console.log(selectedLabels, currentCategory, currentSubCategory)
   // // }, [selectedLabels, currentCategory, currentSubCategory, navigate]);
 
-  const [isHovered, setIsHovered] = useState(false);
-  const [showPopup, setShowPopup] = useState();
+  const [showPopup, setShowPopup] = useState(false);
   const [artworkPlacementSheetIndex, setArtworkPlacementSheetIndex] = useState(0)
+
   const [selectedIndex, setSelectedIndex] = useState(null);
+
   const [pageComponent, setPageComponent] = useState([
     {
-      name: "Spec Sheet",
-      page: 0,
+      type: "specSheet",
+      suggestedPageName: "spec. Sheet",
       component: <LayoutSelection />,
+      data: formData.specSheet
     },
     {
-      name: "Spec Sheet",
-      page: 1,
+      type: "specSheetTable",
+      suggestedPageName: "spec. Sheet",
       component: <SpecSheet />,
+      data: formData.specSheetTable
     },
     {
-      name: "Artwork Placement Sheet",
-      page: 2,
+      type: "artwork",
+      suggestedPageName: "Artwork",
       component: <ArtworkPlacementSheet artworkPlacementSheetIndex={artworkPlacementSheetIndex} setArtworkPlacementSheetIndex={setArtworkPlacementSheetIndex} />,
+      data: formData.artwork
     },
     {
-      name: "Silicon Tag Sheet",
-      page: 3,
+      type: "siliconLabelSheet",
+      suggestedPageName: "silicon Label",
       component: <SiliconLabel />,
+      data: formData.siliconLabelSheet
     },
     {
-      name: "Add Sheet Name",
-      page: 4,
+      type: "Pages",
+      suggestedPageName: "untitled",
+      pageIndex: 0,
       component: <BlankSheet />,
+      data: formData.Pages[0]
+    },
+    {
+      type: "Pages",
+      suggestedPageName: "untitled",
+      pageIndex: 1,
+      component: <BlankSheet />,
+      data: formData.Pages[1]
     },
   ]);
 
@@ -57,14 +71,16 @@ const TechPack = () => {
 
   const handleAddPage = () => {
     if (selectedIndex !== null && selectedPage) {
+      let component;
+
+      if (selectedPage === "Artwork Placement Sheet") {
+        component = <ArtworkPlacementSheet artworkPlacementSheetIndex={artworkPlacementSheetIndex} setArtworkPlacementSheetIndex={setArtworkPlacementSheetIndex} />;
+      } else {
+        component = <BlankSheet />
+      }
+
       const newPage = {
-        name: selectedPage,
-        page: selectedIndex + 1,
-        component: selectedPage === "Artwork Placement Sheet" ? (
-          <ArtworkPlacementSheet artworkPlacementSheetIndex={artworkPlacementSheetIndex} setArtworkPlacementSheetIndex={setArtworkPlacementSheetIndex} />
-        ) : (
-          <BlankSheet />
-        ),
+        component
       };
 
       const updatedPages = [
@@ -81,59 +97,32 @@ const TechPack = () => {
     setShowPopup(false);
     setSelectedPage(null);
   };
+
   const handleDelete = (page) => {
-    const updatedComponents = pageComponent.filter((item) => item.page !== page);
+    const updatedComponents = pageComponent.filter((item) => item.data.page !== page);
     setPageComponent(updatedComponents);
   };
 
   return (
     <form className="w-[841px] mx-auto mt-10" >
-      {pageComponent.map((item, index) => (
-        <div key={item.page}>
-          <div className="border-2 border-black mb-7">
-            <div
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              <Header name={item.name} pageNo={index + 1} showButton={isHovered} onDelete={() => handleDelete(item.page)} />
+      {pageComponent.map((item, index) => {
+        item.type === "Pages" ?
+          updatePageInArray(item.pageIndex, { page: index, name: `untitled-${index}` })
+          :
+          updateFormData([item.type], { page: index, name: item.suggestedPageName });
+        ;
+        return (
+          <div key={item.data.page}>
+            <div className="border-2 border-black mb-7">
+              <Header name={item.data.name} index={index} onDelete={() => handleDelete(item.data.page)} />
               {item.component}
               <Footer />
             </div>
+            <AddButton index={index} setShowPopup={setShowPopup} setSelectedIndex={setSelectedIndex} />
           </div>
-
-          <div className="w-full flex justify-center mb-7">
-            <button
-              onClick={() => {
-                setShowPopup(true);
-                setSelectedIndex(index);
-              }}
-              className="flex items-center"
-            >
-              <svg
-                width="25"
-                height="30"
-                viewBox="0 0 12 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect
-                  x="0.35"
-                  y="0.35"
-                  width="11.3"
-                  height="11.3"
-                  rx="2.65"
-                  stroke="black"
-                  strokeWidth="0.7"
-                />
-                <path
-                  d="M5.25635 8.99561V6.44385H2.72363V5.37744H5.25635V2.84473H6.33545V5.37744H8.86816V6.44385H6.33545V8.99561H5.25635Z"
-                  fill="black"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-      ))}
+        )
+      }
+      )}
 
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -182,3 +171,39 @@ const TechPack = () => {
 };
 
 export default TechPack;
+
+const AddButton = ({ index, setShowPopup, setSelectedIndex }) => {
+  return (
+    <div className="w-full flex justify-center mb-7">
+      <button
+        type='button'
+        onClick={() => {
+          setShowPopup(true);
+          setSelectedIndex(index);
+        }}
+        className="flex items-center"
+      >
+        <svg
+          width="25"
+          height="30"
+          viewBox="0 0 12 12"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="0.35"
+            y="0.35"
+            width="11.3"
+            height="11.3"
+            rx="2.65"
+            stroke="black"
+            strokeWidth="0.7"
+          />
+          <path
+            d="M5.25635 8.99561V6.44385H2.72363V5.37744H5.25635V2.84473H6.33545V5.37744H8.86816V6.44385H6.33545V8.99561H5.25635Z"
+            fill="black"
+          />
+        </svg>
+      </button>
+    </div>)
+}

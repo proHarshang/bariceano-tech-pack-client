@@ -24,9 +24,9 @@ const BlankSheet = () => {
     <div className="w-full h-[461px] p-10">
       {image ? (
         <div className="flex flex-col items-center w-full h-full">
-          <img
-            src={image}
-            alt="Preview"
+          <img 
+            src={image} 
+            alt="Preview" 
             className="mb-4 w-full h-full object-contain cursor-pointer"
             onClick={open}
           />
