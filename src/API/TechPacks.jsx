@@ -32,7 +32,8 @@ const handleCommentSubmit = async (styleNo, comment) => {
             },
             body: JSON.stringify({
                 "styleNo": styleNo,
-                "comment": comment
+                "name": comment.name,
+                "message": comment.message
             }),
         });
 
