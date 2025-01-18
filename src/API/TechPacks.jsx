@@ -25,6 +25,8 @@ const getTechPacks = async () => {
 
 const handleCommentSubmit = async (styleNo, comment) => {
     try {
+        console.log("Submitting Comment:", { styleNo, ...comment });  // Log the payload to check the structure
+
         const response = await fetch(`${apiURL}/design/comment`, {
             method: 'POST',
             headers: {
@@ -32,8 +34,9 @@ const handleCommentSubmit = async (styleNo, comment) => {
             },
             body: JSON.stringify({
                 "styleNo": styleNo,
-                "name": comment.name,
-                "message": comment.message
+                "name": comment.name, 
+                "message": comment.message,
+                "date": comment.date
             }),
         });
 
@@ -46,6 +49,7 @@ const handleCommentSubmit = async (styleNo, comment) => {
         console.error('Error:', error);
     }
 };
+
 
 export const categoryFetch = async () => {
     try {

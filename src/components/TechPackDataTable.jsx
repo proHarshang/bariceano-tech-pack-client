@@ -10,10 +10,7 @@ const TechPackDataTable = ({ data = [] }) => {
     const [itemsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [isSidebarOpen, setIsSidebarOpen] = useState(null);
-    const [comment, setComment] = useState({
-        name: "",
-        message: ""
-    });
+
 
     const { register, watch } = useForm();
     const isCommentChecked = watch("Comment"); // Watch the checkbox state
@@ -36,42 +33,42 @@ const TechPackDataTable = ({ data = [] }) => {
         return new Intl.DateTimeFormat('en-US', options).format(date);
     };
 
-    useEffect(() => {
-        console.log("data", data);
-    }, [data])
-
-    useEffect(() => {
-        console.log(comment);
-    }, [comment])
+    const [comment, setComment] = useState({
+        name: "user",  // Temporary name
+        message: "",   // Comment message
+        date: new Date().toISOString() // Comment date
+    });
 
 
     const toggleSidebar = useCallback((styleNo = null, comment = null) => {
         if (styleNo) {
-            setIsSidebarOpen(styleNo); // Store only the orderId to indicate which sidebar is open
+            setIsSidebarOpen(styleNo); // Open sidebar with styleNo
             setComment({
-                name: "Unknown",
-                message: comment,
-                date: new Date()
-            } || {
-                name: "",
-                message: ""
-            }); // Update comment state with the selected order's comment
+                name: "user",  // Temporarily set name to "user"
+                message: comment?.message || "", // Ensure message is set even if undefined
+                date: comment?.date || new Date().toISOString(), // Ensure date is set even if undefined
+            });
         } else {
             setIsSidebarOpen(null); // Close sidebar
             setComment({
-                name: "",
-                message: ""
-            }); // Clear the comment when the sidebar is closed
+                name: "user",  // Temporarily set name to "user"
+                message: "",   // Ensure message is empty
+                date: new Date().toISOString(), // Ensure date is reset
+            });
         }
-    })
+    }, []);
 
-    const handleCommentChange = (e) => {
-        setComment({
-            name: "Unknown",
-            message: e.target.value,
-            date: new Date()
-        }); // Update comment state with user input
+    const handleCommentChange = (event) => {
+        const { name, value } = event.target;
+        setComment((prev) => ({
+            ...prev,
+            [name]: value,
+            date: new Date().toISOString(), // Automatically set the current date
+        }));
     };
+
+
+
 
     // -- to close sidebar by clicking outside of div --
     useEffect(() => {
@@ -137,10 +134,6 @@ const TechPackDataTable = ({ data = [] }) => {
         return isDesignerSelected && isGenderSelected;
     });
     const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-
-    useEffect(() => {
-        console.log("filteredData", filteredData);
-    }, [filteredData])
 
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -388,28 +381,43 @@ const TechPackDataTable = ({ data = [] }) => {
                         </tbody>
                     </table>
                     {isSidebarOpen && (
-                        <div ref={sidebarRef} className="fixed top-0 right-0 h-full w-1/4 max-w-sm bg-white shadow-lg z-50 p-6">
+                        <div
+                            ref={sidebarRef}
+                            className="fixed top-0 right-0 h-full w-1/4 max-w-sm bg-white shadow-lg z-50 p-6"
+                        >
                             <div className="flex justify-between items-center mb-4">
                                 <h2 className="text-lg font-bold">Add Comment</h2>
                             </div>
                             <textarea
                                 className="w-full h-40 p-2 border rounded"
+                                name="message" // Set the name to match `message`
                                 value={comment.message}
                                 onChange={handleCommentChange}
-                                placeholder="Enter your comment here..."
+                                placeholder="Enter Comment"
                             ></textarea>
-                            <span>{comment.name}</span><br />
+                            <span>{comment.name}</span>
+                            <br />
                             <span>{formatDate(comment?.date)}</span>
                             <div className="flex mt-20">
-                                <button onClick={() => { handleCommentSubmit(isSidebarOpen, comment); toggleSidebar(false) }} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
+                                <button
+                                    onClick={() => {
+                                        handleCommentSubmit(isSidebarOpen, comment);
+                                        toggleSidebar(false);
+                                    }}
+                                    className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline"
+                                >
                                     Apply
                                 </button>
-                                <button onClick={() => toggleSidebar(false)} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
+                                <button
+                                    onClick={() => toggleSidebar(false)}
+                                    className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline"
+                                >
                                     Close
                                 </button>
                             </div>
                         </div>
                     )}
+
                     <Pagination
                         itemsPerPage={itemsPerPage}
                         totalItems={filteredData.length}
