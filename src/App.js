@@ -1,12 +1,12 @@
 import Auth from './pages/Auth';
 import { AuthProvider } from './context/AuthContext';
-import MainHeader from './common/main-header';
 import MainLayout from './layout/MainLayout';
 import TechPack from './pages/TechPack';
 import TechPacksTable from './pages/TechPacksTable';
 import Setting from './components/Setting';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { TechPackProvider } from './context/TechPackContext';
+import AddTechpack from './pages/AddTechpack';
 
 function App() {
   return (
@@ -18,6 +18,7 @@ function App() {
             <Route path="/tech-pack" element={<TechPackProvider><TechPack /></TechPackProvider>} />
             <Route path='/tech-pack-data' element={<TechPacksTable />} />
             <Route path='/setting' element={<Setting />} />
+            <Route path='/addTechpack' element={<AddTechpack />} />
           </Routes>
           </MainLayout>
       </Router>
