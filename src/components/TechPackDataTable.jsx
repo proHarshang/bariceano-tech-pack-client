@@ -1,18 +1,19 @@
-import { useState, useCallback } from 'react';
-import { useRef, useEffect } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { handleCommentSubmit } from '../API/TechPacks';
 import TechPackPdfGenerator from '../TechPackPdfGenerator';
 import { useForm } from "react-hook-form";
+import Pagination from '../common/Pagination.jsx';
 
 const TechPackDataTable = ({ data = [] }) => {
     const sidebarRef = useRef(null);
+    const [itemsPerPage] = useState(10);
     const { register, watch } = useForm();
     const isCommentChecked = watch("Comment"); // Watch the checkbox state
+    const [currentPage, setCurrentPage] = useState(1);
 
     data = isCommentChecked
         ? data.filter(item => item.comment) // Filter data with a comment
         : data; // Show all data if checkbox is not checked
-
 
     const formatDate = (dateString) => {
         if (!dateString) return "Not Modified Yet";
@@ -63,17 +64,27 @@ const TechPackDataTable = ({ data = [] }) => {
         };
     }, [isSidebarOpen, toggleSidebar]);
 
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
     // search logic 
     const [searchTerm, setSearchTerm] = useState('');
     const filteredBySearch = data.filter(techpack =>
-        techpack.specSheetTable.info.styleNo?.includes(searchTerm) ||
-        techpack.specSheetTable?.info?.designer.includes(searchTerm));
+        techpack.specSheetTable?.info?.styleNo?.includes(searchTerm) ||
+        techpack.specSheetTable?.info?.designer?.includes(searchTerm));
+
+    const handleSearch = (event) => {
+        setSearchTerm(event.target.value);
+        setCurrentPage(1);
+    };
 
     // shorting logic
     const [isAscending, setIsAscending] = useState(false);
     const handleSort = () => {
         setIsAscending(!isAscending); // Toggle sorting order
     };
+
     const sortedData = [...filteredBySearch].sort((a, b) => {
         if (isAscending) {
             return new Date(a.modifiedAt) - new Date(b.modifiedAt); // Oldest to newest
@@ -81,6 +92,7 @@ const TechPackDataTable = ({ data = [] }) => {
             return new Date(b.modifiedAt) - new Date(a.modifiedAt); // Newest to oldest
         }
     });
+
 
     // filter logic
     const [selectedDesigner, setSelectedDesigner] = useState([]); // Array to hold selected designers
@@ -92,15 +104,73 @@ const TechPackDataTable = ({ data = [] }) => {
     const uniqueGenders = Array.from(new Set(sortedData.map(item => item.specSheetTable?.info?.gender)));
 
     // Filter data based on selected designer and gender
-    const filteredData = sortedData.filter(item => {
+    const filteredData = filteredBySearch.filter(item => {
         const isDesignerSelected = selectedDesigner.length === 0 || selectedDesigner.includes(item.specSheetTable?.info?.designer);
         const isGenderSelected = selectedGender.length === 0 || selectedGender.includes(item.specSheetTable?.info?.gender);
         return isDesignerSelected && isGenderSelected;
     });
+    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
     useEffect(() => {
         console.log("filteredData", filteredData);
     }, [filteredData])
+
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    const handleCopy = async (item) => {
+        // Show confirmation alert before proceeding with the copy
+        const confirmCopy = window.confirm("Are you sure you want to copy this item?");
+
+        if (confirmCopy) {
+            try {
+                // Check if the item has already been copied by looking for the "copied" text in styleNo
+                let copyCount = 1;
+                if (item.specSheetTable?.info?.styleNo.includes('copied')) {
+                    // Extract the current copy number from the styleNo if it exists, e.g., "styleNo copied(1)"
+                    const matches = item.specSheetTable.info.styleNo.match(/copied\((\d+)\)/);
+                    if (matches) {
+                        copyCount = parseInt(matches[1]) + 1; // Increment the copy count
+                    }
+                }
+
+                // Create a copy of the item and modify it
+                const copiedItem = {
+                    ...item,
+                    specSheetTable: {
+                        ...item.specSheetTable,
+                        info: {
+                            ...item.specSheetTable.info,
+                            styleNo: item.specSheetTable.info.styleNo.split(' ')[0] + ` copied(${copyCount})`, // Append "copied(n)"
+                        },
+                    },
+                };
+
+                // Send a POST request to your createTechPack API
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/design/techpacks/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'api-key': process.env.REACT_APP_API_KEY, // Ensure the correct API key is used
+                    },
+                    body: JSON.stringify(copiedItem),
+                });
+
+                if (response.ok) {
+                    const newTechPack = await response.json();
+                    // Add the copied data to the table without reloading
+                    data = ((prevData) => [...prevData, newTechPack.data]); // Add the new item directly to the state
+                    window.location.reload()
+                } else {
+                    console.error('Failed to copy the data');
+                }
+            } catch (error) {
+                console.error('Error copying data:', error);
+            }
+        }
+    };
+
+
 
     return (
         <>
@@ -113,7 +183,7 @@ const TechPackDataTable = ({ data = [] }) => {
                                 type="text"
                                 placeholder="Enter Techpack Id or Name"
                                 value={searchTerm}
-                                onChange={e => setSearchTerm(e.target.value)} // Ensure state update
+                                onChange={handleSearch} // Ensure state update
                                 className="w-full"
                             />
                         </div>
@@ -255,42 +325,44 @@ const TechPackDataTable = ({ data = [] }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredData?.map((item, index) => (
-                                <tr key={item._id}>
-                                    <td>{index + 1}</td>
-                                    <td>{item.specSheetTable.info.styleNo}</td>
-                                    <td>{formatDate(item.modifiedAt)}</td>
-                                    <td>{item.specSheetTable?.info?.designer}</td>
-                                    <td>{item.specSheetTable?.info?.state}</td>
-                                    <td>{item.specSheetTable?.info?.gender}</td>
-                                    <td>{item.specSheetTable?.info?.category}</td>
-                                    <td>
-                                        {item.comment ? (
-                                            <button className="m-auto px-3" onClick={() => toggleSidebar(item.specSheetTable.info.styleNo, item.comment)}>
+                            {currentItems?.map((item, index) => (
+                                <React.Fragment key={item._id}>
+                                    <tr>
+                                        <td>{indexOfFirstItem + index + 1}</td>
+                                        <td>{item.specSheetTable.info.styleNo}</td>
+                                        <td>{formatDate(item.modifiedAt)}</td>
+                                        <td>{item.specSheetTable?.info?.designer}</td>
+                                        <td>{item.specSheetTable?.info?.state}</td>
+                                        <td>{item.specSheetTable?.info?.gender}</td>
+                                        <td>{item.specSheetTable?.info?.category}</td>
+                                        <td>
+                                            {item.comment ? (
+                                                <button className="m-auto px-3" onClick={() => toggleSidebar(item.specSheetTable.info.styleNo, item.comment)}>
+                                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M11.6666 10C11.6666 10.9205 10.9204 11.6667 9.99992 11.6667C9.07942 11.6667 8.33325 10.9205 8.33325 10C8.33325 9.07954 9.07942 8.33337 9.99992 8.33337C10.9204 8.33337 11.6666 9.07954 11.6666 10Z" fill="black" />
+                                                        <path d="M10 16.3167C5.35917 16.3167 1.50109 13.6111 0.366076 10C1.50109 6.38899 5.35917 3.68337 10 3.68337C14.6409 3.68337 18.4989 6.38899 19.6339 10C18.4989 13.6111 14.6409 16.3167 10 16.3167ZM10 13.313C12.0585 13.313 13.6833 11.8635 13.6833 10C13.6833 8.13659 12.0585 6.68708 10 6.68708C7.94146 6.68708 6.31667 8.13658 6.31667 10C6.31667 11.8635 7.94146 13.313 10 13.313Z" stroke="black" stroke-width="0.7" />
+                                                    </svg>
+                                                </button>
+                                            ) : <button className="m-auto px-3" title="Add comment" onClick={() => toggleSidebar(item.specSheetTable.info.styleNo, item.comment)}>
                                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M11.6666 10C11.6666 10.9205 10.9204 11.6667 9.99992 11.6667C9.07942 11.6667 8.33325 10.9205 8.33325 10C8.33325 9.07954 9.07942 8.33337 9.99992 8.33337C10.9204 8.33337 11.6666 9.07954 11.6666 10Z" fill="black" />
-                                                    <path d="M10 16.3167C5.35917 16.3167 1.50109 13.6111 0.366076 10C1.50109 6.38899 5.35917 3.68337 10 3.68337C14.6409 3.68337 18.4989 6.38899 19.6339 10C18.4989 13.6111 14.6409 16.3167 10 16.3167ZM10 13.313C12.0585 13.313 13.6833 11.8635 13.6833 10C13.6833 8.13659 12.0585 6.68708 10 6.68708C7.94146 6.68708 6.31667 8.13658 6.31667 10C6.31667 11.8635 7.94146 13.313 10 13.313Z" stroke="black" stroke-width="0.7" />
+                                                    <path d="M13.7288 4.50667L15.4932 6.27103M14.8632 2.95241L10.0906 7.72504C9.84433 7.97135 9.67641 8.28505 9.60808 8.62658L9.16675 10.8333L11.3735 10.392C11.715 10.3237 12.0287 10.1558 12.275 9.9095L17.0477 5.13686C17.6509 4.53364 17.6509 3.55563 17.0477 2.95242C16.4444 2.3492 15.4664 2.34919 14.8632 2.95241Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M15.8333 12.5V15C15.8333 15.9205 15.0871 16.6666 14.1666 16.6666H4.99992C4.07944 16.6666 3.33325 15.9205 3.33325 15V5.83329C3.33325 4.91282 4.07944 4.16663 4.99992 4.16663H7.49992" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg>
+                                            </button>}
+                                        </td>
+                                        <td>
+                                            <div className="action-buttons">
+                                                <button className="copy-button hover:bg-gray-300" onClick={() => handleCopy(item)}                                            >Copy</button>
+                                                <button className="edit-button hover:bg-slate-300">Edit</button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button className="download-button hover:bg-slate-300">
+                                                <TechPackPdfGenerator data={filteredData[index]} />
                                             </button>
-                                        ) : <button className="m-auto px-3" title="Add comment" onClick={() => toggleSidebar(item.specSheetTable.info.styleNo, item.comment)}>
-                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M13.7288 4.50667L15.4932 6.27103M14.8632 2.95241L10.0906 7.72504C9.84433 7.97135 9.67641 8.28505 9.60808 8.62658L9.16675 10.8333L11.3735 10.392C11.715 10.3237 12.0287 10.1558 12.275 9.9095L17.0477 5.13686C17.6509 4.53364 17.6509 3.55563 17.0477 2.95242C16.4444 2.3492 15.4664 2.34919 14.8632 2.95241Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
-                                                <path d="M15.8333 12.5V15C15.8333 15.9205 15.0871 16.6666 14.1666 16.6666H4.99992C4.07944 16.6666 3.33325 15.9205 3.33325 15V5.83329C3.33325 4.91282 4.07944 4.16663 4.99992 4.16663H7.49992" stroke="black" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </button>}
-                                    </td>
-                                    <td>
-                                        <div className="action-buttons">
-                                            <button className="copy-button hover:bg-gray-300">Copy</button>
-                                            <button className="edit-button hover:bg-slate-300">Edit</button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button className="download-button hover:bg-slate-300">
-                                            <TechPackPdfGenerator data={filteredData[index]} />
-                                        </button>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
+                                </React.Fragment>
                             ))}
                         </tbody>
                     </table>
@@ -315,6 +387,12 @@ const TechPackDataTable = ({ data = [] }) => {
                             </div>
                         </div>
                     )}
+                    <Pagination
+                        itemsPerPage={itemsPerPage}
+                        totalItems={filteredData.length}
+                        paginate={paginate}
+                        currentPage={currentPage}
+                    />
                 </div>
             </div>
         </>
