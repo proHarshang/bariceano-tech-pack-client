@@ -58,7 +58,7 @@ const MainHeader = () => {
     };
 
     const handleApply = () => {
-        navigate("/tech-pack")
+        navigate("/tech-pack", { state: { selectedLabels, currentCategory, currentSubCategory } })
         setCurrentCategory(false)
         setShowCategories(false)
         setCurrentSubCategory(false)

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LayoutSelection from '../components/LayoutSelection';
 import SpecSheet from '../components/SpecSheet';
 import ArtworkPlacementSheet from '../components/ArtworkPlacementSheet';
@@ -7,74 +7,111 @@ import SiliconLabel from '../components/SiliconeLabel';
 import Header from '../common/header';
 import Footer from '../common/footer';
 import { useTechPack } from '../context/TechPackContext';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const TechPack = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { techPackData, updateField, addSlide, submitTechPack } = useTechPack();
 
-  const { formData, handleSubmit, updatePageInArray, updateFormData } = useTechPack();
+  const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
 
-  // const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
+  useEffect(() => {
+    if (!selectedLabels || !currentCategory || !currentSubCategory) {
+      navigate('/', { replace: true });
+    } else {
+      console.log(selectedLabels, currentCategory, currentSubCategory);
+      updateField("gender", currentSubCategory)
+      updateField("category", currentCategory)
+      selectedLabels.map((label) => {
+        addSlide({
+          "page": 10,
+          "name": label,
+          "type": getType(label),
+          "data": {
+            "images": [
+              {
+                "position": 0,
+                "src": getImage(label)
+              }
+            ]
+          }
+        })
+      })
+    }
+    console.log(selectedLabels, currentCategory, currentSubCategory)
+  }, [selectedLabels, currentCategory, currentSubCategory, navigate]);
 
-  // // useEffect(() => {
-  // //   if (!selectedLabels || !currentCategory || !currentSubCategory) {
-  // //     navigate('/', { replace: true });
-  // //   }
-  // //   console.log(selectedLabels, currentCategory, currentSubCategory)
-  // // }, [selectedLabels, currentCategory, currentSubCategory, navigate]);
 
   const [showPopup, setShowPopup] = useState(false);
-  const [artworkPlacementSheetIndex, setArtworkPlacementSheetIndex] = useState(0)
-
+  const [selectedPage, setSelectedPage] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
-
   const [pageComponent, setPageComponent] = useState([
     {
-      type: "specSheet",
-      suggestedPageName: "spec. Sheet",
-      component: <LayoutSelection />,
-      data: formData.specSheet
+      type: "page"
     },
     {
-      type: "specSheetTable",
-      suggestedPageName: "spec. Sheet",
-      component: <SpecSheet />,
-      data: formData.specSheetTable
+      type: "page"
     },
     {
-      type: "artwork",
-      suggestedPageName: "Artwork",
-      component: <ArtworkPlacementSheet artworkPlacementSheetIndex={artworkPlacementSheetIndex} setArtworkPlacementSheetIndex={setArtworkPlacementSheetIndex} />,
-      data: formData.artwork
+      type: "page"
     },
     {
-      type: "siliconLabelSheet",
-      suggestedPageName: "silicon Label",
-      component: <SiliconLabel />,
-      data: formData.siliconLabelSheet
+      type: "page"
     },
     {
-      type: "Pages",
-      suggestedPageName: "untitled",
-      pageIndex: 0,
-      component: <BlankSheet />,
-      data: formData.Pages[0]
+      type: "page"
     },
     {
-      type: "Pages",
-      suggestedPageName: "untitled",
-      pageIndex: 1,
-      component: <BlankSheet />,
-      data: formData.Pages[1]
+      type: "page"
     },
   ]);
 
-  const [selectedPage, setSelectedPage] = useState(null);
+
+  const getType = (label) => {
+    switch (label) {
+      case label === "Silicon Label Sheet" || "Silicon Label":
+        return "SiliconLabel";
+      default:
+        return "Page"
+    }
+  }
+
+  const getImage = (label) => {
+    switch (label) {
+      case label === "Silicon Label Sheet" || "Silicon Label":
+        return "http://localhost:3001/uploads/techpack/artworksheet.jpg";
+      default:
+        return "http://localhost:3001/uploads/techpack/HangTag.jpg"
+    }
+  }
+
+  const getComponent = (type, page) => {
+    switch (type) {
+      case "Layout0":
+      case "Layout1":
+      case "Layout2":
+      case "Layout3":
+        return <LayoutSelection page={page} />
+      case "Information":
+        return <SpecSheet page={page} />
+      case "ArtworkPlacementSheet":
+        return <ArtworkPlacementSheet page={page} />
+      case "SiliconLabel":
+        return <SiliconLabel page={page} />
+      case "ArtWork":
+        return <BlankSheet page={page} />
+      default:
+        return <BlankSheet page={page} />
+    }
+  }
 
   const handleAddPage = () => {
     if (selectedIndex !== null && selectedPage) {
       let component;
 
       if (selectedPage === "Artwork Placement Sheet") {
-        component = <ArtworkPlacementSheet artworkPlacementSheetIndex={artworkPlacementSheetIndex} setArtworkPlacementSheetIndex={setArtworkPlacementSheetIndex} />;
+        component = <ArtworkPlacementSheet />;
       } else {
         component = <BlankSheet />
       }
@@ -105,17 +142,12 @@ const TechPack = () => {
 
   return (
     <form className="w-[841px] mx-auto mt-10" >
-      {pageComponent.map((item, index) => {
-        item.type === "Pages" ?
-          updatePageInArray(item.pageIndex, { page: index, name: `untitled-${index}` })
-          :
-          updateFormData([item.type], { page: index, name: item.suggestedPageName });
-        ;
+      {techPackData.slides.map((item, index) => {
         return (
-          <div key={item.data.page}>
+          <div key={index}>
             <div className="border-2 border-black mb-7">
-              <Header name={item.data.name} index={index} onDelete={() => handleDelete(item.data.page)} />
-              {item.component}
+              <Header name={item.name} page={item.page} onDelete={() => handleDelete(item.page)} />
+              {getComponent(item.type, item.page)}
               <Footer />
             </div>
             <AddButton index={index} setShowPopup={setShowPopup} setSelectedIndex={setSelectedIndex} />
@@ -163,7 +195,7 @@ const TechPack = () => {
 
       <div className="flex justify-center gap-5 mb-10">
         <button type='button' className="text-sm px-6 py-2 rounded-full border border-black">Reset</button>
-        <button type='button' className="text-white bg-black text-sm px-6 py-2 rounded-full" onClick={handleSubmit}>Save</button>
+        <button type='button' className="text-white bg-black text-sm px-6 py-2 rounded-full" onClick={submitTechPack}>Save</button>
         <button type='button' className="text-white bg-black text-sm px-6 py-2 rounded-full">Save & Download</button>
       </div>
     </form>

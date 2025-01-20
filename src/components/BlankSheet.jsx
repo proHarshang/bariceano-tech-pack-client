@@ -1,44 +1,34 @@
-import React, { useState, useCallback } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useTechPack } from '../context/TechPackContext';
 
-const BlankSheet = () => {
-  const [image, setImage] = useState(null);
+const BlankSheet = ({ page }) => {
+  const { getSlideByPage, updateSlideByPage } = useTechPack();
 
-  const onDrop = useCallback((acceptedFiles) => {
-    const file = acceptedFiles[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImage(reader.result);
-    };
-    reader.readAsDataURL(file);
-  }, []);
-
-  const { getRootProps, getInputProps, open } = useDropzone({
-    onDrop,
-    accept: 'image/*',
-    noClick: true,
-    noKeyboard: true,
-  });
+  const slide = getSlideByPage(page);
 
   return (
     <div className="w-full h-[461px] p-10">
-      {image ? (
+      {slide.data.images[0].src ? (
         <div className="flex flex-col items-center w-full h-full">
-          <img 
-            src={image} 
-            alt="Preview" 
+          <img
+            src={`${process.env.REACT_APP_API_URL}/upload/techpack/${slide.data.images[0].src}`}
+            alt={slide.data.images[0].src}
             className="mb-4 w-full h-full object-contain cursor-pointer"
-            onClick={open}
           />
-          <input {...getInputProps()} />
+          <input
+            type='text'
+            value={slide.data.images[0].src}
+            onChange={(e) => updateSlideByPage(page, "data.images", [{ position: 0, src: e.target.value }])}
+          />
         </div>
       ) : (
         <div
-          {...getRootProps()}
           className="border-2 border-dashed bg-[#F3F3F3] border-gray-300 w-full h-full flex justify-center items-center cursor-pointer"
-          onClick={open}
         >
-          <input {...getInputProps()} />
+          <input
+            type='text'
+            value={slide.data.images[0].src}
+            onChange={(e) => updateSlideByPage(page, "data.images", [{ position: 0, src: e.target.value }])}
+          />
           <p>Drop an Image here or click to select</p>
         </div>
       )}

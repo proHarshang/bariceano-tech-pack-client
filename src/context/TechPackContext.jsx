@@ -2,132 +2,462 @@ import React, { createContext, useState, useContext } from 'react';
 
 const TechPackContext = createContext();
 
+export const useTechPack = () => useContext(TechPackContext);
+
 export const TechPackProvider = ({ children }) => {
-    const [formData, setFormData] = useState({
-        specSheet: {
-            page: 1,
-            name: "Spec. Sheet",
-            layout: "layout1",
-            fabricColorImages: [],
-            threadColorImages: [],
-            images: [],
-        },
-        specSheetTable: {
-            page: 2,
-            name: "Spec. Sheet",
-            info: {},
-        },
-        artwork: {
-            page: 3,
-            name: "Artwork Placement Sheet",
-            artworkPlacementSheet: [],
-            artworkImages: [],
-        },
-        siliconLabelSheet: {
-            page: 4,
-            name: "Spec. Sheet",
-            title: "",
-            images: [],
-        },
-        Pages: [{
-            page: 5,
-            name: "pAgE",
-            src: "asdad.jpg"
+    const [techPackData, setTechPackData] = useState({
+        designer: "",
+        styleNo: "",
+        state: "",
+        gender: "",
+        category: "",
+        slides: [{
+            "page": 1,
+            "name": "Spac Sheet",
+            "type": "Layout2",
+            "data": {
+                "fabricColorImages": [
+                    {
+                        "position": 0,
+                        "src": "PANTONE1.jpg"
+                    },
+                    {
+                        "position": 1,
+                        "src": "PANTONE1.jpg"
+                    }
+                ],
+                "threadColorImages": [
+                    {
+                        "position": 0,
+                        "src": "PANTONE1.jpg"
+                    },
+                    {
+                        "position": 1,
+                        "src": "PANTONE1.jpg"
+                    }
+                ],
+                "images": [
+                    {
+                        "position": "front",
+                        "src": "BRMS04FRONT.jpg"
+                    },
+                    {
+                        "position": "SIDE",
+                        "src": "BRMS04SIDE.jpg"
+                    },
+                    {
+                        "position": "back",
+                        "src": "BRMS04BACK.jpg"
+                    }
+                ]
+            },
         },
         {
-            page: 5,
-            name: "pAgE",
-            src: "asdad.jpg"
-        }],
+            "page": 2,
+            "name": "Spec Sheet",
+            "type": "Information",
+            "data": {
+                "info": [
+                    {
+                        "position": "1",
+                        "name": "styleNo",
+                        "value": "BR-TD-11"
+                    },
+                    {
+                        "position": "2",
+                        "name": "fabricColor",
+                        "value": "Bright White (11-0601 TP)"
+                    },
+                    {
+                        "position": "3",
+                        "name": "gender",
+                        "value": "Male"
+                    },
+                    {
+                        "position": "4",
+                        "name": "fit",
+                        "value": "Oversize"
+                    },
+                    {
+                        "position": "Last",
+                        "name": "trim",
+                        "value": "Silicon label, Wash care label, Size label, Main label, 2X1 Rib, 1x1 Rib, Hang tag, Sewing thread"
+                    },
+                    {
+                        "position": "Last",
+                        "name": "fabric",
+                        "value": "96% supima cotton, 4% spandex (elastane)(340gsm) loop knit, mild brushing back side (soft hand feel) (all type of fabrics should be treated with remazol dye only)"
+                    },
+                    {
+                        "position": "Last",
+                        "name": "description",
+                        "value": "Centre front screen print + sleeve screen print + centre back silicon tag."
+                    },
+                    {
+                        "position": "Last",
+                        "name": "note",
+                        "value": "Use water based ink."
+                    },
+                    {
+                        "position": "5",
+                        "name": "style",
+                        "value": "Sweatshirt"
+                    },
+                    {
+                        "position": "6",
+                        "name": "category",
+                        "value": "Top"
+                    },
+                    {
+                        "position": "3",
+                        "name": "size",
+                        "value": "S,M,L,XL"
+                    },
+                    {
+                        "position": "3",
+                        "name": "fit",
+                        "value": "Oversize"
+                    },
+                    {
+                        "position": "3",
+                        "name": "fit",
+                        "value": "Oversize"
+                    },
+                    {
+                        "position": "3",
+                        "name": "fit",
+                        "value": "Oversize"
+                    }
+                ]
+            }
+        },
+        {
+            "page": 3,
+            "name": "Artwork Placement Sheet",
+            "type": "ArtworkPlacementSheet",
+            "data": {
+                "artworkPlacementSheet": [
+                    {
+                        "sNo": 1,
+                        "placement": "Front",
+                        "technique": "Flock",
+                        "color": "#FFFFFF #FFFFFF #FFFFFF",
+                        "artworkimage": [
+                            {
+                                "position": 0,
+                                "src": "3.png"
+                            }
+                        ],
+                        "placementimage": [
+                            {
+                                "position": 0,
+                                "src": "4.png"
+                            }
+                        ]
+                    },
+                    {
+                        "sNo": 2,
+                        "placement": "Front",
+                        "technique": "Flock",
+                        "color": "#FFFFFF #FFFFFF #FFFFFF",
+                        "artworkimage": [
+                            {
+                                "position": "0",
+                                "src": "3.png"
+                            }
+                        ],
+                        "placementimage": [
+                            {
+                                "position": "0",
+                                "src": "4.png"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "page": 4,
+            "name": "Art Work",
+            "type": "Artwork",
+            "data": {
+                "images": [
+                    {
+                        "position": 0,
+                        "src": "HangTag.jpg"
+                    }
+                ]
+            }
+        },
+        {
+            "page": 5,
+            "name": "Silicon Label",
+            "type": "SiliconLabel",
+            "data": {
+                "title": "Silicon Label Details",
+                "images": [
+                    {
+                        "position": 0,
+                        "src": "artworksheet.jpg"
+                    }
+                ]
+            }
+        },
+        ],
     });
 
-    const updateFormData = (section, data) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            [section]: { ...prevData[section], ...data },
-        }));
+    // Add a new slide to the slides array
+    const addSlide = (newSlide) => {
+        if (newSlide) {
+            setTechPackData((prev) => ({
+                ...prev,
+                slides: [...prev.slides, newSlide],
+            }));
+        }
     };
 
-    // Handle image uploads
-    const handleImageUpload = (section, field, files, position = null) => {
-        const newImages = Array.from(files).map((file) => ({
-            position: position ? position : null,
-            src: URL.createObjectURL(file), // Temporary preview
-            file,
-        }));
-
-        const existingImages = formData[section][field] || [];
-
-        // Merge new images, replacing ones with the same position
-        const updatedImages = [...existingImages];
-
-        newImages.forEach((newImage) => {
-            const existingIndex = updatedImages.findIndex(
-                (img) => img.position === newImage.position
-            );
-            if (existingIndex >= 0) {
-                updatedImages[existingIndex] = newImage; // Replace existing image
-            } else {
-                updatedImages.push(newImage); // Add new image
-            }
+    // Update a slide
+    const updateSlide = (index, field, value) => {
+        setTechPackData((prev) => {
+            const updatedSlides = [...prev.slides];
+            if (!updatedSlides[index]) updatedSlides[index] = {};
+            updatedSlides[index][field] = value;
+            return { ...prev, slides: updatedSlides };
         });
-
-        updateFormData(section, { [field]: updatedImages });
     };
 
-    // Function to update a page in Pages array
-    const updatePageInArray = (pageIndex, updatedData) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            Pages: prevData.Pages.map((page, index) =>
-                index === pageIndex ? { ...page, ...updatedData } : page
+    // Update a field in the main form
+    const updateField = (field, value) => {
+        setTechPackData((prev) => ({ ...prev, [field]: value }));
+    };
+
+    // Update the type value
+    const updateTypeInSlides = (newType) => {
+        setTechPackData((prev) => ({
+            ...prev,
+            slides: prev.slides.map((slide) =>
+                slide.type === "Layout0" || slide.type === "Layout1" || slide.type === "Layout2" || slide.type === "Layout3"
+                    ? { ...slide, type: newType }
+                    : slide
             ),
         }));
     };
 
-    const handleSubmit = async () => {
-        const structuredData = new FormData();
+    const addInfoField = (page, newField) => {
+        setTechPackData((prev) => {
+            const updatedSlides = prev.slides.map((slide) => {
+                if (slide.page === page) {
+                    return {
+                        ...slide,
+                        data: {
+                            ...slide.data,
+                            info: [...slide.data.info, newField], // Add the new field to the info array
+                        },
+                    };
+                }
+                return slide;
+            });
 
-        Object.entries(formData).forEach(([section, data]) => {
-            console.log("section:", section, "data:", data);
-            if (typeof data === 'object' && !Array.isArray(data)) {
-                Object.entries(data).forEach(([key, value]) => {
-                    if (Array.isArray(value)) {
-                        // console.log("key:", key, "value:", value);
-                        // Handle arrays like images
-                        value.forEach((item, index) => {
-                            // console.log("item:", item, "index:", index);
-                            if (item.file) {
-                                structuredData.append(`${section}.${key}[${index}].src`, item.file);
-                            } else {
-                                structuredData.append(`${section}.${key}[${index}].src`, item.src);
-                            }
-                        });
-                    } else {
-                        structuredData.append(`${section}.${key}`, value);
-                    }
-                });
-            }
+            return { ...prev, slides: updatedSlides };
         });
+    };
 
-        console.log("structuredData", structuredData);
+    const updateInfoField = (page, label, value, updatedField) => {
+        setTechPackData((prev) => {
+            const updatedSlides = prev.slides.map((slide) => {
+                if (slide.page === page) {
+                    return {
+                        ...slide,
+                        data: {
+                            ...slide.data,
+                            info: slide.data.info.map((field) =>
+                                field.name === label && field.value === value ? { ...field, ...updatedField } : field
+                            ),
+                        },
+                    };
+                }
+                return slide;
+            });
+
+            return { ...prev, slides: updatedSlides };
+        });
+    };
+
+    const deleteInfoField = (page, label, value) => {
+        setTechPackData((prev) => {
+            const updatedSlides = prev.slides.map((slide) => {
+                if (slide.page === page) {
+                    return {
+                        ...slide,
+                        data: {
+                            ...slide.data,
+                            info: slide.data.info.filter(
+                                (field) => !(field.name === label && field.value === value)
+                            ), // Remove the matching field
+                        },
+                    };
+                }
+                return slide;
+            });
+
+            return { ...prev, slides: updatedSlides };
+        });
+    };
+
+    const addArtworkPlacement = (page, newPlacement) => {
+        setTechPackData((prev) => {
+            const updatedSlides = prev.slides.map((slide) => {
+                if (slide.page === page) {
+                    return {
+                        ...slide,
+                        data: {
+                            ...slide.data,
+                            artworkPlacementSheet: [...slide.data.artworkPlacementSheet, newPlacement],
+                        },
+                    };
+                }
+                return slide;
+            });
+
+            return { ...prev, slides: updatedSlides };
+        });
+    };
+
+    // Update an artwork placement entry by `sNo`
+    const updateArtworkPlacement = (page, sNo, updatedFields) => {
+        setTechPackData((prev) => {
+            const updatedSlides = prev.slides.map((slide) => {
+                if (slide.page === page) {
+                    return {
+                        ...slide,
+                        data: {
+                            ...slide.data,
+                            artworkPlacementSheet: slide.data.artworkPlacementSheet.map((placement) =>
+                                placement.sNo === sNo ? { ...placement, ...updatedFields } : placement
+                            ),
+                        },
+                    };
+                }
+                return slide;
+            });
+
+            return { ...prev, slides: updatedSlides };
+        });
+    };
+
+    // Delete an artwork placement entry by `sNo`
+    const deleteArtworkPlacement = (page, sNo) => {
+        setTechPackData((prev) => {
+            const updatedSlides = prev.slides.map((slide) => {
+                if (slide.page === page) {
+                    return {
+                        ...slide,
+                        data: {
+                            ...slide.data,
+                            artworkPlacementSheet: slide.data.artworkPlacementSheet.filter(
+                                (placement) => placement.sNo !== sNo
+                            ),
+                        },
+                    };
+                }
+                return slide;
+            });
+
+            return { ...prev, slides: updatedSlides };
+        });
+    };
+
+
+    const updateSlideByPage = (page, fieldPath, value) => {
+        setTechPackData((prev) => {
+            const updatedSlides = prev.slides.map((slide) => {
+                if (slide.page === page) {
+                    const updatedSlide = { ...slide };
+                    const fieldParts = fieldPath.split(".");
+                    let currentField = updatedSlide;
+
+                    // Traverse to the target field
+                    fieldParts.forEach((key, index) => {
+                        if (index === fieldParts.length - 1) {
+                            // Update the target field
+                            if (Array.isArray(currentField[key])) {
+                                const positionIndex = currentField[key].findIndex(
+                                    (item) => item.position === value.position
+                                );
+                                if (positionIndex !== -1) {
+                                    currentField[key][positionIndex] = {
+                                        ...currentField[key][positionIndex],
+                                        src: value.src,
+                                    };
+                                }
+                            } else {
+                                currentField[key] = value;
+                            }
+                        } else {
+                            if (!currentField[key]) {
+                                currentField[key] = {};
+                            }
+                            currentField = currentField[key];
+                        }
+                    });
+
+                    return updatedSlide;
+                }
+                return slide;
+            });
+
+            return { ...prev, slides: updatedSlides };
+        });
+    };
+
+
+    const getSlideByPage = (pageNumber) => {
+        return techPackData.slides.find((slide) => slide.page === pageNumber) || null;
+    };
+
+    // Submit the form data
+    const submitTechPack = async () => {
+        console.log("TechPackData : ", techPackData);
         // try {
-        //     const response = await fetch('/api/techpack', {
-        //         method: 'POST',
-        //         body: structuredData,        
+        //     const response = await fetch("/techpacks/add", {
+        //         method: "POST",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //         body: JSON.stringify(techPackData),
         //     });
-        //     const result = await response.json();
-        //     console.log('Submission Success:', result);
+
+        //     if (!response.ok) {
+        //         throw new Error(`Error: ${response.statusText}`);
+        //     }
+
+        //     const data = await response.json();
+        //     console.log("TechPack created successfully:", data);
         // } catch (error) {
-        //     console.error('Submission Error:', error);
+        //     console.error("Error creating TechPack:", error.message);
         // }
     };
 
     return (
-        <TechPackContext.Provider value={{ formData, updateFormData, handleImageUpload, updatePageInArray, handleSubmit }}>
+        <TechPackContext.Provider
+            value={{
+                techPackData,
+                updateField,
+                addSlide,
+                updateSlide,
+                updateTypeInSlides,
+                getSlideByPage,
+                updateSlideByPage,
+                addInfoField,
+                updateInfoField,
+                deleteInfoField,
+                submitTechPack,
+                deleteArtworkPlacement,
+                updateArtworkPlacement,
+                addArtworkPlacement
+            }}
+        >
             {children}
         </TechPackContext.Provider>
     );
 };
-
-export const useTechPack = () => useContext(TechPackContext);

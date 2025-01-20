@@ -1,4 +1,7 @@
-function Header({ name, index, onDelete }) {
+import { useTechPack } from '../context/TechPackContext';
+
+function Header({ name, page, onDelete }) {
+    const { techPackData, updateSlideByPage, updateField } = useTechPack();
 
     return (
         <section className='border-b-2 border-black'>
@@ -6,7 +9,13 @@ function Header({ name, index, onDelete }) {
                 <div>
                     <h1 className='font-bold'>BARISCEANO</h1>
                     <div className='absolute z-50'>
-                        <input type="text" placeholder={name} value={name} className='mt-2 w-full border' name="" id="" />
+                        <input
+                            type="text"
+                            placeholder={name}
+                            value={name}
+                            onChange={(e) => updateSlideByPage(page, "name", e.target.value)}
+                            className='mt-2 w-full border'
+                        />
                     </div>
                 </div>
                 <div className='h-[46px] absolute right-0 w-full'>
@@ -14,8 +23,14 @@ function Header({ name, index, onDelete }) {
                 </div>
                 <div className='flex flex-col items-end justify-end'>
                     <div>
-                        <h5>Pg - 0{index}</h5>
-                        <h5>BR-00-00</h5>
+                        <h5>Pg - {page}</h5>
+                        <input
+                            type="text"
+                            placeholder="BR-00-00"
+                            value={techPackData.styleNo}
+                            onChange={(e) => updateField("styleNo", e.target.value)}
+                            className='mt-2 w-full border'
+                        />
                     </div>
                     <div className='flex gap-5 absolute top-12 pr-2 right-0 items-center mt-2'>
                         <div
