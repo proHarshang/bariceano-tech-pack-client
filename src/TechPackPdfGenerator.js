@@ -411,7 +411,7 @@ const TechPackPdfGenerator = (data) => {
                     currentX += columnWidths[i];
                 });
             };
-            drawHeaders(); 
+            drawHeaders();
             // Draw table rows
             let currentY = startY + rowHeight / 2; // Start below headers
             rows.forEach((row, index) => {
@@ -601,9 +601,9 @@ const TechPackPdfGenerator = (data) => {
     };
 
     return (
-        <div>
-            <button onClick={generatePdf}>Download</button>
-        </div>
+
+        <button onClick={generatePdf}>Download</button>
+
     );
 };
 
