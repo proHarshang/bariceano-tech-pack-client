@@ -66,7 +66,7 @@ const MainHeader = () => {
 
 
     return (
-        <div className="p-5 flex justify-between border-b pl-16 pr-12">
+        <div className="p-5 flex justify-between border-b pl-10 pr-0 max-w-[1500px] mx-auto">
             <div className='flex gap-5 items-center'>
                 {collection.map((item) => (
                     <button

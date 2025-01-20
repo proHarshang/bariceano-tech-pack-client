@@ -23,6 +23,27 @@ const getTechPacks = async () => {
 
 }
 
+export const deleteTechPack = async (id) => {
+    try {
+        const response = await fetch(`${apiURL}/design/techpacks/delete/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ id }), // Send the category name for deletion
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to delete Tech pack');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while deleting the Tech pack');
+    }
+};
+
 const handleCommentSubmit = async (styleNo, comment) => {
     try {
         console.log("Submitting Comment:", { styleNo, ...comment });  // Log the payload to check the structure
@@ -34,7 +55,7 @@ const handleCommentSubmit = async (styleNo, comment) => {
             },
             body: JSON.stringify({
                 "styleNo": styleNo,
-                "name": comment.name, 
+                "name": comment.name,
                 "message": comment.message,
                 "date": comment.date
             }),
