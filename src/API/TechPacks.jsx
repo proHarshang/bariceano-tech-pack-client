@@ -22,6 +22,25 @@ const getTechPacks = async () => {
     return response.json();
 
 }
+const getUploadedImage = async () => {
+
+    const response = await fetch(`${apiURL}/design/techpacks/images`, {
+        method: 'GET',
+        headers: {
+            'api-Key': apiKey,
+        },
+    })
+    if (!response.ok) {
+        if (response.status === 401) {
+
+            return;
+        }
+        throw new Error('Failed to fetch products data');
+    }
+
+    return response.json();
+
+}
 
 export const deleteTechPack = async (id) => {
     try {
@@ -528,6 +547,43 @@ const useDeleteTrims = () => {
     return { deleteTrims, loadingTrims, errorTrims, successTrims };
 };
 
+const useUploadImage = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const uploadImage = async (file) => {
+        setLoading(true);
+        setError(null);
+
+        const formData = new FormData();
+        formData.append('images', file);  // 'images' matches the form field name
+
+        try {
+            const response = await fetch(`${apiURL}/design/techpacks/images/upload`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'api-key': apiKey,
+                },
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                setError(data.message || 'Upload failed');
+            } else {
+                console.log('File uploaded successfully');
+            }
+        } catch (err) {
+            setError('Something went wrong during upload');
+            console.error('Upload error:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { uploadImage, loading, error };
+};
 
 
-export { getTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims }
+
+export { getTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, getUploadedImage, useUploadImage }

@@ -365,3 +365,38 @@ select:focus-visible {
   border-color: black;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
+
+.custom-file-input {
+  position: relative;
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background-color: #8b3dff;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  outline: none;
+  border: none;
+}
+
+.custom-file-input::file-selector-button {
+  display: none;
+}
+
+.custom-file-label {
+  display: block;
+  background-color: gray;
+  color: white;
+  text-align: center;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.custom-file-label:hover {
+  background-color: #752bd6;
+}

@@ -51,7 +51,7 @@ const MainHeader = () => {
     };
 
     const handleClear = () => {
-        setSelectedLabels([]);
+        setSelectedLabels([true]);
         setCurrentCategory(false)
         setShowCategories(false)
         setCurrentSubCategory(false)
@@ -172,6 +172,7 @@ const MainHeader = () => {
                                                 <label className="text-[#AEAEAE]">{label}</label>
                                                 <input
                                                     type="checkbox"
+                                                    defaultValue={true}
                                                     name="checkbox"
                                                     checked={selectedLabels.includes(label)}
                                                     onChange={() => handleLabelChange(label)}
