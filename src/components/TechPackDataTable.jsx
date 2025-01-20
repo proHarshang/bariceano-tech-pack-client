@@ -1,20 +1,14 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { handleCommentSubmit } from '../API/TechPacks';
+import { handleCommentSubmit, deleteTechPack } from '../API/TechPacks';
 import TechPackPdfGenerator from '../TechPackPdfGenerator';
 import { useForm } from "react-hook-form";
 import Pagination from '../common/Pagination.jsx';
 
 const TechPackDataTable = ({ data = [] }) => {
     const sidebarRef = useRef(null);
-
     const [itemsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [isSidebarOpen, setIsSidebarOpen] = useState(null);
-    const [comment, setComment] = useState({
-        name: "",
-        message: ""
-    });
-
     const { register, watch } = useForm();
     const isCommentChecked = watch("Comment"); // Watch the checkbox state
 
@@ -36,42 +30,40 @@ const TechPackDataTable = ({ data = [] }) => {
         return new Intl.DateTimeFormat('en-US', options).format(date);
     };
 
-    useEffect(() => {
-        console.log("data", data);
-    }, [data])
-
-    useEffect(() => {
-        console.log(comment);
-    }, [comment])
+    const [comment, setComment] = useState({
+        name: "user",  // Temporary name
+        message: "",   // Comment message
+        date: new Date().toISOString() // Comment date
+    });
 
 
     const toggleSidebar = useCallback((styleNo = null, comment = null) => {
         if (styleNo) {
-            setIsSidebarOpen(styleNo); // Store only the orderId to indicate which sidebar is open
+            setIsSidebarOpen(styleNo); // Open sidebar with styleNo
             setComment({
-                name: "Unknown",
-                message: comment,
-                date: new Date()
-            } || {
-                name: "",
-                message: ""
-            }); // Update comment state with the selected order's comment
+                name: "user",  // Temporarily set name to "user"
+                message: comment?.message || "", // Ensure message is set even if undefined
+                date: comment?.date || new Date().toISOString(), // Ensure date is set even if undefined
+            });
         } else {
             setIsSidebarOpen(null); // Close sidebar
             setComment({
-                name: "",
-                message: ""
-            }); // Clear the comment when the sidebar is closed
+                name: "user",  // Temporarily set name to "user"
+                message: "",   // Ensure message is empty
+                date: new Date().toISOString(), // Ensure date is reset
+            });
         }
-    })
+    }, []);
 
-    const handleCommentChange = (e) => {
-        setComment({
-            name: "Unknown",
-            message: e.target.value,
-            date: new Date()
-        }); // Update comment state with user input
+    const handleCommentChange = (event) => {
+        const { name, value } = event.target;
+        setComment((prev) => ({
+            ...prev,
+            [name]: value,
+            date: new Date().toISOString(), // Automatically set the current date
+        }));
     };
+
 
     // -- to close sidebar by clicking outside of div --
     useEffect(() => {
@@ -106,100 +98,121 @@ const TechPackDataTable = ({ data = [] }) => {
         setCurrentPage(1);
     };
 
+    // filter logic
+    const [selectedDesigner, setSelectedDesigner] = useState([]); // Array to hold selected designers
+    const [selectedGender, setSelectedGender] = useState(""); // State for gender filter
+    const [selectedCategory, setSelectedCategory] = useState(""); // State for gender filter
+    const [selectedStatus, setSelectedStatus] = useState(""); // State for gender filter
+    const [showDesignerOptions, setShowDesignerOptions] = useState(false); // State to control visibility of designer options
+    const [showGenderOptions, setShowGenderOptions] = useState(false); // State to control visibility of designer options
+    const [showCategoryOptions, setShowCategoryOptions] = useState(false); // State to control visibility of designer options
+    const [showCategoryStatus, setShowCategoryStatus] = useState(false); // State to control visibility of designer options
+
+    const uniqueDesigners = Array.from(new Set(filteredBySearch.map(item => item.designer)));
+    const uniqueGenders = Array.from(new Set(filteredBySearch.map(item => item.gender)));
+    const uniqueCategory = Array.from(new Set(filteredBySearch.map(item => item.category)));
+    const uniqueStatus = Array.from(new Set(filteredBySearch.map(item => item.state)));
+
+    // Filter data based on selected designer and gender
+    const filteredData = filteredBySearch.filter(item => {
+        const isDesignerSelected = selectedDesigner.length === 0 || selectedDesigner.includes(item.designer);
+        const isGenderSelected = selectedGender.length === 0 || selectedGender.includes(item.gender);
+        const isCategorySelected = selectedCategory.length === 0 || selectedCategory.includes(item.category);
+        const isStatusSelected = selectedStatus.length === 0 || selectedStatus.includes(item.state);
+        return isDesignerSelected && isGenderSelected && isCategorySelected && isStatusSelected;
+    });
+    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+
     // shorting logic
     const [isAscending, setIsAscending] = useState(false);
     const handleSort = () => {
         setIsAscending(!isAscending); // Toggle sorting order
     };
 
-    const sortedData = [...filteredBySearch].sort((a, b) => {
+    const sortedData = [...currentItems].sort((a, b) => {
         if (isAscending) {
+            console.log("isAscending", isAscending)
             return new Date(a.modifiedAt) - new Date(b.modifiedAt); // Oldest to newest
         } else {
             return new Date(b.modifiedAt) - new Date(a.modifiedAt); // Newest to oldest
         }
     });
 
-
-    // filter logic
-    const [selectedDesigner, setSelectedDesigner] = useState([]); // Array to hold selected designers
-    const [selectedGender, setSelectedGender] = useState(""); // State for gender filter
-    const [showDesignerOptions, setShowDesignerOptions] = useState(false); // State to control visibility of designer options
-    const [showGenderOptions, setShowGenderOptions] = useState(false); // State to control visibility of designer options
-
-    const uniqueDesigners = Array.from(new Set(sortedData.map(item => item.designer)));
-    const uniqueGenders = Array.from(new Set(sortedData.map(item => item.gender)));
-
-    // Filter data based on selected designer and gender
-    const filteredData = filteredBySearch.filter(item => {
-        const isDesignerSelected = selectedDesigner.length === 0 || selectedDesigner.includes(item.designer);
-        const isGenderSelected = selectedGender.length === 0 || selectedGender.includes(item.gender);
-        return isDesignerSelected && isGenderSelected;
-    });
-    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-
-    useEffect(() => {
-        console.log("filteredData", filteredData);
-    }, [filteredData])
-
-
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     const handleCopy = async (item) => {
-        // Show confirmation alert before proceeding with the copy
         const confirmCopy = window.confirm("Are you sure you want to copy this item?");
-
         if (confirmCopy) {
             try {
-                // Check if the item has already been copied by looking for the "copied" text in styleNo
                 let copyCount = 1;
-                if (item.styleNo.includes('copied')) {
-                    // Extract the current copy number from the styleNo if it exists, e.g., "styleNo copied(1)"
+                if (item.styleNo.includes("copied")) {
                     const matches = item.styleNo.match(/copied\((\d+)\)/);
                     if (matches) {
-                        copyCount = parseInt(matches[1]) + 1; // Increment the copy count
+                        copyCount = parseInt(matches[1]) + 1;
                     }
                 }
 
-                // Create a copy of the item and modify it
+                // Ensure all required fields are provided
                 const copiedItem = {
                     ...item,
-                    styleNo: item.styleNo.split(' ')[0] + ` copied(${copyCount})`,
+                    styleNo: item.styleNo.split(" ")[0] + ` copied(${copyCount})`,
+                    designer: item.designer, // Default if undefined
+                    category: item.category, // Default if undefined
+                    gender: item.gender,       // Default if undefined
+                    state: item.state,         // Default if undefined
+                    slides: item.slides || [],                   // Default if undefined
                 };
 
-                // Send a POST request to your createTechPack API
                 const response = await fetch(`${process.env.REACT_APP_API_URL}/design/techpacks/add`, {
-                    method: 'POST',
+                    method: "POST",
                     headers: {
-                        'Content-Type': 'application/json',
-                        'api-key': process.env.REACT_APP_API_KEY, // Ensure the correct API key is used
+                        "Content-Type": "application/json",
+                        "api-key": process.env.REACT_APP_API_KEY,
                     },
                     body: JSON.stringify(copiedItem),
                 });
 
                 if (response.ok) {
                     const newTechPack = await response.json();
-                    // Add the copied data to the table without reloading
-                    data = ((prevData) => [...prevData, newTechPack.data]); // Add the new item directly to the state
-                    window.location.reload()
+                    // Update the table state with the new item
+                    data = ((prevData) => [...prevData, newTechPack.data]);
+                    window.location.reload();
                 } else {
-                    console.error('Failed to copy the data');
+                    const errorResponse = await response.json();
+                    console.error("API Error:", errorResponse);
+                    alert(`Failed to copy the TechPack: ${errorResponse.message || "Unknown error"}`);
                 }
             } catch (error) {
-                console.error('Error copying data:', error);
+                console.error("Unexpected error while copying the TechPack:", error);
+                alert("An unexpected error occurred while copying the TechPack.");
             }
         }
     };
 
 
+    // delete button
+    const handleDeleteTechpack = async (id) => {
+        // Use the categoryDelete hook to delete the TechPack
+        const deleted = await deleteTechPack(id);
+        if (deleted.status) {
+            // Remove the deleted TechPack from the state
+            data = ((prevTechPacks) =>
+                prevTechPacks.filter((TechPack) => TechPack !== id)
+            );
+            window.location.reload();
+        } else {
+            console.error('Failed to delete TechPack');
+        }
+    };
+
 
     return (
         <>
-            <div className='px-20 py-10 max-w-[1400px] mx-auto flex flex-col gap-10'>
-                <div className='w-full flex justify-between gap-10'>
+            <div className='w-full mx-auto max-w-[1500px] table px-10'>
+                <div className='w-full flex gap-10 my-5'>
                     <div className="flex flex-col w-full gap-2">
                         <span>Search</span>
-                        <div className="border bg-white border-black px-1 w-full md:px-[7px] h-8 md:h-8 flex justify-start">
+                        <div className="border bg-white border-black px-1 md:px-[7px] h-8 md:h-8 flex justify-start">
                             <input
                                 type="text"
                                 placeholder="Enter Techpack Id or Name"
@@ -209,9 +222,9 @@ const TechPackDataTable = ({ data = [] }) => {
                             />
                         </div>
                     </div>
-                    <div className='flex flex-col gap-2 w-full'>
+                    <div className='flex flex-col w-1/2 gap-2'>
                         <span>Designer</span>
-                        <div className="border bg-white border-black px-2 w-[200px] h-auto flex flex-col">
+                        <div className="border bg-white border-black px-2  h-auto flex flex-col">
                             <button
                                 className="w-full text-left py-1"
                                 onClick={() => setShowDesignerOptions(!showDesignerOptions)}
@@ -247,9 +260,9 @@ const TechPackDataTable = ({ data = [] }) => {
                             )}
                         </div>
                     </div>
-                    <div className='flex flex-col gap-2 w-full'>
+                    <div className='flex flex-col gap-2 w-1/2'>
                         <span>Gender</span>
-                        <div className="border bg-white border-black px-2 w-[200px] h-auto flex flex-col">
+                        <div className="border bg-white border-black px-2  h-auto flex flex-col">
                             <button
                                 className="w-full text-left py-1"
                                 onClick={() => setShowGenderOptions(!showGenderOptions)}
@@ -284,19 +297,82 @@ const TechPackDataTable = ({ data = [] }) => {
                                 </div>
                             )}
                         </div>
-                        {/* <div className='border bg-white border-black px-2 w-[200px] h-8 flex items-center'>
-                            <select
-                                id="designer-filter"
-                                value={selectedGender}
-                                onChange={(e) => setSelectedGender(e.target.value)}
-                                className="w-full h-full"
+                    </div>
+                    <div className='flex flex-col gap-2 w-1/2'>
+                        <span>Category</span>
+                        <div className="border bg-white border-black px-2  h-auto flex flex-col">
+                            <button
+                                className="w-full text-left py-1"
+                                onClick={() => setShowCategoryOptions(!showCategoryOptions)}
                             >
-                                <option value="">All Genders</option>
-                                {uniqueGenders.map((gender, index) => (
-                                    <option key={index} value={gender}>{gender}</option>
-                                ))}
-                            </select>
-                        </div> */}
+                                Select Category
+                            </button>
+
+                            {showCategoryOptions && (
+                                <div className="flex flex-col space-y-2 mt-2">
+                                    {uniqueCategory.map((category, index) => (
+                                        <div key={index} className="flex items-center gap-3">
+                                            <input
+                                                type="checkbox"
+                                                id={`category-${index}`}
+                                                value={category}
+                                                checked={selectedCategory.includes(category)}
+                                                onChange={(e) => {
+                                                    const { value, checked } = e.target;
+                                                    if (checked) {
+                                                        setSelectedCategory((prev) => [...prev, value]);
+                                                    } else {
+                                                        setSelectedCategory((prev) =>
+                                                            prev.filter((category) => category !== value)
+                                                        );
+                                                    }
+                                                }}
+                                                className="mr-2"
+                                            />
+                                            <label htmlFor={`category-${index}`}>{category}</label>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div className='flex flex-col gap-2 w-1/2'>
+                        <span>Status</span>
+                        <div className="border bg-white border-black px-2  h-auto flex flex-col">
+                            <button
+                                className="w-full text-left py-1"
+                                onClick={() => setShowCategoryStatus(!showCategoryStatus)}
+                            >
+                                Select Status
+                            </button>
+
+                            {showCategoryStatus && (
+                                <div className="flex flex-col space-y-2 mt-2">
+                                    {uniqueStatus.map((status, index) => (
+                                        <div key={index} className="flex items-center gap-3">
+                                            <input
+                                                type="checkbox"
+                                                id={`status-${index}`}
+                                                value={status}
+                                                checked={selectedStatus.includes(status)}
+                                                onChange={(e) => {
+                                                    const { value, checked } = e.target;
+                                                    if (checked) {
+                                                        setSelectedStatus((prev) => [...prev, value]);
+                                                    } else {
+                                                        setSelectedStatus((prev) =>
+                                                            prev.filter((status) => status !== value)
+                                                        );
+                                                    }
+                                                }}
+                                                className="mr-2"
+                                            />
+                                            <label htmlFor={`status-${index}`}>{status}</label>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
                     <div className="w-[32px] h-[32px] pt-[32px]">
                         <label
@@ -324,11 +400,10 @@ const TechPackDataTable = ({ data = [] }) => {
                             )}
                         </label>
                     </div>
-
                 </div>
                 <div className='w-full'>
                     <span>
-                        Total {filteredData?.length} Tech Packs
+                        Total {sortedData?.length} Tech Packs
                     </span>
                     <table className='techPack-table'>
                         <thead>
@@ -341,12 +416,15 @@ const TechPackDataTable = ({ data = [] }) => {
                                 <th>Gender</th>
                                 <th>Category</th>
                                 <th>Comment</th>
-                                <th>Actions</th>
-                                <th>Download</th>
+                                <th>
+                                    <h1 className="text-center">
+                                        Actions
+                                    </h1>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems?.map((item, index) => {
+                            {sortedData?.map((item, index) => {
                                 return (
                                     <tr key={item._id}>
                                         <td>{indexOfFirstItem + index + 1}</td>
@@ -371,53 +449,66 @@ const TechPackDataTable = ({ data = [] }) => {
                                                 </svg>
                                             </button>}
                                         </td>
-                                        <td>
-                                            <div className="action-buttons">
-                                                <button className="copy-button hover:bg-gray-300" onClick={() => handleCopy(item)}                                            >Copy</button>
-                                                <button className="edit-button hover:bg-slate-300">Edit</button>
+                                        <td className="flex items-center gap-2 w-full">
+                                            <div className="action-buttons w-1/2">
+                                                <button className="copy-button hover:bg-zinc-300" onClick={() => handleCopy(item)}                                            >Copy</button>
+                                                <button className="edit-button hover:bg-zinc-300">Edit</button>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <button className="download-button hover:bg-slate-300">
-                                                <TechPackPdfGenerator data={filteredData[index]} />
-                                            </button>
+                                            <div className="action-buttons w-1/2">
+                                                <button className="download-button hover:bg-green-300">
+                                                    <TechPackPdfGenerator data={filteredData[index]} />
+                                                </button>
+                                                <button onClick={() => {
+                                                    const confirmDelete = window.confirm(
+                                                        "Are you sure you want to delete this TechPack?"
+                                                    );
+                                                    const id = item._id
+                                                    if (confirmDelete) {
+                                                        handleDeleteTechpack(id);
+                                                    }
+                                                }} className="delete-button  hover:bg-red-300">Delete</button>
+                                            </div>
                                         </td>
                                     </tr>
                                 )
                             })}
                         </tbody>
                     </table>
-                    {isSidebarOpen && (
-                        <div ref={sidebarRef} className="fixed top-0 right-0 h-full w-1/4 max-w-sm bg-white shadow-lg z-50 p-6">
-                            <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-lg font-bold">Add Comment</h2>
-                            </div>
-                            <textarea
-                                className="w-full h-40 p-2 border rounded"
-                                value={comment.message}
-                                onChange={handleCommentChange}
-                                placeholder="Enter your comment here..."
-                            ></textarea>
-                            <span>{comment.name}</span><br />
-                            <span>{formatDate(comment?.date)}</span>
-                            <div className="flex mt-20">
-                                <button onClick={() => { handleCommentSubmit(isSidebarOpen, comment); toggleSidebar(false) }} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
-                                    Apply
-                                </button>
-                                <button onClick={() => toggleSidebar(false)} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
-                                    Close
-                                </button>
-                            </div>
-                        </div>
-                    )}
                     <Pagination
                         itemsPerPage={itemsPerPage}
-                        totalItems={filteredData.length}
+                        totalItems={sortedData.length}
                         paginate={paginate}
                         currentPage={currentPage}
                     />
                 </div>
             </div>
+            {isSidebarOpen && (
+                <div ref={sidebarRef} className="fixed top-0 right-0 h-full w-1/4 max-w-sm bg-white shadow-lg z-50 p-6">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-lg font-bold">Add Comment</h2>
+                    </div>
+                    <textarea
+                        className="w-full h-40 p-2 border rounded"
+                        value={comment.message}
+                        onChange={handleCommentChange}
+                        placeholder="Enter your comment here..."
+                    ></textarea>
+                    <span>{comment.name}</span>
+                    <br />
+                    <span>{formatDate(comment?.date)}</span>
+                    <div className="flex mt-20">
+                        <button onClick={() => {
+                            handleCommentSubmit(isSidebarOpen, comment);
+                            toggleSidebar(false);
+                        }} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
+                            Apply
+                        </button>
+                        <button onClick={() => toggleSidebar(false)} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
         </>
     );
 };

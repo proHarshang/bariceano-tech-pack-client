@@ -51,7 +51,7 @@ const MainHeader = () => {
     };
 
     const handleClear = () => {
-        setSelectedLabels([]);
+        setSelectedLabels([true]);
         setCurrentCategory(false)
         setShowCategories(false)
         setCurrentSubCategory(false)
@@ -66,7 +66,7 @@ const MainHeader = () => {
 
 
     return (
-        <div className="p-5 flex justify-between border-b pl-16 pr-12">
+        <div className="p-5 flex justify-between border-b pl-10 pr-0 max-w-[1500px] mx-auto">
             <div className='flex gap-5 items-center'>
                 {collection.map((item) => (
                     <button
@@ -172,6 +172,7 @@ const MainHeader = () => {
                                                 <label className="text-[#AEAEAE]">{label}</label>
                                                 <input
                                                     type="checkbox"
+                                                    defaultValue={true}
                                                     name="checkbox"
                                                     checked={selectedLabels.includes(label)}
                                                     onChange={() => handleLabelChange(label)}

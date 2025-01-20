@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getTechPacks } from '../API/TechPacks';
 import TechPackDataTable from '../components/TechPackDataTable';
+import UploadImage from '../components/UploadImage';
 
 const TechPacksTable = () => {
     const [techPacks, setTechPacks] = useState([]);
@@ -22,13 +23,14 @@ const TechPacksTable = () => {
 
         fetchTechPacks();
     }, []); // Empty dependency array to run only once on 
-    
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
 
     return (
         <div>
+            <UploadImage />
             <TechPackDataTable data={techPacks} />
         </div>
     );

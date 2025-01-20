@@ -35,7 +35,7 @@ const TechPackPdfGenerator = (data) => {
         const pgY = 8;
         pdf.text(`Pg.- ${pageNumber}`, pgX, pgY);
 
-        pdf.text(data.data.specSheetTable.info.styleNo, pgX, pgY + 5);
+        pdf.text(data.data.styleNo, pgX, pgY + 5);
 
         pdf.line(0, lineY, pageWidth, lineY);
     }
@@ -76,11 +76,39 @@ const TechPackPdfGenerator = (data) => {
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
 
+        const types = [
+            "Layout1",
+            "Layout2",
+            "Layout3",
+            "Layout0",
+            "Information",
+            "ArtworkPlacementSheet",
+            "ArtWork",
+            "SiliconLabel",
+            "Page",
+        ];
 
-        const specSheet = data.data.specSheet;
-        headerSection(specSheet.page, specSheet.name);
+        const filteredSlides = types.reduce((acc, type) => {
+            acc[type] = data.data.slides.filter(slide => slide.type === type);
+            return acc;
+        }, {});
 
-        if (specSheet.layout === "layout1") {
+        // Destructure filteredSlides into individual constants
+        const {
+            Layout1 = [],
+            Layout2 = [],
+            Layout3 = [],
+            Layout0 = [],
+            Information = [],
+            ArtworkPlacementSheet = [],
+            ArtWork = [],
+            SiliconLabel = [],
+            Page = [],
+        } = filteredSlides;
+
+
+        headerSection(1, "Spac Sheet");
+        if (Layout1[0]?.type === "Layout1") {
             const colorImgWidth = 40;
             const frontBackImgWidth = 75;
             const frontBackImgHeight = 110;
@@ -88,12 +116,12 @@ const TechPackPdfGenerator = (data) => {
             const frontImgX = colorImgX + colorImgWidth - 25;
             const backImgX = frontImgX + frontBackImgWidth + 15;
 
-            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${data.data.specSheet.fabricColorImages[0].src}`, 'JPEG', colorImgX, firstRowY + 10, colorImgWidth, colorImgHeight);
+            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.fabricColorImages[0].src}`, 'JPEG', colorImgX, firstRowY + 10, colorImgWidth, colorImgHeight);
             pdf.setFont('helvetica', 'bold');
             pdf.setTextColor('black');
             pdf.text('Fabric Image', 20, firstRowY + 66);
             // Sort images based on their numeric position
-            const sortedImages = data.data.specSheet.images.sort((a, b) => {
+            const sortedImages = Layout1[0].data.images.sort((a, b) => {
                 return parseInt(a.position, 10) - parseInt(b.position, 10);
             });
 
@@ -120,15 +148,16 @@ const TechPackPdfGenerator = (data) => {
                 }
             });
 
-            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${data.data.specSheet.threadColorImages[0].src}`, 'JPEG', colorImgX, secondColorImgY + 20, colorImgWidth, colorImgHeight);
+            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.threadColorImages[0].src}`, 'JPEG', colorImgX, secondColorImgY + 20, colorImgWidth, colorImgHeight);
             pdf.text('Thread Color', 20, firstRowY + 133);
 
             // Add your layout 1 code here
-        } else if (specSheet.layout === "layout2") {
+        } else if (Layout2[0]?.type === "Layout2") {
             // Sorting the images in different categories
-            data.data.specSheet.fabricColorImages.sort((a, b) => a.position.localeCompare(b.position));
-            data.data.specSheet.threadColorImages.sort((a, b) => a.position.localeCompare(b.position));
-            data.data.specSheet.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
+            console.log(Layout2[0].data.fabricColorImages)
+            Layout2[0].data.fabricColorImages.sort((a, b) => a.position = b.position);
+            Layout2[0].data.threadColorImages.sort((a, b) => a.position = b.position);
+            Layout2[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
 
             // Adjusted height and positioning constants
             const contentHeight = 160; // Adjusted height to accommodate three main images
@@ -147,9 +176,9 @@ const TechPackPdfGenerator = (data) => {
             const largeImageRightX = centerX + largeImageWidth + spacing - largeImageWidth / 2;
 
             // Adding the first three main images in sorted order
-            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${data.data.specSheet.images[0].src}`, "png", largeImageLeftX, largeImageTop, largeImageWidth, largeImageHeight);
-            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${data.data.specSheet.images[1].src}`, "png", largeImageCenterX, largeImageTop, largeImageWidth, largeImageHeight);
-            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${data.data.specSheet.images[2].src}`, "png", largeImageRightX, largeImageTop, largeImageWidth, largeImageHeight);
+            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`, "png", largeImageLeftX, largeImageTop, largeImageWidth, largeImageHeight);
+            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[1].src}`, "png", largeImageCenterX, largeImageTop, largeImageWidth, largeImageHeight);
+            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[2].src}`, "png", largeImageRightX, largeImageTop, largeImageWidth, largeImageHeight);
 
             // Thread color section
             const colorImageWidth = 30;
@@ -159,7 +188,7 @@ const TechPackPdfGenerator = (data) => {
             pdf.text("Thread colour", centerX - spacing - colorImageWidth - 55, colorTopMargin - 5);
 
             // Adding thread color images in sorted order
-            data.data.specSheet.threadColorImages.forEach((image, index) => {
+            Layout2[0].data.fabricColorImages.forEach((image, index) => {
                 pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`, "JPG", centerX - spacing - colorImageWidth - 55 + (index * (colorImageWidth + 5)), colorTopMargin, colorImageWidth, colorImageHeight);
             });
 
@@ -167,13 +196,13 @@ const TechPackPdfGenerator = (data) => {
             pdf.text("Fabric colour", centerX + spacing + colorImageWidth - 35, colorTopMargin - 5);
 
             // Adding fabric color images in sorted order
-            data.data.specSheet.fabricColorImages.forEach((image, index) => {
+            Layout2[0].data.fabricColorImages.forEach((image, index) => {
                 pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`, "JPG", centerX + spacing + colorImageWidth - 35 + (index * (colorImageWidth + 5)), colorTopMargin, colorImageWidth, colorImageHeight);
             });
 
-        } else if (specSheet.layout === "layout3") {
-            const shirtImagePath1 = `${process.env.REACT_APP_API_URL}/uploads/techpack/${data.data.specSheet.images[0].src}`;
-            const shirtImagePath2 = `${process.env.REACT_APP_API_URL}/uploads/techpack/${data.data.specSheet.images[1].src}`;
+        } else if (Layout3[0]?.type === "Layout3") {
+            const shirtImagePath1 = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout3[0].data.images[0].src}`;
+            const shirtImagePath2 = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout3[0].data.images[1].src}`;
             const shirtWidth = 80;
             const shirtHeight = 90;
             const shirtY = (pageHeight - shirtHeight) / 3; // Center vertically
@@ -181,10 +210,10 @@ const TechPackPdfGenerator = (data) => {
             const shirtX2 = pageWidth - shirtWidth - 30; // Position for the second shirt image
 
             // Color swatch images
-            const fabricColorImages = data.data.specSheet.fabricColorImages.map(
+            const fabricColorImages = Layout3[0].data.fabricColorImages.map(
                 (image) => `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`
             );
-            const threadColorImages = data.data.specSheet.threadColorImages.map(
+            const threadColorImages = Layout3[0].data.threadColorImages.map(
                 (image) => `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`
             );
 
@@ -224,8 +253,8 @@ const TechPackPdfGenerator = (data) => {
             });
 
 
-        } else if (specSheet.layout === "blank") {
-            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${data.data.artwork.artworkImages[0].src}`, 'JPEG', 10, 25, 297 - 10, 167);
+        } else if (Layout0[0]?.type === "Layout0") {
+            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout0[0].data.images.src}`, 'JPEG', 10, 25, 297 - 10, 167);
         }
         else {
             console.log("No Layout")
@@ -238,72 +267,99 @@ const TechPackPdfGenerator = (data) => {
 
         //   ---------  Spec. sheet start -------
 
-        headerSection(data.data.specSheetTable.page, data.data.specSheetTable.name);
+        headerSection(Information[0].page, Information[0].name);
         // Define column positions and widths
-        const col1X = 10; // Start position for the first column
-        const col1Width = 40; // First column width
-        const col2X = col1X + col1Width; // Second column starts after the first
-        const col2Width = 120; // Increased width for merged columns
-        const col3X = col2X + col2Width; // Third column starts after the second
-        const col3Width = 40; // Third column width
-        const col4X = col3X + col3Width; // Fourth column starts after the third
-        const col4Width = 70; // Fourth column width
+        const colWidth = (pageWidth - 20) / 4; // Divide into four equal columns
+        const col1X = 10; // First column start
+        const col2X = col1X + colWidth; // Second column start
+        const col3X = col2X + colWidth; // Third column start
+        const col4X = col3X + colWidth; // Fourth column start
 
-        let cellHeight = 15; // Increased height for each cell
-        let currentY = 28; // Start Y position for the first row
+        // Row configurations
+        let cellHeight = 12; // Default cell height
+        let currentY = 28; // Initial Y position for rows
 
-        const rowData = [
-            ['STYLE No.', `${data.data.specSheetTable.info.styleNo}`, 'STYLE', `${data.data.specSheetTable.info.style}`],
-            ['FABRIC COLOUR', 'Bright White', 'CATEGORY', `${data.data.specSheetTable.info.category}`],
-            ['GENDER', `${data.data.specSheetTable.info.gender}`, 'SIZE', 'S , M ,L ,XL'],
-            ['FIT', `${data.data.specSheetTable.info.fit}`, 'RATIO', (data.data.specSheetTable.info.ratio ? data.data.specSheetTable.info.ratio : "            -")],
-            // ['SEASON', `${data.data.specSheetTable.info.season}`, 'DESIGNER', `${data.data.specSheetTable.info.designer}`],
-            // ['STATE', `${data.data.specSheetTable.info.state}`, 'COLLECTION', `${data.data.specSheetTable.info.collection}`],
-            // Rows with only two columns (merge second and fourth columns)
-            ['TRIM', `${data.data.specSheetTable.info.trim || 'N/A'}`, '', ''],
-            ['FABRIC', `${data.data.specSheetTable.info.fabric || 'N/A'}`, '', ''],
-            ['DESCRIPTION', `${data.data.specSheetTable.info.description}`, '', ''],
-            ['NOTE', `${data.data.specSheetTable.info.note}`, '', ''],
-        ];
+        // Helper function to draw cells
+        const drawCell = (pdf, x, y, width, height, text, border = true, align = 'left', bold = false, uppercase = false) => {
+            if (border) pdf.rect(x, y, width, height); // Draw cell border
+            const formattedText = uppercase ? text.toUpperCase() : text;
+            if (bold) pdf.setFont(undefined, 'bold');
+            pdf.text(formattedText, x + 2, y + height / 2 + 3, { align }); // Align text
+            if (bold) pdf.setFont(undefined, 'normal'); // Reset to normal font
+        };
 
-        rowData.forEach((row, index) => {
-            let rowHeight = cellHeight; // Default row height
+        // Source data
+        const rowData = Information[0].data.info;
 
-            if (index < 4) {
-                // Standard 4-column rows
-                drawCell(pdf, col1X, currentY, col1Width, rowHeight, row[0], true, 'left');
-                drawCell(pdf, col2X, currentY, col2Width, rowHeight, row[1], false, 'left');
-                drawCell(pdf, col3X, currentY, col3Width, rowHeight, row[2], true, 'left');
-                drawCell(pdf, col4X, currentY, col4Width, rowHeight, row[3], false, 'left');
-            } else {
-                // Two-column rows (merge columns 2, 3, and 4)
+        // Separate rows: Last rows and others
+        const nonLastRows = rowData.filter(row => row.position !== 'Last');
+        const lastRows = rowData.filter(row => row.position === 'Last');
 
-                // Wrap text for the second column (value)
-                const wrappedText = pdf.splitTextToSize(row[1], col2Width + col4Width + col3Width - 5); // Adjust width for padding
-                const wrappedHeight = wrappedText.length * pdf.getLineHeight(); // Calculate height based on wrapped text
+        // Ensure nonLastRows is even
+        if (nonLastRows.length % 2 !== 0) {
+            nonLastRows.push({ name: '', value: '', position: '' }); // Add an empty row
+        }
 
-                // Use the greater height (default cell height or wrapped text height)
-                rowHeight = Math.max(cellHeight, wrappedHeight);
+        // Split nonLastRows into two halves
+        const midIndex = Math.ceil(nonLastRows.length / 2);
+        const firstHalf = nonLastRows.slice(0, midIndex);
+        const secondHalf = nonLastRows.slice(midIndex);
 
-                // Ensure all cells in the row use the same height
-                drawCell(pdf, col1X, currentY, col1Width, rowHeight, row[0], true, 'left'); // Key cell
-                drawCell(pdf, col2X, currentY, col2Width + col4Width + col3Width, rowHeight, wrappedText, false, 'left'); // Value cell
-            }
-
-            // Move to the next row
+        // Render firstHalf into columns 1 and 2
+        firstHalf.forEach((row) => {
+            const rowHeight = cellHeight; // Default row height
+            drawCell(pdf, col1X, currentY, colWidth, rowHeight, row.name, true, 'left', true, true); // Name (bold, uppercase)
+            drawCell(pdf, col2X, currentY, colWidth, rowHeight, row.value, true, 'left'); // Value
             currentY += rowHeight;
+
+            // Page breaking logic
+            if (currentY > pdf.internal.pageSize.height - 20) {
+                pdf.addPage();
+                currentY = 28; // Reset Y position for the new page
+            }
         });
+
+        // Render secondHalf into columns 3 and 4
+        currentY = 28; // Reset Y for the next column group
+        secondHalf.forEach((row) => {
+            const rowHeight = cellHeight; // Default row height
+            drawCell(pdf, col3X, currentY, colWidth, rowHeight, row.name, true, 'left', true, true); // Name (bold, uppercase)
+            drawCell(pdf, col4X, currentY, colWidth, rowHeight, row.value, true, 'left'); // Value
+            currentY += rowHeight;
+
+            // Page breaking logic
+            if (currentY > pdf.internal.pageSize.height - 20) {
+                pdf.addPage();
+                currentY = 28; // Reset Y position for the new page
+            }
+        });
+
+        // Render lastRows spanning columns 2, 3, and 4
+        lastRows.forEach((row) => {
+            const contentWidth = colWidth * 3; // Span three columns
+            const wrappedText = pdf.splitTextToSize(row.value, contentWidth - 5); // Wrap text
+            const rowHeight = Math.max(cellHeight, wrappedText.length * pdf.getLineHeight()); // Calculate height
+            drawCell(pdf, col1X, currentY, colWidth, rowHeight, row.name, true, 'left', true, true); // Name (bold, uppercase)
+            drawCell(pdf, col2X, currentY, contentWidth, rowHeight, wrappedText.join('\n'), true, 'left'); // Merged value
+            currentY += rowHeight;
+
+            // Page breaking logic
+            if (currentY > pdf.internal.pageSize.height - 20) {
+                pdf.addPage();
+                currentY = 28; // Reset Y position for the new page
+            }
+        });
+
+
 
         footerSection();
 
-        //   ---------  Spec. sheet start -------
-
-        // Check if artworkPlacementSheet exists and has data
-        if (data?.data?.artwork?.artworkPlacementSheet?.length > 0) {
+        if (ArtworkPlacementSheet[0].data.artworkPlacementSheet?.length > 0) {
             pdf.addPage();
 
             // Artwork placement sheet header
-            headerSection(data.data.artwork.page, data.data.artwork.name);
+            headerSection(ArtworkPlacementSheet[0].page, ArtworkPlacementSheet[0].name);
+
 
             // Adjust margins and table settings
             const leftMargin = 10; // Left margin
@@ -320,94 +376,104 @@ const TechPackPdfGenerator = (data) => {
                 columnWidths[i] *= scaleFactor;
             }
 
-            const rows = data.data.artwork.artworkPlacementSheet.map((item) => ({
+
+            const rows = ArtworkPlacementSheet[0].data.artworkPlacementSheet.map((item) => ({
                 placement: item.placement,
                 technique: item.technique,
                 color: item.color,
-                artwork: item.artworkimage
-                    ? `${process.env.REACT_APP_API_URL}/uploads/techpack/${item.artworkimage}`
-                    : null, // Use null if no image provided
-                placementImage: item.placementimage
-                    ? `${process.env.REACT_APP_API_URL}/uploads/techpack/${item.placementimage}`
-                    : null, // Use null if no image provided
+                artwork: item.artworkimage && item.artworkimage[0]?.src
+                    ? `${process.env.REACT_APP_API_URL}/uploads/techpack/${item.artworkimage[0].src}`
+                    : null, // Use null if no image is provided
+                placementImage: item.placementimage && item.placementimage[0]?.src
+                    ? `${process.env.REACT_APP_API_URL}/uploads/techpack/${item.placementimage[0].src}`
+                    : null, // Use null if no image is provided
             }));
 
-            const rowHeight = 50; // Increased height for better readability
+            const rowHeight = 50; // Row height for readability
             const startY = 30; // Start position for the table
+            const maxRowsPerPage = Math.floor((pageHeight - startY - 20) / rowHeight); // Calculate max rows per page
 
             // Table headers
-            const headers = ['#', 'Placement', 'Artwork', 'Technique', 'Colour', 'Placement'];
-
-            // Header styling
-            pdf.setFontSize(14);
-            pdf.setTextColor(255, 255, 255); // White text
-            let currentX = leftMargin;
-            headers.forEach((header, i) => {
-                pdf.setFillColor(0, 0, 0); // Black background
-                pdf.rect(currentX, startY, columnWidths[i], rowHeight / 2, 'F'); // Fill rectangle
-                pdf.text(
-                    header,
-                    currentX + columnWidths[i] / 2,
-                    startY + rowHeight / 4 + 2,
-                    { align: 'center' }
-                );
-                currentX += columnWidths[i];
-            });
-
+            const drawHeaders = () => {
+                pdf.setFontSize(14);
+                pdf.setTextColor(255, 255, 255); // White text
+                let currentX = leftMargin;
+                const headers = ['#', 'Placement', 'Artwork', 'Technique', 'Colour', 'Placement'];
+                headers.forEach((header, i) => {
+                    pdf.setFillColor(0, 0, 0); // Black background
+                    pdf.rect(currentX, startY, columnWidths[i], rowHeight / 2, 'F'); // Fill rectangle
+                    pdf.text(
+                        header,
+                        currentX + columnWidths[i] / 2,
+                        startY + rowHeight / 4 + 2,
+                        { align: 'center' }
+                    );
+                    currentX += columnWidths[i];
+                });
+            };
+            drawHeaders();
             // Draw table rows
-            let ccurrentY = startY + rowHeight / 2; // Start below headers
+            let currentY = startY + rowHeight / 2; // Start below headers
             rows.forEach((row, index) => {
-                currentX = leftMargin; // Reset to left margin for each row
+                // Add a new page and redraw headers if the current page is full
+                if (currentY + rowHeight > pageHeight - 20) {
+                    pdf.addPage();
+                    headerSection(ArtworkPlacementSheet[0].page + 1, ArtworkPlacementSheet[0].name);
+                    drawHeaders(); // Redraw headers on the new page
+                    currentY = startY + rowHeight / 2; // Reset to below headers
+                }
+
+                let currentX = leftMargin; // Reset to left margin for each row
 
                 // Row number
                 pdf.setFontSize(13);
                 pdf.setTextColor(0, 0, 0);
-                pdf.rect(currentX, ccurrentY, columnWidths[0], rowHeight);
-                pdf.text((index + 1).toString(), currentX + columnWidths[0] / 2, ccurrentY + rowHeight / 2, {
+                pdf.rect(currentX, currentY, columnWidths[0], rowHeight);
+                pdf.text((index + 1).toString(), currentX + columnWidths[0] / 2, currentY + rowHeight / 2, {
                     align: 'center',
                 });
                 currentX += columnWidths[0];
 
                 // Placement
-                pdf.rect(currentX, ccurrentY, columnWidths[1], rowHeight);
-                pdf.text(row.placement, currentX + 5, ccurrentY + rowHeight / 2, {
+                pdf.rect(currentX, currentY, columnWidths[1], rowHeight);
+                pdf.text(row.placement, currentX + 5, currentY + rowHeight / 2, {
                     baseline: 'middle',
                 });
                 currentX += columnWidths[1];
 
                 // Artwork (image cell)
-                pdf.rect(currentX, ccurrentY, columnWidths[2], rowHeight);
+                pdf.rect(currentX, currentY, columnWidths[2], rowHeight);
                 if (row.artwork) {
-                    pdf.addImage(row.artwork, 'JPEG', currentX + 13, ccurrentY + 5, columnWidths[2] - 25, rowHeight - 10);
+                    pdf.addImage(row.artwork, 'JPEG', currentX + 13, currentY + 5, columnWidths[2] - 25, rowHeight - 10);
                 } else {
                     pdf.setTextColor(150, 150, 150);
-                    pdf.text('No Image', currentX + columnWidths[2] / 2, ccurrentY + rowHeight / 2, { align: 'center' });
+                    pdf.text('No Image', currentX + columnWidths[2] / 2, currentY + rowHeight / 2, { align: 'center' });
                 }
                 currentX += columnWidths[2];
 
                 // Technique
-                pdf.rect(currentX, ccurrentY, columnWidths[3], rowHeight);
-                pdf.text(row.technique, currentX + 5, ccurrentY + rowHeight / 2, { baseline: 'middle' });
+                pdf.rect(currentX, currentY, columnWidths[3], rowHeight);
+                pdf.text(row.technique, currentX + 5, currentY + rowHeight / 2, { baseline: 'middle' });
                 currentX += columnWidths[3];
 
                 // Colour
-                pdf.rect(currentX, ccurrentY, columnWidths[4], rowHeight);
-                pdf.text(row.color, currentX + 5, row.color.length > 49 ? ccurrentY - 7 : ccurrentY - 4 + rowHeight / 2, {
+                pdf.rect(currentX, currentY, columnWidths[4], rowHeight);
+                pdf.text(row.color, currentX + 5, row.color.length > 49 ? currentY - 7 : currentY - 4 + rowHeight / 2, {
                     baseline: 'middle',
                 });
                 currentX += columnWidths[4];
 
                 // Placement (image cell)
-                pdf.rect(currentX, ccurrentY, columnWidths[5], rowHeight);
+                pdf.rect(currentX, currentY, columnWidths[5], rowHeight);
                 if (row.placementImage) {
-                    pdf.addImage(row.placementImage, 'JPEG', currentX + 13, ccurrentY + 5, columnWidths[5] - 25, rowHeight - 10);
+                    pdf.addImage(row.placementImage, 'JPEG', currentX + 13, currentY + 5, columnWidths[5] - 25, rowHeight - 10);
                 } else {
                     pdf.setTextColor(150, 150, 150);
-                    pdf.text('No Image', currentX + columnWidths[5] / 2, ccurrentY + rowHeight / 2, { align: 'center' });
+                    pdf.text('No Image', currentX + columnWidths[5] / 2, currentY + rowHeight / 2, { align: 'center' });
                 }
 
                 // Move to next row
-                ccurrentY += rowHeight;
+                currentY += rowHeight;
             });
 
             footerSection();
@@ -417,29 +483,25 @@ const TechPackPdfGenerator = (data) => {
 
         //   ---------  Blank page -------
 
-        // todo make loop here Devam
 
-
-
-        // Check if artwork images exist and are valid
-        if (data?.data?.artwork?.artworkImages?.length > 0) {
+        if (ArtWork.length > 0 && ArtWork[0]?.data?.images?.length > 0) {
             // Sort artwork images by position
-            data.data.artwork.artworkImages.sort((a, b) => parseInt(a.position) - parseInt(b.position));
+            ArtWork[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
 
-            data.data.artwork.artworkImages.forEach((image, index) => {
+            ArtWork[0].data.images.forEach((image, index) => {
                 // Add a new page for each image
                 pdf.addPage();
 
                 // Add the header section with the page number
-                headerSection(index + 1, "Artwork Sheet");
+                headerSection(ArtWork[0].page, "Artwork Sheet");
 
                 // Add the artwork image
                 pdf.addImage(
-                    `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`,
-                    'PNG',
+                    `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`, // Image path
+                    'PNG', // Image format
                     10, // X position
                     25, // Y position
-                    297 - 10, // Width (A4 width minus margin)
+                    287, // Width (A4 width minus 10px margin on both sides)
                     167 // Height
                 );
 
@@ -454,11 +516,9 @@ const TechPackPdfGenerator = (data) => {
 
         pdf.addPage();
 
-        // Base Path
         const basePath = process.env.REACT_APP_API_URL;
 
-        // Extract siliconLabelSheet data
-        const siliconLabelSheet = data.data.siliconLabelSheet;
+        const siliconLabelSheet = SiliconLabel[0].data;
 
         // Check if siliconLabelSheet is valid
         if (siliconLabelSheet && siliconLabelSheet.images && siliconLabelSheet.images.length > 0) {
@@ -466,14 +526,13 @@ const TechPackPdfGenerator = (data) => {
             siliconLabelSheet.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
 
             siliconLabelSheet.images.forEach((image, index) => {
-                headerSection(siliconLabelSheet.page, siliconLabelSheet.name);
+                headerSection(SiliconLabel[0].page, SiliconLabel[0].name);
 
                 if (index > 0) {
                     pdf.addPage(); // Add a new page for additional images
                     // Add header for the page
                 }
 
-                // Add the title only on the first page
                 if (index === 0) {
                     pdf.setFontSize(16);
                     pdf.text(siliconLabelSheet.title, 20, 30); // Title text with a margin of 20 from the left and 30 from the top
@@ -506,35 +565,34 @@ const TechPackPdfGenerator = (data) => {
 
 
         pdf.addPage();
-        // Ensure Pages exists and is an array
-        if (Array.isArray(data.data.Pages) && data.data.Pages.length > 0) {
-            // Sort the pages array based on the 'page' value
-            data.data.Pages.sort((a, b) => parseInt(a.page) - parseInt(b.page));
 
-            // Iterate over the sorted pages
-            data.data.Pages.forEach((page, index) => {
+        if (Array.isArray(Page) && Page.length > 0) {
+            Page.sort((a, b) => parseInt(a.page) - parseInt(b.page));
+
+            Page.forEach((page, index) => {
                 if (index > 0) {
-                    pdf.addPage(); // Add a new page for each additional page
+                    pdf.addPage();
                 }
-                console.log("page.name", page.name);
-                console.log("page", page);
 
-                // Add header
+                // Add header for the current page
                 headerSection(page.page, page.name);
 
-                // Add image for the current page
-                const imagePath = `${basePath}/uploads/techpack/${page.src}`;
-                console.log("Adding image from:", imagePath); // Debug: Log image path
-                pdf.addImage(imagePath, "jpeg", 10, 25, 297 - 10, 167);
+                if (Array.isArray(page.data.images) && page.data.images.length > 0) {
+                    page.data.images.forEach((image) => {
+                        const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
+                        console.log("Adding image from:", imagePath); // Debug: Log image path
 
-                // Add footer
+                        pdf.addImage(imagePath, "JPEG", 10, 25, 287, 167); // Adjusted dimensions for A4
+                    });
+                } else {
+                    console.warn(`No images found for page ${page.page}. Skipping image addition.`);
+                }
+
                 footerSection();
             });
         } else {
             console.error("Pages array is missing or empty.");
         }
-
-
 
         //   ---------  Blank page -------
 
@@ -543,9 +601,9 @@ const TechPackPdfGenerator = (data) => {
     };
 
     return (
-        <div>
-            <button onClick={generatePdf}>Download</button>
-        </div>
+
+        <button onClick={generatePdf}>Download</button>
+
     );
 };
 

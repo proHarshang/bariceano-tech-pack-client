@@ -22,9 +22,51 @@ const getTechPacks = async () => {
     return response.json();
 
 }
+const getUploadedImage = async () => {
+
+    const response = await fetch(`${apiURL}/design/techpacks/images`, {
+        method: 'GET',
+        headers: {
+            'api-Key': apiKey,
+        },
+    })
+    if (!response.ok) {
+        if (response.status === 401) {
+
+            return;
+        }
+        throw new Error('Failed to fetch products data');
+    }
+
+    return response.json();
+
+}
+
+export const deleteTechPack = async (id) => {
+    try {
+        const response = await fetch(`${apiURL}/design/techpacks/delete/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ id }), // Send the category name for deletion
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to delete Tech pack');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while deleting the Tech pack');
+    }
+};
 
 const handleCommentSubmit = async (styleNo, comment) => {
     try {
+        console.log("Submitting Comment:", { styleNo, ...comment });  // Log the payload to check the structure
+
         const response = await fetch(`${apiURL}/design/comment`, {
             method: 'POST',
             headers: {
@@ -33,7 +75,8 @@ const handleCommentSubmit = async (styleNo, comment) => {
             body: JSON.stringify({
                 "styleNo": styleNo,
                 "name": comment.name,
-                "message": comment.message
+                "message": comment.message,
+                "date": comment.date
             }),
         });
 
@@ -46,6 +89,7 @@ const handleCommentSubmit = async (styleNo, comment) => {
         console.error('Error:', error);
     }
 };
+
 
 export const categoryFetch = async () => {
     try {
@@ -503,6 +547,43 @@ const useDeleteTrims = () => {
     return { deleteTrims, loadingTrims, errorTrims, successTrims };
 };
 
+const useUploadImage = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const uploadImage = async (file) => {
+        setLoading(true);
+        setError(null);
+
+        const formData = new FormData();
+        formData.append('images', file);  // 'images' matches the form field name
+
+        try {
+            const response = await fetch(`${apiURL}/design/techpacks/images/upload`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'api-key': apiKey,
+                },
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                setError(data.message || 'Upload failed');
+            } else {
+                console.log('File uploaded successfully');
+            }
+        } catch (err) {
+            setError('Something went wrong during upload');
+            console.error('Upload error:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { uploadImage, loading, error };
+};
 
 
-export { getTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims }
+
+export { getTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, getUploadedImage, useUploadImage }
