@@ -6,7 +6,7 @@ const SpecSheet = ({ page }) => {
 
     const slide = getSlideByPage(page);
 
-    const { addInfoField, updateInfoField, deleteInfoField } = useTechPack();
+    const { addInfoField, updateInfoField, deleteInfoField, updateField } = useTechPack();
 
     // const [fields, setFields] = useState([
     //     { id: 1, name: 'styleNo', label: "STYLE No", type: "text", value: specSheetTable.info.styleNo },
@@ -42,30 +42,104 @@ const SpecSheet = ({ page }) => {
                 </button>
             </div>
             <div className="flex flex-wrap gap-10">
-                {slide.data?.info?.map((field, index) => (
-                    <div key={index} className="form__group field w-[45%] relative group">
-                        <input
-                            type="text"
-                            className="form__field"
-                            value={field.value}
-                            onChange={(e) => updateInfoField(page, field.name, field.value, { "value": e.target.value })}
-                        />
-                        <button
-                            className="text-xs text-right w-full hidden leading-[10px] group-hover:flex absolute left-[95%]"
-                            onClick={() => deleteInfoField(page, field.name, field.value)}
-                            type="button"
-                        >
-                            <MdDelete />
-                        </button>
-                        <input
-                            type="text"
-                            value={slide.data?.info?.find((item) => item.name === field.name).name}
-                            onChange={(e) => updateInfoField(page, field.name, field.value, { "name": e.target.value })}
-                            className="form__label uppercase"
-                            placeholder={field.name}
-                        />
-                    </div>
-                ))}
+                <div className="form__group field w-[45%] relative group">
+                    <label className="form__label">Style No</label>
+                    <input
+                        type="text"
+                        value={slide.data?.info?.find((item) => item.name === "styleNo").value}
+                        onChange={(e) => {
+                            updateField("styleNo", e.target.value);
+                            updateInfoField(page, "styleNo", slide.data?.info?.find((item) => item.name === "styleNo").value, { "value": e.target.value })
+                        }}
+                        className="form__field"
+                        placeholder="BR-00-00"
+                        required
+                    />
+                </div>
+                <div className="form__group field w-[45%] relative group">
+                    <label className="form__label">Designer</label>
+                    <input
+                        type="text"
+                        value={slide.data?.info?.find((item) => item.name === "designer").value}
+                        onChange={(e) => {
+                            updateField("designer", e.target.value);
+                            updateInfoField(page, "designer", slide.data?.info?.find((item) => item.name === "designer").value, { "value": e.target.value })
+                        }}
+                        className="form__field"
+                        placeholder="BR-00-00"
+                        required
+                    />
+                </div>
+                <div className="form__group field w-[45%] relative group">
+                    <label className="form__label">Size</label>
+                    <input
+                        type="text"
+                        value={slide.data?.info?.find((item) => item.name === "size").value}
+                        onChange={(e) => updateInfoField(page, "size", slide.data?.info?.find((item) => item.name === "size").value, { "value": e.target.value })}
+                        className="form__field"
+                        placeholder="BR-00-00"
+                        required
+                    />
+                </div>
+                <div className="form__group field w-[45%] relative group">
+                    <label className="form__label">Gender</label>
+                    <input
+                        type="text"
+                        value={slide.data?.info?.find((item) => item.name === "gender").value}
+                        onChange={(e) => {
+                            updateField("gender", e.target.value);
+                            updateInfoField(page, "gender", slide.data?.info?.find((item) => item.name === "gender").value, { "value": e.target.value })
+                        }}
+                        className="form__field"
+                        required
+                    />
+                </div>
+                <div className="form__group field w-[45%] relative group">
+                    <label className="form__label">State</label>
+                    <input
+                        type="text"
+                        value={slide.data?.info?.find((item) => item.name === "state").value}
+                        onChange={(e) => {
+                            updateField("state", e.target.value);
+                            updateInfoField(page, "state", slide.data?.info?.find((item) => item.name === "state").value, { "value": e.target.value })
+                        }}
+                        className="form__field"
+                        required
+                    />
+                </div>
+                {slide.data?.info?.map((field, index) => {
+                    if (["styleNo", "designer", "size", "gender", "state"].includes(field.name)) {
+                        return null;
+                    }
+                    return (
+                        <div key={index} className="form__group field w-[45%] relative group">
+                            <textarea
+                                type="text"
+                                className="form__field"
+                                value={field.value}
+                                rows={1}
+                                onChange={(e) => updateInfoField(page, field.name, field.value, { "value": e.target.value })}
+                                required
+                            />
+                            <button
+                                className="text-xs text-right w-full hidden leading-[10px] group-hover:flex absolute left-[95%]"
+                                onClick={() => deleteInfoField(page, field.name, field.value)}
+                                type="button"
+                            >
+                                <MdDelete className="text-red-600 hover:scale-150 transition-all" title="Delete" />
+                            </button>
+                            <input
+                                type="text"
+                                value={slide.data?.info?.find((item) => item.name === field.name).name}
+                                onChange={(e) => updateInfoField(page, field.name, field.value, { "name": e.target.value })}
+                                className="form__label"
+                                placeholder={field.name}
+                                required
+                            />
+                        </div>
+                    )
+                }
+                )}
             </div>
         </section>
     )

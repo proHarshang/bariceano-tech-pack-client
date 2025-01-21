@@ -1,13 +1,16 @@
 import React, { createContext, useState, useContext } from 'react';
+import { addTechPacks } from '../API/TechPacks';
 
 const TechPackContext = createContext();
 
 export const useTechPack = () => useContext(TechPackContext);
 
 export const TechPackProvider = ({ children }) => {
+
+    const [isAdding, setIsAdding] = useState(false);
     const [techPackData, setTechPackData] = useState({
         designer: "",
-        styleNo: "",
+        styleNo: "BR-00-00",
         state: "",
         gender: "",
         category: "",
@@ -61,7 +64,12 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "1",
                         "name": "styleNo",
-                        "value": "BR-TD-11"
+                        "value": "BR-00-00"
+                    },
+                    {
+                        "position": "1",
+                        "name": "designer",
+                        "value": ""
                     },
                     {
                         "position": "2",
@@ -72,6 +80,11 @@ export const TechPackProvider = ({ children }) => {
                         "position": "3",
                         "name": "gender",
                         "value": "Male"
+                    },
+                    {
+                        "position": "4",
+                        "name": "state",
+                        "value": "Development"
                     },
                     {
                         "position": "4",
@@ -115,18 +128,8 @@ export const TechPackProvider = ({ children }) => {
                     },
                     {
                         "position": "3",
-                        "name": "fit",
-                        "value": "Oversize"
-                    },
-                    {
-                        "position": "3",
-                        "name": "fit",
-                        "value": "Oversize"
-                    },
-                    {
-                        "position": "3",
-                        "name": "fit",
-                        "value": "Oversize"
+                        "name": "ratio",
+                        "value": "1:1:1:1"
                     }
                 ]
             }
@@ -410,6 +413,44 @@ export const TechPackProvider = ({ children }) => {
         });
     };
 
+    const updateNestedImages = (page, field, operation, data = {}) => {
+        setTechPackData((prev) => {
+            return {
+                ...prev,
+                slides: prev.slides.map((slide) => {
+                    if (slide.page === page) {
+                        return {
+                            ...slide,
+                            data: {
+                                ...slide.data,
+                                [field]: (() => {
+                                    const currentImages = slide.data[field] || [];
+                                    switch (operation) {
+                                        case "add":
+                                            return [...currentImages, data]; // Add a new image
+                                        case "update":
+                                            return currentImages.map((img) =>
+                                                img.position === data.position
+                                                    ? { ...img, ...data } // Update matching image
+                                                    : img
+                                            );
+                                        case "delete":
+                                            return currentImages.filter(
+                                                (img) => img.position !== data.position
+                                            ); // Remove matching image
+                                        default:
+                                            return currentImages;
+                                    }
+                                })(),
+                            },
+                        };
+                    }
+                    return slide;
+                }),
+            };
+        });
+    };
+
 
     const getSlideByPage = (pageNumber) => {
         return techPackData.slides.find((slide) => slide.page === pageNumber) || null;
@@ -417,31 +458,22 @@ export const TechPackProvider = ({ children }) => {
 
     // Submit the form data
     const submitTechPack = async () => {
+        setIsAdding(true)
         console.log("TechPackData : ", techPackData);
-        // try {
-        //     const response = await fetch("/techpacks/add", {
-        //         method: "POST",
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //         },
-        //         body: JSON.stringify(techPackData),
-        //     });
-
-        //     if (!response.ok) {
-        //         throw new Error(`Error: ${response.statusText}`);
-        //     }
-
-        //     const data = await response.json();
-        //     console.log("TechPack created successfully:", data);
-        // } catch (error) {
-        //     console.error("Error creating TechPack:", error.message);
-        // }
+        try {
+            await addTechPacks(techPackData)
+        } catch (error) {
+            throw new Error("Error creating TechPack:", error.message);
+        } finally {
+            setIsAdding(false)
+        }
     };
 
     return (
         <TechPackContext.Provider
             value={{
                 techPackData,
+                isAdding,
                 updateField,
                 addSlide,
                 updateSlide,
@@ -453,6 +485,7 @@ export const TechPackProvider = ({ children }) => {
                 deleteInfoField,
                 submitTechPack,
                 deleteArtworkPlacement,
+                updateNestedImages,
                 updateArtworkPlacement,
                 addArtworkPlacement
             }}

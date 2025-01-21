@@ -12,7 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const TechPack = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { techPackData, updateField, addSlide, submitTechPack } = useTechPack();
+  const { techPackData, updateField, addSlide, submitTechPack, isAdding } = useTechPack();
 
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
 
@@ -23,6 +23,7 @@ const TechPack = () => {
       console.log(selectedLabels, currentCategory, currentSubCategory);
       updateField("gender", currentSubCategory)
       updateField("category", currentCategory)
+      updateField("designer", "Harshang")
       selectedLabels.map((label) => {
         addSlide({
           "page": 10,
@@ -194,9 +195,9 @@ const TechPack = () => {
       )}
 
       <div className="flex justify-center gap-5 mb-10">
-        <button type='button' className="text-sm px-6 py-2 rounded-full border border-black">Reset</button>
-        <button type='button' className="text-white bg-black text-sm px-6 py-2 rounded-full" onClick={submitTechPack}>Save</button>
-        <button type='button' className="text-white bg-black text-sm px-6 py-2 rounded-full">Save & Download</button>
+        <button type='button' className="text-sm px-6 py-2 rounded-full border border-black" disabled={isAdding}>Reset</button>
+        <button type='button' className={`text-white bg-black text-sm px-6 py-2 rounded-full ${isAdding ? "animate-spin" : ""}`} onClick={submitTechPack} disabled={isAdding}>Save</button>
+        <button type='button' className="text-white bg-black text-sm px-6 py-2 rounded-full" disabled={isAdding}>Save & Download</button>
       </div>
     </form>
   );

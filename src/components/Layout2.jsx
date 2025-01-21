@@ -86,7 +86,7 @@ const Layout2 = ({ page }) => {
                   id={key}
                   type='text'
                   value={slide.data?.fabricColorImages?.find((item) => item.position === key).src}
-                  onChange={(e) => updateSlideByPage(page, "data.fabricColorImages", [{ position: key, src: e.target.value }])}
+                  onChange={(e) => updateSlideByPage(page, "data.fabricColorImages", { position: key, src: e.target.value })}
                 />
               </div>
             ))}

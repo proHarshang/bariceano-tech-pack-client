@@ -1,7 +1,7 @@
 import { useTechPack } from '../context/TechPackContext';
 
 function Header({ name, page, onDelete }) {
-    const { techPackData, updateSlideByPage, updateField } = useTechPack();
+    const { techPackData, updateSlideByPage } = useTechPack();
 
     return (
         <section className='border-b-2 border-black'>
@@ -24,13 +24,7 @@ function Header({ name, page, onDelete }) {
                 <div className='flex flex-col items-end justify-end'>
                     <div>
                         <h5>Pg - {page}</h5>
-                        <input
-                            type="text"
-                            placeholder="BR-00-00"
-                            value={techPackData.styleNo}
-                            onChange={(e) => updateField("styleNo", e.target.value)}
-                            className='mt-2 w-full border'
-                        />
+                        <h5>{techPackData.styleNo}</h5>
                     </div>
                     <div className='flex gap-5 absolute top-12 pr-2 right-0 items-center mt-2'>
                         <div
