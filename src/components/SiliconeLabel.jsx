@@ -20,7 +20,7 @@ const SiliconLabel = ({ page }) => {
                 {slide.data.images[0] ? (
                     <div className="flex flex-col items-center w-full h-full">
                         <img
-                            src={`${process.env.REACT_APP_API_URL}/upload/techpack/${slide.data.images[0].src}`}
+                            src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0].src}`}
                             alt={slide.data.images[0].src}
                             className="mb-4 w-full h-full object-contain cursor-pointer"
                         />
