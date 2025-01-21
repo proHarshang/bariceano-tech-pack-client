@@ -7,39 +7,45 @@ const ArtworkPlacementSheet = ({ page }) => {
     const slide = getSlideByPage(page);
 
     return (
-        <div className="overflow-x-auto p-10">
-            <button
-                className="add"
-                type="button"
-                onClick={(e) => addArtworkPlacement(page, {
-                    sNo: slide.data.artworkPlacementSheet.length + 1,
-                    placement: "Back",
-                    technique: "Embroidery",
-                    color: "#000000",
-                    artworkimage: [{ position: 0, src: "5.png" }],
-                    placementimage: [{ position: 0, src: "6.png" }],
-                })}
-            >Add</button>
-            <table className="min-w-full border border-gray-400">
-                <thead>
-                    <tr>
-                        <th className="border bg-black text-white border-gray-400 p-2">#</th>
-                        <th className="border bg-black text-white border-gray-400 p-2">Placement</th>
-                        <th className="border bg-black text-white border-gray-400 p-2">Art work</th>
-                        <th className="border bg-black text-white border-gray-400 p-2">Technique</th>
-                        <th className="border bg-black text-white border-gray-400 p-2">Colour</th>
-                        <th className="border bg-black text-white border-gray-400 p-2">Placement</th>
-                        <th className="border bg-black text-white border-gray-400 p-2">Del</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {slide.data.artworkPlacementSheet.map((item, index) => (
-                        <FormRow formIndex={index} page={page} item={item} />
-                    ))}
-                </tbody>
-            </table>
+        <>
+            <div className="text-xs flex gap-5 justify-end m-5">
+                <button
+                    className="px-3 py-1 border rounded-lg border-black"
+                    type="button"
+                    onClick={(e) => addArtworkPlacement(page, {
+                        sNo: slide.data.artworkPlacementSheet.length + 1,
+                        placement: "Back",
+                        technique: "Embroidery",
+                        color: "#000000",
+                        artworkimage: [{ position: 0, src: "5.png" }],
+                        placementimage: [{ position: 0, src: "6.png" }],
+                    })}
+                >
+                    Add new
+                </button>
+            </div>
+            <div className="overflow-x-auto p-10">
+                <table className="min-w-full border border-gray-400">
+                    <thead>
+                        <tr>
+                            <th className="border bg-black text-white border-gray-400 p-2">#</th>
+                            <th className="border bg-black text-white border-gray-400 p-2">Placement</th>
+                            <th className="border bg-black text-white border-gray-400 p-2">Art work</th>
+                            <th className="border bg-black text-white border-gray-400 p-2">Technique</th>
+                            <th className="border bg-black text-white border-gray-400 p-2">Colour</th>
+                            <th className="border bg-black text-white border-gray-400 p-2">Placement</th>
+                            <th className="border bg-black text-white border-gray-400 p-2">Del</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {slide.data.artworkPlacementSheet.map((item, index) => (
+                            <FormRow formIndex={index} page={page} item={item} />
+                        ))}
+                    </tbody>
+                </table>
 
-        </div>
+            </div>
+        </>
     )
 }
 

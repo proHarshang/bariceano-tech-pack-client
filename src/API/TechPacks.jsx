@@ -22,6 +22,27 @@ const getTechPacks = async () => {
     return response.json();
 
 }
+
+const addTechPacks = async (techPackData) => {
+    const response = await fetch(`${apiURL}/design/techpacks/add`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'api-Key': apiKey,
+        },
+        body: JSON.stringify(techPackData),
+    });
+
+    if (!response.ok) {
+        if (response.status === 401) {
+            return;
+        }
+        throw new Error('Failed to fetch products data');
+    }
+
+    return response.json();
+}
+
 const getUploadedImage = async () => {
 
     const response = await fetch(`${apiURL}/design/techpacks/images`, {
@@ -664,4 +685,4 @@ export const useUploadImageModal = () => {
 
 
 
-export { getTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, getUploadedImage, useUploadImage }
+export { getTechPacks, addTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, getUploadedImage, useUploadImage }

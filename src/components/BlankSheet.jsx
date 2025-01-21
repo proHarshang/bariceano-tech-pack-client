@@ -17,7 +17,7 @@ const BlankSheet = ({ page }) => {
           <input
             type='text'
             value={slide.data.images[0].src}
-            onChange={(e) => updateSlideByPage(page, "data.images", [{ position: 0, src: e.target.value }])}
+            onChange={(e) => updateSlideByPage(page, "data.images", { position: 0, src: e.target.value })}
           />
         </div>
       ) : (
@@ -27,7 +27,7 @@ const BlankSheet = ({ page }) => {
           <input
             type='text'
             value={slide.data.images[0].src}
-            onChange={(e) => updateSlideByPage(page, "data.images", [{ position: 0, src: e.target.value }])}
+            onChange={(e) => updateSlideByPage(page, "data.images", { position: 0, src: e.target.value })}
           />
           <p>Drop an Image here or click to select</p>
         </div>
