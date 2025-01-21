@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getTechPacks, useUploadImageModal } from '../API/TechPacks';
 import TechPackDataTable from '../components/TechPackDataTable';
-import UploadImage from '../components/UploadImage';
 
 const TechPacksTable = () => {
     const [techPacks, setTechPacks] = useState([]);
@@ -35,7 +34,12 @@ const TechPacksTable = () => {
                 <button onClick={() => uploadImageModal.setIsModalOpen(true)}>
                     Upload Files
                 </button>
-                <UploadImage {...uploadImageModal} />
+                <button onClick={() => uploadImageModal.setIsModalOpen(true)}>
+                    Upload Files
+                </button>
+                <button onClick={() => uploadImageModal.setIsModalOpen(true)}>
+                    Upload Files
+                </button>
             </div>
             <TechPackDataTable data={techPacks} />
         </div>
