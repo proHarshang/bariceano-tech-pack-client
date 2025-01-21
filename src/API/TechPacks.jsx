@@ -605,85 +605,68 @@ const useUploadImage = () => {
 };
 
 
-export const useUploadImageModal = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [images, setImages] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [activePopup, setActivePopup] = useState(null);
-    const [currentImage, setcurrentImage] = useState('');
+export const fabricAdd = async (name) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/fabric/add`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ name }),
+        });
 
-    const { uploadImage, loading, error } = useUploadImage();
-
-    // Fetch all images
-    const fetchAllImage = async () => {
-        try {
-            const data = await getUploadedImage();
-            if (data.status) {
-                setImages(data.data);
-            } else {
-                console.error('Failed to fetch images');
-            }
-        } catch (err) {
-            console.error('Error fetching images:', err);
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to add fabric');
         }
-    };
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while adding the fabric');
+    }
+};
 
-    useEffect(() => {
-        fetchAllImage();
-    }, []);
 
-    // Filter images based on search term
-    const filteredImages = images.filter(image =>
-        image.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+export const fabricEdit = async (oldName, newName) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/fabric/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ oldName, newName }),
+        });
 
-    // Download image
-    const handleDownload = (image) => {
-        const link = document.createElement("a");
-        link.href = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image}`;
-        link.target = "_blank";
-        link.download = image;
-        link.click();
-    };
-
-    // Delete image placeholder
-    const handleDelete = (image) => {
-        console.log("Delete", image); // Replace with your delete logic
-    };
-
-    // Select image logic
-    const selectImage = (image) => {
-        setIsModalOpen(false);
-        setcurrentImage(image);
-        console.log("This image selected:", image);
-    };
-
-    // Upload file
-    const handleFileChange = (e) => {
-        if (e.target.files && e.target.files.length > 0) {
-            const file = e.target.files[0];
-            console.log(file.name);
-            uploadImage(file);
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to edit fabric');
         }
-    };
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while editing the fabric');
+    }
+};
 
-    return {
-        isModalOpen,
-        setIsModalOpen,
-        searchTerm,
-        setSearchTerm,
-        currentImage,
-        filteredImages,
-        activePopup,
-        setActivePopup,
-        handleDownload,
-        handleDelete,
-        selectImage,
-        handleFileChange,
-        fetchAllImage,
-        loading,
-        error
-    };
+export const fabricDelete = async (name) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/fabric/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to delete fabric');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while deleting the fabric');
+    }
 };
 
 

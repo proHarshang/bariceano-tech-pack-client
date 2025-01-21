@@ -131,7 +131,7 @@ const MainHeader = () => {
 
 
                     {showCategories && (
-                        <div className="absolute mt-2 w-48 bg-white border border-gray-300 rounded shadow-md z-10">
+                        <div className="absolute mt-2 w-48 bg-white border border-gray-300 rounded shadow-md z-[100]">
                             <div className="p-2 space-y-2">
                                 {menu.map((category) => (
                                     <div
@@ -147,7 +147,7 @@ const MainHeader = () => {
                     )}
 
                     {currentCategory && (
-                        <div className="absolute mt-2 left-52 w-48 bg-white border border-gray-300 rounded shadow-md z-10">
+                        <div className="absolute mt-2 left-52 w-48 bg-white border border-gray-300 rounded shadow-md z-50">
                             <div className="p-2 space-y-2">
                                 {subCategories.map((subCategory) => (
                                     <div
@@ -163,7 +163,7 @@ const MainHeader = () => {
                     )}
 
                     {currentSubCategory && (
-                        <div className="absolute mt-2 -right-[600px] w-64 bg-white border border-gray-300 rounded shadow-md z-10">
+                        <div className="absolute mt-2 -right-[600px] w-64 bg-white border border-gray-300 rounded shadow-md z-50">
                             <div className="py-4 space-y-2">
                                 {labels.length > 0 ? (
                                     labels.map((label) => (

@@ -109,7 +109,7 @@ const TechPackPdfGenerator = (data) => {
 
         headerSection(1, "Spac Sheet");
         if (Layout1[0]?.type === "Layout1") {
-            
+
             const colorImgWidth = 40;
             const frontBackImgWidth = 75;
             const frontBackImgHeight = 110;
@@ -177,10 +177,36 @@ const TechPackPdfGenerator = (data) => {
             const largeImageRightX = centerX + largeImageWidth + spacing - largeImageWidth / 2;
 
             // Adding the first three main images in sorted order
-            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`, "png", largeImageLeftX, largeImageTop, largeImageWidth, largeImageHeight);
-            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[1].src}`, "png", largeImageCenterX, largeImageTop, largeImageWidth, largeImageHeight);
-            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[2].src}`, "png", largeImageRightX, largeImageTop, largeImageWidth, largeImageHeight);
-
+            if (Layout2[0].data.images.length > 0) {
+                pdf.addImage(
+                    `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`,
+                    "png",
+                    largeImageLeftX,
+                    largeImageTop,
+                    largeImageWidth,
+                    largeImageHeight
+                );
+            }
+            if (Layout2[0].data.images.length > 1) {
+                pdf.addImage(
+                    `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[1].src}`,
+                    "png",
+                    largeImageCenterX,
+                    largeImageTop,
+                    largeImageWidth,
+                    largeImageHeight
+                );
+            }
+            if (Layout2[0].data.images.length > 2) {
+                pdf.addImage(
+                    `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[2].src}`,
+                    "png",
+                    largeImageRightX,
+                    largeImageTop,
+                    largeImageWidth,
+                    largeImageHeight
+                );
+            }
             // Thread color section
             const colorImageWidth = 30;
             const colorImageHeight = 37;
@@ -459,9 +485,15 @@ const TechPackPdfGenerator = (data) => {
 
                 // Colour
                 pdf.rect(currentX, currentY, columnWidths[4], rowHeight);
-                pdf.text(row.color, currentX + 5, row.color.length > 49 ? currentY - 7 : currentY - 4 + rowHeight / 2, {
+                const maxWords = 15; // Maximum number of words allowed in the cell
+                const truncatedText = row.color.split(" ").length > maxWords
+                    ? row.color.split(" ").slice(0, maxWords).join(" ") + "..."
+                    : row.color;
+
+                pdf.text(truncatedText, currentX + 5, row.color.length > 49 ? currentY - 7 : currentY - 4 + rowHeight / 2, {
                     baseline: 'middle',
                 });
+
                 currentX += columnWidths[4];
 
                 // Placement (image cell)
