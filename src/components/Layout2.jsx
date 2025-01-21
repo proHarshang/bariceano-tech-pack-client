@@ -15,7 +15,7 @@ const Layout2 = ({ page }) => {
           >
             {slide.data?.images.find((item) => item.position === key) ? (
               <img
-                src={`${process.env.REACT_APP_API_URL}/upload/techpack/${slide.data?.images.find((item) => item.position === key).src}`}
+                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.images.find((item) => item.position === key).src}`}
                 alt={`img-${key}`}
                 className='object-fill h-full rounded-2xl'
               />
@@ -44,7 +44,7 @@ const Layout2 = ({ page }) => {
               >
                 {slide.data?.threadColorImages?.find((item) => item.position === key) ? (
                   <img
-                    src={`${process.env.REACT_APP_API_URL}/upload/techpack/${slide.data?.threadColorImages?.find((item) => item.position === key).src}`}
+                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.threadColorImages?.find((item) => item.position === key).src}`}
                     alt={`thread-img-${key}`}
                     className='object-fill h-full rounded-2xl'
                   />
@@ -73,7 +73,7 @@ const Layout2 = ({ page }) => {
               >
                 {slide.data?.fabricColorImages?.find((item) => item.position === key) ? (
                   <img
-                    src={`${process.env.REACT_APP_API_URL}/upload/techpack/${slide.data?.fabricColorImages?.find((item) => item.position === key).src}`}
+                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.fabricColorImages?.find((item) => item.position === key).src}`}
                     alt={`fabric-img-${key}`}
                     className='object-cover h-full w-full rounded-2xl'
                   />

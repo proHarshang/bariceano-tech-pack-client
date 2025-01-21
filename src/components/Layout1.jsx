@@ -14,7 +14,7 @@ const Layout1 = ({ page }) => {
                         <div className='rounded-2xl border-2 border-dashed bg-[#F3F3F3] h-full w-full flex items-center justify-center'>
                             {slide.data?.fabricColorImages.find((item) => item.position === 0) ? (
                                 <img
-                                    src={`${process.env.REACT_APP_API_URL}/upload/techpack/${slide.data?.fabricColorImages.find((item) => item.position === 0).src}`}
+                                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.fabricColorImages.find((item) => item.position === 0).src}`}
                                     alt='Fabric'
                                     className='object-contain h-full w-full rounded-2xl cursor-pointer'
                                 />
@@ -35,7 +35,7 @@ const Layout1 = ({ page }) => {
                         <div className='rounded-2xl border-2 border-dashed bg-[#F3F3F3] h-full w-full flex items-center justify-center'>
                             {slide.data?.threadColorImages.find((item) => item.position === 0) ? (
                                 <img
-                                    src={`${process.env.REACT_APP_API_URL}/upload/techpack/${slide.data?.threadColorImages.find((item) => item.position === 0).src}`}
+                                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.threadColorImages.find((item) => item.position === 0).src}`}
                                     alt='Thread'
                                     className='object-contain h-full w-full rounded-2xl cursor-pointer'
                                 />
@@ -55,7 +55,7 @@ const Layout1 = ({ page }) => {
                 <div className='w-[30%] border-2 border-dashed bg-[#F3F3F3] h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
                     {slide.data?.images.find((item) => item.position === 0) ? (
                         <img
-                            src={`${process.env.REACT_APP_API_URL}/upload/techpack/${slide.data?.images.find((item) => item.position === 0).src}`}
+                            src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.images.find((item) => item.position === 0).src}`}
                             alt='Main 1'
                             className='object-fill w-fit h-full rounded-2xl cursor-pointer'
                         />

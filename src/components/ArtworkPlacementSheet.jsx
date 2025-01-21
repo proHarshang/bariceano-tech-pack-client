@@ -80,7 +80,7 @@ const FormRow = ({ formIndex, page, item }) => {
         <td className="border border-gray-400 p-2 text-center">
             {slide.data.artworkPlacementSheet[formIndex]?.artworkimage[0].src ? (
                 <img
-                    src={`${process.env.REACT_APP_API_URL}/upload/techpack/${slide.data.artworkPlacementSheet[formIndex]?.artworkimage[0].src}`}
+                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.artworkPlacementSheet[formIndex]?.artworkimage[0].src}`}
                     alt={slide.data.artworkPlacementSheet[formIndex]?.artworkimage[0].src}
                     className="w-fit mx-auto h-[156px] object-fill cursor-pointer"
                 />
@@ -125,7 +125,7 @@ const FormRow = ({ formIndex, page, item }) => {
         <td className="border border-gray-400 p-2 text-center">
             {slide.data.artworkPlacementSheet[formIndex]?.placementimage[0].src ? (
                 <img
-                    src={`${process.env.REACT_APP_API_URL}/upload/techpack/${slide.data.artworkPlacementSheet[formIndex]?.placementimage[0].src}`}
+                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.artworkPlacementSheet[formIndex]?.placementimage[0].src}`}
                     alt={slide.data.artworkPlacementSheet[formIndex]?.placementimage[0].src}
                     className="w-fit mx-auto h-[156px] object-fill cursor-pointer"
                 />
