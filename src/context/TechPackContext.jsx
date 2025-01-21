@@ -8,6 +8,10 @@ export const useTechPack = () => useContext(TechPackContext);
 export const TechPackProvider = ({ children }) => {
 
     const [isAdding, setIsAdding] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState({
+        status: null,
+        message: null,
+    });
     const [techPackData, setTechPackData] = useState({
         designer: "",
         styleNo: "BR-00-00",
@@ -336,6 +340,7 @@ export const TechPackProvider = ({ children }) => {
 
     // Update an artwork placement entry by `sNo`
     const updateArtworkPlacement = (page, sNo, updatedFields) => {
+        console.log(page, sNo, updatedFields);
         setTechPackData((prev) => {
             const updatedSlides = prev.slides.map((slide) => {
                 if (slide.page === page) {
@@ -352,6 +357,7 @@ export const TechPackProvider = ({ children }) => {
                 return slide;
             });
 
+            console.log(updatedSlides);
             return { ...prev, slides: updatedSlides };
         });
     };
@@ -469,7 +475,8 @@ export const TechPackProvider = ({ children }) => {
         setIsAdding(true)
         console.log("TechPackData : ", techPackData);
         try {
-            await addTechPacks(techPackData)
+            const response = await addTechPacks(techPackData)
+            setSubmitStatus(response)
         } catch (error) {
             throw new Error("Error creating TechPack:", error.message);
         } finally {
@@ -482,6 +489,7 @@ export const TechPackProvider = ({ children }) => {
             value={{
                 techPackData,
                 isAdding,
+                submitStatus,
                 updateField,
                 addSlide,
                 updateSlide,

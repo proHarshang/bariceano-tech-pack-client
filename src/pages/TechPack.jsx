@@ -12,7 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const TechPack = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { techPackData, updateField, addSlide, submitTechPack, isAdding } = useTechPack();
+  const { techPackData, updateField, addSlide, submitTechPack, isAdding, submitStatus } = useTechPack();
 
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
 
@@ -199,6 +199,7 @@ const TechPack = () => {
         <button type='button' className={`text-white bg-black text-sm px-6 py-2 rounded-full ${isAdding ? "animate-spin" : ""}`} onClick={submitTechPack} disabled={isAdding}>Save</button>
         <button type='button' className="text-white bg-black text-sm px-6 py-2 rounded-full" disabled={isAdding}>Save & Download</button>
       </div>
+      <p className={`${submitStatus?.status ? 'bg-green-600' : 'bg-red-600'}`}>{submitStatus?.message}</p>
     </form>
   );
 };

@@ -33,12 +33,12 @@ const addTechPacks = async (techPackData) => {
         body: JSON.stringify(techPackData),
     });
 
-    if (!response.ok) {
-        if (response.status === 401) {
-            return;
-        }
-        throw new Error('Failed to fetch products data');
-    }
+    // if (!response.ok) {
+    //     if (response.status === 401) {
+    //         return;
+    //     }
+    //     throw new Error('Failed to fetch products data');
+    // }
 
     return response.json();
 }
