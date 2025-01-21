@@ -8,7 +8,7 @@ const Layout2 = ({ page }) => {
   return (
     <div className='flex flex-col gap-10'>
       <div className='w-full flex justify-evenly gap-14 px-10'>
-        {["front", "SIDE", "back"].map((key, index) => (
+        {[0, 1, 2].map((key, index) => (
           <div
             key={index}
             className='h-[270px] w-full border-2 border-dashed rounded-2xl bg-[#F3F3F3] flex items-center justify-center'
@@ -16,7 +16,7 @@ const Layout2 = ({ page }) => {
             {slide.data?.images.find((item) => item.position === key) ? (
               <img
                 src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.images.find((item) => item.position === key).src}`}
-                alt={`img-${key}`}
+                alt={slide.data?.images.find((item) => item.position === key).src}
                 className='object-fill h-full rounded-2xl'
               />
             ) : (
@@ -28,7 +28,7 @@ const Layout2 = ({ page }) => {
               id={key}
               type='text'
               value={slide.data?.images.find((item) => item.position === key).src}
-              onChange={(e) => updateSlideByPage(page, "data.images", [{ position: key, src: e.target.value }])}
+              onChange={(e) => updateSlideByPage(page, "data.images", { position: key, src: e.target.value })}
             />
           </div>
         ))}
@@ -45,7 +45,7 @@ const Layout2 = ({ page }) => {
                 {slide.data?.threadColorImages?.find((item) => item.position === key) ? (
                   <img
                     src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.threadColorImages?.find((item) => item.position === key).src}`}
-                    alt={`thread-img-${key}`}
+                    alt={slide.data?.threadColorImages?.find((item) => item.position === key).src}
                     className='object-fill h-full rounded-2xl'
                   />
                 ) : (
@@ -57,7 +57,7 @@ const Layout2 = ({ page }) => {
                   id={key}
                   type='text'
                   value={slide.data?.threadColorImages?.find((item) => item.position === key).src}
-                  onChange={(e) => updateSlideByPage(page, "data.threadColorImages", [{ position: key, src: e.target.value }])}
+                  onChange={(e) => updateSlideByPage(page, "data.threadColorImages", { position: key, src: e.target.value })}
                 />
               </div>
             ))}
@@ -74,7 +74,7 @@ const Layout2 = ({ page }) => {
                 {slide.data?.fabricColorImages?.find((item) => item.position === key) ? (
                   <img
                     src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.fabricColorImages?.find((item) => item.position === key).src}`}
-                    alt={`fabric-img-${key}`}
+                    alt={slide.data?.fabricColorImages?.find((item) => item.position === key).src}
                     className='object-cover h-full w-full rounded-2xl'
                   />
                 ) : (

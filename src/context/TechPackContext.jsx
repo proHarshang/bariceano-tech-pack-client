@@ -27,6 +27,10 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": 1,
                         "src": "PANTONE1.jpg"
+                    },
+                    {
+                        "position": 2,
+                        "src": "PANTONE1.jpg"
                     }
                 ],
                 "threadColorImages": [
@@ -37,19 +41,23 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": 1,
                         "src": "PANTONE1.jpg"
+                    },
+                    {
+                        "position": 2,
+                        "src": "PANTONE1.jpg"
                     }
                 ],
                 "images": [
                     {
-                        "position": "front",
+                        "position": 0,
                         "src": "BRMS04FRONT.jpg"
                     },
                     {
-                        "position": "SIDE",
+                        "position": 1,
                         "src": "BRMS04SIDE.jpg"
                     },
                     {
-                        "position": "back",
+                        "position": 2,
                         "src": "BRMS04BACK.jpg"
                     }
                 ]
