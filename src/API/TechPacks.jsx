@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 const apiURL = process.env.REACT_APP_API_URL;
 const apiKey = process.env.REACT_APP_API_KEY;
@@ -509,7 +509,6 @@ const useEditSizeChart = () => {
     };
 };
 
-
 const useDeleteTrims = () => {
     const [loadingTrims, setLoading] = useState(false);
     const [errorTrims, setError] = useState(null);
@@ -582,6 +581,85 @@ const useUploadImage = () => {
     };
 
     return { uploadImage, loading, error };
+};
+
+
+export const useUploadImageModal = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [images, setImages] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activePopup, setActivePopup] = useState(null);
+
+  const { uploadImage, loading, error } = useUploadImage();
+
+  // Fetch all images
+  const fetchAllImage = async () => {
+    try {
+      const data = await getUploadedImage();
+      if (data.status) {
+        setImages(data.data);
+      } else {
+        console.error('Failed to fetch images');
+      }
+    } catch (err) {
+      console.error('Error fetching images:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllImage();
+  }, []);
+
+  // Filter images based on search term
+  const filteredImages = images.filter(image =>
+    image.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Download image
+  const handleDownload = (image) => {
+    const link = document.createElement("a");
+    link.href = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image}`;
+    link.target = "_blank";
+    link.download = image;
+    link.click();
+  };
+
+  // Delete image placeholder
+  const handleDelete = (image) => {
+    console.log("Delete", image); // Replace with your delete logic
+  };
+
+  // Select image logic
+  const selectImage = (image) => {
+    setIsModalOpen(false);
+    console.log("This image selected:", image);
+  };
+
+  // Upload file
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      console.log(file.name);
+      uploadImage(file);
+    }
+  };
+
+  return {
+    isModalOpen,
+    setIsModalOpen,
+    searchTerm,
+    setSearchTerm,
+    filteredImages,
+    activePopup,
+    setActivePopup,
+    handleDownload,
+    handleDelete,
+    selectImage,
+    handleFileChange,
+    fetchAllImage,
+    loading,
+    error
+  };
 };
 
 

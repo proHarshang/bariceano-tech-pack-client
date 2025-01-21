@@ -457,7 +457,7 @@ const TechPackDataTable = ({ data = [] }) => {
                                             </div>
                                             <div className="action-buttons w-1/2">
                                                 <button className="download-button hover:bg-green-300">
-                                                    <TechPackPdfGenerator data={filteredData[index]} />
+                                                    <TechPackPdfGenerator data={sortedData[index]} />
                                                 </button>
                                                 <button onClick={() => {
                                                     const confirmDelete = window.confirm(
