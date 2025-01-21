@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import { useTechPack } from '../context/TechPackContext';
+import ImageSelectorPopup from './ImageSelectorPopup';
 
 const SiliconLabel = ({ page }) => {
+    const [openPopupId, setOpenPopupId] = useState(null);
+
     const { getSlideByPage, updateSlideByPage } = useTechPack();
     const slide = getSlideByPage(page);
 
@@ -20,20 +24,29 @@ const SiliconLabel = ({ page }) => {
                 {slide.data.images[0] ? (
                     <div className="flex flex-col items-center w-full h-full">
                         <img
+                            onClick={() => setOpenPopupId(`images-0`)}
                             src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0].src}`}
                             alt={slide.data.images[0].src}
                             className="mb-4 w-full h-full object-contain cursor-pointer"
                         />
-                        <input type='text' />
                     </div>
                 ) : (
                     <div className="border-2 border-dashed bg-[#F3F3F3] border-gray-300 w-full h-full flex justify-center items-center cursor-pointer">
-                        <input type='text' />
-                        <p>Drop an Image here or click to select</p>
+                        <button type='button' onClick={() => setOpenPopupId(`images-0`)}>Add</button>
                     </div>
                 )}
             </div>
-
+            {/* Image Selector Popup */}
+            {["images-0"].map((elem) => {
+                return <ImageSelectorPopup
+                    key={elem}
+                    isOpen={openPopupId === elem}
+                    closeModal={() => setOpenPopupId(null)}
+                    onImageSelect={(imgName) => {
+                        updateSlideByPage(page, `data.${elem.split("-")[0]}`, { "position": parseInt(elem.split("-")[1]), "src": imgName })
+                    }}
+                />
+            })}
         </div>
     );
 };

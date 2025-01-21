@@ -5,11 +5,11 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-    font-family: 'DM Sans', sans-serif;
-
+  font-family: "DM Sans", sans-serif;
 }
 
 * {
@@ -19,7 +19,6 @@ body {
 .container {
   padding: 0px 20px;
 }
-
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
@@ -83,7 +82,7 @@ input {
     }
 
     &:placeholder-shown {
-      ~.form__label {
+      ~ .form__label {
         padding: 0px 0px;
         font-size: inherit;
         cursor: text;
@@ -94,7 +93,7 @@ input {
     }
 
     &:focus {
-      ~.form__label {
+      ~ .form__label {
         position: absolute;
         top: 0;
         display: block;
@@ -399,4 +398,48 @@ select:focus-visible {
 
 .custom-file-label:hover {
   background-color: #752bd6;
+}
+
+/* src/components/ImageSelectorPopup.css */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it appears above other content */
+}
+
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+.image-list {
+  list-style: none;
+  padding: 0;
+}
+
+.image-list li {
+  margin: 10px 0;
+}
+
+.image-list button {
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.image-list button:hover {
+  background-color: #45a049;
 }

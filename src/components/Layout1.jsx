@@ -15,7 +15,7 @@ const Layout1 = ({ page }) => {
                             {slide.data?.fabricColorImages.find((item) => item.position === 0) ? (
                                 <img
                                     src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.fabricColorImages.find((item) => item.position === 0).src}`}
-                                    alt='Fabric'
+                                    alt={slide.data?.fabricColorImages.find((item) => item.position === 0).src}
                                     className='object-contain h-full w-full rounded-2xl cursor-pointer'
                                 />
                             ) : (
@@ -24,7 +24,7 @@ const Layout1 = ({ page }) => {
                                     <input
                                         type='text'
                                         value={slide.data?.fabricColorImages.find((item) => item.position === 0).src}
-                                        onChange={(e) => updateSlideByPage(page, "data.fabricColorImages", [{ position: 0, src: e.target.value }])}
+                                        onChange={(e) => updateSlideByPage(page, "data.fabricColorImages", { position: 0, src: e.target.value })}
                                     />
                                 </label>
                             )}
@@ -36,7 +36,7 @@ const Layout1 = ({ page }) => {
                             {slide.data?.threadColorImages.find((item) => item.position === 0) ? (
                                 <img
                                     src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.threadColorImages.find((item) => item.position === 0).src}`}
-                                    alt='Thread'
+                                    alt={slide.data?.fabricColorImages.find((item) => item.position === 0).src}
                                     className='object-contain h-full w-full rounded-2xl cursor-pointer'
                                 />
                             ) : (
@@ -45,7 +45,7 @@ const Layout1 = ({ page }) => {
                                     <input
                                         type='text'
                                         value={slide.data?.threadColorImages.find((item) => item.position === 0).src}
-                                        onChange={(e) => updateSlideByPage(page, "data.threadColorImages", [{ position: 0, src: e.target.value }])}
+                                        onChange={(e) => updateSlideByPage(page, "data.threadColorImages", { position: 0, src: e.target.value })}
                                     />
                                 </label>
                             )}
@@ -53,10 +53,10 @@ const Layout1 = ({ page }) => {
                     </div>
                 </div>
                 <div className='w-[30%] border-2 border-dashed bg-[#F3F3F3] h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
-                    {slide.data?.images.find((item) => item.position === 0) ? (
+                    {slide.data?.images[0] ? (
                         <img
-                            src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.images.find((item) => item.position === 0).src}`}
-                            alt='Main 1'
+                            src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.images[0].src}`}
+                            alt={slide.data?.images[0].src}
                             className='object-fill w-fit h-full rounded-2xl cursor-pointer'
                         />
                     ) : (
@@ -65,7 +65,7 @@ const Layout1 = ({ page }) => {
                             <input
                                 type='text'
                                 value={slide.data.images[0].src}
-                                onChange={(e) => updateSlideByPage(page, "data.images", [{ position: 0, src: e.target.value }])}
+                                onChange={(e) => updateSlideByPage(page, "data.images", { position: 0, src: e.target.value })}
                             />
                         </label>
                     )}
