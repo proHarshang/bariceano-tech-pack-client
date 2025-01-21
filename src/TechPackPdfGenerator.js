@@ -31,9 +31,9 @@ const TechPackPdfGenerator = (data) => {
         pdf.addImage('/logo512.png', 'PNG', imgX, imgY, imgWidth, imgHeight);
 
         pdf.setFontSize(12);
-        const pgX = pageWidth - 30;
+        const pgX = pageWidth - 35;
         const pgY = 8;
-        pdf.text(`Pg.- ${pageNumber}`, pgX, pgY);
+        pdf.text(`Page no - ${pageNumber}`, pgX, pgY);
 
         pdf.text(data.data.styleNo, pgX, pgY + 5);
 
@@ -109,6 +109,7 @@ const TechPackPdfGenerator = (data) => {
 
         headerSection(1, "Spac Sheet");
         if (Layout1[0]?.type === "Layout1") {
+            
             const colorImgWidth = 40;
             const frontBackImgWidth = 75;
             const frontBackImgHeight = 110;
@@ -133,8 +134,8 @@ const TechPackPdfGenerator = (data) => {
                         'JPEG',
                         frontImgX + 44, // Adjusted X position for the first image
                         firstRowY + 10,
-                        frontBackImgWidth + 20,
-                        frontBackImgHeight
+                        frontBackImgWidth + 10,
+                        frontBackImgHeight - 10
                     );
                 } else if (index === 1) {
                     pdf.addImage(
@@ -142,8 +143,8 @@ const TechPackPdfGenerator = (data) => {
                         'JPEG',
                         backImgX + 64, // Adjusted X position for the second image
                         firstRowY + 10,
-                        frontBackImgWidth + 20,
-                        frontBackImgHeight
+                        frontBackImgWidth + 10,
+                        frontBackImgHeight - 10
                     );
                 }
             });
@@ -167,7 +168,7 @@ const TechPackPdfGenerator = (data) => {
 
             // Adjust dynamic image dimensions
             const largeImageWidth = 80;
-            const largeImageHeight = 95;
+            const largeImageHeight = 92;
 
             // Top three large rectangles centered with equal space using justify-between logic
             const largeImageTop = topMargin + 10;
@@ -182,7 +183,7 @@ const TechPackPdfGenerator = (data) => {
 
             // Thread color section
             const colorImageWidth = 30;
-            const colorImageHeight = 32;
+            const colorImageHeight = 37;
             const colorTopMargin = largeImageTop + largeImageHeight + 20;
 
             pdf.text("Thread colour", centerX - spacing - colorImageWidth - 55, colorTopMargin - 5);
@@ -218,7 +219,7 @@ const TechPackPdfGenerator = (data) => {
             );
 
             const colorWidth = 25; // Decreased width
-            const colorHeight = 30; // Increased height
+            const colorHeight = 33; // Increased height
             const colorSpacing = 10;
             const colorMarginTop = 20; // Add margin between shirt and color swatches
             const colorYStart = shirtY + shirtHeight + colorMarginTop; // Start below shirt images

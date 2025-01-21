@@ -163,17 +163,20 @@ const TechPackDataTable = ({ data = [] }) => {
                     slides: item.slides || [],                   // Default if undefined
                 };
 
-                const response = await fetch(`${process.env.REACT_APP_API_URL}/design/techpacks/add`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "api-key": process.env.REACT_APP_API_KEY,
-                    },
-                    body: JSON.stringify(copiedItem),
-                });
-
+                const response = await fetch(
+                    `${process.env.REACT_APP_API_URL}/design/techpacks/add`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "api-key": process.env.REACT_APP_API_KEY,
+                        },
+                        body: JSON.stringify(copiedItem),
+                    }
+                );
                 if (response.ok) {
                     const newTechPack = await response.json();
+                    console.log("newTechPack", newTechPack)
                     // Update the table state with the new item
                     data = ((prevData) => [...prevData, newTechPack.data]);
                     window.location.reload();
@@ -189,7 +192,6 @@ const TechPackDataTable = ({ data = [] }) => {
         }
     };
 
-
     // delete button
     const handleDeleteTechpack = async (id) => {
         // Use the categoryDelete hook to delete the TechPack
@@ -204,7 +206,6 @@ const TechPackDataTable = ({ data = [] }) => {
             console.error('Failed to delete TechPack');
         }
     };
-
 
     return (
         <>
