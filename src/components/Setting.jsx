@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { LiaSaveSolid } from "react-icons/lia";
-import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims } from "../API/TechPacks";
+import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, fabricEdit, fabricAdd, fabricDelete } from "../API/TechPacks";
 
 export default function Setting() {
 
@@ -12,6 +12,7 @@ export default function Setting() {
     const [requirements, setRequirements] = useState([]);
     const [finishing, setFinishing] = useState([]);
     const [collections, setCollections] = useState([]);
+    const [fabrics, setFabrics] = useState([]);
 
     useEffect(() => {
         const fetchAllSetting = async () => {
@@ -26,6 +27,7 @@ export default function Setting() {
                     setRequirements(data.techPack.requirements); // Set the fetched categories
                     setFinishing(data.techPack.finishing); // Set the fetched categories
                     setCollections(data.techPack.collections); // Set the fetched categories
+                    setFabrics(data.techPack.fabric); // Set the fetched categories
                 } else {
                     console.error('Failed to fetch categories');
                 }
@@ -318,14 +320,14 @@ export default function Setting() {
         console.log("Deleting trim with ID:", id); // Log the ID being passed
         const confirmed = window.confirm("Are you sure you want to delete this trim?");
         if (!confirmed) return;
-    
+
         await deleteTrims(id); // Pass the ID to the hook
-    
+
         if (!errorTrims) {
             setTrims((prevTrims) => prevTrims.filter((trim) => trim._id !== id));
         }
     };
-    
+
     const [newCollectionName, setNewCollectionName] = useState("");
     const [showPopup, setShowPopup] = useState(false);
 
@@ -430,6 +432,59 @@ export default function Setting() {
         }
         setFinishingPopup({ visible: false, id: null });
         setFinishingData({ name: '', images: [] });
+    };
+
+
+    // Fabric
+    const [editedFabric, setEditedFabric] = useState('');
+    const [showFabricPopup, setShowFabricPopup] = useState(false);
+    const [loadingFabric, setLoadingFabric] = useState(false);
+
+    const handleAddFabric = async () => {
+        setShowFabricPopup(true);
+    };
+
+    const handleEditFabric = async (fabric) => {
+        const newFabricName = prompt('Enter the new fabric name:', fabric);
+        if (newFabricName && newFabricName !== fabric) {
+            // Use the fabricEdit hook to update the fabric
+            const updated = await fabricEdit(fabric, newFabricName);
+            if (updated.status) {
+                // Update the state with the new fabric name
+                setFabrics((prevFabrics) =>
+                    prevFabrics.map((item) => (item === fabric ? newFabricName : item))
+                );
+            } else {
+                console.error('Failed to edit fabric');
+            }
+        }
+    };
+
+    const handleDeleteFabric = async (fabric) => {
+        // Use the fabricDelete hook to delete the fabric
+        const deleted = await fabricDelete(fabric);
+        if (deleted.status) {
+            // Remove the deleted fabric from the state
+            setFabrics((prevFabrics) => prevFabrics.filter((item) => item !== fabric));
+        } else {
+            console.error('Failed to delete fabric');
+        }
+    };
+
+    const handleSaveNewFabric = async (e) => {
+        e.preventDefault();
+        setLoadingFabric(true);
+
+        // Use the fabricAdd hook to add a new fabric
+        const newFabric = await fabricAdd(editedFabric);
+        if (newFabric.status) {
+            setFabrics((prevFabrics) => [...prevFabrics, editedFabric]);
+            setEditedFabric('');
+            setShowFabricPopup(false);
+        } else {
+            console.error('Failed to add fabric');
+        }
+        setLoadingFabric(false);
     };
 
     return (
@@ -1492,6 +1547,139 @@ export default function Setting() {
                     </div>
                 </div>
             </div>
+
+            <div className="border-b p-10 flex flex-col gap-10">
+                <div>
+                    <div className="flex gap-10 pb-5">
+                        <div>
+                            <h1 className="font-bold text-xl">Fabric</h1>
+                        </div>
+                        <div className="flex gap-3">
+                            <button className="underline" onClick={handleAddFabric}>
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                    <div className="flex gap-x-4 flex-wrap">
+                        {fabrics.map((fabric) => (
+                            <div
+                                key={fabric}
+                                className="flex w-1/4 relative mb-4 group items-center border-2 rounded-xl px-4 py-5 text-center text-lg"
+                            >
+                                <textarea
+                                    value={fabric}
+                                    readOnly={true}
+                                    rows={5} // Allows for 2-3 lines
+                                    className="border-none w-full text-sm text-center text-black outline-none resize-none"
+                                />
+                                <div className="hidden gap-1 group-hover:flex absolute right-0 bottom-0 ml-2 p-3">
+                                    {/* Edit Button */}
+                                    <button onClick={() => handleEditFabric(fabric)}>
+                                        <span><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
+                                                stroke="#0C2F2F"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M11.875 9.375V11.25C11.875 11.9404 11.3154 12.5 10.625 12.5H3.75C3.05964 12.5 2.5 11.9404 2.5 11.25V4.375C2.5 3.68464 3.05964 3.125 3.75 3.125H5.625"
+                                                stroke="#0C2F2F"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg></span>
+                                    </button>
+
+                                    {/* Delete Button */}
+                                    <button
+                                        onClick={() => {
+                                            const confirmDelete = window.confirm(
+                                                'Are you sure you want to delete this fabric?'
+                                            );
+                                            if (confirmDelete) {
+                                                handleDeleteFabric(fabric);
+                                            }
+                                        }}
+                                    >
+                                        <span><svg
+                                            width="18"
+                                            height="18"
+                                            viewBox="0 0 13 15"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M1.625 3.54541H2.70833H11.375"
+                                                stroke="black"
+                                                stroke-width="0.6"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                            <path
+                                                d="M10.2923 3.54528V11.818C10.2923 12.1314 10.1782 12.432 9.97502 12.6537C9.77185 12.8753 9.4963 12.9998 9.20898 12.9998H3.79232C3.505 12.9998 3.22945 12.8753 3.02629 12.6537C2.82312 12.432 2.70898 12.1314 2.70898 11.818V3.54528M4.33398 3.54528V2.36346C4.33398 2.05002 4.44812 1.74942 4.65129 1.52779C4.85445 1.30615 5.13 1.18164 5.41732 1.18164H7.58398C7.8713 1.18164 8.14685 1.30615 8.35002 1.52779C8.55318 1.74942 8.66732 2.05002 8.66732 2.36346V3.54528"
+                                                stroke="black"
+                                                stroke-width="0.6"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                            <path
+                                                d="M5.41602 6.5V10.0455"
+                                                stroke="black"
+                                                stroke-width="0.6"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                            <path
+                                                d="M7.58398 6.5V10.0455"
+                                                stroke="black"
+                                                stroke-width="0.6"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg></span>
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Fabric Popup */}
+                    {showFabricPopup && (
+                        <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
+                            <form
+                                onSubmit={handleSaveNewFabric}
+                                className="bg-white p-6 rounded-lg"
+                            >
+                                <h3 className="mb-4">New Fabric</h3>
+                                <textarea
+                                    placeholder="Enter Fabric Name"
+                                    value={editedFabric}
+                                    onChange={(e) => setEditedFabric(e.target.value)}
+                                    required
+                                    rows={3} // Allows for 2-3 lines
+                                    className="p-2  rounded w-full mb-4 resize-none"
+                                />
+                                <button
+                                    onClick={() => setShowFabricPopup(false)}
+                                    className="border px-4 text-sm py-2 rounded-lg"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={loadingFabric}
+                                    className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
+                                >
+                                    Save Fabric
+                                </button>
+                            </form>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+
 
             <div className="border-b p-10 space-y-10">
                 <div>

@@ -1,7 +1,35 @@
 import { MdDelete } from "react-icons/md";
 import { useTechPack } from '../context/TechPackContext';
+import { fetchAll } from "../API/TechPacks";
+import { useState, useEffect } from "react";
 
 const SpecSheet = ({ page }) => {
+    const [fabric, setFabric] = useState([]);
+    const [genders, setGenders] = useState([]);
+    const [states] = useState([
+        "Development",
+        "Sample",
+        "Production",
+    ]);
+
+    useEffect(() => {
+        const fetchAllSetting = async () => {
+            try {
+                const data = await fetchAll(); // Use the categoryFetch hook                                    
+                if (data.status) {
+                    setFabric(data.techPack.fabric); // Set the fetched fabric
+                    setGenders(data.techPack.gender); // Set the fetched fabric
+                } else {
+                    console.error('Failed to fetch fabric');
+                }
+            } catch (error) {
+                console.error('Error fetching fabric:', error);
+            }
+        };
+        fetchAllSetting();
+    }, []);
+
+
     const { getSlideByPage } = useTechPack();
 
     const slide = getSlideByPage(page);
@@ -83,32 +111,48 @@ const SpecSheet = ({ page }) => {
                 </div>
                 <div className="form__group field w-[45%] relative group">
                     <label className="form__label">Gender</label>
-                    <input
-                        type="text"
-                        value={slide.data?.info?.find((item) => item.name === "gender").value}
+                    <select name="" id="" value={slide.data?.info?.find((item) => item.name === "gender").value}
                         onChange={(e) => {
                             updateField("gender", e.target.value);
                             updateInfoField(page, "gender", slide.data?.info?.find((item) => item.name === "gender").value, { "value": e.target.value })
                         }}
-                        className="form__field"
-                        required
-                    />
+                        className="form__field break-words text-wrap"
+                        required>
+                        {genders.map((gender) => (
+                            <option className="break-words text-wrap text-sm overflow-x-auto" value={gender}>{gender}</option>
+                        ))}
+                    </select>
                 </div>
                 <div className="form__group field w-[45%] relative group">
                     <label className="form__label">State</label>
-                    <input
-                        type="text"
-                        value={slide.data?.info?.find((item) => item.name === "state").value}
+                    <select name="" id="" value={slide.data?.info?.find((item) => item.name === "state").value}
                         onChange={(e) => {
                             updateField("state", e.target.value);
                             updateInfoField(page, "state", slide.data?.info?.find((item) => item.name === "state").value, { "value": e.target.value })
                         }}
-                        className="form__field"
-                        required
-                    />
+                        className="form__field break-words text-wrap"
+                        required>
+                        {states.map((state) => (
+                            <option className="break-words text-wrap text-sm overflow-x-auto" value={state}>{state}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="form__group field w-[45%] relative group">
+                    <label className="form__label">Fabric</label>
+                    <select name="" id="" value={slide.data?.info?.find((item) => item.name === "fabric").value}
+                        onChange={(e) => {
+                            updateField("fabric", e.target.value);
+                            updateInfoField(page, "fabric", slide.data?.info?.find((item) => item.name === "fabric").value, { "value": e.target.value })
+                        }}
+                        className="form__field break-words text-wrap"
+                        required>
+                        {fabric.map((fabric) => (
+                            <option className="break-words text-wrap text-sm overflow-x-auto" value={fabric}>{fabric}</option>
+                        ))}
+                    </select>
                 </div>
                 {slide.data?.info?.map((field, index) => {
-                    if (["styleNo", "designer", "size", "gender", "state"].includes(field.name)) {
+                    if (["styleNo", "designer", "size", "gender", "state", "fabric"].includes(field.name)) {
                         return null;
                     }
                     return (

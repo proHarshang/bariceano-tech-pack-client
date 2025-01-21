@@ -688,4 +688,71 @@ export const useUploadImageModal = () => {
 
 
 
+
+export const fabricAdd = async (name) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/fabric/add`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to add fabric');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while adding the fabric');
+    }
+};
+
+
+export const fabricEdit = async (oldName, newName) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/fabric/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ oldName, newName }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to edit fabric');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while editing the fabric');
+    }
+};
+
+export const fabricDelete = async (name) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/fabric/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to delete fabric');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while deleting the fabric');
+    }
+};
+
+
+
 export { getTechPacks, addTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, getUploadedImage, useUploadImage }
