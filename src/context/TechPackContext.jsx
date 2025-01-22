@@ -502,6 +502,9 @@ export const TechPackProvider = ({ children }) => {
         });
     }, [techPackData]);
 
+    const resetTechPack = async () => {
+        console.log("reset techpack")
+    };
 
     return (
         <TechPackContext.Provider
@@ -519,6 +522,7 @@ export const TechPackProvider = ({ children }) => {
                 updateInfoField,
                 deleteInfoField,
                 submitTechPack,
+                resetTechPack,
                 deleteArtworkPlacement,
                 updateNestedImages,
                 updateArtworkPlacement,

@@ -14,7 +14,7 @@ import TechPackPdfGenerator from '../TechPackPdfGenerator';
 const TechPack = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { techPackData, updateField, addSlide, submitTechPack, isAdding, submitStatus } = useTechPack();
+  const { techPackData, updateField, addSlide, submitTechPack, resetTechPack, isAdding, submitStatus } = useTechPack();
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
   const [construction, setConstructionSheets] = useState([]);
   const [trims, setTrims] = useState([]);
@@ -242,6 +242,7 @@ const TechPack = () => {
           <button
             type="button"
             className="text-sm px-6 py-2 rounded-full border border-black transition-all duration-300 ease-in-out transform hover:scale-105"
+            onClick={resetTechPack}
             disabled={isAdding}
           >
             Reset
