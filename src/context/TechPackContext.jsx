@@ -273,6 +273,10 @@ export const TechPackProvider = ({ children }) => {
         });
     };
 
+    const getMaxPageNumber = () => {
+        return Math.max(0, ...techPackData.slides.map(slide => slide.page));
+    };
+
     // Update a slide
     const updateSlide = (index, field, value) => {
         setTechPackData((prev) => {
@@ -428,7 +432,6 @@ export const TechPackProvider = ({ children }) => {
 
 
     const updateSlideByPage = (page, fieldPath, value) => {
-        console.log(page, fieldPath, value)
         setTechPackData((prev) => {
             const updatedSlides = prev.slides.map((slide) => {
                 if (slide.page === page) {
@@ -459,7 +462,6 @@ export const TechPackProvider = ({ children }) => {
                                 currentField[key] = {};
                             }
                             currentField = currentField[key];
-                            console.log("currentField : ", currentField)
                         }
                     });
 
@@ -564,6 +566,7 @@ export const TechPackProvider = ({ children }) => {
                 addSlide,
                 deleteSlideByPage,
                 addSlideAtIndex,
+                getMaxPageNumber,
                 updateSlide,
                 updateTypeInSlides,
                 getSlideByPage,

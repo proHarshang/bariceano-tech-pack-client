@@ -9,56 +9,17 @@ import Footer from '../common/footer';
 import { useTechPack } from '../context/TechPackContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchAll } from '../API/TechPacks';
-import TechPackPdfGenerator from '../TechPackPdfGenerator';
 
 const TechPack = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { techPackData, updateField, addSlide, addSlideAtIndex, submitTechPack, resetTechPack, isAdding, submitStatus } = useTechPack();
+  const { techPackData, updateField, addSlide, addSlideAtIndex, getMaxPageNumber, submitTechPack, resetTechPack, isAdding, submitStatus } = useTechPack();
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
   const [construction, setConstructionSheets] = useState([]);
   const [trims, setTrims] = useState([]);
   const [requirements, setRequirements] = useState([]);
   const [finishing, setFinishing] = useState([]);
   const [sizecharts, setSizeCharts] = useState([]);
-
-  useEffect(() => {
-    if (!selectedLabels || !currentCategory || !currentSubCategory) {
-      navigate('/', { replace: true });
-    } else {
-      console.log("selectedLabels", selectedLabels, "currentCategory", currentCategory, "currentSubCategory", currentSubCategory);
-      updateField("gender", currentSubCategory);
-      updateField("category", currentCategory);
-      updateField("designer", JSON.parse(localStorage.getItem('user')).Name);
-
-      const constructionMaterial = { "name": "Construction Sheet", "images": construction.filter(item => item.name === currentCategory).map(item => item.images).flat() };
-      const requirementsMaterial = { "name": "Requirements", "images": requirements.filter(item => item.name === currentCategory).map(item => item.images).flat() };
-      const finishingMaterial = { "name": "Finishing", "images": finishing.filter(item => item.name === currentCategory).map(item => item.images).flat() };
-      const sizechartsMaterial = { "name": "Size Charts", "images": sizecharts.filter(item => item.gender === currentSubCategory && item.category === currentCategory).map(item => item.images).flat() };
-      const trimsMaterial = { "name": "trims", "images": trims.filter(item => selectedLabels.includes(item.name)).map(item => item.images).flat() }
-
-      console.log([constructionMaterial, requirementsMaterial, finishingMaterial, sizechartsMaterial, trimsMaterial]);
-
-      [constructionMaterial, requirementsMaterial, finishingMaterial, sizechartsMaterial, trimsMaterial].forEach((label, index) => {
-        label.images.map((img, index) => {
-          console.log("img", img);
-          addSlide({
-            "page": 10,
-            "name": label.name,
-            "type": getType(label),
-            "data": {
-              "images": [
-                {
-                  "position": img.position,
-                  "src": img.src
-                }
-              ]
-            }
-          });
-        })
-      });
-    }
-  }, [selectedLabels, currentCategory, currentSubCategory, construction, requirements, finishing, sizecharts, trims, navigate]);
 
   useEffect(() => {
     const fetchAllSetting = async () => {
@@ -79,6 +40,46 @@ const TechPack = () => {
     };
     fetchAllSetting();
   }, []);
+
+  useEffect(() => {
+    if (!selectedLabels || !currentCategory || !currentSubCategory) {
+      navigate('/', { replace: true });
+    } else {
+      console.log("selectedLabels", selectedLabels, "currentCategory", currentCategory, "currentSubCategory", currentSubCategory);
+      updateField("gender", currentSubCategory);
+      updateField("category", currentCategory);
+      updateField("designer", JSON.parse(localStorage.getItem('user')).Name);
+
+      const constructionMaterial = { "name": "Construction Sheet", "images": construction.filter(item => item.name === currentCategory).map(item => item.images).flat() };
+      const requirementsMaterial = { "name": "Requirements", "images": requirements.filter(item => item.name === currentCategory).map(item => item.images).flat() };
+      const finishingMaterial = { "name": "Finishing", "images": finishing.filter(item => item.name === currentCategory).map(item => item.images).flat() };
+      const sizechartsMaterial = { "name": "Size Charts", "images": sizecharts.filter(item => item.gender === currentSubCategory && item.category === currentCategory).map(item => item.images).flat() };
+      const trimsMaterial = { "name": "Trims", "images": trims.filter(item => selectedLabels.includes(item.name)).map(item => item.images).flat() }
+
+      console.log([constructionMaterial, requirementsMaterial, finishingMaterial, sizechartsMaterial, trimsMaterial]);
+
+      let currentPage = getMaxPageNumber(); // Get the current max page number
+
+      [constructionMaterial, requirementsMaterial, finishingMaterial, sizechartsMaterial, trimsMaterial].forEach(label => {
+        label.images.map(img => {
+          currentPage += 1;
+          addSlide({
+            "page": currentPage,
+            "name": label.name,
+            "type": getType(label),
+            "data": {
+              "images": [
+                {
+                  "position": 0,
+                  "src": img.src
+                }
+              ]
+            }
+          });
+        })
+      });
+    }
+  }, [selectedLabels, currentCategory, currentSubCategory, construction, requirements, finishing, sizecharts, trims,]);
 
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPage, setSelectedPage] = useState(null);
@@ -115,7 +116,7 @@ const TechPack = () => {
 
   const handleAddPage = () => {
     if (selectedPage) {
-      addSlideAtIndex(2, {
+      addSlideAtIndex(selectedIndex, {
         "page": 10,
         "name": selectedPage.name,
         "type": selectedPage.type,
@@ -246,7 +247,7 @@ const AddButton = ({ index, setShowPopup, setSelectedIndex }) => {
         type='button'
         onClick={() => {
           setShowPopup(true);
-          setSelectedIndex(index);
+          setSelectedIndex(index + 1);
         }}
         className="flex items-center"
       >
