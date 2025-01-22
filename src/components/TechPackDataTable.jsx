@@ -405,9 +405,7 @@ const TechPackDataTable = ({ data = [] }) => {
                 </div>
                 <div className='w-full'>
                     {submitStatus && (
-                        <p className={`fixed right-[40%] top-[20%] transform -translate-y-1/2 px-3 text-sm font-bold py-2 rounded-lg shadow-lg text-white ${submitStatus.message == null ? "hidden" : "visible"}
-    ${submitStatus?.status ? "bg-green-600" : "bg-red-600"} animate-slide-down-up`}
-                        >
+                        <p className={`fixed right-[40%] top-[20%] transform -translate-y-1/2 px-3 text-sm font-bold py-2 rounded-lg shadow-lg text-white ${submitStatus.message == null ? "hidden" : "visible"}  ${submitStatus?.status ? "bg-green-600" : "bg-red-600"} animate-slide-down-up`}>
                             {submitStatus?.message}
                         </p>
                     )}
