@@ -635,7 +635,7 @@ const TechPackPdfGenerator = (data) => {
 
     return (
 
-        <button onClick={generatePdf}>Download</button>
+        <button type='button' onClick={generatePdf}>Download</button>
 
     );
 };

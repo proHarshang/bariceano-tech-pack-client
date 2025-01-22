@@ -9,6 +9,7 @@ import Footer from '../common/footer';
 import { useTechPack } from '../context/TechPackContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchAll } from '../API/TechPacks';
+import TechPackPdfGenerator from '../TechPackPdfGenerator';
 
 const TechPack = () => {
   const navigate = useNavigate();
@@ -225,12 +226,57 @@ const TechPack = () => {
         </div>
       )}
 
-      <div className="flex justify-center gap-5 mb-10">
-        <button type='button' className="text-sm px-6 py-2 rounded-full border border-black" disabled={isAdding}>Reset</button>
-        <button type='button' className={`text-white bg-black text-sm px-6 py-2 rounded-full ${isAdding ? "animate-spin" : ""}`} onClick={submitTechPack} disabled={isAdding}>Save</button>
-        <button type='button' className="text-white bg-black text-sm px-6 py-2 rounded-full" disabled={isAdding}>Save & Download</button>
+      <div className="relative">
+        {submitStatus && (
+          <p
+            className={`
+        fixed right-0 top-[57%] transform -translate-y-1/2 px-3 text-sm font-bold py-2 rounded-l-lg shadow-lg text-white ${submitStatus.message == null ? "hidden" : "visible"}
+        ${submitStatus?.status ? "bg-green-600" : "bg-red-600"}
+        animate-slide-in
+      `}
+          >
+            {submitStatus?.message}
+          </p>
+        )}
+        <div className="flex w-[12%] flex-col justify-center gap-5 mb-10 fixed right-4 top-[70%] transform -translate-y-1/4">
+
+          <button
+            type="button"
+            className="text-sm px-6 py-2 rounded-full border border-black transition-all duration-300 ease-in-out transform hover:scale-105"
+            disabled={isAdding}
+          >
+            Reset
+          </button>
+          <button
+            type="button"
+            className={`text-white bg-black text-sm px-6 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 ${isAdding ? "animate-spin" : ""}`}
+            onClick={submitTechPack}
+            disabled={isAdding}
+          >
+            Save
+          </button>
+          {!isAdding && submitStatus?.status === true ?
+            <>
+              <div className='text-white text-center relative bg-black text-sm px-3 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105'>
+                <TechPackPdfGenerator data={techPackData} />
+              </div>
+              <button type='button' className='text-white relative bg-black text-sm px-3 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105' onClick={() => navigate('/tech-pack')}>Home</button>
+            </>
+            :
+            <button
+              type="button"
+              className="text-white relative bg-black text-sm px-3 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 opacity-50 cursor-not-allowed"
+              disabled
+            >
+              Download
+            </button>
+          }
+        </div>
+
+
       </div>
-      <p className={`${submitStatus?.status ? 'bg-green-600' : 'bg-red-600'}`}>{submitStatus?.message}</p>
+
+
     </form>
   );
 };
