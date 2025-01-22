@@ -13,9 +13,9 @@ export const TechPackProvider = ({ children }) => {
         message: null,
     });
     const [techPackData, setTechPackData] = useState({
-        designer: "",
+        designer: JSON.parse(localStorage.getItem('user')).Name || "",
         styleNo: "BR-00-00",
-        state: "",
+        state: "Sample",
         gender: "",
         category: "",
         slides: [{
