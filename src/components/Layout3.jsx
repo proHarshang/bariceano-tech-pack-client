@@ -22,7 +22,7 @@ const Layout3 = ({ page }) => {
                                 onClick={() => setOpenPopupId(`images-${key}`)}
                                 src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.images.find((item) => item.position === key).src}`}
                                 alt={slide.data?.images.find((item) => item.position === key).src}
-                                className='object-cover h-full w-full rounded-2xl'
+                                className='object-cover h-full w-full rounded-2xl cursor-pointer'
                             />
                         ) : (
                             <button type='button' onClick={() => setOpenPopupId(`images-${key}`)}>Add</button>
@@ -41,7 +41,7 @@ const Layout3 = ({ page }) => {
                                         onClick={() => setOpenPopupId(`threadColorImages-${key}`)}
                                         src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.threadColorImages?.find((item) => item.position === key).src}`}
                                         alt={slide.data?.threadColorImages?.find((item) => item.position === key).src}
-                                        className='object-cover h-full w-full rounded-2xl' />
+                                        className='object-cover h-full w-full rounded-2xl cursor-pointer' />
                                 ) : (
                                     <button type='button' onClick={() => setOpenPopupId(`threadColorImages-${key}`)}>Add</button>
                                 )}
@@ -59,7 +59,7 @@ const Layout3 = ({ page }) => {
                                         onClick={() => setOpenPopupId(`fabricColorImages-${key}`)}
                                         src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.fabricColorImages?.find((item) => item.position === key).src}`}
                                         alt={slide.data?.fabricColorImages?.find((item) => item.position === key).src}
-                                        className='object-cover h-full w-full rounded-2xl' />
+                                        className='object-cover h-full w-full rounded-2xl cursor-pointer'/>
                                 ) : (
                                     <button type='button' onClick={() => setOpenPopupId(`fabricColorImages-${key}`)}>Add</button>
                                 )}

@@ -199,13 +199,13 @@ export const TechPackProvider = ({ children }) => {
                 "images": [
                     {
                         "position": 0,
-                        "src": "HangTag.jpg"
+                        "src": "artworksheet.jpg"
                     }
                 ]
             }
         },
         {
-            "page": 5,
+            "page": 6,
             "name": "Silicon Label",
             "type": "SiliconLabel",
             "data": {
@@ -213,11 +213,11 @@ export const TechPackProvider = ({ children }) => {
                 "images": [
                     {
                         "position": 0,
-                        "src": "artworksheet.jpg"
+                        "src": "SiliconLabelSheet.jpg"
                     }
                 ]
             }
-        },
+        }
         ],
     });
 
@@ -436,7 +436,7 @@ export const TechPackProvider = ({ children }) => {
 
                     // Traverse to the target field
                     fieldParts.forEach((key, index) => {
-                       
+
                         if (index === fieldParts.length - 1) {
                             // Update the target field
                             if (Array.isArray(currentField[key])) {
