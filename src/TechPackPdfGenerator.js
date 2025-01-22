@@ -487,7 +487,7 @@ const TechPackPdfGenerator = (data) => {
 
                 // Colour
                 pdf.rect(currentX, currentY, columnWidths[4], rowHeight);
-                
+
                 // function for wrap text
                 const maxChars = 15; // Maximum number of characters allowed in the cell
 
@@ -656,7 +656,7 @@ const TechPackPdfGenerator = (data) => {
 
     return (
 
-        <button type='button' className="w-full" onClick={generatePdf}>Download</button>
+        <button type='button' onClick={generatePdf}>Download</button>
 
     );
 };
