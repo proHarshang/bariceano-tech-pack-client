@@ -1,7 +1,7 @@
 import { useTechPack } from '../context/TechPackContext';
 
-function Header({ name, page, onDelete }) {
-    const { techPackData, updateSlideByPage } = useTechPack();
+function Header({ name, page }) {
+    const { techPackData, updateSlideByPage, deleteSlideByPage } = useTechPack();
 
     return (
         <section className='border-b-2 border-black'>
@@ -23,7 +23,13 @@ function Header({ name, page, onDelete }) {
                 </div>
                 <div className='flex flex-col items-end justify-end'>
                     <div>
-                        <h5>Pg - {page}</h5>
+                        <h5>Pg - <input
+                            type="number"
+                            placeholder={page}
+                            value={page}
+                            onChange={(e) => updateSlideByPage(page, "page", e.target.value)}
+                            className='mt-2 max-w-[50px] border' />
+                        </h5>
                         <h5>{techPackData.styleNo}</h5>
                     </div>
                     <div className='flex gap-5 absolute top-12 pr-2 right-0 items-center mt-2'>
@@ -33,7 +39,7 @@ function Header({ name, page, onDelete }) {
                                     'Are you sure you want to delete this page?'
                                 );
                                 if (isConfirmed) {
-                                    onDelete();
+                                    deleteSlideByPage(page)
                                 }
                             }}
                             style={{ cursor: "pointer" }} // Optional: Add pointer cursor for better UX

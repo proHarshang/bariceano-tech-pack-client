@@ -13,7 +13,7 @@ import { fetchAll } from '../API/TechPacks';
 const TechPack = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { techPackData, updateField, addSlide, submitTechPack, isAdding, submitStatus } = useTechPack();
+  const { techPackData, updateField, addSlide, addSlideAtIndex, submitTechPack, isAdding, submitStatus } = useTechPack();
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
   const [construction, setConstructionSheets] = useState([]);
   const [trims, setTrims] = useState([]);
@@ -25,27 +25,39 @@ const TechPack = () => {
     if (!selectedLabels || !currentCategory || !currentSubCategory) {
       navigate('/', { replace: true });
     } else {
-      console.log(selectedLabels, currentCategory, currentSubCategory);
-      updateField("gender", currentSubCategory)
-      updateField("category", currentCategory)
-      updateField("designer", JSON.parse(localStorage.getItem('user')).Name)
-      selectedLabels.map((label) => {
-        addSlide({
-          "page": 10,
-          "name": label,
-          "type": getType(label),
-          "data": {
-            "images": [
-              {
-                "position": 0,
-                "src": getImage(label)
-              }
-            ]
-          }
+      console.log("selectedLabels", selectedLabels, "currentCategory", currentCategory, "currentSubCategory", currentSubCategory);
+      updateField("gender", currentSubCategory);
+      updateField("category", currentCategory);
+      updateField("designer", JSON.parse(localStorage.getItem('user')).Name);
+
+      const constructionMaterial = { "name": "Construction Sheet", "images": construction.filter(item => item.name === currentCategory).map(item => item.images).flat() };
+      const requirementsMaterial = { "name": "Requirements", "images": requirements.filter(item => item.name === currentCategory).map(item => item.images).flat() };
+      const finishingMaterial = { "name": "Finishing", "images": finishing.filter(item => item.name === currentCategory).map(item => item.images).flat() };
+      const sizechartsMaterial = { "name": "Size Charts", "images": sizecharts.filter(item => item.gender === currentSubCategory && item.category === currentCategory).map(item => item.images).flat() };
+      const trimsMaterial = { "name": "trims", "images": trims.filter(item => selectedLabels.includes(item.name)).map(item => item.images).flat() }
+
+      console.log([constructionMaterial, requirementsMaterial, finishingMaterial, sizechartsMaterial, trimsMaterial]);
+
+      [constructionMaterial, requirementsMaterial, finishingMaterial, sizechartsMaterial, trimsMaterial].forEach((label, index) => {
+        label.images.map((img, index) => {
+          console.log("img", img);
+          addSlide({
+            "page": 10,
+            "name": label.name,
+            "type": getType(label),
+            "data": {
+              "images": [
+                {
+                  "position": img.position,
+                  "src": img.src
+                }
+              ]
+            }
+          });
         })
-      })
+      });
     }
-  }, [selectedLabels, currentCategory, currentSubCategory, navigate]);
+  }, [selectedLabels, currentCategory, currentSubCategory, construction, requirements, finishing, sizecharts, trims, navigate]);
 
   useEffect(() => {
     const fetchAllSetting = async () => {
@@ -67,36 +79,9 @@ const TechPack = () => {
     fetchAllSetting();
   }, []);
 
-  console.log("finishing", finishing)
-  console.log("requirements", requirements)
-  console.log("construction", construction)
-  console.log("trims", trims)
-  console.log("sizecharts", sizecharts)
-
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPage, setSelectedPage] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const [pageComponent, setPageComponent] = useState([
-    {
-      type: "page"
-    },
-    {
-      type: "page"
-    },
-    {
-      type: "page"
-    },
-    {
-      type: "page"
-    },
-    {
-      type: "page"
-    },
-    {
-      type: "page"
-    },
-  ]);
-
 
   const getType = (label) => {
     switch (label) {
@@ -106,16 +91,6 @@ const TechPack = () => {
         return "Page"
     }
   }
-
-  const getImage = (label) => {
-    for (const trim of trims) {
-      if (label === trim.name) {
-        return trim.images[0]?.src || "defaultImage.jpg";
-      }
-    }
-    return "defaultImage.jpg";
-  }
-
 
   const getComponent = (type, page) => {
     switch (type) {
@@ -138,37 +113,23 @@ const TechPack = () => {
   }
 
   const handleAddPage = () => {
-    if (selectedIndex !== null && selectedPage) {
-      let component;
-
-      if (selectedPage === "Artwork Placement Sheet") {
-        component = <ArtworkPlacementSheet />;
-      } else {
-        component = <BlankSheet />
-      }
-
-      const newPage = {
-        component
-      };
-
-      const updatedPages = [
-        ...pageComponent.slice(0, selectedIndex + 1),
-        newPage,
-        ...pageComponent.slice(selectedIndex + 1).map((item, index) => ({
-          ...item,
-          page: selectedIndex + 2 + index,
-        })),
-      ];
-
-      setPageComponent(updatedPages);
+    if (selectedPage) {
+      addSlideAtIndex(2, {
+        "page": 10,
+        "name": selectedPage.name,
+        "type": selectedPage.type,
+        "data": {
+          "images": [
+            {
+              "position": 0,
+              "src": "default.jpg"
+            }
+          ]
+        }
+      });
     }
     setShowPopup(false);
     setSelectedPage(null);
-  };
-
-  const handleDelete = (page) => {
-    const updatedComponents = pageComponent.filter((item) => item.data.page !== page);
-    setPageComponent(updatedComponents);
   };
 
   return (
@@ -177,7 +138,7 @@ const TechPack = () => {
         return (
           <div key={index}>
             <div className="border-2 border-black mb-7">
-              <Header name={item.name} page={item.page} onDelete={() => handleDelete(item.page)} />
+              <Header name={item.name} page={item.page} />
               {getComponent(item.type, item.page)}
               <Footer />
             </div>
@@ -192,15 +153,15 @@ const TechPack = () => {
           <div className="bg-white p-6 rounded-md w-96">
             <h2 className="text-xl font-semibold mb-4">Add a Page</h2>
             <div className="grid grid-cols-2 gap-4">
-              {["Artwork Placement Sheet", "Blank Sheet"].map((page) => (
+              {[{ "name": "Blank Sheet", "type": "Page" }].map((page) => (
                 <div
-                  key={page}
-                  className={`w-28 h-28 border rounded-md flex justify-center items-center cursor-pointer ${selectedPage === page ? "bg-gray-200" : ""
+                  key={page.name}
+                  className={`w-28 h-28 border rounded-md flex justify-center items-center cursor-pointer ${(selectedPage && (selectedPage.name === page.name)) ? "bg-gray-200" : ""
                     }`}
                   onClick={() => setSelectedPage(page)}
                 >
                   <span className="text-center text-xs">
-                    {page}
+                    {page.name}
                   </span>
                 </div>
               ))}

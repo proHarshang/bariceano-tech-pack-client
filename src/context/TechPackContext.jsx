@@ -231,6 +231,46 @@ export const TechPackProvider = ({ children }) => {
         }
     };
 
+    const deleteSlideByPage = (page) => {
+        setTechPackData((prev) => {
+            return {
+                ...prev,
+                slides: prev.slides.filter((slide) => slide.page !== page),
+            };
+        });
+    };
+
+    // const deleteSlideByPage = (page) => {
+    //     setTechPackData((prev) => {
+    //         const updatedSlides = prev.slides
+    //             .filter((slide) => slide.page !== page) // Remove the slide
+    //             .map((slide, index) => ({ ...slide, page: index + 1 })); // Reassign page numbers
+
+    //         return {
+    //             ...prev,
+    //             slides: updatedSlides,
+    //         };
+    //     });
+    // };
+
+    const addSlideAtIndex = (index, newSlide) => {
+        setTechPackData((prev) => {
+            const updatedSlides = [...prev.slides];
+            updatedSlides.splice(index, 0, newSlide); // Insert the new slide at the desired index
+
+            // Update the page numbers for slides after the inserted one
+            const adjustedSlides = updatedSlides.map((slide, i) => ({
+                ...slide,
+                // page: i + 1,
+            }));
+
+            return {
+                ...prev,
+                slides: adjustedSlides,
+            };
+        });
+    };
+
     // Update a slide
     const updateSlide = (index, field, value) => {
         setTechPackData((prev) => {
@@ -492,6 +532,8 @@ export const TechPackProvider = ({ children }) => {
                 submitStatus,
                 updateField,
                 addSlide,
+                deleteSlideByPage,
+                addSlideAtIndex,
                 updateSlide,
                 updateTypeInSlides,
                 getSlideByPage,
