@@ -22,6 +22,7 @@ const Auth = () => {
 
         if (user) {
             login(user); // Update context with user data
+            localStorage.setItem('user', JSON.stringify(user));
             navigate('/tech-pack-data');
         } else {
             alert('Invalid email or password');

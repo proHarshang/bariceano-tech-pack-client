@@ -23,7 +23,7 @@ const TechPack = () => {
       console.log(selectedLabels, currentCategory, currentSubCategory);
       updateField("gender", currentSubCategory)
       updateField("category", currentCategory)
-      updateField("designer", "Harshang")
+      updateField("designer", JSON.parse(localStorage.getItem('user')).Name)
       selectedLabels.map((label) => {
         addSlide({
           "page": 10,
@@ -81,9 +81,9 @@ const TechPack = () => {
   const getImage = (label) => {
     switch (label) {
       case label === "Silicon Label Sheet" || "Silicon Label":
-        return "http://localhost:3001/uploads/techpack/artworksheet.jpg";
+        return "artworksheet.jpg";
       default:
-        return "http://localhost:3001/uploads/techpack/HangTag.jpg"
+        return "HangTag.jpg"
     }
   }
 

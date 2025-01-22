@@ -88,14 +88,11 @@ const SpecSheet = ({ page }) => {
                     <label className="form__label">Designer</label>
                     <input
                         type="text"
-                        value={slide.data?.info?.find((item) => item.name === "designer").value}
-                        onChange={(e) => {
-                            updateField("designer", e.target.value);
-                            updateInfoField(page, "designer", slide.data?.info?.find((item) => item.name === "designer").value, { "value": e.target.value })
-                        }}
+                        value={JSON.parse(localStorage.getItem('user')).Name}
                         className="form__field"
                         placeholder="BR-00-00"
                         required
+                        disabled
                     />
                 </div>
                 <div className="form__group field w-[45%] relative group">
