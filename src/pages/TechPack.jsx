@@ -45,7 +45,6 @@ const TechPack = () => {
         })
       })
     }
-    console.log(selectedLabels, currentCategory, currentSubCategory)
   }, [selectedLabels, currentCategory, currentSubCategory, navigate]);
 
   useEffect(() => {
