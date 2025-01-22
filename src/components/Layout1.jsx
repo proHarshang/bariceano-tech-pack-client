@@ -62,10 +62,10 @@ const Layout1 = ({ page }) => {
                         </label>
                     )}
                 </div>
-                <div className='w-[30%] border-2 border-dashed bg-[#F3F3F3] h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
+                <div className='w-[30%] cursor-pointer border-2 border-dashed bg-[#F3F3F3] h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
                     {slide.data?.images[1] ? (
                         <img
-                            onClick={() => setOpenPopupId(`images-0`)}
+                            onClick={() => setOpenPopupId(`images-1`)}
                             src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.images[1].src}`}
                             alt={slide.data?.images[1].src}
                             className='object-fill w-fit h-full rounded-2xl cursor-pointer'
@@ -78,7 +78,7 @@ const Layout1 = ({ page }) => {
                 </div>
             </div>
             {/* Image Selector Popup */}
-            {["fabricColorImages-0", "threadColorImages-0", "images-0"].map((elem) => {
+            {["fabricColorImages-0", "threadColorImages-0", "images-0","images-1"].map((elem) => {
                 return <ImageSelectorPopup
                     key={elem}
                     isOpen={openPopupId === elem}

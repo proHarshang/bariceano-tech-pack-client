@@ -63,7 +63,6 @@ const MainHeader = () => {
         setShowCategories(false)
         setCurrentSubCategory(false)
     };
-    const isTechPackUrl = window.location.pathname.includes('/tech-pack');
 
 
     return (
@@ -114,9 +113,8 @@ const MainHeader = () => {
                 <div className="relative">
 
                     <button
-                        className={`flex gap-2 invert hover:invert-0 border bg-black text-white items-center text-sm font-bold px-3 py-2 rounded-2xl uppercase ${isTechPackUrl ? 'cursor-not-allowed invert-0' :''}`}
+                        className={`flex gap-2 invert hover:invert-0 border bg-black text-white items-center text-sm font-bold px-3 py-2 rounded-2xl uppercase`}
                         onClick={() => setShowCategories(!showCategories)}
-                        disabled={isTechPackUrl}
                     >
                         <svg
                             width="13"

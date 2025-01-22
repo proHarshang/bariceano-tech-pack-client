@@ -406,7 +406,6 @@ const TechPackPdfGenerator = (data) => {
                 columnWidths[i] *= scaleFactor;
             }
 
-
             const rows = ArtworkPlacementSheet[0].data.artworkPlacementSheet.map((item) => ({
                 placement: item.placement,
                 technique: item.technique,
@@ -488,12 +487,34 @@ const TechPackPdfGenerator = (data) => {
 
                 // Colour
                 pdf.rect(currentX, currentY, columnWidths[4], rowHeight);
-                const maxWords = 15; // Maximum number of words allowed in the cell
-                const truncatedText = row.color.split(" ").length > maxWords
-                    ? row.color.split(" ").slice(0, maxWords).join(" ") + "..."
-                    : row.color;
+                
+                // function for wrap text
+                const maxChars = 15; // Maximum number of characters allowed in the cell
 
-                pdf.text(truncatedText, currentX + 5, row.color.length > 49 ? currentY - 7 : currentY - 4 + rowHeight / 2, {
+                function wrapText(text, maxChars) {
+                    const words = text.split(" ");
+                    let lines = [];
+                    let currentLine = "";
+
+                    words.forEach(word => {
+                        if ((currentLine + word).length <= maxChars) {
+                            currentLine += (currentLine ? " " : "") + word;
+                        } else {
+                            lines.push(currentLine);
+                            currentLine = word;
+                        }
+                    });
+
+                    if (currentLine) {
+                        lines.push(currentLine);
+                    }
+
+                    return lines.join("\n");
+                }
+
+                const wrappedText = wrapText(row.color, maxChars);
+
+                pdf.text(wrappedText, currentX + 5, currentY - 4 + rowHeight / 2, {
                     baseline: 'middle',
                 });
 

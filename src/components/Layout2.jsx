@@ -23,7 +23,7 @@ const Layout2 = ({ page }) => {
                   onClick={() => setOpenPopupId(`images-${key}`)}
                   src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.images.find((item) => item.position === key).src}`}
                   alt={slide.data?.images.find((item) => item.position === key).src}
-                  className='object-fill h-full rounded-2xl'
+                  className='object-fill h-full cursor-pointer rounded-2xl'
                 />
               ) : (
                 <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
@@ -47,7 +47,7 @@ const Layout2 = ({ page }) => {
                       onClick={() => setOpenPopupId(`threadColorImages-${key}`)}
                       src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.threadColorImages?.find((item) => item.position === key).src}`}
                       alt={slide.data?.threadColorImages?.find((item) => item.position === key).src}
-                      className='object-fill h-full rounded-2xl'
+                      className='object-fill h-full rounded-2xl cursor-pointer'
                     />
                   ) : (
                     <label className='text-center flex text-sm flex-col items-center justify-center w-full h-full cursor-pointer'>
@@ -71,7 +71,7 @@ const Layout2 = ({ page }) => {
                       onClick={() => setOpenPopupId(`fabricColorImages-${key}`)}
                       src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.fabricColorImages?.find((item) => item.position === key).src}`}
                       alt={slide.data?.fabricColorImages?.find((item) => item.position === key).src}
-                      className='object-cover h-full w-full rounded-2xl'
+                      className='object-cover h-full w-full rounded-2xl cursor-pointer'
                     />
                   ) : (
                     <label className='text-sm text-center flex flex-col items-center justify-center w-full h-full cursor-pointer'>
