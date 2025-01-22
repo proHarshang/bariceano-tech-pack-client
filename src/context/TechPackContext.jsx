@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { addTechPacks } from '../API/TechPacks';
 
 const TechPackContext = createContext();
@@ -483,6 +483,25 @@ export const TechPackProvider = ({ children }) => {
             setIsAdding(false)
         }
     };
+
+    // useEffect(() => {
+    //     const timer = setTimeout(() => {
+    //         setSubmitStatus({
+    //             status: null,
+    //             message: null,
+    //         });
+    //     }, 5000);
+
+    //     return () => clearTimeout(timer);
+    // }, [submitStatus]);
+
+    useEffect(() => {
+        setSubmitStatus({
+            status: null,
+            message: null,
+        });
+    }, [techPackData]);
+
 
     return (
         <TechPackContext.Provider

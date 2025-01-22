@@ -7,8 +7,8 @@ const SpecSheet = ({ page }) => {
     const [fabric, setFabric] = useState([]);
     const [genders, setGenders] = useState([]);
     const [states] = useState([
-        "Development",
         "Sample",
+        "Development",
         "Production",
     ]);
 
