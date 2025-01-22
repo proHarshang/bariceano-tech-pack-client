@@ -40,7 +40,7 @@ const Layout2 = ({ page }) => {
               {[0, 1].map((key, index) => (
                 <div
                   key={key}
-                  className='w-fit h-full border-2 border-dashed rounded-2xl bg-[#F3F3F3] flex items-center justify-center'
+                  className='w-fit h-full border-2 border-dashed rounded-2xl bg-[#F3F3F3] flex items-center justify-center min-w-[100px]'
                 >
                   {slide.data?.threadColorImages?.find((item) => item.position === key) ? (
                     <img
@@ -64,7 +64,7 @@ const Layout2 = ({ page }) => {
               {[0, 1].map((key, index) => (
                 <div
                   key={key}
-                  className='w-fit h-full border-2 border-dashed rounded-2xl bg-[#F3F3F3] flex items-center justify-center'
+                  className='w-fit h-full border-2 border-dashed rounded-2xl bg-[#F3F3F3] flex items-center justify-center min-w-[100px]'
                 >
                   {slide.data?.fabricColorImages?.find((item) => item.position === key) ? (
                     <img
