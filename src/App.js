@@ -7,6 +7,7 @@ import Setting from './components/Setting';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { TechPackProvider } from './context/TechPackContext';
 import AddTechpack from './pages/AddTechpack';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   return (
@@ -15,12 +16,28 @@ function App() {
         <MainLayout>
           <Routes>
             <Route path="/" element={<Auth />} />
-            <Route path="/tech-pack" element={<TechPackProvider><TechPack /></TechPackProvider>} />
-            <Route path='/tech-pack-data' element={<TechPacksTable />} />
-            <Route path='/setting' element={<Setting />} />
-            <Route path='/addTechpack' element={<AddTechpack />} />
+            <Route path="/tech-pack" element={
+              <PrivateRoute>
+                <TechPackProvider><TechPack /></TechPackProvider>
+              </PrivateRoute>
+            } />
+            <Route path='/tech-pack-data' element={
+              <PrivateRoute>
+                <TechPacksTable />
+              </PrivateRoute>
+            } />
+            <Route path='/setting' element={
+              <PrivateRoute>
+                <Setting />
+              </PrivateRoute>
+            } />
+            <Route path='/addTechpack' element={
+              <PrivateRoute>
+                <AddTechpack />
+              </PrivateRoute>
+            } />
           </Routes>
-          </MainLayout>
+        </MainLayout>
       </Router>
     </AuthProvider>
   );

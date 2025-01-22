@@ -28,7 +28,7 @@ const TechPack = () => {
       console.log(selectedLabels, currentCategory, currentSubCategory);
       updateField("gender", currentSubCategory)
       updateField("category", currentCategory)
-      updateField("designer", "Harshang")
+      updateField("designer", JSON.parse(localStorage.getItem('user')).Name)
       selectedLabels.map((label) => {
         addSlide({
           "page": 10,
