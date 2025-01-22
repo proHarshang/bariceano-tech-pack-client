@@ -231,27 +231,27 @@ export const TechPackProvider = ({ children }) => {
         }
     };
 
-    const deleteSlideByPage = (page) => {
-        setTechPackData((prev) => {
-            return {
-                ...prev,
-                slides: prev.slides.filter((slide) => slide.page !== page),
-            };
-        });
-    };
-
     // const deleteSlideByPage = (page) => {
     //     setTechPackData((prev) => {
-    //         const updatedSlides = prev.slides
-    //             .filter((slide) => slide.page !== page) // Remove the slide
-    //             .map((slide, index) => ({ ...slide, page: index + 1 })); // Reassign page numbers
-
     //         return {
     //             ...prev,
-    //             slides: updatedSlides,
+    //             slides: prev.slides.filter((slide) => slide.page !== page),
     //         };
     //     });
     // };
+
+    const deleteSlideByPage = (page) => {
+        setTechPackData((prev) => {
+            const updatedSlides = prev.slides
+                .filter((slide) => slide.page !== page) // Remove the slide
+                .map((slide, index) => ({ ...slide, page: index + 1 })); // Reassign page numbers
+
+            return {
+                ...prev,
+                slides: updatedSlides,
+            };
+        });
+    };
 
     const addSlideAtIndex = (index, newSlide) => {
         setTechPackData((prev) => {
@@ -261,7 +261,7 @@ export const TechPackProvider = ({ children }) => {
             // Update the page numbers for slides after the inserted one
             const adjustedSlides = updatedSlides.map((slide, i) => ({
                 ...slide,
-                // page: i + 1,
+                page: i + 1,
             }));
 
             return {
@@ -436,7 +436,7 @@ export const TechPackProvider = ({ children }) => {
 
                     // Traverse to the target field
                     fieldParts.forEach((key, index) => {
-                       
+
                         if (index === fieldParts.length - 1) {
                             // Update the target field
                             if (Array.isArray(currentField[key])) {

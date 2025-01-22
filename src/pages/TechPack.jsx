@@ -133,10 +133,6 @@ const TechPack = () => {
     setSelectedPage(null);
   };
 
-  const handleDelete = (page) => {
-    const updatedComponents = pageComponent.filter((item) => item.data.page !== page);
-    setPageComponent(updatedComponents);
-  };
   return (
     <form className="w-[841px] mx-auto mt-10" >
       {techPackData.slides.map((item, index) => {
