@@ -69,7 +69,7 @@ const SpecSheet = ({ page }) => {
                     Add new
                 </button>
             </div>
-            <div className="flex flex-wrap gap-10">
+            <div className="flex flex-wrap gap-5">
                 <div className="form__group field w-[45%] relative group">
                     <label className="form__label">Style No</label>
                     <input
