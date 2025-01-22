@@ -194,7 +194,7 @@ export const TechPackProvider = ({ children }) => {
         {
             "page": 4,
             "name": "Art Work",
-            "type": "Artwork",
+            "type": "ArtWork",
             "data": {
                 "images": [
                     {
@@ -386,6 +386,7 @@ export const TechPackProvider = ({ children }) => {
 
 
     const updateSlideByPage = (page, fieldPath, value) => {
+        console.log(page, fieldPath, value)
         setTechPackData((prev) => {
             const updatedSlides = prev.slides.map((slide) => {
                 if (slide.page === page) {
@@ -395,6 +396,7 @@ export const TechPackProvider = ({ children }) => {
 
                     // Traverse to the target field
                     fieldParts.forEach((key, index) => {
+                       
                         if (index === fieldParts.length - 1) {
                             // Update the target field
                             if (Array.isArray(currentField[key])) {
@@ -415,6 +417,7 @@ export const TechPackProvider = ({ children }) => {
                                 currentField[key] = {};
                             }
                             currentField = currentField[key];
+                            console.log("currentField : ", currentField)
                         }
                     });
 

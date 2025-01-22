@@ -121,7 +121,6 @@ const TechPackDataTable = ({ data = [] }) => {
         const isStatusSelected = selectedStatus.length === 0 || selectedStatus.includes(item.state);
         return isDesignerSelected && isGenderSelected && isCategorySelected && isStatusSelected;
     });
-    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
     // shorting logic
     const [isAscending, setIsAscending] = useState(false);
@@ -129,14 +128,14 @@ const TechPackDataTable = ({ data = [] }) => {
         setIsAscending(!isAscending); // Toggle sorting order
     };
 
-    const sortedData = [...currentItems].sort((a, b) => {
+    const sortedData = [...filteredData].sort((a, b) => {
         if (isAscending) {
-            console.log("isAscending", isAscending)
             return new Date(a.modifiedAt) - new Date(b.modifiedAt); // Oldest to newest
         } else {
             return new Date(b.modifiedAt) - new Date(a.modifiedAt); // Newest to oldest
         }
     });
+    const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -176,7 +175,6 @@ const TechPackDataTable = ({ data = [] }) => {
                 );
                 if (response.ok) {
                     const newTechPack = await response.json();
-                    console.log("newTechPack", newTechPack)
                     // Update the table state with the new item
                     data = ((prevData) => [...prevData, newTechPack.data]);
                     window.location.reload();
@@ -209,7 +207,7 @@ const TechPackDataTable = ({ data = [] }) => {
 
     return (
         <>
-            <div className='w-full mx-auto max-w-[1500px] table px-10'>
+            <div className='w-full mx-auto max-w-[1500px] table px-10 pb-10'>
                 <div className='w-full flex gap-10 my-5'>
                     <div className="flex flex-col w-full gap-2">
                         <span>Search</span>
@@ -425,7 +423,7 @@ const TechPackDataTable = ({ data = [] }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {sortedData?.map((item, index) => {
+                            {currentItems?.map((item, index) => {
                                 return (
                                     <tr key={item._id}>
                                         <td>{indexOfFirstItem + index + 1}</td>

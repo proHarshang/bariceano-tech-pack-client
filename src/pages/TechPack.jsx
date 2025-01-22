@@ -171,7 +171,6 @@ const TechPack = () => {
     const updatedComponents = pageComponent.filter((item) => item.data.page !== page);
     setPageComponent(updatedComponents);
   };
-
   return (
     <form className="w-[841px] mx-auto mt-10" >
       {techPackData.slides.map((item, index) => {
@@ -257,9 +256,8 @@ const TechPack = () => {
           </button>
           {!isAdding && submitStatus?.status === true ?
             <>
-              <div className='text-white text-center relative bg-black text-sm px-3 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105'>
-                <TechPackPdfGenerator data={techPackData} />
-              </div>
+
+              <span className="text-white text-center relative bg-black text-sm py-2 w-full rounded-full transition-all duration-300 ease-in-out transform hover:scale-105" ><TechPackPdfGenerator data={techPackData} /></span>
               <button type='button' className='text-white relative bg-black text-sm px-3 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105' onClick={() => navigate('/tech-pack')}>Home</button>
             </>
             :
