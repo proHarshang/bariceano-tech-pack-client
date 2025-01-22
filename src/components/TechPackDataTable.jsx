@@ -3,6 +3,7 @@ import { handleCommentSubmit, deleteTechPack } from '../API/TechPacks';
 import TechPackPdfGenerator from '../TechPackPdfGenerator';
 import { useForm } from "react-hook-form";
 import Pagination from '../common/Pagination.jsx';
+import { useTechPack } from "../context/TechPackContext";
 
 const TechPackDataTable = ({ data = [] }) => {
     const sidebarRef = useRef(null);
@@ -11,6 +12,8 @@ const TechPackDataTable = ({ data = [] }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(null);
     const { register, watch } = useForm();
     const isCommentChecked = watch("Comment"); // Watch the checkbox state
+
+    const { submitStatus } = useTechPack();
 
     data = isCommentChecked
         ? data.filter(item => item.comment?.message) // Filter data with a comment
@@ -401,6 +404,13 @@ const TechPackDataTable = ({ data = [] }) => {
                     </div>
                 </div>
                 <div className='w-full'>
+                    {submitStatus && (
+                        <p className={`fixed right-[40%] top-[20%] transform -translate-y-1/2 px-3 text-sm font-bold py-2 rounded-lg shadow-lg text-white ${submitStatus.message == null ? "hidden" : "visible"}
+    ${submitStatus?.status ? "bg-green-600" : "bg-red-600"} animate-slide-down-up`}
+                        >
+                            {submitStatus?.message}
+                        </p>
+                    )}
                     <span>
                         Total {sortedData?.length} Tech Packs
                     </span>

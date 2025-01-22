@@ -198,16 +198,9 @@ const TechPack = () => {
             {submitStatus?.message}
           </p>
         )}
-        <div className="flex w-[12%] flex-col justify-center gap-5 mb-10 fixed right-4 top-[70%] transform -translate-y-1/4">
+        <div className="flex w-[12%]  flex-col justify-center gap-5 mb-10 fixed right-4 top-[80%] transform -translate-y-1/4">
 
-          <button
-            type="button"
-            className="text-sm px-6 py-2 rounded-full border border-black transition-all duration-300 ease-in-out transform hover:scale-105"
-            onClick={resetTechPack}
-            disabled={isAdding}
-          >
-            Reset
-          </button>
+
           <button
             type="button"
             className={`text-white bg-black text-sm px-6 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 ${isAdding ? "animate-spin" : ""}`}
@@ -216,21 +209,24 @@ const TechPack = () => {
           >
             Save
           </button>
-          {!isAdding && submitStatus?.status === true ?
-            <>
 
-              <span className="text-white text-center relative bg-black text-sm py-2 w-full rounded-full transition-all duration-300 ease-in-out transform hover:scale-105" ><TechPackPdfGenerator data={techPackData} /></span>
-              <button type='button' className='text-white relative bg-black text-sm px-3 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105' onClick={() => navigate('/tech-pack')}>Home</button>
-            </>
-            :
-            <button
-              type="button"
-              className="text-white relative bg-black text-sm px-3 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 opacity-50 cursor-not-allowed"
-              disabled
-            >
-              Download
-            </button>
-          }
+          <button
+            type="button"
+            className="text-sm px-6 py-2 bg-white rounded-full border border-black transition-all duration-300 ease-in-out transform hover:scale-105"
+            onClick={resetTechPack}
+            disabled={isAdding}
+          >
+            Reset
+          </button>
+
+          {/* <button
+            onClick={submitTechPack}
+            disabled={isAdding}
+            type="button"
+            className="text-white relative bg-black text-sm py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105">
+            <TechPackPdfGenerator data={techPackData} />
+          </button> */}
+
         </div>
 
 

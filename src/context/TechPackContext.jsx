@@ -1,11 +1,13 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { addTechPacks } from '../API/TechPacks';
+import { useNavigate } from 'react-router-dom';
 
 const TechPackContext = createContext();
 
 export const useTechPack = () => useContext(TechPackContext);
 
 export const TechPackProvider = ({ children }) => {
+    const navigate = useNavigate();
 
     const [isAdding, setIsAdding] = useState(false);
     const [submitStatus, setSubmitStatus] = useState({
@@ -508,7 +510,6 @@ export const TechPackProvider = ({ children }) => {
         });
     };
 
-
     const getSlideByPage = (pageNumber) => {
         return techPackData.slides.find((slide) => slide.page === pageNumber) || null;
     };
@@ -516,27 +517,31 @@ export const TechPackProvider = ({ children }) => {
     // Submit the form data
     const submitTechPack = async () => {
         setIsAdding(true)
-        console.log("TechPackData : ", techPackData);
         try {
             const response = await addTechPacks(techPackData)
             setSubmitStatus(response)
+            console.log("response", response)
+            if (response.status === true) {
+                navigate('/tech-pack-data')
+            }
         } catch (error) {
             throw new Error("Error creating TechPack:", error.message);
         } finally {
             setIsAdding(false)
         }
+
     };
 
-    // useEffect(() => {
-    //     const timer = setTimeout(() => {
-    //         setSubmitStatus({
-    //             status: null,
-    //             message: null,
-    //         });
-    //     }, 5000);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setSubmitStatus({
+                status: null,
+                message: null,
+            });
+        }, 5000);
 
-    //     return () => clearTimeout(timer);
-    // }, [submitStatus]);
+        return () => clearTimeout(timer);
+    }, [submitStatus]);
 
     useEffect(() => {
         setSubmitStatus({
