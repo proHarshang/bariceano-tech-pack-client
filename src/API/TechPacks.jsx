@@ -414,21 +414,35 @@ export const fetchAll = async () => {
     }
 };
 
-const useAddSizeChart = () => {
+const useAddSizeChart = (apiURL, apiKey) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const addSizeChart = async (formData) => {
+    const addSizeChart = async (sizeCharts) => {
         setIsLoading(true);
         setError(null);
 
         try {
+            // Validate the sizeCharts object
+            if (
+                !sizeCharts.name ||
+                !sizeCharts.category ||
+                !sizeCharts.gender ||
+                !sizeCharts.images?.position ||
+                !sizeCharts.images?.src
+            ) {
+                throw new Error(
+                    "Name, category, gender, position, and images (position & src) are required"
+                );
+            }
+
             const response = await fetch(`${apiURL}/design/setting/sizeChart/add`, {
                 method: "POST",
-                body: formData, // Ensure FormData is passed
                 headers: {
-                    'api-key': apiKey,
+                    "Content-Type": "application/json",
+                    "api-key": apiKey,
                 },
+                body: JSON.stringify({ sizeCharts }), // Send the sizeCharts object as JSON
             });
 
             const result = await response.json();
@@ -440,6 +454,7 @@ const useAddSizeChart = () => {
             return result;
         } catch (err) {
             setError(err.message);
+            throw err; // Re-throw the error for further handling if needed
         } finally {
             setIsLoading(false);
         }

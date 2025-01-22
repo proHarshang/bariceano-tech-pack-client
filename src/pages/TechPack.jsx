@@ -227,13 +227,8 @@ const TechPack = () => {
             className="text-white relative bg-black text-sm py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105">
             <TechPackPdfGenerator data={techPackData} />
           </button> */}
-
         </div>
-
-
       </div>
-
-
     </form>
   );
 };
