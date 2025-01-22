@@ -26,29 +26,29 @@ export const TechPackProvider = ({ children }) => {
                 "fabricColorImages": [
                     {
                         "position": 0,
-                        "src": "PANTONE1.jpg"
+                        "src": "Pantone.jpg"
                     },
                     {
                         "position": 1,
-                        "src": "PANTONE1.jpg"
+                        "src": "Pantone.jpg"
                     },
                     {
                         "position": 2,
-                        "src": "PANTONE1.jpg"
+                        "src": "Pantone.jpg"
                     }
                 ],
                 "threadColorImages": [
                     {
                         "position": 0,
-                        "src": "PANTONE1.jpg"
+                        "src": "Pantone.jpg"
                     },
                     {
                         "position": 1,
-                        "src": "PANTONE1.jpg"
+                        "src": "Pantone.jpg"
                     },
                     {
                         "position": 2,
-                        "src": "PANTONE1.jpg"
+                        "src": "Pantone.jpg"
                     }
                 ],
                 "images": [
@@ -58,7 +58,7 @@ export const TechPackProvider = ({ children }) => {
                     },
                     {
                         "position": 1,
-                        "src": "BRMS04SIDE.jpg"
+                        "src": "Front.jpg"
                     },
                     {
                         "position": 2,
@@ -160,13 +160,13 @@ export const TechPackProvider = ({ children }) => {
                         "artworkimage": [
                             {
                                 "position": 0,
-                                "src": "3.png"
+                                "src": "ArtWork.jpg"
                             }
                         ],
                         "placementimage": [
                             {
                                 "position": 0,
-                                "src": "4.png"
+                                "src": "placement.jpg"
                             }
                         ]
                     },
@@ -178,13 +178,13 @@ export const TechPackProvider = ({ children }) => {
                         "artworkimage": [
                             {
                                 "position": "0",
-                                "src": "3.png"
+                                "src": "ArtWork.jpg"
                             }
                         ],
                         "placementimage": [
                             {
                                 "position": "0",
-                                "src": "4.png"
+                                "src": "placement.jpg"
                             }
                         ]
                     }
