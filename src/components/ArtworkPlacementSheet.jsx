@@ -89,11 +89,11 @@ const FormRow = ({ formIndex, page, item }) => {
                             onClick={() => setOpenPopupId(`artworkimage`)}
                             src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.artworkPlacementSheet[formIndex]?.artworkimage[0].src}`}
                             alt={slide.data.artworkPlacementSheet[formIndex]?.artworkimage[0].src}
-                            className="w-fit mx-auto h-[156px] object-fill cursor-pointer"
+                            className="w-fit mx-auto h-[126px] object-fill cursor-pointer"
                         />
                     ) : (
                         <div
-                            className="w-full h-[156px] bg-[#F3F3F3] border-dashed border-2 border-gray-400 flex items-center justify-center cursor-pointer"
+                            className="w-full h-[126px] bg-[#F3F3F3] border-dashed border-2 border-gray-400 flex items-center justify-center cursor-pointer"
                         >
                             <button type='button' onClick={() => setOpenPopupId(`artworkimage`)}>Add</button>
                         </div>
@@ -128,11 +128,11 @@ const FormRow = ({ formIndex, page, item }) => {
                             onClick={() => setOpenPopupId(`placementimage`)}
                             src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.artworkPlacementSheet[formIndex]?.placementimage[0].src}`}
                             alt={slide.data.artworkPlacementSheet[formIndex]?.placementimage[0].src}
-                            className="w-fit mx-auto h-[156px] object-fill cursor-pointer"
+                            className="w-fit mx-auto h-[126px] object-fill cursor-pointer"
                         />
                     ) : (
                         <div
-                            className="w-full h-[156px] bg-[#F3F3F3] border-dashed border-2 border-gray-400 flex items-center justify-center cursor-pointer"
+                            className="w-full h-[126px] bg-[#F3F3F3] border-dashed border-2 border-gray-400 flex items-center justify-center cursor-pointer"
                         >
                             <button type='button' onClick={() => setOpenPopupId(`placementimage`)}>Add</button>
                         </div>

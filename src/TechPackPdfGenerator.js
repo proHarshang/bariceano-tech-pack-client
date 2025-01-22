@@ -106,7 +106,6 @@ const TechPackPdfGenerator = (data) => {
             Page = [],
         } = filteredSlides;
 
-
         headerSection(1, "Spac Sheet");
         if (Layout1[0]?.type === "Layout1") {
 
@@ -267,21 +266,25 @@ const TechPackPdfGenerator = (data) => {
             pdf.text("Thread colour", threadColorXStart, threadColorLabelY);
             pdf.text("Fabric colour", fabricColorXStart, fabricColorLabelY);
 
-            // Add color swatches under "Thread colour"
+            // Add color swatches under "Thread colour" (display based on number of images)
             threadColorImages.forEach((image, index) => {
-                const x = threadColorXStart + index * (colorWidth + colorSpacing);
-                pdf.addImage(image, "JPEG", x, colorYStart, colorWidth, colorHeight);
+                if (threadColorImages.length > 0) {
+                    const x = threadColorXStart + index * (colorWidth + colorSpacing);
+                    pdf.addImage(image, "JPEG", x, colorYStart, colorWidth, colorHeight);
+                }
             });
 
-            // Add color swatches under "Fabric colour"
+            // Add color swatches under "Fabric colour" (display based on number of images)
             fabricColorImages.forEach((image, index) => {
-                const x = fabricColorXStart + index * (colorWidth + colorSpacing);
-                pdf.addImage(image, "JPEG", x, colorYStart, colorWidth, colorHeight);
+                if (fabricColorImages.length > 0) {
+                    const x = fabricColorXStart + index * (colorWidth + colorSpacing);
+                    pdf.addImage(image, "JPEG", x, colorYStart, colorWidth, colorHeight);
+                }
             });
 
 
         } else if (Layout0[0]?.type === "Layout0") {
-            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout0[0].data.images.src}`, 'JPEG', 10, 25, 297 - 10, 167);
+            pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout0[0].data.images[0].src}`, 'JPEG', 10, 25, 297 - 10, 167);
         }
         else {
             console.log("No Layout")
@@ -516,7 +519,6 @@ const TechPackPdfGenerator = (data) => {
 
         //   ---------  Blank page -------
 
-
         if (ArtWork.length > 0 && ArtWork[0]?.data?.images?.length > 0) {
             // Sort artwork images by position
             ArtWork[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
@@ -573,8 +575,6 @@ const TechPackPdfGenerator = (data) => {
 
                 // Add the image
                 const imagePath = `${basePath}/uploads/techpack/${image.src}`;
-                console.log("Adding image:", imagePath); // Debug: Log image path
-
                 const xOffset = 10; // Left margin of 10
                 const yOffset = 45; // Top margin of 10
                 const pageWidth = pdf.internal.pageSize.getWidth(); // Full page width
@@ -635,7 +635,7 @@ const TechPackPdfGenerator = (data) => {
 
     return (
 
-        <button onClick={generatePdf}>Download</button>
+        <button type='button' className="w-full" onClick={generatePdf}>Download</button>
 
     );
 };

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { addTechPacks } from '../API/TechPacks';
 
 const TechPackContext = createContext();
@@ -194,7 +194,7 @@ export const TechPackProvider = ({ children }) => {
         {
             "page": 4,
             "name": "Art Work",
-            "type": "Artwork",
+            "type": "ArtWork",
             "data": {
                 "images": [
                     {
@@ -426,6 +426,7 @@ export const TechPackProvider = ({ children }) => {
 
 
     const updateSlideByPage = (page, fieldPath, value) => {
+        console.log(page, fieldPath, value)
         setTechPackData((prev) => {
             const updatedSlides = prev.slides.map((slide) => {
                 if (slide.page === page) {
@@ -435,6 +436,7 @@ export const TechPackProvider = ({ children }) => {
 
                     // Traverse to the target field
                     fieldParts.forEach((key, index) => {
+                       
                         if (index === fieldParts.length - 1) {
                             // Update the target field
                             if (Array.isArray(currentField[key])) {
@@ -455,6 +457,7 @@ export const TechPackProvider = ({ children }) => {
                                 currentField[key] = {};
                             }
                             currentField = currentField[key];
+                            console.log("currentField : ", currentField)
                         }
                     });
 
@@ -524,6 +527,28 @@ export const TechPackProvider = ({ children }) => {
         }
     };
 
+    // useEffect(() => {
+    //     const timer = setTimeout(() => {
+    //         setSubmitStatus({
+    //             status: null,
+    //             message: null,
+    //         });
+    //     }, 5000);
+
+    //     return () => clearTimeout(timer);
+    // }, [submitStatus]);
+
+    useEffect(() => {
+        setSubmitStatus({
+            status: null,
+            message: null,
+        });
+    }, [techPackData]);
+
+    const resetTechPack = async () => {
+        console.log("reset techpack")
+    };
+
     return (
         <TechPackContext.Provider
             value={{
@@ -542,6 +567,7 @@ export const TechPackProvider = ({ children }) => {
                 updateInfoField,
                 deleteInfoField,
                 submitTechPack,
+                resetTechPack,
                 deleteArtworkPlacement,
                 updateNestedImages,
                 updateArtworkPlacement,
