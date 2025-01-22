@@ -8,13 +8,18 @@ import Header from '../common/header';
 import Footer from '../common/footer';
 import { useTechPack } from '../context/TechPackContext';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { fetchAll } from '../API/TechPacks';
 
 const TechPack = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { techPackData, updateField, addSlide, submitTechPack, isAdding, submitStatus } = useTechPack();
-
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
+  const [construction, setConstructionSheets] = useState([]);
+  const [trims, setTrims] = useState([]);
+  const [requirements, setRequirements] = useState([]);
+  const [finishing, setFinishing] = useState([]);
+  const [sizecharts, setSizeCharts] = useState([]);
 
   useEffect(() => {
     if (!selectedLabels || !currentCategory || !currentSubCategory) {
@@ -43,6 +48,31 @@ const TechPack = () => {
     console.log(selectedLabels, currentCategory, currentSubCategory)
   }, [selectedLabels, currentCategory, currentSubCategory, navigate]);
 
+  useEffect(() => {
+    const fetchAllSetting = async () => {
+      try {
+        const data = await fetchAll(); // Use the categoryFetch hook                                    
+        if (data.status) {
+          setConstructionSheets(data.techPack.constructionSheets); // Set the fetched categories
+          setTrims(data.techPack.trims); // Set the fetched categories
+          setRequirements(data.techPack.requirements); // Set the fetched categories
+          setFinishing(data.techPack.finishing); // Set the fetched categories
+          setSizeCharts(data.techPack.sizeCharts); // Set the fetched categories
+        } else {
+          console.error('Failed to fetch categories');
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchAllSetting();
+  }, []);
+
+  console.log("finishing", finishing)
+  console.log("requirements", requirements)
+  console.log("construction", construction)
+  console.log("trims", trims)
+  console.log("sizecharts", sizecharts)
 
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPage, setSelectedPage] = useState(null);
@@ -79,13 +109,14 @@ const TechPack = () => {
   }
 
   const getImage = (label) => {
-    switch (label) {
-      case label === "Silicon Label Sheet" || "Silicon Label":
-        return "http://localhost:3001/uploads/techpack/artworksheet.jpg";
-      default:
-        return "http://localhost:3001/uploads/techpack/HangTag.jpg"
+    for (const trim of trims) {
+      if (label === trim.name) {
+        return trim.images[0]?.src || "defaultImage.jpg";
+      }
     }
+    return "defaultImage.jpg";
   }
+
 
   const getComponent = (type, page) => {
     switch (type) {
