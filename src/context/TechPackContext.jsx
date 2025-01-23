@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { addTechPacks, getTechPacksById } from '../API/TechPacks';
+import { addTechPacks, getTechPacksById, updateTechPacks } from '../API/TechPacks';
 import { useNavigate } from 'react-router-dom';
 
 const TechPackContext = createContext();
@@ -10,6 +10,7 @@ export const TechPackProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const [isAdding, setIsAdding] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
     const [updateMode, setUpdateMode] = useState("off");
     const [submitStatus, setSubmitStatus] = useState({
         status: null,
@@ -100,7 +101,7 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "3",
                         "name": "collection",
-                        "value": "select"
+                        "value": localStorage.getItem("currentCollection")
                     },
                     {
                         "position": "4",
@@ -218,8 +219,8 @@ export const TechPackProvider = ({ children }) => {
 
     const createUpdateTechPackSetup = async (id) => {
         try {
-            setUpdateMode("on");
-            console.log("updateMode - ", updateMode)
+            setUpdateMode(id);
+            console.log("🔄 updateMode - ", updateMode)
             if (id) {
                 const techpack = await getTechPacksById(id);
                 setTechPackData({
@@ -550,6 +551,23 @@ export const TechPackProvider = ({ children }) => {
 
     };
 
+    const updateTechPack = async () => {
+        setIsUpdating(true)
+        try {
+            const response = await updateTechPacks(updateMode, techPackData)
+            setSubmitStatus(response)
+            console.log("response", response)
+            if (response.status === true) {
+                navigate('/tech-pack-data')
+            }
+        } catch (error) {
+            throw new Error("Error creating TechPack:", error.message);
+        } finally {
+            setIsUpdating(false)
+        }
+
+    };
+
     useEffect(() => {
         const timer = setTimeout(() => {
             setSubmitStatus({
@@ -580,6 +598,8 @@ export const TechPackProvider = ({ children }) => {
                 submitStatus,
                 updateMode,
                 setUpdateMode,
+                isUpdating,
+                updateTechPack,
                 createUpdateTechPackSetup,
                 updateField,
                 addSlide,

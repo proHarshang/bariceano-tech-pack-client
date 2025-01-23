@@ -14,7 +14,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
         "Production",
     ]);
 
-    const { addInfoField, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
+    const { addInfoField, techPackData, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
 
     const slide = getSlideByPage(page);
 
@@ -38,15 +38,12 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
     }, []);
 
     useEffect(() => {
-        console.log("updateMode", updateMode)
-        if (updateMode === "false") {
+        if (updateMode === "off" && selectedLabels && currentCategory) {
             updateInfoField(page, "productType", slide.data?.info?.find((item) => item.name === "productType").value, { "value": currentCategory })
-            updateInfoField(page, "collection", slide.data?.info?.find((item) => item.name === "collection").value, { "value": localStorage.getItem("currentCollection") })
+            updateInfoField(page, "designer", slide.data?.info?.find((item) => item.name === "designer").value, { "value": JSON.parse(localStorage.getItem('user')).Name })
             updateInfoField(page, "trim", slide.data?.info?.find((item) => item.name === "trim").value, { "value": selectedLabels.join(', ') })
-        } else {
-            return
         }
-    }, [currentCategory, selectedLabels, updateMode])
+    }, [updateMode, selectedLabels, currentCategory])
 
     return (
         <section className='mx-auto mb-20 pl-7 pr-2'>
@@ -82,11 +79,9 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                     <label className="form__label capitalize">Designer</label>
                     <input
                         type="text"
-                        value={JSON.parse(localStorage.getItem('user')).Name}
+                        value={slide.data?.info?.find((item) => item.name === "designer").value}
                         className="form__field cursor-not-allowed"
-                        placeholder="BR-00-00"
                         required
-                        disabled
                     />
                 </div>
                 <div className="form__group field w-[45%] relative group">
