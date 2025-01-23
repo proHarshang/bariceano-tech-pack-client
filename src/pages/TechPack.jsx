@@ -63,12 +63,9 @@ const TechPack = () => {
       const finishingMaterial = { "name": "Finishing", "images": finishing.filter(item => item.name === currentCategory).map(item => item.images).flat() };
       const sizechartsMaterial = { "name": "Size Charts", "images": sizecharts.filter(item => item.gender === currentSubCategory && item.category === currentCategory).map(item => item.images).flat() };
 
-      console.log(construction)
-
       let currentPage = getMaxPageNumber(); // Get the current max page number
 
       [constructionMaterial, sizechartsMaterial].forEach(label => {
-        console.log(constructionMaterial)
         label.images.forEach(img => {
           currentPage += 1;
           addSlide({
