@@ -25,7 +25,7 @@ function Header({ name, page }) {
                     <div className='relative'>
                         <h5>Pg - {page}
                         </h5>
-                        <h5 className='absolute mt-2 break-words'>{techPackData.styleNo}</h5>
+                        <h5 className='absolute mt-2 whitespace-nowrap'>{techPackData.styleNo}</h5>
                     </div>
                     <div className='flex gap-5 absolute top-14 pl-2 left-full items-center mt-2'>
                         <div
