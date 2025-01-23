@@ -304,7 +304,7 @@ const TechPackPdfGenerator = (data) => {
             pdf.addPage();
 
             //   ---------  Spec. sheet start -------
-
+            console.log("Information", Information)
             headerSection(Information[0].page, Information[0].name);
             // Define column positions and widths
             const colWidth = (pageWidth - 20) / 4; // Divide into four equal columns
