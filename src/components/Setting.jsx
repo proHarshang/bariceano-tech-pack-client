@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { LiaSaveSolid } from "react-icons/lia";
-import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, fabricEdit, fabricAdd, fabricDelete } from "../API/TechPacks";
+import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, fabricEdit, fabricAdd, fabricDelete, collectionEdit, collectionAdd, collectionDelete } from "../API/TechPacks";
 
 export default function Setting() {
 
@@ -38,7 +38,7 @@ export default function Setting() {
         fetchAllSetting();
     }, []);
 
-
+    console.log("collection", collections)
     // Category
     const [editedCategory, setEditedCategory] = useState('');
     const [showCategoryPopup, setShowCategoryPopup] = useState(false);
@@ -328,42 +328,6 @@ export default function Setting() {
         }
     };
 
-    const [newCollectionName, setNewCollectionName] = useState("");
-    const [showPopup, setShowPopup] = useState(false);
-
-    const handleAddCollection = () => {
-        setShowPopup(true);
-    };
-
-    const handleSaveNewCollection = () => {
-        if (newCollectionName) {
-            setCollections([
-                ...collections,
-                { id: Date.now(), name: newCollectionName, isEditing: false },
-            ]);
-            setShowPopup(false);
-            setNewCollectionName("");
-        }
-    };
-
-    const handleEditCollection = (id) => {
-        setCollections((prev) =>
-            prev.map((item) =>
-                item.id === id
-                    ? { ...item, isEditing: true, isEditable: !item.isEditable }
-                    : item
-            )
-        );
-    };
-
-    const handleSaveCollection = (id, name) => {
-        setCollections((prev) =>
-            prev.map((item) =>
-                item.id === id ? { ...item, name, isEditing: false } : item
-            )
-        );
-    };
-
     const [parameters, setParameters] = useState([
         { id: 1, name: 'T-shirt', image: [] },
         { id: 2, name: 'Sweatshirt', image: [] },
@@ -485,6 +449,58 @@ export default function Setting() {
             console.error('Failed to add fabric');
         }
         setLoadingFabric(false);
+    };
+
+    // Collection
+    const [editedCollection, setEditedCollection] = useState('');
+    const [showCollectionPopup, setShowCollectionPopup] = useState(false);
+    const [loadingCollection, setLoadingCollection] = useState(false);
+
+    const handleAddCollection = async () => {
+        setShowCollectionPopup(true);
+    };
+
+    const handleEditCollection = async (collection) => {
+        const newCollectionName = prompt('Enter the new collection name:', collection);
+        if (newCollectionName && newCollectionName !== collection) {
+            // Use the collectionEdit hook to update the collection
+            const updated = await collectionEdit(collection, newCollectionName);
+            if (updated.status) {
+                // Update the state with the new collection name
+                setCollections((prevCollections) =>
+                    prevCollections.map((item) => (item === collection ? newCollectionName : item))
+                );
+            } else {
+                console.error('Failed to edit collection');
+            }
+        }
+    };
+
+    const handleDeleteCollection = async (collection) => {
+        // Use the collectionDelete hook to delete the collection
+        const deleted = await collectionDelete(collection);
+        if (deleted.status) {
+            // Remove the deleted collection from the state
+            setCollections((prevCollections) => prevCollections.filter((item) => item !== collection));
+        } else {
+            console.error('Failed to delete collection');
+        }
+    };
+
+    const handleSaveNewCollection = async (e) => {
+        e.preventDefault();
+        setLoadingCollection(true);
+
+        // Use the fabricAdd hook to add a new collection
+        const newCollection = await collectionAdd(editedCollection);
+        if (newCollection.status) {
+            setCollections((prevCollections) => [...prevCollections, editedCollection]);
+            setEditedCollection('');
+            setShowCollectionPopup(false);
+        } else {
+            console.error('Failed to add collection');
+        }
+        setLoadingCollection(false);
     };
 
     return (
@@ -1681,88 +1697,132 @@ export default function Setting() {
 
 
 
-            <div className="border-b p-10 space-y-10">
+            <div className="border-b p-10 flex flex-col gap-10">
                 <div>
-                    <div className="flex gap-10">
+                    <div className="flex gap-10 pb-5">
                         <div>
-                            <h1 className="font-bold text-2xl">Collection</h1>
+                            <h1 className="font-bold text-xl">Collection</h1>
                         </div>
                         <div className="flex gap-3">
-                            <button className="underline" onClick={handleAddCollection}>Add</button>
+                            <button className="underline" onClick={handleAddCollection}>
+                                Add
+                            </button>
                         </div>
                     </div>
-                </div>
-                <div className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="flex gap-x-4 flex-wrap">
                         {collections.map((collection) => (
                             <div
-                                key={collection.id}
-                                className="p-4 bg-gray-200 border relative rounded-lg flex items-center"
+                                key={collection}
+                                className="flex w-1/4 relative mb-4 group items-center border-2 rounded-xl px-4 py-5 text-center text-lg"
                             >
-                                <input
-                                    type="text"
+                                <textarea
                                     value={collection}
-                                    disabled={!collection.isEditing}  // Disable input when isEditing is false
-                                    className="flex-1 border text-center p-2 rounded"
-                                    onChange={(e) =>
-                                        setCollections((prev) =>
-                                            prev.map((item) =>
-                                                item.id === collection.id
-                                                    ? { ...item, name: e.target.value }
-                                                    : item
-                                            )
-                                        )
-                                    }
+                                    readOnly={true}
+                                    rows={1} // Allows for 2-3 lines
+                                    className="border-none w-full text-sm text-center text-black outline-none resize-none"
                                 />
-                                <div className="absolute right-0 p-3 bottom-0">
-                                    {collection.isEditing ? (
-                                        <button
-                                            onClick={() => handleSaveCollection(collection.id, collection)}
+                                <div className="hidden gap-1 group-hover:flex absolute right-0 bottom-0 ml-2 p-3">
+                                    {/* Edit Button */}
+                                    <button onClick={() => handleEditCollection(collection)}>
+                                        <span><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
+                                                stroke="#0C2F2F"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M11.875 9.375V11.25C11.875 11.9404 11.3154 12.5 10.625 12.5H3.75C3.05964 12.5 2.5 11.9404 2.5 11.25V4.375C2.5 3.68464 3.05964 3.125 3.75 3.125H5.625"
+                                                stroke="#0C2F2F"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg></span>
+                                    </button>
+
+                                    {/* Delete Button */}
+                                    <button
+                                        onClick={() => {
+                                            const confirmDelete = window.confirm(
+                                                'Are you sure you want to delete this collection?'
+                                            );
+                                            if (confirmDelete) {
+                                                handleDeleteCollection(collection);
+                                            }
+                                        }}
+                                    >
+                                        <span><svg
+                                            width="18"
+                                            height="18"
+                                            viewBox="0 0 13 15"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
                                         >
-                                            <LiaSaveSolid className="size-5" />
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={() => handleEditCollection(collection.id)}
-                                        >
-                                            <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z" stroke="#0C2F2F" stroke-linecap="round" stroke-linejoin="round" />
-                                                <path d="M11.875 9.375V11.25C11.875 11.9404 11.3154 12.5 10.625 12.5H3.75C3.05964 12.5 2.5 11.9404 2.5 11.25V4.375C2.5 3.68464 3.05964 3.125 3.75 3.125H5.625" stroke="#0C2F2F" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </button>
-                                    )}
+                                            <path
+                                                d="M1.625 3.54541H2.70833H11.375"
+                                                stroke="black"
+                                                stroke-width="0.6"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                            <path
+                                                d="M10.2923 3.54528V11.818C10.2923 12.1314 10.1782 12.432 9.97502 12.6537C9.77185 12.8753 9.4963 12.9998 9.20898 12.9998H3.79232C3.505 12.9998 3.22945 12.8753 3.02629 12.6537C2.82312 12.432 2.70898 12.1314 2.70898 11.818V3.54528M4.33398 3.54528V2.36346C4.33398 2.05002 4.44812 1.74942 4.65129 1.52779C4.85445 1.30615 5.13 1.18164 5.41732 1.18164H7.58398C7.8713 1.18164 8.14685 1.30615 8.35002 1.52779C8.55318 1.74942 8.66732 2.05002 8.66732 2.36346V3.54528"
+                                                stroke="black"
+                                                stroke-width="0.6"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                            <path
+                                                d="M5.41602 6.5V10.0455"
+                                                stroke="black"
+                                                stroke-width="0.6"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                            <path
+                                                d="M7.58398 6.5V10.0455"
+                                                stroke="black"
+                                                stroke-width="0.6"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
+                                        </svg></span>
+                                    </button>
                                 </div>
                             </div>
                         ))}
-
-
                     </div>
 
-                    {/* Popup for new collection */}
-                    {showPopup && (
-                        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-                            <div className="bg-white p-6 rounded-lg">
-                                <h3 className="mb-4">New collection</h3>
-                                <input
-                                    type="text"
+                    {/* Collection Popup */}
+                    {showCollectionPopup && (
+                        <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
+                            <form
+                                onSubmit={handleSaveNewCollection}
+                                className="bg-white p-6 rounded-lg"
+                            >
+                                <h3 className="mb-4">New Collection</h3>
+                                <textarea
                                     placeholder="Enter Collection Name"
-                                    value={newCollectionName}
-                                    onChange={(e) => setNewCollectionName(e.target.value)}
-                                    className="p-2 rounded w-full mb-4"
+                                    value={editedFabric}
+                                    onChange={(e) => setEditedCollection(e.target.value)}
+                                    required
+                                    rows={1} // Allows for 2-3 lines
+                                    className="p-2  rounded w-full mb-4 resize-none"
                                 />
                                 <button
-                                    onClick={() => setShowPopup(false)}
+                                    onClick={() => setShowCollectionPopup(false)}
                                     className="border px-4 text-sm py-2 rounded-lg"
                                 >
                                     Cancel
                                 </button>
                                 <button
-                                    onClick={handleSaveNewCollection}
+                                    type="submit"
+                                    disabled={loadingCollection}
                                     className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
                                 >
                                     Save Collection
                                 </button>
-                            </div>
+                            </form>
                         </div>
                     )}
                 </div>

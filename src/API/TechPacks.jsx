@@ -685,5 +685,70 @@ export const fabricDelete = async (name) => {
 };
 
 
+export const collectionAdd = async (name) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/collection/add`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to add collection');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while adding the collection');
+    }
+};
+
+
+export const collectionEdit = async (oldName, newName) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/collection/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ oldName, newName }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to edit collection');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while editing the collection');
+    }
+};
+
+export const collectionDelete = async (name) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/collection/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to delete collection');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while deleting the collection');
+    }
+};
+
+
 
 export { getTechPacks, addTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, getUploadedImage, useUploadImage }
