@@ -19,7 +19,7 @@ function Header({ name, page }) {
                     </div>
                 </div>
                 <div className='h-[46px] absolute right-0 w-full'>
-                    <img src="/logo192.png" alt="Bariceano" draggable="false" className='select-none w-full h-full object-contain' />
+                    <img src="/logo192.png" alt="Bariceano" draggable="false" className='select-none w-full h-full object-contain' onClick={() => console.log("📁 TechPackData : ", techPackData)} />
                 </div>
                 <div className='flex flex-col items-end justify-end'>
                     <div className='relative'>

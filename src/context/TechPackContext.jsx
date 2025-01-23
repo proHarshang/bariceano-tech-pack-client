@@ -18,7 +18,7 @@ export const TechPackProvider = ({ children }) => {
         designer: JSON.parse(localStorage.getItem('user')).Name || "",
         styleNo: "",
         collection: "",
-        state: "Sample",
+        state: "",
         gender: "",
         category: "",
         slides: [{
@@ -97,9 +97,14 @@ export const TechPackProvider = ({ children }) => {
                         "value": "Male"
                     },
                     {
+                        "position": "3",
+                        "name": "collection",
+                        "value": "select"
+                    },
+                    {
                         "position": "4",
                         "name": "state",
-                        "value": "Sample"
+                        "value": "select"
                     },
                     {
                         "position": "4",
@@ -114,7 +119,7 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "Last",
                         "name": "fabric",
-                        "value": ""
+                        "value": "select"
                     },
                     {
                         "position": "Last",

@@ -127,13 +127,15 @@ const SpecSheet = ({ page }) => {
                     </div>
                     <div className="form__group field w-1/2 relative group">
                         <label className="form__label capitalize">Collection</label>
-                        <select value={slide.data?.info?.find((item) => item.name === "collection")}
+                        <select
+                            value={slide.data?.info?.find((item) => item.name === "collection").value}
                             onChange={(e) => {
                                 updateField("collection", e.target.value);
                                 updateInfoField(page, "collection", slide.data?.info?.find((item) => item.name === "collection").value, { "value": e.target.value })
                             }}
                             className="form__field break-words text-wrap"
                             required>
+                            <option className="break-words text-wrap text-sm overflow-x-auto" value="Select" disabled>select</option>
                             {collections.map((collection) => (
                                 <option className="break-words text-wrap text-sm overflow-x-auto" value={collection}>{collection}</option>
                             ))}
@@ -142,13 +144,15 @@ const SpecSheet = ({ page }) => {
                 </div>
                 <div className="form__group field w-[45%] relative group">
                     <label className="form__label capitalize">State</label>
-                    <select name="" id="" value={slide.data?.info?.find((item) => item.name === "state").value}
+                    <select
+                        value={slide.data?.info?.find((item) => item.name === "state").value}
                         onChange={(e) => {
                             updateField("state", e.target.value);
                             updateInfoField(page, "state", slide.data?.info?.find((item) => item.name === "state").value, { "value": e.target.value })
                         }}
                         className="form__field break-words text-wrap"
                         required>
+                        <option className="break-words text-wrap text-sm overflow-x-auto" value="Select" disabled>select</option>
                         {states.map((state) => (
                             <option className="break-words text-wrap text-sm overflow-x-auto" value={state}>{state}</option>
                         ))}
@@ -156,20 +160,22 @@ const SpecSheet = ({ page }) => {
                 </div>
                 <div className="form__group field w-[45%] relative group">
                     <label className="form__label capitalize">Fabric</label>
-                    <select name="" id="" value={slide.data?.info?.find((item) => item.name === "fabric").value}
+                    <select
+                        value={slide.data?.info?.find((item) => item.name === "fabric").value}
                         onChange={(e) => {
                             updateField("fabric", e.target.value);
                             updateInfoField(page, "fabric", slide.data?.info?.find((item) => item.name === "fabric").value, { "value": e.target.value })
                         }}
                         className="form__field break-words text-wrap"
                         required>
+                        <option className="break-words text-wrap text-sm overflow-x-auto" value="Select" disabled>select</option>
                         {fabric.map((fabric) => (
                             <option className="break-words text-wrap text-sm overflow-x-auto" value={fabric}>{fabric}</option>
                         ))}
                     </select>
                 </div>
                 {slide.data?.info?.map((field, index) => {
-                    if (["styleNo", "designer", "size", "gender", "state", "fabric"].includes(field.name)) {
+                    if (["styleNo", "designer", "size", "gender", "state", "fabric", "collection"].includes(field.name)) {
                         return null;
                     }
                     return (
