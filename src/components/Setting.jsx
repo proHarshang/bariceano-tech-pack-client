@@ -451,57 +451,95 @@ export default function Setting() {
         setLoadingFabric(false);
     };
 
-    // Collection
+    // Collection State
     const [editedCollection, setEditedCollection] = useState('');
     const [showCollectionPopup, setShowCollectionPopup] = useState(false);
     const [loadingCollection, setLoadingCollection] = useState(false);
 
-    const handleAddCollection = async () => {
+    // Open Popup to Add New Collection
+    const handleAddCollection = () => {
+        setEditedCollection(''); // Clear any previously entered data
         setShowCollectionPopup(true);
     };
 
+    // Edit an Existing Collection
     const handleEditCollection = async (collection) => {
         const newCollectionName = prompt('Enter the new collection name:', collection);
-        if (newCollectionName && newCollectionName !== collection) {
-            // Use the collectionEdit hook to update the collection
-            const updated = await collectionEdit(collection, newCollectionName);
-            if (updated.status) {
-                // Update the state with the new collection name
-                setCollections((prevCollections) =>
-                    prevCollections.map((item) => (item === collection ? newCollectionName : item))
-                );
-            } else {
-                console.error('Failed to edit collection');
+
+        if (newCollectionName && newCollectionName.trim() !== '' && newCollectionName !== collection) {
+            try {
+                const updated = await collectionEdit(collection, newCollectionName); // Call API
+                if (updated.status) {
+                    setCollections((prevCollections) =>
+                        prevCollections.map((item) => (item === collection ? newCollectionName : item))
+                    );
+                    alert('Collection updated successfully!');
+                } else {
+                    console.error('Failed to edit collection');
+                    alert('Failed to update collection. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error editing collection:', error);
+                alert('An error occurred while updating the collection.');
             }
         }
     };
 
+    // Delete a Collection
     const handleDeleteCollection = async (collection) => {
-        // Use the collectionDelete hook to delete the collection
-        const deleted = await collectionDelete(collection);
-        if (deleted.status) {
-            // Remove the deleted collection from the state
-            setCollections((prevCollections) => prevCollections.filter((item) => item !== collection));
-        } else {
-            console.error('Failed to delete collection');
+        const confirmDelete = window.confirm(
+            `Are you sure you want to delete the collection "${collection}"?`
+        );
+
+        if (confirmDelete) {
+            try {
+                const deleted = await collectionDelete(collection); // Call API
+                if (deleted.status) {
+                    setCollections((prevCollections) =>
+                        prevCollections.filter((item) => item !== collection)
+                    );
+                    alert('Collection deleted successfully!');
+                } else {
+                    console.error('Failed to delete collection');
+                    alert('Failed to delete collection. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error deleting collection:', error);
+                alert('An error occurred while deleting the collection.');
+            }
         }
     };
 
+    // Save a New Collection
     const handleSaveNewCollection = async (e) => {
         e.preventDefault();
         setLoadingCollection(true);
 
-        // Use the fabricAdd hook to add a new collection
-        const newCollection = await collectionAdd(editedCollection);
-        if (newCollection.status) {
-            setCollections((prevCollections) => [...prevCollections, editedCollection]);
-            setEditedCollection('');
-            setShowCollectionPopup(false);
-        } else {
-            console.error('Failed to add collection');
+        if (editedCollection.trim() === '') {
+            alert('Collection name cannot be empty.');
+            setLoadingCollection(false);
+            return;
         }
-        setLoadingCollection(false);
+
+        try {
+            const newCollection = await collectionAdd(editedCollection); // Call API
+            if (newCollection.status) {
+                setCollections((prevCollections) => [...prevCollections, editedCollection]);
+                setEditedCollection('');
+                setShowCollectionPopup(false);
+                alert('Collection added successfully!');
+            } else {
+                console.error('Failed to add collection');
+                alert('Failed to add collection. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error adding collection:', error);
+            alert('An error occurred while adding the collection.');
+        } finally {
+            setLoadingCollection(false);
+        }
     };
+
 
     return (
         <section className="container mx-auto">
@@ -1700,14 +1738,13 @@ export default function Setting() {
             <div className="border-b p-10 flex flex-col gap-10">
                 <div>
                     <div className="flex gap-10 pb-5">
-                        <div>
-                            <h1 className="font-bold text-xl">Collection</h1>
-                        </div>
-                        <div className="flex gap-3">
-                            <button className="underline" onClick={handleAddCollection}>
-                                Add
-                            </button>
-                        </div>
+                        <h1 className="font-bold text-xl">Collection</h1>
+                        <button
+                            className="underline"
+                            onClick={handleAddCollection}
+                        >
+                            Add
+                        </button>
                     </div>
                     <div className="flex gap-x-4 flex-wrap">
                         {collections.map((collection) => (
@@ -1717,14 +1754,14 @@ export default function Setting() {
                             >
                                 <textarea
                                     value={collection}
-                                    readOnly={true}
-                                    rows={1} // Allows for 2-3 lines
+                                    readOnly
+                                    rows={1}
                                     className="border-none w-full text-sm text-center text-black outline-none resize-none"
                                 />
                                 <div className="hidden gap-1 group-hover:flex absolute right-0 bottom-0 ml-2 p-3">
                                     {/* Edit Button */}
                                     <button onClick={() => handleEditCollection(collection)}>
-                                        <span><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
                                                 d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
                                                 stroke="#0C2F2F"
@@ -1737,21 +1774,17 @@ export default function Setting() {
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
                                             />
-                                        </svg></span>
+                                        </svg>
                                     </button>
-
                                     {/* Delete Button */}
                                     <button
                                         onClick={() => {
-                                            const confirmDelete = window.confirm(
-                                                'Are you sure you want to delete this collection?'
-                                            );
-                                            if (confirmDelete) {
+                                            if (window.confirm('Are you sure you want to delete this collection?')) {
                                                 handleDeleteCollection(collection);
                                             }
                                         }}
                                     >
-                                        <span><svg
+                                        <svg
                                             width="18"
                                             height="18"
                                             viewBox="0 0 13 15"
@@ -1786,7 +1819,7 @@ export default function Setting() {
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
                                             />
-                                        </svg></span>
+                                        </svg>
                                     </button>
                                 </div>
                             </div>
@@ -1800,28 +1833,31 @@ export default function Setting() {
                                 onSubmit={handleSaveNewCollection}
                                 className="bg-white p-6 rounded-lg"
                             >
-                                <h3 className="mb-4">New Collection</h3>
+                                <h3 className="mb-4">{editedOption ? 'Edit Collection' : 'New Collection'}</h3>
                                 <textarea
                                     placeholder="Enter Collection Name"
-                                    value={editedFabric}
+                                    value={editedCollection}
                                     onChange={(e) => setEditedCollection(e.target.value)}
                                     required
-                                    rows={1} // Allows for 2-3 lines
-                                    className="p-2  rounded w-full mb-4 resize-none"
+                                    rows={1}
+                                    className="p-2 rounded w-full mb-4 resize-none"
                                 />
-                                <button
-                                    onClick={() => setShowCollectionPopup(false)}
-                                    className="border px-4 text-sm py-2 rounded-lg"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={loadingCollection}
-                                    className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
-                                >
-                                    Save Collection
-                                </button>
+                                <div className="flex justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowCollectionPopup(false)}
+                                        className="border px-4 text-sm py-2 rounded-lg mr-2"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={loadingCollection}
+                                        className="bg-black text-white text-sm px-4 py-2 rounded-lg"
+                                    >
+                                        {loadingCollection ? 'Saving...' : 'Save'}
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     )}
