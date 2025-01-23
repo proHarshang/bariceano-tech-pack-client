@@ -11,7 +11,7 @@ const SiliconLabel = ({ page }) => {
     return (
         <div className="w-full h-full p-10 pt-6">
             <div className='flex flex-col mb-5'>
-                <label htmlFor="title">Add Title</label>
+                <label htmlFor="title">Add Placement</label>
                 <input
                     type="text"
                     name="title"

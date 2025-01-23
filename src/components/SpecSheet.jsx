@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 const SpecSheet = ({ page }) => {
     const [fabric, setFabric] = useState([]);
     const [genders, setGenders] = useState([]);
+    const [collections, setCollections] = useState([]);
+
     const [states] = useState([
         "Sample",
         "Development",
@@ -19,6 +21,8 @@ const SpecSheet = ({ page }) => {
                 if (data.status) {
                     setFabric(data.techPack.fabric); // Set the fetched fabric
                     setGenders(data.techPack.gender); // Set the fetched fabric
+                    setCollections(data.techPack.collections); // Set the fetched categories
+
                 } else {
                     console.error('Failed to fetch fabric');
                 }
@@ -30,9 +34,10 @@ const SpecSheet = ({ page }) => {
     }, []);
 
 
-    const { getSlideByPage } = useTechPack();
+    const { getSlideByPage ,techPackData} = useTechPack();
 
     const slide = getSlideByPage(page);
+    const collection = techPackData(page);
 
     const { addInfoField, updateInfoField, deleteInfoField, updateField } = useTechPack();
 
@@ -55,7 +60,7 @@ const SpecSheet = ({ page }) => {
     // ]); 
 
     return (
-        <section className='mx-auto mb-20 px-10'>
+        <section className='mx-auto mb-20 pl-7 pr-2'>
             <div className="text-xs flex gap-5 justify-end mt-10">
                 <button
                     className="px-3 py-1 border rounded-lg border-black"
@@ -69,9 +74,9 @@ const SpecSheet = ({ page }) => {
                     Add new
                 </button>
             </div>
-            <div className="flex flex-wrap gap-5">
+            <div className="flex flex-wrap gap-10">
                 <div className="form__group field w-[45%] relative group">
-                    <label className="form__label">Style No</label>
+                    <label className="form__label capitalize">Style No</label>
                     <input
                         type="text"
                         value={slide.data?.info?.find((item) => item.name === "styleNo").value}
@@ -80,23 +85,23 @@ const SpecSheet = ({ page }) => {
                             updateInfoField(page, "styleNo", slide.data?.info?.find((item) => item.name === "styleNo").value, { "value": e.target.value })
                         }}
                         className="form__field"
-                        placeholder="BR-00-00"
+                        placeholder=""
                         required
                     />
                 </div>
                 <div className="form__group field w-[45%] relative group">
-                    <label className="form__label">Designer</label>
+                    <label className="form__label capitalize">Designer</label>
                     <input
                         type="text"
                         value={JSON.parse(localStorage.getItem('user')).Name}
-                        className="form__field"
+                        className="form__field cursor-not-allowed"
                         placeholder="BR-00-00"
                         required
                         disabled
                     />
                 </div>
                 <div className="form__group field w-[45%] relative group">
-                    <label className="form__label">Size</label>
+                    <label className="form__label capitalize">Size</label>
                     <input
                         type="text"
                         value={slide.data?.info?.find((item) => item.name === "size").value}
@@ -106,22 +111,38 @@ const SpecSheet = ({ page }) => {
                         required
                     />
                 </div>
-                <div className="form__group field w-[45%] relative group">
-                    <label className="form__label">Gender</label>
-                    <select name="" id="" value={slide.data?.info?.find((item) => item.name === "gender").value}
-                        onChange={(e) => {
-                            updateField("gender", e.target.value);
-                            updateInfoField(page, "gender", slide.data?.info?.find((item) => item.name === "gender").value, { "value": e.target.value })
-                        }}
-                        className="form__field break-words text-wrap"
-                        required>
-                        {genders.map((gender) => (
-                            <option className="break-words text-wrap text-sm overflow-x-auto" value={gender}>{gender}</option>
-                        ))}
-                    </select>
+                <div className="flex w-[45%] gap-5">
+                    <div className="form__group field w-1/2 relative group">
+                        <label className="form__label capitalize">Gender</label>
+                        <select name="" id="" disabled={true} value={slide.data?.info?.find((item) => item.name === "gender").value}
+                            onChange={(e) => {
+                                updateField("gender", e.target.value);
+                                updateInfoField(page, "gender", slide.data?.info?.find((item) => item.name === "gender").value, { "value": e.target.value })
+                            }}
+                            className="form__field break-words text-wrap cursor-not-allowed"
+                            required>
+                            {genders.map((gender) => (
+                                <option className="break-words text-wrap text-sm overflow-x-auto" value={gender}>{gender}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="form__group field w-1/2 relative group">
+                        <label className="form__label capitalize">Collection</label>
+                        <select value={slide.data?.info?.find((item) => item.name === "collection")}
+                            onChange={(e) => {
+                                updateField("collection", e.target.value);
+                                updateInfoField(page, "collection", slide.data?.info?.find((item) => item.name === "collection").value, { "value": e.target.value })
+                            }}
+                            className="form__field break-words text-wrap"
+                            required>
+                            {collections.map((collection) => (
+                                <option className="break-words text-wrap text-sm overflow-x-auto" value={collection}>{collection}</option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
                 <div className="form__group field w-[45%] relative group">
-                    <label className="form__label">State</label>
+                    <label className="form__label capitalize">State</label>
                     <select name="" id="" value={slide.data?.info?.find((item) => item.name === "state").value}
                         onChange={(e) => {
                             updateField("state", e.target.value);
@@ -135,7 +156,7 @@ const SpecSheet = ({ page }) => {
                     </select>
                 </div>
                 <div className="form__group field w-[45%] relative group">
-                    <label className="form__label">Fabric</label>
+                    <label className="form__label capitalize">Fabric</label>
                     <select name="" id="" value={slide.data?.info?.find((item) => item.name === "fabric").value}
                         onChange={(e) => {
                             updateField("fabric", e.target.value);
@@ -173,7 +194,7 @@ const SpecSheet = ({ page }) => {
                                 type="text"
                                 value={slide.data?.info?.find((item) => item.name === field.name).name}
                                 onChange={(e) => updateInfoField(page, field.name, field.value, { "name": e.target.value })}
-                                className="form__label"
+                                className="form__label capitalize"
                                 placeholder={field.name}
                                 required
                             />

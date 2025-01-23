@@ -16,7 +16,8 @@ export const TechPackProvider = ({ children }) => {
     });
     const [techPackData, setTechPackData] = useState({
         designer: JSON.parse(localStorage.getItem('user')).Name || "",
-        styleNo: "BR-00-00",
+        styleNo: "",
+        collection: "",
         state: "Sample",
         gender: "",
         category: "",
@@ -28,43 +29,43 @@ export const TechPackProvider = ({ children }) => {
                 "fabricColorImages": [
                     {
                         "position": 0,
-                        "src": "Pantone.jpg"
+                        "src": ""
                     },
                     {
                         "position": 1,
-                        "src": "Pantone.jpg"
+                        "src": ""
                     },
                     {
                         "position": 2,
-                        "src": "Pantone.jpg"
+                        "src": ""
                     }
                 ],
                 "threadColorImages": [
                     {
                         "position": 0,
-                        "src": "Pantone.jpg"
+                        "src": ""
                     },
                     {
                         "position": 1,
-                        "src": "Pantone.jpg"
+                        "src": ""
                     },
                     {
                         "position": 2,
-                        "src": "Pantone.jpg"
+                        "src": ""
                     }
                 ],
                 "images": [
                     {
                         "position": 0,
-                        "src": "BRMS04FRONT.jpg"
+                        "src": ""
                     },
                     {
                         "position": 1,
-                        "src": "Front.jpg"
+                        "src": ""
                     },
                     {
                         "position": 2,
-                        "src": "BRMS04BACK.jpg"
+                        "src": ""
                     }
                 ]
             },
@@ -78,7 +79,7 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "1",
                         "name": "styleNo",
-                        "value": "BR-00-00"
+                        "value": ""
                     },
                     {
                         "position": "1",
@@ -88,7 +89,7 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "2",
                         "name": "fabricColor",
-                        "value": "Bright White (11-0601 TP)"
+                        "value": ""
                     },
                     {
                         "position": "3",
@@ -98,42 +99,42 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "4",
                         "name": "state",
-                        "value": "Development"
+                        "value": "Sample"
                     },
                     {
                         "position": "4",
                         "name": "fit",
-                        "value": "Oversize"
+                        "value": ""
                     },
                     {
                         "position": "Last",
                         "name": "trim",
-                        "value": "Silicon label, Wash care label, Size label, Main label, 2X1 Rib, 1x1 Rib, Hang tag, Sewing thread"
+                        "value": ""
                     },
                     {
                         "position": "Last",
                         "name": "fabric",
-                        "value": "96% supima cotton, 4% spandex (elastane)(340gsm) loop knit, mild brushing back side (soft hand feel) (all type of fabrics should be treated with remazol dye only)"
+                        "value": ""
                     },
                     {
                         "position": "Last",
                         "name": "description",
-                        "value": "Centre front screen print + sleeve screen print + centre back silicon tag."
+                        "value": ""
                     },
                     {
                         "position": "Last",
                         "name": "note",
-                        "value": "Use water based ink."
+                        "value": ""
                     },
                     {
                         "position": "5",
                         "name": "style",
-                        "value": "Sweatshirt"
+                        "value": ""
                     },
                     {
                         "position": "6",
                         "name": "category",
-                        "value": "Top"
+                        "value": ""
                     },
                     {
                         "position": "3",
@@ -143,7 +144,7 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "3",
                         "name": "ratio",
-                        "value": "1:1:1:1"
+                        "value": ""
                     }
                 ]
             }
@@ -156,37 +157,37 @@ export const TechPackProvider = ({ children }) => {
                 "artworkPlacementSheet": [
                     {
                         "sNo": 1,
-                        "placement": "Front",
-                        "technique": "Flock",
-                        "color": "#FFFFFF #FFFFFF #FFFFFF",
+                        "placement": "",
+                        "technique": "",
+                        "color": "",
                         "artworkimage": [
                             {
                                 "position": 0,
-                                "src": "ArtWork.jpg"
+                                "src": ""
                             }
                         ],
                         "placementimage": [
                             {
                                 "position": 0,
-                                "src": "placement.jpg"
+                                "src": ""
                             }
                         ]
                     },
                     {
                         "sNo": 2,
-                        "placement": "Front",
-                        "technique": "Flock",
-                        "color": "#FFFFFF #FFFFFF #FFFFFF",
+                        "placement": "",
+                        "technique": "",
+                        "color": "",
                         "artworkimage": [
                             {
                                 "position": "0",
-                                "src": "ArtWork.jpg"
+                                "src": ""
                             }
                         ],
                         "placementimage": [
                             {
                                 "position": "0",
-                                "src": "placement.jpg"
+                                "src": ""
                             }
                         ]
                     }
@@ -201,7 +202,7 @@ export const TechPackProvider = ({ children }) => {
                 "images": [
                     {
                         "position": 0,
-                        "src": "artworksheet.jpg"
+                        "src": ""
                     }
                 ]
             }
@@ -215,7 +216,7 @@ export const TechPackProvider = ({ children }) => {
                 "images": [
                     {
                         "position": 0,
-                        "src": "SiliconLabelSheet.jpg"
+                        "src": ""
                     }
                 ]
             }
