@@ -34,10 +34,9 @@ const SpecSheet = ({ page }) => {
     }, []);
 
 
-    const { getSlideByPage ,techPackData} = useTechPack();
+    const { getSlideByPage } = useTechPack();
 
     const slide = getSlideByPage(page);
-    const collection = techPackData(page);
 
     const { addInfoField, updateInfoField, deleteInfoField, updateField } = useTechPack();
 

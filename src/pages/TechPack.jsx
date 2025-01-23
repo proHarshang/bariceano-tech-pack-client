@@ -15,11 +15,16 @@ const TechPack = () => {
   const location = useLocation();
   const { techPackData, updateField, addSlide, addSlideAtIndex, getMaxPageNumber, submitTechPack, resetTechPack, isAdding, submitStatus } = useTechPack();
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
+
   const [construction, setConstructionSheets] = useState([]);
   const [trims, setTrims] = useState([]);
   const [requirements, setRequirements] = useState([]);
   const [finishing, setFinishing] = useState([]);
   const [sizecharts, setSizeCharts] = useState([]);
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedPage, setSelectedPage] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(null);
 
   useEffect(() => {
     const fetchAllSetting = async () => {
@@ -80,10 +85,6 @@ const TechPack = () => {
       });
     }
   }, [selectedLabels, currentCategory, currentSubCategory, construction, requirements, finishing, sizecharts, trims,]);
-
-  const [showPopup, setShowPopup] = useState(false);
-  const [selectedPage, setSelectedPage] = useState(null);
-  const [selectedIndex, setSelectedIndex] = useState(null);
 
   const getType = (label) => {
     switch (label) {
