@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import LayoutSelection from '../components/LayoutSelection';
 import SpecSheet from '../components/SpecSheet';
 import ArtworkPlacementSheet from '../components/ArtworkPlacementSheet';
@@ -25,6 +25,8 @@ const TechPack = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPage, setSelectedPage] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
+
+  const hasRun = useRef(false)
 
   useEffect(() => {
     const fetchAllSetting = async () => {
@@ -55,23 +57,28 @@ const TechPack = () => {
       updateField("category", currentCategory);
       updateField("designer", JSON.parse(localStorage.getItem('user')).Name);
 
+      // if (hasRun.current) return;
+
       const constructionMaterial = { "name": "Construction Sheet", "images": construction.filter(item => item.name === currentCategory).map(item => item.images).flat() };
       const requirementsMaterial = { "name": "Requirements", "images": requirements.filter(item => item.name === currentCategory).map(item => item.images).flat() };
       const finishingMaterial = { "name": "Finishing", "images": finishing.filter(item => item.name === currentCategory).map(item => item.images).flat() };
       const sizechartsMaterial = { "name": "Size Charts", "images": sizecharts.filter(item => item.gender === currentSubCategory && item.category === currentCategory).map(item => item.images).flat() };
       const trimsMaterial = { "name": "Trims", "images": trims.filter(item => selectedLabels.includes(item.name)).map(item => item.images).flat() }
 
-      console.log([constructionMaterial, requirementsMaterial, finishingMaterial, sizechartsMaterial, trimsMaterial]);
+      console.log("new trims-", trims);
+
+      console.log("old trims-", [trimsMaterial]);
 
       let currentPage = getMaxPageNumber(); // Get the current max page number
 
-      [constructionMaterial, requirementsMaterial, finishingMaterial, sizechartsMaterial, trimsMaterial].forEach(label => {
-        label.images.map(img => {
+      [constructionMaterial, sizechartsMaterial].forEach(label => {
+        label.images.forEach(img => {
+          console.log(label.name, img.src)
           currentPage += 1;
           addSlide({
             "page": currentPage,
             "name": label.name,
-            "type": getType(label),
+            "type": getType(label.name),
             "data": {
               "images": [
                 {
@@ -83,8 +90,47 @@ const TechPack = () => {
           });
         })
       });
+      trims.forEach(label => {
+        label.images.forEach(img => {
+          console.log(label.name, img.src)
+          currentPage += 1;
+          addSlide({
+            "page": currentPage,
+            "name": label.name,
+            "type": getType(label.name),
+            "data": {
+              "images": [
+                {
+                  "position": 0,
+                  "src": img.src
+                }
+              ]
+            }
+          });
+        })
+      });
+      [finishingMaterial, requirementsMaterial].forEach(label => {
+        label.images.forEach(img => {
+          console.log(label.name, img.src)
+          currentPage += 1;
+          addSlide({
+            "page": currentPage,
+            "name": label.name,
+            "type": getType(label.name),
+            "data": {
+              "images": [
+                {
+                  "position": 0,
+                  "src": img.src
+                }
+              ]
+            }
+          });
+        })
+      });
+      hasRun.current = true
     }
-  }, [selectedLabels, currentCategory, currentSubCategory, construction, requirements, finishing, sizecharts, trims,]);
+  }, [selectedLabels, currentCategory, currentSubCategory, construction, requirements, finishing, sizecharts, trims]);
 
   const getType = (label) => {
     switch (label) {
