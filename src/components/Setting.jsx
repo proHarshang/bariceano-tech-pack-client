@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { LiaSaveSolid } from "react-icons/lia";
 import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, fabricEdit, fabricAdd, fabricDelete, collectionEdit, collectionAdd, collectionDelete } from "../API/TechPacks";
 
 export default function Setting() {
 
+    // Fetch All Data Logic Start
     const [categories, setCategories] = useState([]);
     const [genders, setGenders] = useState([]);
     const [sizecharts, setSizeCharts] = useState([]);
@@ -37,9 +37,10 @@ export default function Setting() {
         };
         fetchAllSetting();
     }, []);
+    // Fetch All data Logic Over
 
-    console.log("collection", collections)
-    // Category
+
+    // Category Logic start
     const [editedCategory, setEditedCategory] = useState('');
     const [showCategoryPopup, setShowCategoryPopup] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -95,7 +96,10 @@ export default function Setting() {
         setLoading(false);
     };
 
-    // ----------------------------------
+    // Category Logic Over
+
+
+    // Gender Logic Start
 
     const [editedGender, setEditedGender] = useState('');
     const [showGenderPopup, setShowGenderPopup] = useState(false);
@@ -151,30 +155,10 @@ export default function Setting() {
         setLoading(false);
     };
 
-    // ----------------------------------
+    // Gender Logic Over
 
 
-    const handleTrimsSave = async () => {
-        const trimData = {
-            name: trimsFormData.name, // Name entered in the popup
-            images: trimsFormData.images.map((image, index) => ({
-                position: index,
-                file: image.file,
-            })),
-        };
-
-        try {
-            await trimAdd(trimData);
-            alert("Trim added successfully!");
-            setTrimsPopup({ visible: false, id: null });
-            setTrimsFormData({ name: "", images: [] });
-            // Optionally refetch the trims list
-        } catch (error) {
-            alert(error.message || "Failed to add trim");
-        }
-    };
-
-
+    // Sizechart Logic Start
     const [selectedOption, setSelectedOption] = useState("");
     const [formValues, setFormValues] = useState({
         name: '',
@@ -187,13 +171,11 @@ export default function Setting() {
     const [isEditing, setIsEditing] = useState(false);
     const [editedOption, setEditedOption] = useState('');
     const [editedImage, setEditedImage] = useState(null);
-
     const options = sizecharts.map(item => item.name);
     const images = sizecharts.reduce((acc, item) => {
         acc[item.name] = item.images?.src || "";  // Default to empty string if no image found
         return acc;
     }, {});
-
     const { addSizeChart, success, error } = useAddSizeChart();
     const { editSizeChart, } = useEditSizeChart();
     const { deleteSizeChart } = useDeleteSizeChart();
@@ -207,8 +189,6 @@ export default function Setting() {
         setImageFile(file);  // Store the new image file temporarily
         setEditedImage(null); // Clear the existing image preview
     };
-
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -275,7 +255,6 @@ export default function Setting() {
         }
     };
 
-
     const handleDelete = async () => {
         if (selectedOption) {
             const confirmed = window.confirm("Are you sure you want to delete this size chart?");
@@ -287,7 +266,6 @@ export default function Setting() {
             alert("Please select a size chart to delete.");
         }
     };
-
 
     const handleCancelEdit = () => {
         // Close the editing form without applying changes
@@ -303,8 +281,10 @@ export default function Setting() {
     const handleCancelAddOption = () => {
         setIsAdding(false); // Close the "add option" modal
     };
+    // Sizechart Logic Over
 
 
+    // Trims Logic Start
     const [trimsPopup, setTrimsPopup] = useState({ visible: false, id: null });
     const [trimsFormData, setTrimsFormData] = useState({
         name: '',
@@ -313,6 +293,26 @@ export default function Setting() {
     const handleTrimsAdd = () => {
         setTrimsPopup({ visible: true, id: null });
         setTrimsFormData({ name: '', images: [] }); // Initialize with empty array
+    };
+
+    const handleTrimsSave = async () => {
+        const trimData = {
+            name: trimsFormData.name, // Name entered in the popup
+            images: trimsFormData.images.map((image, index) => ({
+                position: index,
+                file: image.file,
+            })),
+        };
+
+        try {
+            await trimAdd(trimData);
+            alert("Trim added successfully!");
+            setTrimsPopup({ visible: false, id: null });
+            setTrimsFormData({ name: "", images: [] });
+            // Optionally refetch the trims list
+        } catch (error) {
+            alert(error.message || "Failed to add trim");
+        }
     };
 
     const { deleteTrims, errorTrims } = useDeleteTrims();
@@ -327,7 +327,10 @@ export default function Setting() {
             setTrims((prevTrims) => prevTrims.filter((trim) => trim._id !== id));
         }
     };
+    // Trims Logic Over
 
+
+    // Requirment Parameter Start
     const [parameters, setParameters] = useState([
         { id: 1, name: 'T-shirt', image: [] },
         { id: 2, name: 'Sweatshirt', image: [] },
@@ -365,7 +368,11 @@ export default function Setting() {
         setParametersPopup({ visible: false, id: null });
         setFormData({ name: '', images: [] });
     };
+    // Requirment Parameter Over
 
+
+
+    // finishing Logic Start
     const [finishingData, setFinishingData] = useState({ name: '', images: [] });
 
     const [finishingpopup, setFinishingPopup] = useState({ visible: false, id: null });
@@ -397,9 +404,10 @@ export default function Setting() {
         setFinishingPopup({ visible: false, id: null });
         setFinishingData({ name: '', images: [] });
     };
+    // finishing Logic Over
 
 
-    // Fabric
+    // Fabric Logic Start
     const [editedFabric, setEditedFabric] = useState('');
     const [showFabricPopup, setShowFabricPopup] = useState(false);
     const [loadingFabric, setLoadingFabric] = useState(false);
@@ -450,19 +458,19 @@ export default function Setting() {
         }
         setLoadingFabric(false);
     };
+    // Fabric Logic Over
 
-    // Collection State
+
+    // Collection Logic Start
     const [editedCollection, setEditedCollection] = useState('');
     const [showCollectionPopup, setShowCollectionPopup] = useState(false);
     const [loadingCollection, setLoadingCollection] = useState(false);
 
-    // Open Popup to Add New Collection
     const handleAddCollection = () => {
         setEditedCollection(''); // Clear any previously entered data
         setShowCollectionPopup(true);
     };
 
-    // Edit an Existing Collection
     const handleEditCollection = async (collection) => {
         const newCollectionName = prompt('Enter the new collection name:', collection);
 
@@ -485,7 +493,6 @@ export default function Setting() {
         }
     };
 
-    // Delete a Collection
     const handleDeleteCollection = async (collection) => {
         const confirmDelete = window.confirm(
             `Are you sure you want to delete the collection "${collection}"?`
@@ -510,7 +517,6 @@ export default function Setting() {
         }
     };
 
-    // Save a New Collection
     const handleSaveNewCollection = async (e) => {
         e.preventDefault();
         setLoadingCollection(true);
@@ -539,10 +545,13 @@ export default function Setting() {
             setLoadingCollection(false);
         }
     };
+    // Collection Logic Over
 
 
     return (
         <section className="container mx-auto">
+
+            {/* Category & Gender  */}
             <div className="border-b p-10 flex flex-col gap-10">
                 <div>
                     <div className="flex gap-10 pb-5">
@@ -799,6 +808,7 @@ export default function Setting() {
 
             </div>
 
+            {/* sizeChart */}
             <div className="border-b p-10 space-y-10">
                 <div>
                     <div className="flex gap-10 pb-5">
@@ -1087,6 +1097,7 @@ export default function Setting() {
                 </div>
             </div>
 
+            {/* Construction Sheet */}
             <div className="border-b p-10 space-y-10">
                 <div>
                     <h1 className="font-bold text-xl mb-4">Construction Sheet</h1>
@@ -1184,6 +1195,7 @@ export default function Setting() {
                 </div>
             </div>
 
+            {/* Trims */}
             <div className="border-b p-10 space-y-10">
                 <div>
                     <div>
@@ -1329,6 +1341,7 @@ export default function Setting() {
                 </div>
             </div>
 
+            {/* Required Parameters */}
             <div className="border-b p-10 space-y-10">
                 <div>
                     <div className="flex gap-10">
@@ -1466,6 +1479,7 @@ export default function Setting() {
                 </div>
             </div>
 
+            {/* finishing */}
             <div className="border-b p-10 space-y-10">
                 <div>
                     <div className="flex gap-10">
@@ -1602,6 +1616,7 @@ export default function Setting() {
                 </div>
             </div>
 
+            {/* Fabric */}
             <div className="border-b p-10 flex flex-col gap-10">
                 <div>
                     <div className="flex gap-10 pb-5">
@@ -1733,8 +1748,7 @@ export default function Setting() {
                 </div>
             </div>
 
-
-
+            {/* collection */}
             <div className="border-b p-10 flex flex-col gap-10">
                 <div>
                     <div className="flex gap-10 pb-5">
@@ -1761,7 +1775,7 @@ export default function Setting() {
                                 <div className="hidden gap-1 group-hover:flex absolute right-0 bottom-0 ml-2 p-3">
                                     {/* Edit Button */}
                                     <button onClick={() => handleEditCollection(collection)}>
-                                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
                                                 d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
                                                 stroke="#0C2F2F"
