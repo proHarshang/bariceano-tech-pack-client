@@ -24,8 +24,8 @@ const TechPackPdfGenerator = (data) => {
     function headerSection(pageNumber, pageName) {
         pdf.setFontSize(12);
         pdf.setFont('helvetica', 'bold');
+        pdf.setTextColor(0, 0, 0);
         pdf.text('BARISCEANO', 10, 8);
-
         pdf.setFont('helvetica', 'normal');
         pdf.text(`${pageName}`, 10, 14);
 
@@ -52,6 +52,7 @@ const TechPackPdfGenerator = (data) => {
         const bottomLineY = secondColorImgY + colorImgHeight + 64;
         pdf.line(0, bottomLineY, pageWidth, bottomLineY);
         pdf.setFontSize(8);
+        pdf.setTextColor(0, 0, 0);
         pdf.setFont('helvetica', 'normal');
         const leftMargin = 10;
         const rightMargin = 10;
@@ -183,7 +184,7 @@ const TechPackPdfGenerator = (data) => {
                 const largeImageRightX = centerX + largeImageWidth + spacing - largeImageWidth / 2;
 
                 // Adding the first three main images in sorted order
-                if (Layout2[0].data.images.length > 0) {
+                if (Layout2[0] && Layout2[0].data.images.length > 0 && Layout2[0].data.images[0].src) {
                     pdf.addImage(
                         `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`,
                         "png",
@@ -193,7 +194,7 @@ const TechPackPdfGenerator = (data) => {
                         largeImageHeight
                     );
                 }
-                if (Layout2[0].data.images.length > 1) {
+                if (Layout2[0] && Layout2[0].data.images.length > 1 && Layout2[0].data.images[1].src) {
                     pdf.addImage(
                         `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[1].src}`,
                         "png",
@@ -203,7 +204,7 @@ const TechPackPdfGenerator = (data) => {
                         largeImageHeight
                     );
                 }
-                if (Layout2[0].data.images.length > 2) {
+                if (Layout2[0] && Layout2[0].data.images.length > 2 && Layout2[0].data.images[2].src) {
                     pdf.addImage(
                         `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[2].src}`,
                         "png",
@@ -222,7 +223,7 @@ const TechPackPdfGenerator = (data) => {
 
                 // Adding thread color images in sorted order
                 Layout2[0].data.fabricColorImages.forEach((image, index) => {
-                    pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`, "JPG", centerX - spacing - colorImageWidth - 55 + (index * (colorImageWidth + 5)), colorTopMargin, colorImageWidth, colorImageHeight);
+                    pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`, "JPEG", centerX - spacing - colorImageWidth - 55 + (index * (colorImageWidth + 5)), colorTopMargin, colorImageWidth, colorImageHeight);
                 });
 
                 // Fabric color section
@@ -230,7 +231,7 @@ const TechPackPdfGenerator = (data) => {
 
                 // Adding fabric color images in sorted order
                 Layout2[0].data.fabricColorImages.forEach((image, index) => {
-                    pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`, "JPG", centerX + spacing + colorImageWidth - 35 + (index * (colorImageWidth + 5)), colorTopMargin, colorImageWidth, colorImageHeight);
+                    pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`, "JPEG", centerX + spacing + colorImageWidth - 35 + (index * (colorImageWidth + 5)), colorTopMargin, colorImageWidth, colorImageHeight);
                 });
 
             } else if (Layout3[0]?.type === "Layout3") {
@@ -391,7 +392,7 @@ const TechPackPdfGenerator = (data) => {
 
             footerSection();
 
-            if (ArtworkPlacementSheet[0].data.artworkPlacementSheet?.length > 0) {
+            if (ArtworkPlacementSheet[0] && ArtworkPlacementSheet[0].data.artworkPlacementSheet?.length > 0) {
                 pdf.addPage();
 
                 // Artwork placement sheet header
@@ -581,14 +582,12 @@ const TechPackPdfGenerator = (data) => {
 
             const basePath = process.env.REACT_APP_API_URL;
 
-            const siliconLabelSheet = SiliconLabel[0].data;
-
             // Check if siliconLabelSheet is valid
-            if (siliconLabelSheet && siliconLabelSheet.images && siliconLabelSheet.images.length > 0) {
+            if (SiliconLabel[0] && SiliconLabel[0].data.images && SiliconLabel[0].data.images.length > 0) {
                 // Sort images by position
-                siliconLabelSheet.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
+                SiliconLabel[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
 
-                siliconLabelSheet.images.forEach((image, index) => {
+                SiliconLabel[0].data.images.forEach((image, index) => {
                     headerSection(SiliconLabel[0].page, SiliconLabel[0].name);
 
                     if (index > 0) {
@@ -598,7 +597,7 @@ const TechPackPdfGenerator = (data) => {
 
                     if (index === 0) {
                         pdf.setFontSize(16);
-                        pdf.text(siliconLabelSheet.title, 20, 30); // Title text with a margin of 20 from the left and 30 from the top
+                        pdf.text(SiliconLabel[0]?.data?.title, 20, 30); // Title text with a margin of 20 from the left and 30 from the top
                     }
 
                     // Add the image
@@ -661,6 +660,7 @@ const TechPackPdfGenerator = (data) => {
 
         } catch (error) {
             alert("Something Went Wrong!")
+            console.log(error)
         } finally {
             setIsLoading(false)
         }

@@ -16,7 +16,7 @@ const Layout1 = ({ page }) => {
                     <div className='w-full h-[140px] mb-12'>
                         <h1 className='mb-2'>Fabric Colour</h1>
                         <div className='rounded-2xl h-full w-full flex items-center justify-center'>
-                            {slide.data?.fabricColorImages.find((item) => item.position === 0) ? (
+                            {slide.data?.fabricColorImages.find((item) => item.position === 0).src ? (
                                 <img
                                     onClick={() => setOpenPopupId(`fabricColorImages-0`)}
                                     src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.fabricColorImages.find((item) => item.position === 0).src}`}
@@ -24,8 +24,8 @@ const Layout1 = ({ page }) => {
                                     className='object-contain h-full w-full rounded-2xl cursor-pointer'
                                 />
                             ) : (
-                                <label className='flex flex-col text-sm text-center items-center justify-center w-full h-full cursor-pointer'>
-                                    <button type='button' onClick={() => setOpenPopupId(`fabricColorImages-0`)}>Add</button>
+                                <label className='flex flex-col text-sm text-center items-center justify-center w-full h-full cursor-pointer bg-[#FCFCFC] rounded-2xl text-[#DFDFDF] text-wrap px-3 border-2 border-dashed'>
+                                    <button type='button' onClick={() => setOpenPopupId(`fabricColorImages-0`)}>Upload an image</button>
                                 </label>
                             )}
                         </div>
@@ -33,7 +33,7 @@ const Layout1 = ({ page }) => {
                     <div className='w-full h-[140px]'>
                         <h1 className='mb-2'>Thread Colour</h1>
                         <div className='rounded-2xl h-full w-full flex items-center justify-center'>
-                            {slide.data?.threadColorImages.find((item) => item.position === 0) ? (
+                            {slide.data?.threadColorImages.find((item) => item.position === 0).src ? (
                                 <img
                                     onClick={() => setOpenPopupId(`threadColorImages-0`)}
                                     src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.threadColorImages.find((item) => item.position === 0).src}`}
@@ -41,15 +41,15 @@ const Layout1 = ({ page }) => {
                                     className='object-contain h-full w-full rounded-2xl cursor-pointer'
                                 />
                             ) : (
-                                <label className='flex flex-col text-center items-center justify-center w-full h-full cursor-pointer'>
-                                    <button type='button' onClick={() => setOpenPopupId(`threadColorImages-0`)}>Add</button>
+                                <label className='flex flex-col text-center items-center justify-center w-full h-full cursor-pointer bg-[#FCFCFC] border-2 border-dashed text-[#DFDFDF] rounded-2xl text-[#DFDFDF] text-wrap px-3'>
+                                    <button type='button' onClick={() => setOpenPopupId(`threadColorImages-0`)}>Upload an image</button>
                                 </label>
                             )}
                         </div>
                     </div>
                 </div>
                 <div className='w-[30%] h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
-                    {slide.data?.images[0] ? (
+                    {slide.data?.images[0].src ? (
                         <img
                             onClick={() => setOpenPopupId(`images-0`)}
                             src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.images[0].src}`}
@@ -57,13 +57,13 @@ const Layout1 = ({ page }) => {
                             className='object-fill w-fit h-full rounded-2xl cursor-pointer'
                         />
                     ) : (
-                        <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
-                            <button type='button' onClick={() => setOpenPopupId(`images-0`)}>Add</button>
+                        <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer bg-[#FCFCFC] border-2 border-dashed text-[#DFDFDF] rounded-2xl'>
+                            <button type='button' onClick={() => setOpenPopupId(`images-0`)}>Upload an image</button>
                         </label>
                     )}
                 </div>
                 <div className='w-[30%] cursor-pointer h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
-                    {slide.data?.images[1] ? (
+                    {slide.data?.images[1].src ? (
                         <img
                             onClick={() => setOpenPopupId(`images-1`)}
                             src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.images[1].src}`}
@@ -71,14 +71,14 @@ const Layout1 = ({ page }) => {
                             className='object-fill w-fit h-full rounded-2xl cursor-pointer'
                         />
                     ) : (
-                        <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
-                            <button type='button' onClick={() => setOpenPopupId(`images-1`)}>Add</button>
+                        <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer bg-[#FCFCFC] border-2 border-dashed text-[#DFDFDF] rounded-2xl'>
+                            <button type='button' onClick={() => setOpenPopupId(`images-1`)}>Upload an image</button>
                         </label>
                     )}
                 </div>
             </div>
             {/* Image Selector Popup */}
-            {["fabricColorImages-0", "threadColorImages-0", "images-0","images-1"].map((elem) => {
+            {["fabricColorImages-0", "threadColorImages-0", "images-0", "images-1"].map((elem) => {
                 return <ImageSelectorPopup
                     key={elem}
                     isOpen={openPopupId === elem}
