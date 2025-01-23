@@ -29,43 +29,43 @@ export const TechPackProvider = ({ children }) => {
                 "fabricColorImages": [
                     {
                         "position": 0,
-                        "src": ""
+                        "src": "placeholder.png"
                     },
                     {
                         "position": 1,
-                        "src": ""
+                        "src": "placeholder.png"
                     },
                     {
                         "position": 2,
-                        "src": ""
+                        "src": "placeholder.png"
                     }
                 ],
                 "threadColorImages": [
                     {
                         "position": 0,
-                        "src": ""
+                        "src": "placeholder.png"
                     },
                     {
                         "position": 1,
-                        "src": ""
+                        "src": "placeholder.png"
                     },
                     {
                         "position": 2,
-                        "src": ""
+                        "src": "placeholder.png "
                     }
                 ],
                 "images": [
                     {
                         "position": 0,
-                        "src": ""
+                        "src": "placeholder.png"
                     },
                     {
                         "position": 1,
-                        "src": ""
+                        "src": "placeholder.png"
                     },
                     {
                         "position": 2,
-                        "src": ""
+                        "src": "placeholder.png"
                     }
                 ]
             },
@@ -216,7 +216,7 @@ export const TechPackProvider = ({ children }) => {
                 "images": [
                     {
                         "position": 0,
-                        "src": ""
+                        "src": "default.png"
                     }
                 ]
             }
