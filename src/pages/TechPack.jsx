@@ -14,7 +14,7 @@ const TechPack = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { techPackData, updateField, addSlide, addSlideAtIndex, getMaxPageNumber, submitTechPack, resetTechPack, isAdding, submitStatus, createUpdateTechPackSetup } = useTechPack();
+  const { techPackData, updateField, addSlide, addSlideAtIndex, isUpdating, updateTechPack, getMaxPageNumber, updateMode, submitTechPack, resetTechPack, isAdding, submitStatus, createUpdateTechPackSetup } = useTechPack();
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
 
   const [construction, setConstructionSheets] = useState([]);
@@ -94,8 +94,6 @@ const TechPack = () => {
           })
         });
         trims.filter(item => selectedLabels.includes(item.name)).forEach(label => {
-          console.log("trims", trims)
-          console.log("selectedLabels", selectedLabels)
           label.images.forEach(img => {
             currentPage += 1;
             addSlide({
@@ -253,15 +251,24 @@ const TechPack = () => {
         )}
         <div className="flex w-[12%]  flex-col justify-center gap-5 mb-10 fixed right-4 top-[80%] transform -translate-y-1/4">
 
-
-          <button
-            type="button"
-            className={`text-white bg-black text-sm px-6 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 ${isAdding ? "animate-spin" : ""}`}
-            onClick={submitTechPack}
-            disabled={isAdding}
-          >
-            Save
-          </button>
+          {updateMode === "false" ?
+            <button
+              type="button"
+              className={`text-white bg-black text-sm px-6 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 ${isAdding ? "animate-spin" : ""}`}
+              onClick={submitTechPack}
+              disabled={isAdding}
+            >
+              Save
+            </button> :
+            <button
+              type="button"
+              className={`text-white bg-black text-sm px-6 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 ${isUpdating ? "animate-spin" : ""}`}
+              onClick={updateTechPack}
+              disabled={isUpdating}
+            >
+              Update
+            </button>
+          }
 
           <button
             type="button"

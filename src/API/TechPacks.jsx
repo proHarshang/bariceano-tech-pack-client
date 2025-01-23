@@ -49,6 +49,19 @@ const addTechPacks = async (techPackData) => {
     return response.json();
 }
 
+const updateTechPacks = async (id, techPackData) => {
+    const response = await fetch(`${apiURL}/design/techpacks/update/${id}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'api-Key': apiKey,
+        },
+        body: JSON.stringify(techPackData),
+    });
+
+    return response.json();
+}
+
 const getUploadedImage = async () => {
 
     const response = await fetch(`${apiURL}/design/techpacks/images`, {
@@ -757,4 +770,4 @@ export const collectionDelete = async (name) => {
 
 
 
-export { getTechPacks, getTechPacksById, addTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, getUploadedImage, useUploadImage }
+export { getTechPacks, getTechPacksById, addTechPacks, updateTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, getUploadedImage, useUploadImage }
