@@ -14,7 +14,7 @@ const TechPack = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { techPackData, updateField, addSlide, addSlideAtIndex, setUpdateMode, getMaxPageNumber, submitTechPack, resetTechPack, isAdding, submitStatus, createUpdateTechPackSetup } = useTechPack();
+  const { techPackData, updateField, addSlide, addSlideAtIndex, getMaxPageNumber, submitTechPack, resetTechPack, isAdding, submitStatus, createUpdateTechPackSetup } = useTechPack();
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
 
   const [construction, setConstructionSheets] = useState([]);
@@ -47,19 +47,20 @@ const TechPack = () => {
   };
 
   useEffect(() => {
+    fetchAllSetting();
+  }, [])
+
+
+  useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const id = queryParams.get('id');
 
     if (id) {
       createUpdateTechPackSetup(id)
-      setUpdateMode("on")
     } else {
       if (!selectedLabels || !currentCategory || !currentSubCategory) {
         navigate('/', { replace: true });
       } else {
-        fetchAllSetting();
-        setUpdateMode("off")
-
         updateField("gender", currentSubCategory);
         updateField("category", currentCategory);
         updateField("designer", JSON.parse(localStorage.getItem('user')).Name);

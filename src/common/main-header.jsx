@@ -112,98 +112,102 @@ const MainHeader = () => {
                         Setting
                     </button>
                 </a>
-                <div className="relative">
 
-                    <button
-                        className={`flex gap-2 invert hover:invert-0 border bg-black text-white items-center text-sm font-bold px-3 py-2 rounded-2xl uppercase`}
-                        onClick={() => handlenew()}
-                    >
-                        <svg
-                            width="13"
-                            height="13"
-                            viewBox="0 0 13 13"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                {location.pathname !== '/tech-pack' && (
+                    <div className="relative">
+
+                        <button
+                            className={`flex gap-2 invert hover:invert-0 border bg-black text-white items-center text-sm font-bold px-3 py-2 rounded-2xl uppercase`}
+                            onClick={() => handlenew()}
                         >
-                            <path d="M6.5 0V13" stroke="white" strokeWidth="2" />
-                            <path d="M0 6.5L13 6.5" stroke="white" strokeWidth="2" />
-                        </svg>
-                        <span>New</span>
-                    </button>
+                            <svg
+                                width="13"
+                                height="13"
+                                viewBox="0 0 13 13"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path d="M6.5 0V13" stroke="white" strokeWidth="2" />
+                                <path d="M0 6.5L13 6.5" stroke="white" strokeWidth="2" />
+                            </svg>
+                            <span>New</span>
+                        </button>
 
 
-                    {showCategories && (
-                        <div className="absolute mt-2 w-48 bg-white border border-gray-300 rounded shadow-md z-[100]">
-                            <div className="p-2 space-y-2">
-                                {menu.map((category) => (
-                                    <div
-                                        key={category}
-                                        className={`p-2 cursor-pointer hover:bg-gray-200 ${currentCategory === category && 'bg-gray-300'}`}
-                                        onClick={() => setCurrentCategory(category)}
-                                    >
-                                        {category}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {currentCategory && (
-                        <div className="absolute mt-2 left-52 w-48 bg-white border border-gray-300 rounded shadow-md z-50">
-                            <div className="p-2 space-y-2">
-                                {subCategories.map((subCategory) => (
-                                    <div
-                                        key={subCategory}
-                                        className={`p-2 cursor-pointer hover:bg-gray-200 ${currentSubCategory === subCategory && 'bg-gray-300'}`}
-                                        onClick={() => setCurrentSubCategory(subCategory)}
-                                    >
-                                        {subCategory}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {currentSubCategory && (
-                        <div className="absolute mt-2 -right-[600px] w-64 bg-white border border-gray-300 rounded shadow-md z-50">
-                            <div className="py-4 space-y-2">
-                                {labels.length > 0 ? (
-                                    labels.map((label) => (
-                                        <React.Fragment key={label}>
-                                            <div className="flex px-4 mb-3 w-full justify-between items-center">
-                                                <label className="text-[#AEAEAE]">{label}</label>
-                                                <input
-                                                    type="checkbox"
-                                                    name="checkbox"
-                                                    checked={selectedLabels.includes(label)} // Check by default
-                                                    onChange={() => handleLabelChange(label)}
-                                                    className="mr-2 w-7 h-7 pl-[1px] bg-slate-200 pointer-events-auto"
-                                                />
-                                            </div>
-                                            <hr className="w-full h-1 !px-0" />
-                                        </React.Fragment>
-                                    ))
-                                ) : (
-                                    <p className="text-gray-500 text-center">No labels available</p>
-                                )}
-                                <div className="flex gap-2 !mt-5 justify-center">
-                                    <button
-                                        className="px-3 py-[2px] text-sm border-2 border-[#868686] rounded-lg"
-                                        onClick={handleClear}
-                                    >
-                                        Clear
-                                    </button>
-                                    <button
-                                        className="bg-black px-3 py-[2px] text-sm text-white rounded-lg"
-                                        onClick={handleApply}
-                                    >
-                                        Apply
-                                    </button>
+                        {showCategories && (
+                            <div className="absolute mt-2 w-48 bg-white border border-gray-300 rounded shadow-md z-[100]">
+                                <div className="p-2 space-y-2">
+                                    {menu.map((category) => (
+                                        <div
+                                            key={category}
+                                            className={`p-2 cursor-pointer hover:bg-gray-200 ${currentCategory === category && 'bg-gray-300'}`}
+                                            onClick={() => setCurrentCategory(category)}
+                                        >
+                                            {category}
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
-                        </div>
-                    )}
-                </div>
+                        )}
+
+                        {currentCategory && (
+                            <div className="absolute mt-2 left-52 w-48 bg-white border border-gray-300 rounded shadow-md z-50">
+                                <div className="p-2 space-y-2">
+                                    {subCategories.map((subCategory) => (
+                                        <div
+                                            key={subCategory}
+                                            className={`p-2 cursor-pointer hover:bg-gray-200 ${currentSubCategory === subCategory && 'bg-gray-300'}`}
+                                            onClick={() => setCurrentSubCategory(subCategory)}
+                                        >
+                                            {subCategory}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {currentSubCategory && (
+                            <div className="absolute mt-2 -right-[600px] w-64 bg-white border border-gray-300 rounded shadow-md z-50">
+                                <div className="py-4 space-y-2">
+                                    {labels.length > 0 ? (
+                                        labels.map((label) => (
+                                            <React.Fragment key={label}>
+                                                <div className="flex px-4 mb-3 w-full justify-between items-center">
+                                                    <label className="text-[#AEAEAE]">{label}</label>
+                                                    <input
+                                                        type="checkbox"
+                                                        name="checkbox"
+                                                        checked={selectedLabels.includes(label)} // Check by default
+                                                        onChange={() => handleLabelChange(label)}
+                                                        className="mr-2 w-7 h-7 pl-[1px] bg-slate-200 pointer-events-auto"
+                                                    />
+                                                </div>
+                                                <hr className="w-full h-1 !px-0" />
+                                            </React.Fragment>
+                                        ))
+                                    ) : (
+                                        <p className="text-gray-500 text-center">No labels available</p>
+                                    )}
+                                    <div className="flex gap-2 !mt-5 justify-center">
+                                        <button
+                                            className="px-3 py-[2px] text-sm border-2 border-[#868686] rounded-lg"
+                                            onClick={handleClear}
+                                        >
+                                            Clear
+                                        </button>
+                                        <button
+                                            className="bg-black px-3 py-[2px] text-sm text-white rounded-lg"
+                                            onClick={handleApply}
+                                        >
+                                            Apply
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
             </div>
             <div className="flex items-center gap-3 pr-10">
                 <CgProfile className="size-9" />
