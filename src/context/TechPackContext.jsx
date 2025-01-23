@@ -23,7 +23,7 @@ export const TechPackProvider = ({ children }) => {
         category: "",
         slides: [{
             "page": 1,
-            "name": "Spac Sheet",
+            "name": "Spec Sheet",
             "type": "Layout2",
             "data": {
                 "fabricColorImages": [
@@ -88,7 +88,7 @@ export const TechPackProvider = ({ children }) => {
                     },
                     {
                         "position": "2",
-                        "name": "fabricColor",
+                        "name": "fabric Color",
                         "value": ""
                     },
                     {
@@ -149,7 +149,7 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "3",
                         "name": "ratio",
-                        "value": ""
+                        "value": "1:1:1:1"
                     }
                 ]
             }
