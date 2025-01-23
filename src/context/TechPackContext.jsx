@@ -225,7 +225,7 @@ export const TechPackProvider = ({ children }) => {
                 const techpack = await getTechPacksById(id);
                 setTechPackData({
                     designer: techpack.data.designer,
-                    styleNo: techpack.data.collection,
+                    styleNo: techpack.data.styleNo,
                     collection: techpack.data.collection,
                     state: techpack.data.state,
                     gender: techpack.data.gender,
@@ -554,7 +554,7 @@ export const TechPackProvider = ({ children }) => {
     const updateTechPack = async () => {
         setIsUpdating(true)
         try {
-            const response = await updateTechPacks(updateMode, techPackData)
+            const response = await addTechPacks(techPackData)
             setSubmitStatus(response)
             console.log("response", response)
             if (response.status === true) {

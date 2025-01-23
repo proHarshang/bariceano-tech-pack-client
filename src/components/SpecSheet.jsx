@@ -14,7 +14,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
         "Production",
     ]);
 
-    const { addInfoField, techPackData, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
+    const { addInfoField, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
 
     const slide = getSlideByPage(page);
 
@@ -70,8 +70,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                             updateField("styleNo", e.target.value);
                             updateInfoField(page, "styleNo", slide.data?.info?.find((item) => item.name === "styleNo").value, { "value": e.target.value })
                         }}
-                        className="form__field"
-                        placeholder=""
+                        className="form__field"                        
                         required
                     />
                 </div>
