@@ -14,6 +14,10 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
         "Production",
     ]);
 
+    const { addInfoField, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
+
+    const slide = getSlideByPage(page);
+
     useEffect(() => {
         const fetchAllSetting = async () => {
             try {
@@ -34,35 +38,15 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
     }, []);
 
     useEffect(() => {
-        updateInfoField(page, "productType", slide.data?.info?.find((item) => item.name === "productType").value, { "value": currentCategory })
-        updateInfoField(page, "trim", slide.data?.info?.find((item) => item.name === "trim").value, { "value": selectedLabels.join(', ') })
-        updateInfoField(page, "collection", slide.data?.info?.find((item) => item.name === "collection").value, { "value": localStorage.getItem("currentCollection") })
-    }, [currentCategory])
-
-
-    const { getSlideByPage } = useTechPack();
-
-    const slide = getSlideByPage(page);
-
-    const { addInfoField, updateInfoField, deleteInfoField, updateField } = useTechPack();
-
-    // const [fields, setFields] = useState([
-    //     { id: 1, name: 'styleNo', label: "STYLE No", type: "text", value: specSheetTable.info.styleNo },
-    //     { id: 2, name: 'gender', label: "Gender", type: "select", options: ["Male", "Female"], value: specSheetTable.info.gender },
-    //     { id: 3, name: 'fabricColor', label: "FABRIC COLOUR", type: "text", value: specSheetTable.info.fabricColor },
-    //     { id: 4, name: 'fit', label: "FIT", type: "select", options: ["Oversize", "Regular"], value: specSheetTable.info.fit },
-    //     { id: 5, name: 'season', label: "SEASON", type: "text", value: specSheetTable.info.season },
-    //     { id: 6, name: 'status', label: "status", type: "select", options: ["Development", "Production", "Selected"], value: specSheetTable.info.status },
-    //     { id: 7, name: 'ratio', label: "RATIO", type: "text", value: specSheetTable.info.ratio },
-    //     { id: 8, name: 'style', label: "Style", type: "select", options: ["Sweat Shirt", "Hoodie", "T shirt"], value: specSheetTable.info.style },
-    //     { id: 9, name: 'trim', label: "TRIM", type: "textarea", value: specSheetTable.info.trim },
-    //     { id: 10, name: 'category', label: "CATEGORY", type: "select", options: ["Top", "Bottom", "Shirt", "T-Shirt"], value: specSheetTable.info.category },
-    //     { id: 11, name: 'fabric', label: "FABRIC", type: "textarea", value: specSheetTable.info.fabric },
-    //     { id: 12, name: 'size', label: "SIZE", type: "text", value: specSheetTable.info.size },
-    //     { id: 13, name: 'description', label: "DESCRIPTION", type: "textarea", value: specSheetTable.info.description },
-    //     { id: 14, name: 'designer', label: "Designer", type: "select", options: ["Harshita", "Ritika"], value: specSheetTable.info.designer },
-    //     { id: 15, name: 'note', label: "NOTE", type: "textarea", value: specSheetTable.info.note },
-    // ]); 
+        console.log("updateMode", updateMode)
+        if (updateMode === "false") {
+            updateInfoField(page, "productType", slide.data?.info?.find((item) => item.name === "productType").value, { "value": currentCategory })
+            updateInfoField(page, "collection", slide.data?.info?.find((item) => item.name === "collection").value, { "value": localStorage.getItem("currentCollection") })
+            updateInfoField(page, "trim", slide.data?.info?.find((item) => item.name === "trim").value, { "value": selectedLabels.join(', ') })
+        } else {
+            return
+        }
+    }, [currentCategory, selectedLabels, updateMode])
 
     return (
         <section className='mx-auto mb-20 pl-7 pr-2'>

@@ -23,6 +23,19 @@ const getTechPacks = async () => {
 
 }
 
+const getTechPacksById = async (id) => {
+
+    const response = await fetch(`${apiURL}/design/techpacks/fetch/${id}`, {
+        method: 'GET',
+        headers: {
+            'api-Key': apiKey,
+        },
+    })
+
+    return response.json();
+
+}
+
 const addTechPacks = async (techPackData) => {
     const response = await fetch(`${apiURL}/design/techpacks/add`, {
         method: "POST",
@@ -32,13 +45,6 @@ const addTechPacks = async (techPackData) => {
         },
         body: JSON.stringify(techPackData),
     });
-
-    // if (!response.ok) {
-    //     if (response.status === 401) {
-    //         return;
-    //     }
-    //     throw new Error('Failed to fetch products data');
-    // }
 
     return response.json();
 }
@@ -751,4 +757,4 @@ export const collectionDelete = async (name) => {
 
 
 
-export { getTechPacks, addTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, getUploadedImage, useUploadImage }
+export { getTechPacks, getTechPacksById, addTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, getUploadedImage, useUploadImage }
