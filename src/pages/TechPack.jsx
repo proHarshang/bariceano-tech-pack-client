@@ -84,8 +84,10 @@ const TechPack = () => {
           });
         })
       });
-      trims.forEach(label => {
-        label.images.forEach(img => {          
+      trims.filter(item => selectedLabels.includes(item.name)).forEach(label => {
+        console.log("trims", trims)
+        console.log("selectedLabels", selectedLabels)
+        label.images.forEach(img => {
           currentPage += 1;
           addSlide({
             "page": currentPage,
