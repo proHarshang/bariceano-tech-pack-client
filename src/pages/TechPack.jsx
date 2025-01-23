@@ -13,7 +13,8 @@ import { fetchAll } from '../API/TechPacks';
 const TechPack = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { techPackData, updateField, addSlide, addSlideAtIndex, getMaxPageNumber, submitTechPack, resetTechPack, isAdding, submitStatus } = useTechPack();
+
+  const { techPackData, updateField, addSlide, addSlideAtIndex, setUpdateMode, getMaxPageNumber, submitTechPack, resetTechPack, isAdding, submitStatus, createUpdateTechPackSetup } = useTechPack();
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
 
   const [construction, setConstructionSheets] = useState([]);
@@ -28,103 +29,112 @@ const TechPack = () => {
 
   const hasRun = useRef(false)
 
-  useEffect(() => {
-    const fetchAllSetting = async () => {
-      try {
-        const data = await fetchAll(); // Use the categoryFetch hook                                    
-        if (data.status) {
-          setConstructionSheets(data.techPack.constructionSheets); // Set the fetched categories
-          setTrims(data.techPack.trims); // Set the fetched categories
-          setRequirements(data.techPack.requirements); // Set the fetched categories
-          setFinishing(data.techPack.finishing); // Set the fetched categories
-          setSizeCharts(data.techPack.sizeCharts); // Set the fetched categories
-        } else {
-          console.error('Failed to fetch categories');
-        }
-      } catch (error) {
-        console.error('Error fetching categories:', error);
+  const fetchAllSetting = async () => {
+    try {
+      const data = await fetchAll(); // Use the categoryFetch hook                                    
+      if (data.status) {
+        setConstructionSheets(data.techPack.constructionSheets); // Set the fetched categories
+        setTrims(data.techPack.trims); // Set the fetched categories
+        setRequirements(data.techPack.requirements); // Set the fetched categories
+        setFinishing(data.techPack.finishing); // Set the fetched categories
+        setSizeCharts(data.techPack.sizeCharts); // Set the fetched categories
+      } else {
+        console.error('Failed to fetch categories');
       }
-    };
-    fetchAllSetting();
-  }, []);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
 
   useEffect(() => {
-    if (!selectedLabels || !currentCategory || !currentSubCategory) {
-      navigate('/', { replace: true });
+    const queryParams = new URLSearchParams(location.search);
+    const id = queryParams.get('id');
+
+    if (id) {
+      createUpdateTechPackSetup(id)
+      setUpdateMode("on")
     } else {
-      updateField("gender", currentSubCategory);
-      updateField("category", currentCategory);
-      updateField("designer", JSON.parse(localStorage.getItem('user')).Name);
-      updateField("collection", localStorage.getItem("currentCollection"));
+      if (!selectedLabels || !currentCategory || !currentSubCategory) {
+        navigate('/', { replace: true });
+      } else {
+        fetchAllSetting();
+        setUpdateMode("off")
 
-      // if (hasRun.current) return;
+        updateField("gender", currentSubCategory);
+        updateField("category", currentCategory);
+        updateField("designer", JSON.parse(localStorage.getItem('user')).Name);
+        updateField("collection", localStorage.getItem("currentCollection"));
 
-      const constructionMaterial = { "name": "Construction Sheet", "images": construction.filter(item => item.name === currentCategory).map(item => item.images).flat() };
-      const requirementsMaterial = { "name": "Requirements", "images": requirements.filter(item => item.name === currentCategory).map(item => item.images).flat() };
-      const finishingMaterial = { "name": "Finishing", "images": finishing.filter(item => item.name === currentCategory).map(item => item.images).flat() };
-      const sizechartsMaterial = { "name": "Size Charts", "images": sizecharts.filter(item => item.gender === currentSubCategory && item.category === currentCategory).map(item => item.images).flat() };
+        // if (hasRun.current) return;
 
-      let currentPage = getMaxPageNumber(); // Get the current max page number
+        const constructionMaterial = { "name": "Construction Sheet", "images": construction.filter(item => item.name === currentCategory).map(item => item.images).flat() };
+        const requirementsMaterial = { "name": "Requirements", "images": requirements.filter(item => item.name === currentCategory).map(item => item.images).flat() };
+        const finishingMaterial = { "name": "Finishing", "images": finishing.filter(item => item.name === currentCategory).map(item => item.images).flat() };
+        const sizechartsMaterial = { "name": "Size Charts", "images": sizecharts.filter(item => item.gender === currentSubCategory && item.category === currentCategory).map(item => item.images).flat() };
 
-      [constructionMaterial, sizechartsMaterial].forEach(label => {
-        label.images.forEach(img => {
-          currentPage += 1;
-          addSlide({
-            "page": currentPage,
-            "name": label.name,
-            "type": getType(label.name),
-            "data": {
-              "images": [
-                {
-                  "position": 0,
-                  "src": img.src
-                }
-              ]
-            }
-          });
-        })
-      });
-      trims.filter(item => selectedLabels.includes(item.name)).forEach(label => {
-        console.log("trims", trims)
-        console.log("selectedLabels", selectedLabels)
-        label.images.forEach(img => {
-          currentPage += 1;
-          addSlide({
-            "page": currentPage,
-            "name": label.name,
-            "type": getType(label.name),
-            "data": {
-              "images": [
-                {
-                  "position": 0,
-                  "src": img.src
-                }
-              ]
-            }
-          });
-        })
-      });
-      [finishingMaterial, requirementsMaterial].forEach(label => {
-        label.images.forEach(img => {
-          currentPage += 1;
-          addSlide({
-            "page": currentPage,
-            "name": label.name,
-            "type": getType(label.name),
-            "data": {
-              "images": [
-                {
-                  "position": 0,
-                  "src": img.src
-                }
-              ]
-            }
-          });
-        })
-      });
-      hasRun.current = true
+        let currentPage = getMaxPageNumber(); // Get the current max page number
+
+        [constructionMaterial, sizechartsMaterial].forEach(label => {
+          label.images.forEach(img => {
+            currentPage += 1;
+            addSlide({
+              "page": currentPage,
+              "name": label.name,
+              "type": getType(label.name),
+              "data": {
+                "images": [
+                  {
+                    "position": 0,
+                    "src": img.src
+                  }
+                ]
+              }
+            });
+          })
+        });
+        trims.filter(item => selectedLabels.includes(item.name)).forEach(label => {
+          console.log("trims", trims)
+          console.log("selectedLabels", selectedLabels)
+          label.images.forEach(img => {
+            currentPage += 1;
+            addSlide({
+              "page": currentPage,
+              "name": label.name,
+              "type": getType(label.name),
+              "data": {
+                "images": [
+                  {
+                    "position": 0,
+                    "src": img.src
+                  }
+                ]
+              }
+            });
+          })
+        });
+        [finishingMaterial, requirementsMaterial].forEach(label => {
+          label.images.forEach(img => {
+            currentPage += 1;
+            addSlide({
+              "page": currentPage,
+              "name": label.name,
+              "type": getType(label.name),
+              "data": {
+                "images": [
+                  {
+                    "position": 0,
+                    "src": img.src
+                  }
+                ]
+              }
+            });
+          })
+        });
+        hasRun.current = true
+      }
     }
-  }, [selectedLabels, currentCategory, currentSubCategory, construction, requirements, finishing, sizecharts, trims]);
+  }, [location.search, selectedLabels, currentCategory, currentSubCategory, construction, requirements, finishing, sizecharts, trims]);
+
 
   const getType = (label) => {
     switch (label) {

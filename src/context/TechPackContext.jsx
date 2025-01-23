@@ -1,5 +1,5 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { addTechPacks } from '../API/TechPacks';
+import { createContext, useState, useContext, useEffect } from 'react';
+import { addTechPacks, getTechPacksById } from '../API/TechPacks';
 import { useNavigate } from 'react-router-dom';
 
 const TechPackContext = createContext();
@@ -10,6 +10,7 @@ export const TechPackProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const [isAdding, setIsAdding] = useState(false);
+    const [updateMode, setUpdateMode] = useState("off");
     const [submitStatus, setSubmitStatus] = useState({
         status: null,
         message: null,
@@ -212,22 +213,45 @@ export const TechPackProvider = ({ children }) => {
                 ]
             }
         },
-        // {
-        //     "page": 6,
-        //     "name": "Silicon Label",
-        //     "type": "SiliconLabel",
-        //     "data": {
-        //         "title": "Silicon Label Details",
-        //         "images": [
-        //             {
-        //                 "position": 0,
-        //                 "src": "default.png"
-        //             }
-        //         ]
-        //     }
-        // }
+            // {
+            //     "page": 6,
+            //     "name": "Silicon Label",
+            //     "type": "SiliconLabel",
+            //     "data": {
+            //         "title": "Silicon Label Details",
+            //         "images": [
+            //             {
+            //                 "position": 0,
+            //                 "src": "default.png"
+            //             }
+            //         ]
+            //     }
+            // }
         ],
     });
+
+    const createUpdateTechPackSetup = async (id) => {
+        try {
+            setUpdateMode("on");
+            console.log("updateMode - ", updateMode)
+            if (id) {
+                const techpack = await getTechPacksById(id);
+                setTechPackData({
+                    designer: techpack.data.designer,
+                    styleNo: techpack.data.collection,
+                    collection: techpack.data.collection,
+                    state: techpack.data.state,
+                    gender: techpack.data.gender,
+                    category: techpack.data.category,
+                    slides: techpack.data.slides
+                });
+            }
+            return;
+        } catch (e) {
+            console.log(e)
+            alert("Something Went Wrong!")
+        }
+    }
 
     // Add a new slide to the slides array
     const addSlide = (newSlide) => {
@@ -568,6 +592,9 @@ export const TechPackProvider = ({ children }) => {
                 techPackData,
                 isAdding,
                 submitStatus,
+                updateMode,
+                setUpdateMode,
+                createUpdateTechPackSetup,
                 updateField,
                 addSlide,
                 deleteSlideByPage,
