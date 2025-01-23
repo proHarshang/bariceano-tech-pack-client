@@ -140,7 +140,7 @@ const TechPack = () => {
       case "Layout3":
         return <LayoutSelection page={page} />
       case "Information":
-        return <SpecSheet page={page} />
+        return <SpecSheet page={page} currentCategory={currentCategory} selectedLabels={selectedLabels} />
       case "ArtworkPlacementSheet":
         return <ArtworkPlacementSheet page={page} />
       case "SiliconLabel":
