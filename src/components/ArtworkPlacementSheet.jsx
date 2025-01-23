@@ -92,10 +92,10 @@ const FormRow = ({ formIndex, page, item }) => {
                             className="w-fit mx-auto h-[126px] object-fill cursor-pointer"
                         />
                     ) : (
-                        <div
+                        <div onClick={() => setOpenPopupId(`artworkimage`)}
                             className="w-full h-[126px] bg-[#F3F3F3] border-dashed border-2 border-gray-400 flex items-center justify-center cursor-pointer"
                         >
-                            <button type='button' onClick={() => setOpenPopupId(`artworkimage`)}>Add</button>
+                            <button type='button'>Add</button>
                         </div>
                     )}
                 </td>
@@ -131,10 +131,10 @@ const FormRow = ({ formIndex, page, item }) => {
                             className="w-fit mx-auto h-[126px] object-fill cursor-pointer"
                         />
                     ) : (
-                        <div
+                        <div onClick={() => setOpenPopupId(`placementimage`)}
                             className="w-full h-[126px] bg-[#F3F3F3] border-dashed border-2 border-gray-400 flex items-center justify-center cursor-pointer"
                         >
-                            <button type='button' onClick={() => setOpenPopupId(`placementimage`)}>Add</button>
+                            <button type='button'>Add</button>
                         </div>
                     )}
                 </td>

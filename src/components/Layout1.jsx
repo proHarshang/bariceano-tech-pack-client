@@ -15,7 +15,7 @@ const Layout1 = ({ page }) => {
                 <div className='flex flex-col h-full'>
                     <div className='w-full h-[140px] mb-12'>
                         <h1 className='mb-2'>Fabric Colour</h1>
-                        <div className='rounded-2xl border-2 border-dashed bg-[#F3F3F3] h-full w-full flex items-center justify-center'>
+                        <div className='rounded-2xl h-full w-full flex items-center justify-center'>
                             {slide.data?.fabricColorImages.find((item) => item.position === 0) ? (
                                 <img
                                     onClick={() => setOpenPopupId(`fabricColorImages-0`)}
@@ -32,7 +32,7 @@ const Layout1 = ({ page }) => {
                     </div>
                     <div className='w-full h-[140px]'>
                         <h1 className='mb-2'>Thread Colour</h1>
-                        <div className='rounded-2xl border-2 border-dashed bg-[#F3F3F3] h-full w-full flex items-center justify-center'>
+                        <div className='rounded-2xl h-full w-full flex items-center justify-center'>
                             {slide.data?.threadColorImages.find((item) => item.position === 0) ? (
                                 <img
                                     onClick={() => setOpenPopupId(`threadColorImages-0`)}
@@ -48,7 +48,7 @@ const Layout1 = ({ page }) => {
                         </div>
                     </div>
                 </div>
-                <div className='w-[30%] border-2 border-dashed bg-[#F3F3F3] h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
+                <div className='w-[30%] h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
                     {slide.data?.images[0] ? (
                         <img
                             onClick={() => setOpenPopupId(`images-0`)}
@@ -62,7 +62,7 @@ const Layout1 = ({ page }) => {
                         </label>
                     )}
                 </div>
-                <div className='w-[30%] cursor-pointer border-2 border-dashed bg-[#F3F3F3] h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
+                <div className='w-[30%] cursor-pointer h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
                     {slide.data?.images[1] ? (
                         <img
                             onClick={() => setOpenPopupId(`images-1`)}

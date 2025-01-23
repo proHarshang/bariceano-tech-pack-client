@@ -25,7 +25,9 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
     }, []);
 
     const filteredImages = images.filter(image =>
-        image.toLowerCase().includes(searchTerm.toLowerCase())
+        image.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        image.toLowerCase() !== 'placeholder.png' &&
+        image.toLowerCase() !== 'default.png'
     );
     const [activePopup, setActivePopup] = useState(null);
 

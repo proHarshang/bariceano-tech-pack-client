@@ -15,7 +15,7 @@ const Layout3 = ({ page }) => {
                 {[0, 1].map((key, index) => (
                     <div
                         key={key}
-                        className='w-[230px] h-[300px] border-2 border-dashed rounded-2xl bg-[#F3F3F3] flex items-center justify-center'
+                        className='w-[230px] h-[300px] rounded-2xl flex items-center justify-center'
                     >
                         {slide.data?.images.find((item) => item.position === key) ? (
                             <img
@@ -35,7 +35,7 @@ const Layout3 = ({ page }) => {
                     <h1>Thread colour</h1>
                     <div className='w-full h-full flex justify-between gap-5'>
                         {[0, 1, 2].map((key, index) => (
-                            <div key={key} className='w-full h-full border-2 border-dashed rounded-2xl bg-[#F3F3F3] flex items-center justify-center'>
+                            <div key={key} className='w-full h-full rounded-2xl flex items-center justify-center'>
                                 {slide.data?.threadColorImages?.find((item) => item.position === key) ? (
                                     <img
                                         onClick={() => setOpenPopupId(`threadColorImages-${key}`)}
@@ -53,7 +53,7 @@ const Layout3 = ({ page }) => {
                     <h1>Fabric colour</h1>
                     <div className='w-full h-full flex justify-between gap-5'>
                         {[0, 1, 2].map((key, index) => (
-                            <div key={index} className='w-full h-full border-2 border-dashed rounded-2xl bg-[#F3F3F3] flex items-center justify-center'>
+                            <div key={index} className='w-full h-full rounded-2xl flex items-center justify-center'>
                                 {slide.data?.fabricColorImages?.find((item) => item.position === key) ? (
                                     <img
                                         onClick={() => setOpenPopupId(`fabricColorImages-${key}`)}
