@@ -5,7 +5,7 @@ function Header({ name, page }) {
 
     return (
         <section className='border-b-2 border-black'>
-            <article className='relative flex items-start justify-between py-5 px-10'>
+            <article className='relative flex items-start justify-between py-5 pb-12 px-10 pr-12'>
                 <div>
                     <h1 className='font-bold'>BARISCEANO</h1>
                     <div className='absolute z-50'>
@@ -22,12 +22,12 @@ function Header({ name, page }) {
                     <img src="/logo192.png" alt="Bariceano" draggable="false" className='select-none w-full h-full object-contain' />
                 </div>
                 <div className='flex flex-col items-end justify-end'>
-                    <div>
+                    <div className='relative'>
                         <h5>Pg - {page}
                         </h5>
-                        <h5>{techPackData.styleNo}</h5>
+                        <h5 className='absolute mt-2 break-words'>{techPackData.styleNo}</h5>
                     </div>
-                    <div className='flex gap-5 absolute top-12 pr-2 right-0 items-center mt-2'>
+                    <div className='flex gap-5 absolute top-14 pl-2 left-full items-center mt-2'>
                         <div
                             onClick={() => {
                                 const isConfirmed = window.confirm(

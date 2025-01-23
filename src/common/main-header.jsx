@@ -42,14 +42,18 @@ const MainHeader = () => {
         fetchMenuData();
     }, []);
 
+    const handlenew = () => {
+        setShowCategories(!showCategories);
+        setCurrentCategory(false)
+        setCurrentSubCategory(false)
+    };
     const handleLabelChange = (label) => {
         if (selectedLabels.includes(label)) {
-            setSelectedLabels(selectedLabels.filter(l => l !== label));
+            setSelectedLabels(selectedLabels.filter((l) => l !== label)); // Remove the label if already selected
         } else {
-            setSelectedLabels([...selectedLabels, label]);
+            setSelectedLabels([...selectedLabels, label]); // Add the label if not selected
         }
     };
-
     const handleClear = () => {
         setSelectedLabels([true]);
         setCurrentCategory(false)
@@ -114,7 +118,7 @@ const MainHeader = () => {
 
                     <button
                         className={`flex gap-2 invert hover:invert-0 border bg-black text-white items-center text-sm font-bold px-3 py-2 rounded-2xl uppercase`}
-                        onClick={() => setShowCategories(!showCategories)}
+                        onClick={() => handlenew()}
                     >
                         <svg
                             width="13"
@@ -172,9 +176,8 @@ const MainHeader = () => {
                                                 <label className="text-[#AEAEAE]">{label}</label>
                                                 <input
                                                     type="checkbox"
-                                                    defaultValue={true}
                                                     name="checkbox"
-                                                    checked={selectedLabels.includes(label)}
+                                                    checked={selectedLabels.includes(label)} // Check by default
                                                     onChange={() => handleLabelChange(label)}
                                                     className="mr-2 w-7 h-7 pl-[1px] bg-slate-200 pointer-events-auto"
                                                 />
