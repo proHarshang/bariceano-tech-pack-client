@@ -23,7 +23,7 @@ const BlankSheet = ({ page }) => {
           </div>
         ) : (
           <div onClick={() => setOpenPopupId(`images-0`)}
-            className="border-2 border-dashed bg-[#F3F3F3] border-gray-300 w-full h-full flex justify-center items-center cursor-pointer"
+            className="border-2 border-dashed bg-[#FCFCFC] rounded-2xl text-[#DFDFDF] text-xl text-wrap px-3 border-gray-300 w-full h-full flex justify-center items-center cursor-pointer"
           >
             <button type='button' >Click to upload an image</button>
           </div>
