@@ -18,7 +18,7 @@ const MainHeader = () => {
     const [labels, setLabels] = useState([]);
     const [currentCategory, setCurrentCategory] = useState(null);
     const [currentSubCategory, setCurrentSubCategory] = useState(null);
-    const [selectedLabels, setSelectedLabels] = useState([]);
+    const [selectedLabels, setSelectedLabels] = useState(["Silicon Label Sheet", "Main Label Sheet", "Size Label Sheet", "Wash Care Label Sheet", "Hang Tag"]);
     const [showCategories, setShowCategories] = useState(false);
 
     useEffect(() => {
