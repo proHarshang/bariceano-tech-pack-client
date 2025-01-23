@@ -29,43 +29,43 @@ export const TechPackProvider = ({ children }) => {
                 "fabricColorImages": [
                     {
                         "position": 0,
-                        "src": "placeholder.png"
+                        "src": ""
                     },
                     {
                         "position": 1,
-                        "src": "placeholder.png"
+                        "src": ""
                     },
                     {
                         "position": 2,
-                        "src": "placeholder.png"
+                        "src": ""
                     }
                 ],
                 "threadColorImages": [
                     {
                         "position": 0,
-                        "src": "placeholder.png"
+                        "src": ""
                     },
                     {
                         "position": 1,
-                        "src": "placeholder.png"
+                        "src": ""
                     },
                     {
                         "position": 2,
-                        "src": "placeholder.png "
+                        "src": " "
                     }
                 ],
                 "images": [
                     {
                         "position": 0,
-                        "src": "placeholder.png"
+                        "src": ""
                     },
                     {
                         "position": 1,
-                        "src": "placeholder.png"
+                        "src": ""
                     },
                     {
                         "position": 2,
-                        "src": "placeholder.png"
+                        "src": ""
                     }
                 ]
             },
@@ -212,20 +212,6 @@ export const TechPackProvider = ({ children }) => {
                 ]
             }
         },
-        // {
-        //     "page": 6,
-        //     "name": "Silicon Label",
-        //     "type": "SiliconLabel",
-        //     "data": {
-        //         "title": "Silicon Label Details",
-        //         "images": [
-        //             {
-        //                 "position": 0,
-        //                 "src": "default.png"
-        //             }
-        //         ]
-        //     }
-        // }
         ],
     });
 
