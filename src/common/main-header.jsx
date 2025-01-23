@@ -72,37 +72,35 @@ const MainHeader = () => {
     return (
         <div className="p-5 flex justify-between border-b pl-10 pr-0 max-w-[1500px] mx-auto">
             <div className='flex gap-5 items-center'>
-                {collection.map((item) => (
-                    <button
-                        key={item.id} // Assuming each collection item has a unique ID
-                        className={`flex gap-3 items-center border-black text-sm font-bold px-3 py-2 rounded-2xl uppercase hover:bg-black hover:text-white ${currentPath === "/tech-pack-data"
-                            ? "bg-black text-white"
-                            : "border text-black"
+                <button
+                    className={`flex gap-3 items-center border-black text-sm font-bold px-3 py-2 rounded-2xl uppercase hover:bg-black hover:text-white ${currentPath === "/tech-pack-data"
+                        ? "bg-black text-white"
+                        : "border text-black"
+                        }`}
+                >
+                    <select
+                        name="Collection"
+                        id="collectionSelect"
+                        className={`bg-transparent ${currentPath === "/tech-pack-data" ? "bg-black text-white" : ""
                             }`}
+                        onChange={(e) => {
+                            localStorage.setItem("currentCollection", e.target.value);
+                            if (e.target.value === "Collection 1") {
+                                window.location.href = "/tech-pack-data";
+                            } else if (e.target.value === "Collection 2") {
+                                // Handle Collection 2 link
+                            }
+                            // Handle other cases dynamically if needed
+                        }}
                     >
-                        <select
-                            name="Collection"
-                            id="collectionSelect"
-                            className={`bg-transparent ${currentPath === "/tech-pack-data" ? "bg-black text-white" : ""
-                                }`}
-                            onChange={(e) => {
-                                if (e.target.value === "Collection 1") {
-                                    window.location.href = "/tech-pack-data";
-                                } else if (e.target.value === "Collection 2") {
-                                    // Handle Collection 2 link
-                                }
-                                // Handle other cases dynamically if needed
-                            }}
-                        >
-                            <option value="" className='bg-black text-white'>Select Collection</option>
-                            {collection.map((option, index) => (
-                                <option className='bg-black text-white' key={index} value={option}>
-                                    {option}
-                                </option>
-                            ))}
-                        </select>
-                    </button>
-                ))}
+                        <option value="" className='bg-black text-white'>Select Collection</option>
+                        {collection.map((option, index) => (
+                            <option className='bg-black text-white' key={index} value={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </select>
+                </button>
 
                 <a href="/setting">
                     <button

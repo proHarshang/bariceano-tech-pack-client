@@ -55,6 +55,7 @@ const TechPack = () => {
       updateField("gender", currentSubCategory);
       updateField("category", currentCategory);
       updateField("designer", JSON.parse(localStorage.getItem('user')).Name);
+      updateField("collection", localStorage.getItem("currentCollection"));
 
       // if (hasRun.current) return;
 

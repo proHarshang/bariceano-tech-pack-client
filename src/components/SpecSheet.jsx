@@ -36,6 +36,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
     useEffect(() => {
         updateInfoField(page, "productType", slide.data?.info?.find((item) => item.name === "productType").value, { "value": currentCategory })
         updateInfoField(page, "trim", slide.data?.info?.find((item) => item.name === "trim").value, { "value": selectedLabels.join(', ') })
+        updateInfoField(page, "collection", slide.data?.info?.find((item) => item.name === "collection").value, { "value": localStorage.getItem("currentCollection") })
     }, [currentCategory])
 
 

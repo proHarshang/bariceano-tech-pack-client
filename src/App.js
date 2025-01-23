@@ -5,7 +5,6 @@ import TechPack from './pages/TechPack';
 import TechPacksTable from './pages/TechPacksTable';
 import Setting from './components/Setting';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { TechPackProvider } from './context/TechPackContext';
 import AddTechpack from './pages/AddTechpack';
 import PrivateRoute from './components/PrivateRoute';
 
