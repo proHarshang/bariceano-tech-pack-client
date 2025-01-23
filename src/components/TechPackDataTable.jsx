@@ -458,14 +458,14 @@ const TechPackDataTable = ({ data = [] }) => {
                                         </td>
                                         <td className="flex items-center gap-2 w-full">
                                             <div className="action-buttons w-1/2">
-                                                <button className="copy-button hover:bg-zinc-300" onClick={() => handleCopy(item)}                                            >Copy</button>
-                                                <button className="edit-button hover:bg-zinc-300">Edit</button>
+                                                <button type="button" className="copy-button hover:bg-zinc-300" onClick={() => handleCopy(item)}                                            >Copy</button>
+                                                <button type="button" className="edit-button hover:bg-zinc-300">Edit</button>
                                             </div>
                                             <div className="action-buttons w-1/2">
-                                                <button className="download-button hover:bg-green-300">
-                                                    <TechPackPdfGenerator data={sortedData[index]} />
+                                                <button type="button" className="download-button hover:bg-green-300">
+                                                    <TechPackPdfGenerator data={currentItems[index]} />
                                                 </button>
-                                                <button onClick={() => {
+                                                <button type="button" onClick={() => {
                                                     const confirmDelete = window.confirm(
                                                         "Are you sure you want to delete this TechPack?"
                                                     );

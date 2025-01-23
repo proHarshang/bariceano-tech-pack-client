@@ -85,7 +85,7 @@ const TechPack = () => {
         })
       });
       trims.forEach(label => {
-        label.images.forEach(img => {
+        label.images.forEach(img => {          
           currentPage += 1;
           addSlide({
             "page": currentPage,
@@ -126,7 +126,7 @@ const TechPack = () => {
 
   const getType = (label) => {
     switch (label) {
-      case label === "Silicon Label Sheet" || "Silicon Label":
+      case "Silicon Label Sheet":
         return "SiliconLabel";
       default:
         return "Page"

@@ -212,20 +212,20 @@ export const TechPackProvider = ({ children }) => {
                 ]
             }
         },
-        {
-            "page": 6,
-            "name": "Silicon Label",
-            "type": "SiliconLabel",
-            "data": {
-                "title": "Silicon Label Details",
-                "images": [
-                    {
-                        "position": 0,
-                        "src": "default.png"
-                    }
-                ]
-            }
-        }
+        // {
+        //     "page": 6,
+        //     "name": "Silicon Label",
+        //     "type": "SiliconLabel",
+        //     "data": {
+        //         "title": "Silicon Label Details",
+        //         "images": [
+        //             {
+        //                 "position": 0,
+        //                 "src": "default.png"
+        //             }
+        //         ]
+        //     }
+        // }
         ],
     });
 

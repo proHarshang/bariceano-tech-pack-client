@@ -1,6 +1,11 @@
 import { jsPDF } from 'jspdf';
+import { useState } from 'react';
+import { AiOutlineLoading } from "react-icons/ai";
+
 
 const TechPackPdfGenerator = (data) => {
+    const [isLoading, setIsLoading] = useState(false)
+
     const pageWidth = 297;
     const pageHeight = 210;
 
@@ -72,6 +77,8 @@ const TechPackPdfGenerator = (data) => {
 
     }
     function generatePdf() {
+
+        setIsLoading(true)
 
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
@@ -652,11 +659,14 @@ const TechPackPdfGenerator = (data) => {
 
 
         pdf.save('example.pdf');
+
+        setIsLoading(false)
+
     };
 
     return (
 
-        <button type='button' onClick={generatePdf}>Download</button>
+        <button type='button' onClick={generatePdf} className={`${isLoading ? 'animate-spin' : ''}`}>{isLoading ? <AiOutlineLoading /> : 'Download'}</button>
 
     );
 };

@@ -85,7 +85,7 @@ const MainHeader = () => {
                             }`}
                         onChange={(e) => {
                             localStorage.setItem("currentCollection", e.target.value);
-                            if (e.target.value === "Collection 1") {
+                            if (e.target.value === "Collection First") {
                                 window.location.href = "/tech-pack-data";
                             } else if (e.target.value === "Collection 2") {
                                 // Handle Collection 2 link
