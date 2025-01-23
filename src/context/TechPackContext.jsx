@@ -133,7 +133,7 @@ export const TechPackProvider = ({ children }) => {
                     },
                     {
                         "position": "5",
-                        "name": "style",
+                        "name": "productType",
                         "value": ""
                     },
                     {

@@ -3,7 +3,7 @@ import { useTechPack } from '../context/TechPackContext';
 import { fetchAll } from "../API/TechPacks";
 import { useState, useEffect } from "react";
 
-const SpecSheet = ({ page }) => {
+const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
     const [fabric, setFabric] = useState([]);
     const [genders, setGenders] = useState([]);
     const [collections, setCollections] = useState([]);
@@ -32,6 +32,11 @@ const SpecSheet = ({ page }) => {
         };
         fetchAllSetting();
     }, []);
+
+    useEffect(() => {
+        updateInfoField(page, "productType", slide.data?.info?.find((item) => item.name === "productType").value, { "value": currentCategory })
+        updateInfoField(page, "trim", slide.data?.info?.find((item) => item.name === "trim").value, { "value": selectedLabels.join(', ') })
+    }, [currentCategory])
 
 
     const { getSlideByPage } = useTechPack();
@@ -135,7 +140,7 @@ const SpecSheet = ({ page }) => {
                             }}
                             className="form__field break-words text-wrap"
                             required>
-                            <option className="break-words text-wrap text-sm overflow-x-auto" value="Select" disabled>select</option>
+                            <option className="break-words text-wrap text-sm overflow-x-auto" value="select" disabled>select</option>
                             {collections.map((collection) => (
                                 <option className="break-words text-wrap text-sm overflow-x-auto" value={collection}>{collection}</option>
                             ))}
@@ -152,7 +157,7 @@ const SpecSheet = ({ page }) => {
                         }}
                         className="form__field break-words text-wrap"
                         required>
-                        <option className="break-words text-wrap text-sm overflow-x-auto" value="Select" disabled>select</option>
+                        <option className="break-words text-wrap text-sm overflow-x-auto" value="select" disabled>select</option>
                         {states.map((state) => (
                             <option className="break-words text-wrap text-sm overflow-x-auto" value={state}>{state}</option>
                         ))}
@@ -168,14 +173,34 @@ const SpecSheet = ({ page }) => {
                         }}
                         className="form__field break-words text-wrap"
                         required>
-                        <option className="break-words text-wrap text-sm overflow-x-auto" value="Select" disabled>select</option>
+                        <option className="break-words text-wrap text-sm overflow-x-auto" value="select" disabled>select</option>
                         {fabric.map((fabric) => (
                             <option className="break-words text-wrap text-sm overflow-x-auto" value={fabric}>{fabric}</option>
                         ))}
                     </select>
                 </div>
+                <div className="form__group field w-[45%] relative group">
+                    <label className="form__label capitalize">Trim</label>
+                    <textarea
+                        type="text"
+                        value={slide.data?.info?.find((item) => item.name === "trim").value}
+                        onChange={(e) => updateInfoField(page, "trim", slide.data?.info?.find((item) => item.name === "trim").value, { "value": e.target.value })}
+                        className="form__field"
+                        required
+                    />
+                </div>
+                <div className="form__group field w-[45%] relative group">
+                    <label className="form__label capitalize">productType</label>
+                    <input
+                        type="text"
+                        value={slide.data?.info?.find((item) => item.name === "productType").value}
+                        className="form__field"
+                        required
+                        disabled
+                    />
+                </div>
                 {slide.data?.info?.map((field, index) => {
-                    if (["styleNo", "designer", "size", "gender", "state", "fabric", "collection"].includes(field.name)) {
+                    if (["styleNo", "designer", "size", "gender", "state", "fabric", "collection", "trim", "productType"].includes(field.name)) {
                         return null;
                     }
                     return (
