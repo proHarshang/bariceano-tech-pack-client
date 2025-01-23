@@ -4,6 +4,7 @@ import TechPackPdfGenerator from '../TechPackPdfGenerator';
 import { useForm } from "react-hook-form";
 import Pagination from '../common/Pagination.jsx';
 import { useTechPack } from "../context/TechPackContext";
+import { useNavigate } from 'react-router-dom';
 
 const TechPackDataTable = ({ data = [] }) => {
     const sidebarRef = useRef(null);
@@ -208,6 +209,11 @@ const TechPackDataTable = ({ data = [] }) => {
         }
     };
 
+    const navigate = useNavigate();
+
+    const handleEditClick = (itemId) => {
+        navigate(`/tech-pack?id=${itemId}`);
+    };
     return (
         <>
             <div className='w-full mx-auto max-w-[1500px] table px-10 pb-10'>
@@ -459,7 +465,7 @@ const TechPackDataTable = ({ data = [] }) => {
                                         <td className="flex items-center gap-2 w-full">
                                             <div className="action-buttons w-1/2">
                                                 <button type="button" className="copy-button hover:bg-zinc-300" onClick={() => handleCopy(item)}                                            >Copy</button>
-                                                <button type="button" className="edit-button hover:bg-zinc-300">Edit</button>
+                                                <button type="button" className="edit-button hover:bg-zinc-300" onClick={() => handleEditClick(item._id)}>Edit</button>
                                             </div>
                                             <div className="action-buttons w-1/2">
                                                 <button type="button" className="download-button hover:bg-green-300">
