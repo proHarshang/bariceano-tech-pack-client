@@ -125,7 +125,7 @@ const TechPack = () => {
           "images": [
             {
               "position": 0,
-              "src": "default.jpg"
+              "src": "default.png"
             }
           ]
         }
