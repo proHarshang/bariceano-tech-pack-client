@@ -16,7 +16,7 @@ const Layout2 = ({ page }) => {
           {[0, 1, 2].map((key, index) => (
             <div
               key={key}
-              className='h-[270px] w-full border-2 border-dashed rounded-2xl bg-[#F3F3F3] flex items-center justify-center'
+              className='h-[270px] w-full rounded-2xl flex items-center justify-center'
             >
               {slide.data?.images.find((item) => item.position === key) ? (
                 <img
@@ -26,8 +26,8 @@ const Layout2 = ({ page }) => {
                   className='object-fill h-full cursor-pointer rounded-2xl'
                 />
               ) : (
-                <label className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
-                  <button type='button' onClick={() => setOpenPopupId(`images-${key}`)}>Add</button>
+                <label onClick={() => setOpenPopupId(`images-${key}`)} className='flex flex-col items-center justify-center w-full h-full cursor-pointer'>
+                  <button type='button' >Add</button>
                 </label>
               )}
             </div>
@@ -40,7 +40,7 @@ const Layout2 = ({ page }) => {
               {[0, 1].map((key, index) => (
                 <div
                   key={key}
-                  className='w-fit h-full border-2 border-dashed rounded-2xl bg-[#F3F3F3] flex items-center justify-center min-w-[100px]'
+                  className='w-fit h-full rounded-2xl flex items-center justify-center min-w-[100px]'
                 >
                   {slide.data?.threadColorImages?.find((item) => item.position === key) ? (
                     <img
@@ -50,8 +50,8 @@ const Layout2 = ({ page }) => {
                       className='object-fill h-full rounded-2xl cursor-pointer'
                     />
                   ) : (
-                    <label className='text-center flex text-sm flex-col items-center justify-center w-full h-full cursor-pointer'>
-                      <button type='button' onClick={() => setOpenPopupId(`threadColorImages-${key}`)}>Add</button>
+                    <label onClick={() => setOpenPopupId(`threadColorImages-${key}`)} className='text-center flex text-sm flex-col items-center justify-center w-full h-full cursor-pointer'>
+                      <button type='button' >Add</button>
                     </label>
                   )}
                 </div>
@@ -64,7 +64,7 @@ const Layout2 = ({ page }) => {
               {[0, 1].map((key, index) => (
                 <div
                   key={key}
-                  className='w-fit h-full border-2 border-dashed rounded-2xl bg-[#F3F3F3] flex items-center justify-center min-w-[100px]'
+                  className='w-fit h-full rounded-2xl flex items-center justify-center min-w-[100px]'
                 >
                   {slide.data?.fabricColorImages?.find((item) => item.position === key) ? (
                     <img
@@ -74,8 +74,8 @@ const Layout2 = ({ page }) => {
                       className='object-cover h-full w-full rounded-2xl cursor-pointer'
                     />
                   ) : (
-                    <label className='text-sm text-center flex flex-col items-center justify-center w-full h-full cursor-pointer'>
-                      <button type='button' onClick={() => setOpenPopupId(`fabricColorImages-${key}`)}>Add</button>
+                    <label onClick={() => setOpenPopupId(`fabricColorImages-${key}`)} className='text-sm text-center flex flex-col items-center justify-center w-full h-full cursor-pointer'>
+                      <button type='button'>Add</button>
                     </label>
                   )}
                 </div>
