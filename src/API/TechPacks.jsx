@@ -605,12 +605,13 @@ const useUploadImage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const uploadImage = async (file) => {
+    const uploadImage = async (files) => {
         setLoading(true);
         setError(null);
 
         const formData = new FormData();
-        formData.append('images', file);  // 'images' matches the form field name
+        files.forEach((image) => formData.append("images", image));
+
 
         try {
             const response = await fetch(`${apiURL}/design/techpacks/images/upload`, {

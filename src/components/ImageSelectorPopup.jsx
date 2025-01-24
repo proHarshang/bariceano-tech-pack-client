@@ -42,15 +42,15 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
     const handleDelete = (image) => {
         console.log("Delete", image); // Replace with your delete logic
     };
+
     const { uploadImage, loading, error } = useUploadImage();
 
     // Handle file selection and trigger upload immediately
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
-            const file = e.target.files[0]; // Get the selected file
-            console.log(file.name);  // Log the image name
-            uploadImage(file); // Trigger the upload automatically
+            uploadImage([...e.target.files]); // Trigger the upload automatically
         }
+        fetchAllImage();
     };
 
 
@@ -103,6 +103,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                                     id="file-upload"
                                     type="file"
                                     accept="image/*"
+                                    multiple
                                     className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
                                     onChange={handleFileChange}  // Automatically triggers upload
                                 />
