@@ -1,10 +1,16 @@
+
 import { jsPDF } from 'jspdf';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineLoading } from "react-icons/ai";
 
 
 const TechPackPdfGenerator = (data) => {
-    const [isLoading, setIsLoading] = useState(false)
+    const [isDownloading, setIsDownloading] = useState(false);
+
+    useEffect(() => {
+        console.log(isDownloading)
+    }, [isDownloading])
+
 
     const pageWidth = 297;
     const pageHeight = 210;
@@ -77,9 +83,10 @@ const TechPackPdfGenerator = (data) => {
         pdf.text(text, textX, textY, { align });
 
     }
-    function generatePdf() {
+    const generatePdf = async () => {
+        setIsDownloading(true)
         try {
-            setIsLoading(true)
+            await new Promise((resolve) => setTimeout(resolve, 1000));
 
             const pageWidth = pdf.internal.pageSize.getWidth();
             const pageHeight = pdf.internal.pageSize.getHeight();
@@ -653,22 +660,30 @@ const TechPackPdfGenerator = (data) => {
                 console.error("Pages array is missing or empty.");
             }
 
-            //   ---------  Blank page -------
+            //   ---------  Blank page -------                        
 
             pdf.save(`${data.data.styleNo}.pdf`);
 
+
         } catch (error) {
-            alert("Something Went Wrong!")
+            alert("Ask Harshang because something went wrong!")
             console.log(error)
         } finally {
-            setIsLoading(false)
+            setIsDownloading(false)
         }
 
     };
 
     return (
 
-        <button type='button' onClick={() => generatePdf()} className={`${isLoading ? 'animate-spin' : ''}`}>{isLoading ? <AiOutlineLoading /> : 'Download'}</button>
+        <button
+            type='button'
+            onClick={generatePdf}
+            className={`text-center flex items-center justify-center mx-auto ${isDownloading ? 'animate-spin' : ''}`}
+            disabled={isDownloading}
+        >
+            {isDownloading ? <AiOutlineLoading className='text-black font-bold' /> : 'Download'}
+        </button>
 
     );
 };

@@ -11,6 +11,7 @@ export const TechPackProvider = ({ children }) => {
 
     const [isAdding, setIsAdding] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [isUpdatingAs, setIsUpdatingAs] = useState(false);
     const [updateMode, setUpdateMode] = useState("off");
     const [submitStatus, setSubmitStatus] = useState({
         status: null,
@@ -111,7 +112,7 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "4",
                         "name": "Fit",
-                        "value": ""
+                        "value": "Oversize"
                     },
                     {
                         "position": "Last",
@@ -141,7 +142,7 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "6",
                         "name": "Category",
-                        "value": ""
+                        "value": "Top"
                     },
                     {
                         "position": "3",
@@ -529,6 +530,34 @@ export const TechPackProvider = ({ children }) => {
         });
     };
 
+    const duplicateSlide = (pageToDuplicate) => {
+        setTechPackData((prevData) => {
+            const slides = [...prevData.slides];
+            const pageIndex = slides.findIndex((slide) => slide.page === pageToDuplicate);
+
+            if (pageIndex === -1) {
+                console.error(`Slide with page number ${pageToDuplicate} not found.`);
+                return prevData;
+            }
+
+            // Duplicate the slide and set its page number
+            const duplicatedSlide = {
+                ...slides[pageIndex],
+                page: slides[pageIndex].page + 1,
+            };
+
+            // Insert the duplicated slide right after the original
+            slides.splice(pageIndex + 1, 0, duplicatedSlide);
+
+            // Adjust page numbers for subsequent slides
+            for (let i = pageIndex + 2; i < slides.length; i++) {
+                slides[i].page += 1;
+            }
+
+            return { ...prevData, slides };
+        });
+    };
+
     const getSlideByPage = (pageNumber) => {
         return techPackData.slides.find((slide) => slide.page === pageNumber) || null;
     };
@@ -568,6 +597,22 @@ export const TechPackProvider = ({ children }) => {
 
     };
 
+    const updateAsTechPack = async () => {
+        setIsUpdatingAs(true)
+        try {
+            const response = await updateTechPacks(updateMode, techPackData)
+            setSubmitStatus(response)
+            console.log("response", response)
+            if (response.status === true) {
+                navigate('/tech-pack-data')
+            }
+        } catch (error) {
+            throw new Error("Error creating TechPack:", error.message);
+        } finally {
+            setIsUpdatingAs(false)
+        }
+    };
+
     useEffect(() => {
         const timer = setTimeout(() => {
             setSubmitStatus({
@@ -599,11 +644,14 @@ export const TechPackProvider = ({ children }) => {
                 updateMode,
                 setUpdateMode,
                 isUpdating,
+                isUpdatingAs,
                 updateTechPack,
+                updateAsTechPack,
                 createUpdateTechPackSetup,
                 updateField,
                 addSlide,
                 deleteSlideByPage,
+                duplicateSlide,
                 addSlideAtIndex,
                 getMaxPageNumber,
                 updateSlide,
