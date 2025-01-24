@@ -38,7 +38,7 @@ const TechPackPdfGenerator = (data) => {
         pdf.setFontSize(12);
         const pgX = pageWidth - 35;
         const pgY = 8;
-        pdf.text(`Page no - ${pageNumber}`, pgX, pgY);
+        pdf.text(`Page - ${pageNumber} `, pgX, pgY);
 
         pdf.text(data.data.styleNo, pgX, pgY + 5);
 
@@ -102,6 +102,8 @@ const TechPackPdfGenerator = (data) => {
                 return acc;
             }, {});
 
+            console.log("data.data.slides",data.data.slides)
+
             // Destructure filteredSlides into individual constants
             const {
                 Layout1 = [],
@@ -163,7 +165,6 @@ const TechPackPdfGenerator = (data) => {
                 // Add your layout 1 code here
             } else if (Layout2[0]?.type === "Layout2") {
                 // Sorting the images in different categories
-                console.log(Layout2[0].data.fabricColorImages)
                 Layout2[0].data.fabricColorImages.sort((a, b) => a.position = b.position);
                 Layout2[0].data.threadColorImages.sort((a, b) => a.position = b.position);
                 Layout2[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
@@ -305,7 +306,6 @@ const TechPackPdfGenerator = (data) => {
             pdf.addPage();
 
             //   ---------  Spec. sheet start -------
-            console.log("Information", Information)
             headerSection(Information[0].page, Information[0].name);
             // Define column positions and widths
             const colWidth = (pageWidth - 20) / 4; // Divide into four equal columns
@@ -399,7 +399,6 @@ const TechPackPdfGenerator = (data) => {
                 // Artwork placement sheet header
                 headerSection(ArtworkPlacementSheet[0].page, ArtworkPlacementSheet[0].name);
 
-
                 // Adjust margins and table settings
                 const leftMargin = 10; // Left margin
                 const rightMargin = 10; // Right margin
@@ -415,6 +414,18 @@ const TechPackPdfGenerator = (data) => {
                     columnWidths[i] *= scaleFactor;
                 }
 
+                function breakTextIntoLines(text, maxLength) {
+                    let lines = [];
+                    while (text.length > maxLength) {
+                        let line = text.substring(0, maxLength);
+                        lines.push(line);
+                        text = text.substring(maxLength);
+                    }
+                    lines.push(text);
+                    return lines;
+                }
+
+
                 const rows = ArtworkPlacementSheet[0].data.artworkPlacementSheet.map((item) => ({
                     placement: item.placement,
                     technique: item.technique,
@@ -428,8 +439,8 @@ const TechPackPdfGenerator = (data) => {
                 }));
 
                 const rowHeight = 50; // Row height for readability
-                const startY = 30; // Start position for the table
-                const maxRowsPerPage = Math.floor((pageHeight - startY - 20) / rowHeight); // Calculate max rows per page
+                const startY = 27; // Start position for the table
+                const maxRowsPerPage = 3; // Adjusted to allow 3 rows per page
 
                 // Table headers
                 const drawHeaders = () => {
@@ -439,22 +450,23 @@ const TechPackPdfGenerator = (data) => {
                     const headers = ['#', 'Placement', 'Artwork', 'Technique', 'Colour', 'Placement'];
                     headers.forEach((header, i) => {
                         pdf.setFillColor(0, 0, 0); // Black background
-                        pdf.rect(currentX, startY, columnWidths[i], rowHeight / 2, 'F'); // Fill rectangle
+                        pdf.rect(currentX, startY - 2, columnWidths[i], rowHeight / 2 - 12, 'F'); // Fill rectangle
                         pdf.text(
                             header,
                             currentX + columnWidths[i] / 2,
-                            startY + rowHeight / 4 + 2,
+                            startY + rowHeight / 4 - 7,
                             { align: 'center' }
                         );
                         currentX += columnWidths[i];
                     });
                 };
                 drawHeaders();
+
                 // Draw table rows
-                let currentY = startY + rowHeight / 2; // Start below headers
+                let currentY = startY + rowHeight / 2 - 14; // Start below headers
                 rows.forEach((row, index) => {
                     // Add a new page and redraw headers if the current page is full
-                    if (currentY + rowHeight > pageHeight - 20) {
+                    if (index % maxRowsPerPage === 0 && index !== 0) {
                         pdf.addPage();
                         headerSection(ArtworkPlacementSheet[0].page + 1, ArtworkPlacementSheet[0].name);
                         drawHeaders(); // Redraw headers on the new page
@@ -473,9 +485,11 @@ const TechPackPdfGenerator = (data) => {
                     currentX += columnWidths[0];
 
                     // Placement
+                    let placementLines = breakTextIntoLines(row.placement, 16);
+                    let placementY = currentY + rowHeight / 2 - (placementLines.length - 1) * 5;
                     pdf.rect(currentX, currentY, columnWidths[1], rowHeight);
-                    pdf.text(row.placement, currentX + 5, currentY + rowHeight / 2, {
-                        baseline: 'middle',
+                    placementLines.forEach((line, index) => {
+                        pdf.text(line, currentX + 5, placementY + index * 10, { baseline: 'middle' });
                     });
                     currentX += columnWidths[1];
 
@@ -490,43 +504,21 @@ const TechPackPdfGenerator = (data) => {
                     currentX += columnWidths[2];
 
                     // Technique
+                    let techniqueLines = breakTextIntoLines(row.technique, 16);
+                    let techniqueY = currentY + rowHeight / 2 - (techniqueLines.length - 1) * 5;
                     pdf.rect(currentX, currentY, columnWidths[3], rowHeight);
-                    pdf.text(row.technique, currentX + 5, currentY + rowHeight / 2, { baseline: 'middle' });
+                    techniqueLines.forEach((line, index) => {
+                        pdf.text(line, currentX + 5, techniqueY + index * 10, { baseline: 'middle' });
+                    });
                     currentX += columnWidths[3];
 
                     // Colour
+                    let colorLines = breakTextIntoLines(row.color, 16);
+                    let colorY = currentY + rowHeight / 2 - (colorLines.length - 1) * 5;
                     pdf.rect(currentX, currentY, columnWidths[4], rowHeight);
-
-                    // function for wrap text
-                    const maxChars = 15; // Maximum number of characters allowed in the cell
-
-                    function wrapText(text, maxChars) {
-                        const words = text.split(" ");
-                        let lines = [];
-                        let currentLine = "";
-
-                        words.forEach(word => {
-                            if ((currentLine + word).length <= maxChars) {
-                                currentLine += (currentLine ? " " : "") + word;
-                            } else {
-                                lines.push(currentLine);
-                                currentLine = word;
-                            }
-                        });
-
-                        if (currentLine) {
-                            lines.push(currentLine);
-                        }
-
-                        return lines.join("\n");
-                    }
-
-                    const wrappedText = wrapText(row.color, maxChars);
-
-                    pdf.text(wrappedText, currentX + 5, currentY - 4 + rowHeight / 2, {
-                        baseline: 'middle',
+                    colorLines.forEach((line, index) => {
+                        pdf.text(line, currentX + 5, colorY + index * 10, { baseline: 'middle' });
                     });
-
                     currentX += columnWidths[4];
 
                     // Placement (image cell)
@@ -546,6 +538,7 @@ const TechPackPdfGenerator = (data) => {
             } else {
                 console.warn("No artwork placement sheet data available. Skipping placement section.");
             }
+
 
             //   ---------  Blank page -------
 
@@ -595,11 +588,15 @@ const TechPackPdfGenerator = (data) => {
                         pdf.addPage(); // Add a new page for additional images
                         // Add header for the page
                     }
-
                     if (index === 0) {
-                        pdf.setFontSize(16);
-                        pdf.text(SiliconLabel[0]?.data?.title, 20, 30); // Title text with a margin of 20 from the left and 30 from the top
+                        pdf.setFont('helvetica', 'bold');
+                        pdf.setFontSize(10); // Set a smaller text size (e.g., 10)
+                        pdf.text('PLACEMENT', 20, 30); // Title "Placement"
+                        pdf.setFont('helvetica', 'normal');
+                        pdf.setFontSize(10); // Set a smaller text size (e.g., 10)
+                        pdf.text(SiliconLabel[0]?.data?.title.toUpperCase(), 20, 36);
                     }
+
 
                     // Add the image
                     const imagePath = `${basePath}/uploads/techpack/${image.src}`;
@@ -629,6 +626,8 @@ const TechPackPdfGenerator = (data) => {
 
             if (Array.isArray(Page) && Page.length > 0) {
                 Page.sort((a, b) => parseInt(a.page) - parseInt(b.page));
+                const maxWidth = 240;
+                const xPosition = (pageWidth - maxWidth) / 2;  // Centering the image
 
                 Page.forEach((page, index) => {
                     if (index > 0) {
@@ -643,7 +642,7 @@ const TechPackPdfGenerator = (data) => {
                             const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
                             console.log("Adding image from:", imagePath); // Debug: Log image path
 
-                            pdf.addImage(imagePath, "JPEG", 10, 25, 287, 167); // Adjusted dimensions for A4
+                            pdf.addImage(imagePath, "JPEG", xPosition, 25, maxWidth, 167); // Adjusted dimensions for A4
                         });
                     } else {
                         console.warn(`No images found for page ${page.page}. Skipping image addition.`);
