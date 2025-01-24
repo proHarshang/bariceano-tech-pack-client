@@ -41,7 +41,7 @@ const Layout1 = ({ page }) => {
                                     className='object-contain h-full w-full rounded-2xl cursor-pointer'
                                 />
                             ) : (
-                                <label className='flex flex-col text-center items-center justify-center w-full h-full cursor-pointer bg-[#FCFCFC] border-2 border-dashed text-[#DFDFDF] rounded-2xl text-[#DFDFDF] text-wrap px-3'>
+                                <label className='flex flex-col text-center items-center justify-center w-full h-full cursor-pointer bg-[#FCFCFC] border-2 border-dashed text-[#DFDFDF] rounded-2xl text-wrap px-3'>
                                     <button type='button' onClick={() => setOpenPopupId(`threadColorImages-0`)}>Upload an image</button>
                                 </label>
                             )}
