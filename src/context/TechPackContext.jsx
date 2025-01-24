@@ -11,6 +11,7 @@ export const TechPackProvider = ({ children }) => {
 
     const [isAdding, setIsAdding] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [isUpdatingAs, setIsUpdatingAs] = useState(false);
     const [updateMode, setUpdateMode] = useState("off");
     const [submitStatus, setSubmitStatus] = useState({
         status: null,
@@ -568,6 +569,22 @@ export const TechPackProvider = ({ children }) => {
 
     };
 
+    const updateAsTechPack = async () => {
+        setIsUpdatingAs(true)
+        try {
+            const response = await updateTechPacks(updateMode, techPackData)
+            setSubmitStatus(response)
+            console.log("response", response)
+            if (response.status === true) {
+                navigate('/tech-pack-data')
+            }
+        } catch (error) {
+            throw new Error("Error creating TechPack:", error.message);
+        } finally {
+            setIsUpdatingAs(false)
+        }
+    };
+
     useEffect(() => {
         const timer = setTimeout(() => {
             setSubmitStatus({
@@ -599,7 +616,9 @@ export const TechPackProvider = ({ children }) => {
                 updateMode,
                 setUpdateMode,
                 isUpdating,
+                isUpdatingAs,
                 updateTechPack,
+                updateAsTechPack,
                 createUpdateTechPackSetup,
                 updateField,
                 addSlide,
