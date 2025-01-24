@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { handleCommentSubmit, deleteTechPack } from '../API/TechPacks';
 import TechPackPdfGenerator from '../TechPackPdfGenerator';
+import NewPdfGenerator from '../NewPDF';
 import { useForm } from "react-hook-form";
 import Pagination from '../common/Pagination.jsx';
 import { useTechPack } from "../context/TechPackContext";
@@ -469,7 +470,7 @@ const TechPackDataTable = ({ data = [] }) => {
                                             </div>
                                             <div className="action-buttons w-1/2">
                                                 <button type="button" className="download-button hover:bg-green-300">
-                                                    <TechPackPdfGenerator data={currentItems[index]} />
+                                                    <NewPdfGenerator data={currentItems[index]} />
                                                 </button>
                                                 <button type="button" onClick={() => {
                                                     const confirmDelete = window.confirm(
