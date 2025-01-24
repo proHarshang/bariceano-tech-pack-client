@@ -112,7 +112,7 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "4",
                         "name": "Fit",
-                        "value": ""
+                        "value": "Oversize"
                     },
                     {
                         "position": "Last",
@@ -142,7 +142,7 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "6",
                         "name": "Category",
-                        "value": ""
+                        "value": "Top"
                     },
                     {
                         "position": "3",
@@ -530,6 +530,34 @@ export const TechPackProvider = ({ children }) => {
         });
     };
 
+    const duplicateSlide = (pageToDuplicate) => {
+        setTechPackData((prevData) => {
+            const slides = [...prevData.slides];
+            const pageIndex = slides.findIndex((slide) => slide.page === pageToDuplicate);
+
+            if (pageIndex === -1) {
+                console.error(`Slide with page number ${pageToDuplicate} not found.`);
+                return prevData;
+            }
+
+            // Duplicate the slide and set its page number
+            const duplicatedSlide = {
+                ...slides[pageIndex],
+                page: slides[pageIndex].page + 1,
+            };
+
+            // Insert the duplicated slide right after the original
+            slides.splice(pageIndex + 1, 0, duplicatedSlide);
+
+            // Adjust page numbers for subsequent slides
+            for (let i = pageIndex + 2; i < slides.length; i++) {
+                slides[i].page += 1;
+            }
+
+            return { ...prevData, slides };
+        });
+    };
+
     const getSlideByPage = (pageNumber) => {
         return techPackData.slides.find((slide) => slide.page === pageNumber) || null;
     };
@@ -623,6 +651,7 @@ export const TechPackProvider = ({ children }) => {
                 updateField,
                 addSlide,
                 deleteSlideByPage,
+                duplicateSlide,
                 addSlideAtIndex,
                 getMaxPageNumber,
                 updateSlide,

@@ -154,7 +154,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                         required>
                         <option className="break-words text-wrap text-sm overflow-x-auto" value="select" disabled>select</option>
                         {fabric.map((fabric) => (
-                            <option className="break-words text-wrap text-sm overflow-x-auto" value={fabric}>{fabric}</option>
+                            <option className="break-words text-wrap overflow-hidden max-w-[200px] text-sm overflow-x-auto" title={fabric} value={fabric}>{fabric}</option>
                         ))}
                     </select>
                 </div>

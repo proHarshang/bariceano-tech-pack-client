@@ -249,7 +249,7 @@ const TechPack = () => {
             {submitStatus?.message}
           </p>
         )}
-        <div className="flex w-[12%]  flex-col justify-center gap-5 mb-10 fixed right-4 top-[80%] transform -translate-y-1/4">
+        <div className="flex w-fit  flex-col justify-center gap-5 mb-10 fixed right-4 bottom-0">
 
           {updateMode === "off" ?
             <button
@@ -284,9 +284,17 @@ const TechPack = () => {
             type="button"
             className="text-sm px-6 py-2 bg-white rounded-full border border-black transition-all duration-300 ease-in-out transform hover:scale-105"
             onClick={resetTechPack}
-            disabled={isAdding}
+            disabled={isAdding || isUpdating || isUpdatingAs}
           >
             Reset
+          </button>
+          <button
+            type="button"
+            className="text-sm px-6 py-2 bg-white rounded-full border border-black transition-all duration-300 ease-in-out transform hover:scale-105"
+            onClick={() => navigate('/tech-pack-data')}
+            disabled={isAdding || isUpdating || isUpdatingAs}
+          >
+            Back
           </button>
 
           {/* <button
