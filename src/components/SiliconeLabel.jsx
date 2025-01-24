@@ -17,8 +17,8 @@ const SiliconLabel = ({ page }) => {
                     name="title"
                     className='text-sm mx-[2px] outline outline-1 p-2'
                     value={slide.data.title}
-                    required={true}
                     onChange={(e) => updateSlideByPage(page, "data.title", e.target.value)}
+                    required
                 />
             </div>
             <div className='h-[430px]'>

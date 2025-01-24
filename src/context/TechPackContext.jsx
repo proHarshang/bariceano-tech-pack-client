@@ -80,77 +80,77 @@ export const TechPackProvider = ({ children }) => {
                 "info": [
                     {
                         "position": "1",
-                        "name": "styleNo",
+                        "name": "Style No",
                         "value": ""
                     },
                     {
                         "position": "1",
-                        "name": "designer",
+                        "name": "Designer",
                         "value": ""
                     },
                     {
                         "position": "2",
-                        "name": "fabric Color",
+                        "name": "Fabric color",
                         "value": ""
                     },
                     {
                         "position": "3",
-                        "name": "gender",
+                        "name": "Gender",
                         "value": "Male"
                     },
                     {
                         "position": "3",
-                        "name": "collection",
+                        "name": "Collection",
                         "value": localStorage.getItem("currentCollection")
                     },
                     {
                         "position": "4",
-                        "name": "state",
+                        "name": "State",
                         "value": "select"
                     },
                     {
                         "position": "4",
-                        "name": "fit",
+                        "name": "Fit",
                         "value": ""
                     },
                     {
                         "position": "Last",
-                        "name": "trim",
+                        "name": "Trim",
                         "value": ""
                     },
                     {
                         "position": "Last",
-                        "name": "fabric",
+                        "name": "Fabric",
                         "value": "select"
                     },
                     {
                         "position": "Last",
-                        "name": "description",
+                        "name": "Description",
                         "value": ""
                     },
                     {
                         "position": "Last",
-                        "name": "note",
+                        "name": "Note",
                         "value": ""
                     },
                     {
                         "position": "5",
-                        "name": "productType",
+                        "name": "Product Type",
                         "value": ""
                     },
                     {
                         "position": "6",
-                        "name": "category",
+                        "name": "Category",
                         "value": ""
                     },
                     {
                         "position": "3",
-                        "name": "size",
+                        "name": "Size",
                         "value": "S,M,L,XL"
                     },
                     {
                         "position": "3",
-                        "name": "ratio",
+                        "name": "Ratio",
                         "value": "1:1:1:1"
                     }
                 ]

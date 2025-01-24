@@ -39,9 +39,9 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
 
     useEffect(() => {
         if (updateMode === "off" && selectedLabels && currentCategory) {
-            updateInfoField(page, "productType", slide.data?.info?.find((item) => item.name === "productType").value, { "value": currentCategory })
-            updateInfoField(page, "designer", slide.data?.info?.find((item) => item.name === "designer").value, { "value": JSON.parse(localStorage.getItem('user')).Name })
-            updateInfoField(page, "trim", slide.data?.info?.find((item) => item.name === "trim").value, { "value": selectedLabels.join(', ') })
+            updateInfoField(page, "Product Type", slide.data?.info?.find((item) => item.name === "Product Type").value, { "value": currentCategory })
+            updateInfoField(page, "Designer", slide.data?.info?.find((item) => item.name === "Designer").value, { "value": JSON.parse(localStorage.getItem('user')).Name })
+            updateInfoField(page, "Trim", slide.data?.info?.find((item) => item.name === "Trim").value, { "value": selectedLabels.join(', ') })
         }
     }, [updateMode, selectedLabels, currentCategory])
 
@@ -65,12 +65,12 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                     <label className="form__label capitalize">Style No</label>
                     <input
                         type="text"
-                        value={slide.data?.info?.find((item) => item.name === "styleNo").value}
+                        value={slide.data?.info?.find((item) => item.name === "Style No").value}
                         onChange={(e) => {
                             updateField("styleNo", e.target.value);
-                            updateInfoField(page, "styleNo", slide.data?.info?.find((item) => item.name === "styleNo").value, { "value": e.target.value })
+                            updateInfoField(page, "Style No", slide.data?.info?.find((item) => item.name === "Style No").value, { "value": e.target.value })
                         }}
-                        className="form__field"                        
+                        className="form__field"
                         required
                     />
                 </div>
@@ -78,7 +78,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                     <label className="form__label capitalize">Designer</label>
                     <input
                         type="text"
-                        value={slide.data?.info?.find((item) => item.name === "designer").value}
+                        value={slide.data?.info?.find((item) => item.name === "Designer").value}
                         className="form__field cursor-not-allowed"
                         required
                     />
@@ -87,8 +87,8 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                     <label className="form__label capitalize">Size</label>
                     <input
                         type="text"
-                        value={slide.data?.info?.find((item) => item.name === "size").value}
-                        onChange={(e) => updateInfoField(page, "size", slide.data?.info?.find((item) => item.name === "size").value, { "value": e.target.value })}
+                        value={slide.data?.info?.find((item) => item.name === "Size").value}
+                        onChange={(e) => updateInfoField(page, "Size", slide.data?.info?.find((item) => item.name === "Size").value, { "value": e.target.value })}
                         className="form__field"
                         placeholder="BR-00-00"
                         required
@@ -97,10 +97,10 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                 <div className="flex w-[45%] gap-5">
                     <div className="form__group field w-1/2 relative group">
                         <label className="form__label capitalize">Gender</label>
-                        <select name="" id="" disabled={true} value={slide.data?.info?.find((item) => item.name === "gender").value}
+                        <select disabled={true} value={slide.data?.info?.find((item) => item.name === "Gender").value}
                             onChange={(e) => {
                                 updateField("gender", e.target.value);
-                                updateInfoField(page, "gender", slide.data?.info?.find((item) => item.name === "gender").value, { "value": e.target.value })
+                                updateInfoField(page, "Gender", slide.data?.info?.find((item) => item.name === "Gender").value, { "value": e.target.value })
                             }}
                             className="form__field break-words text-wrap cursor-not-allowed"
                             required>
@@ -112,10 +112,10 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                     <div className="form__group field w-1/2 relative group">
                         <label className="form__label capitalize">Collection</label>
                         <select
-                            value={slide.data?.info?.find((item) => item.name === "collection").value}
+                            value={slide.data?.info?.find((item) => item.name === "Collection").value}
                             onChange={(e) => {
                                 updateField("collection", e.target.value);
-                                updateInfoField(page, "collection", slide.data?.info?.find((item) => item.name === "collection").value, { "value": e.target.value })
+                                updateInfoField(page, "Collection", slide.data?.info?.find((item) => item.name === "Collection").value, { "value": e.target.value })
                             }}
                             className="form__field break-words text-wrap"
                             required>
@@ -129,10 +129,10 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                 <div className="form__group field w-[45%] relative group">
                     <label className="form__label capitalize">State</label>
                     <select
-                        value={slide.data?.info?.find((item) => item.name === "state").value}
+                        value={slide.data?.info?.find((item) => item.name === "State").value}
                         onChange={(e) => {
                             updateField("state", e.target.value);
-                            updateInfoField(page, "state", slide.data?.info?.find((item) => item.name === "state").value, { "value": e.target.value })
+                            updateInfoField(page, "State", slide.data?.info?.find((item) => item.name === "State").value, { "value": e.target.value })
                         }}
                         className="form__field break-words text-wrap"
                         required>
@@ -145,10 +145,10 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                 <div className="form__group field w-[45%] relative group">
                     <label className="form__label capitalize">Fabric</label>
                     <select
-                        value={slide.data?.info?.find((item) => item.name === "fabric").value}
+                        value={slide.data?.info?.find((item) => item.name === "Fabric").value}
                         onChange={(e) => {
                             updateField("fabric", e.target.value);
-                            updateInfoField(page, "fabric", slide.data?.info?.find((item) => item.name === "fabric").value, { "value": e.target.value })
+                            updateInfoField(page, "Fabric", slide.data?.info?.find((item) => item.name === "Fabric").value, { "value": e.target.value })
                         }}
                         className="form__field break-words text-wrap"
                         required>
@@ -162,24 +162,24 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                     <label className="form__label capitalize">Trim</label>
                     <textarea
                         type="text"
-                        value={slide.data?.info?.find((item) => item.name === "trim").value}
-                        onChange={(e) => updateInfoField(page, "trim", slide.data?.info?.find((item) => item.name === "trim").value, { "value": e.target.value })}
+                        value={slide.data?.info?.find((item) => item.name === "Trim").value}
+                        onChange={(e) => updateInfoField(page, "Trim", slide.data?.info?.find((item) => item.name === "Trim").value, { "value": e.target.value })}
                         className="form__field"
                         required
                     />
                 </div>
                 <div className="form__group field w-[45%] relative group">
-                    <label className="form__label capitalize">productType</label>
+                    <label className="form__label capitalize">Product Type</label>
                     <input
                         type="text"
-                        value={slide.data?.info?.find((item) => item.name === "productType").value}
+                        value={slide.data?.info?.find((item) => item.name === "Product Type").value}
                         className="form__field"
                         required
                         disabled
                     />
                 </div>
                 {slide.data?.info?.map((field, index) => {
-                    if (["styleNo", "designer", "size", "gender", "state", "fabric", "collection", "trim", "productType"].includes(field.name)) {
+                    if (["Style No", "Designer", "Size", "Gender", "State", "Fabric", "Collection", "Trim", "Product Type"].includes(field.name)) {
                         return null;
                     }
                     return (
