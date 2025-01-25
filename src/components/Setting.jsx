@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, fabricEdit, fabricAdd, fabricDelete, collectionEdit, collectionAdd, collectionDelete } from "../API/TechPacks";
+import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, constructionSheetEdit, useDeleteTrims, fabricEdit, fabricAdd, fabricDelete, collectionEdit, collectionAdd, collectionDelete } from "../API/TechPacks";
+import ImageSelectorPopup from "./ImageSelectorPopup";
 
 export default function Setting() {
+
 
     // Fetch All Data Logic Start
     const [categories, setCategories] = useState([]);
@@ -14,40 +16,38 @@ export default function Setting() {
     const [collections, setCollections] = useState([]);
     const [fabrics, setFabrics] = useState([]);
 
-    useEffect(() => {
-        const fetchAllSetting = async () => {
-            try {
-                const data = await fetchAll(); // Use the categoryFetch hook                                    
-                if (data.status) {
-                    setCategories(data.techPack.category); // Set the fetched categories
-                    setGenders(data.techPack.gender); // Set the fetched categories
-                    setSizeCharts(data.techPack.sizeCharts); // Set the fetched categories
-                    setConstructionSheets(data.techPack.constructionSheets); // Set the fetched categories
-                    setTrims(data.techPack.trims); // Set the fetched categories
-                    setRequirements(data.techPack.requirements); // Set the fetched categories
-                    setFinishing(data.techPack.finishing); // Set the fetched categories
-                    setCollections(data.techPack.collections); // Set the fetched categories
-                    setFabrics(data.techPack.fabric); // Set the fetched categories
-                } else {
-                    console.error('Failed to fetch categories');
-                }
-            } catch (error) {
-                console.error('Error fetching categories:', error);
+    const [openPopupId, setOpenPopupId] = useState(null);
+
+    const fetchAllSetting = async () => {
+        try {
+            const data = await fetchAll(); // Use the categoryFetch hook                                    
+            if (data.status) {
+                setCategories(data.techPack.category); // Set the fetched categories
+                setGenders(data.techPack.gender); // Set the fetched categories
+                setSizeCharts(data.techPack.sizeCharts); // Set the fetched categories
+                setConstructionSheets(data.techPack.constructionSheets); // Set the fetched categories
+                setTrims(data.techPack.trims); // Set the fetched categories
+                setRequirements(data.techPack.requirements); // Set the fetched categories
+                setFinishing(data.techPack.finishing); // Set the fetched categories
+                setCollections(data.techPack.collections); // Set the fetched categories
+                setFabrics(data.techPack.fabric); // Set the fetched categories
+            } else {
+                console.error('Failed to fetch categories');
             }
-        };
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    };
+
+    useEffect(() => {
         fetchAllSetting();
     }, []);
-    // Fetch All data Logic Over
 
-    console.log("construction", construction)
+
     // Category Logic start
     const [editedCategory, setEditedCategory] = useState('');
     const [showCategoryPopup, setShowCategoryPopup] = useState(false);
     const [loading, setLoading] = useState(false);
-
-    const handleAddCategory = async () => {
-        setShowCategoryPopup(true);
-    };
 
     const handleEditCategory = async (cat) => {
         const newCategoryName = prompt('Enter the new category name:', cat);
@@ -282,6 +282,31 @@ export default function Setting() {
         setIsAdding(false); // Close the "add option" modal
     };
     // Sizechart Logic Over
+
+
+    // construction sheet Logic start
+    const [constructionSheetEditBox, setConstructionSheetEditBox] = useState(null);
+    const [constructionSheetLoading, setConstructionSheetLoading] = useState(false);
+
+    const handleConstructionSheetEdit = async () => {
+        try {
+            console.log(construction)
+            setConstructionSheetLoading(true)
+            // Use the categoryEdit hook to update the category
+            const updated = await constructionSheetEdit(construction.name, constructionSheetEditBox);
+            console.log(updated)
+            // if (updated.status) {
+            //     fetchAllSetting(); // Refetch the data
+            // } else {
+            //     console.error('Failed to edit category');
+            // }
+        } catch (error) {
+            console.log("error in construction sheet: ", error)
+        } finally {
+            setConstructionSheetLoading(false)
+        }
+    }
+
 
 
     // Trims Logic Start
@@ -559,7 +584,7 @@ export default function Setting() {
                             <h1 className="font-bold text-xl">New Category</h1>
                         </div>
                         <div className="flex gap-3">
-                            <button className="underline" onClick={handleAddCategory}>
+                            <button className="underline" onClick={() => setShowCategoryPopup(true)}>
                                 Add
                             </button>
                         </div>
@@ -1102,64 +1127,65 @@ export default function Setting() {
                 <div>
                     <h1 className="font-bold text-xl mb-4">Construction Sheet</h1>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {construction.map((box) => (
-                            <div key={box.id} className="p-4 border border-gray-400">
-                                <div className="flex justify-between items-center pb-2">
-                                    <h1 className="text-xl text-center">{box.name}</h1>
-                                    <button
-                                        className="text-gray-600 hover:text-black"
-                                    >
-                                        Edit
-                                    </button>
+                        {construction.map((box) => {
+                            return (
+                                <div key={box.id} className="p-4 border border-gray-400">
+                                    <div className="flex justify-between items-center pb-2">
+                                        <h1 className="text-xl text-center">{box.name}</h1>
+                                        <button className="text-gray-600 hover:text-black" onClick={() => setConstructionSheetEditBox(box)}>
+                                            Edit
+                                        </button>
+                                    </div>
+                                    <div className="flex flex-wrap gap-3">
+                                        {box.images.map((image, index) => (
+                                            <img
+                                                key={index}
+                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}` || "images.jpg"}
+                                                alt={box.name}
+                                                className="w-24 h-20 object-cover bg-[#FCFCFC] border border-dashed border-[#CACACA] rounded"
+                                            />
+                                        ))}
+                                    </div>
                                 </div>
-                                <div className="flex flex-wrap gap-3">
-                                    {box.images.map((image, index) => (
-                                        <img
-                                            key={index}
-                                            src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}` || "images.jpg"}
-                                            alt={box.name}
-                                            className="w-24 h-20 object-cover bg-[#FCFCFC] border border-dashed border-[#CACACA] rounded"
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
+                            )
+                        })}
                     </div>
 
-                    {/* {secondPopup.visible && (
+                    {constructionSheetEditBox && (
                         <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
                             <div className="bg-white p-6 rounded shadow-md w-[400px] h-[85vh] overflow-scroll">
                                 <h2 className="text-lg font-bold mb-4">Edit Construction Sheet</h2>
                                 <input
                                     type="text"
                                     placeholder="Enter Name"
-                                    value={secondFormData.name}
+                                    value={constructionSheetEditBox.name}
                                     onChange={(e) =>
-                                        setSecondFormData({ ...secondFormData, name: e.target.value })
+                                        setConstructionSheetEditBox({ ...constructionSheetEditBox, name: e.target.value })
                                     }
                                     className="w-full p-2 border bg-slate-100 rounded mb-4"
                                 />
                                 <div className="mb-4">
                                     <label className="block mb-2 font-semibold">Images:</label>
-                                    {secondFormData.images.map((image, index) => (
+                                    {constructionSheetEditBox.images.map((image, index) => (
                                         <div
                                             key={index}
                                             className="flex items-center justify-between gap-2 mb-2 border p-2 rounded"
                                         >
                                             <img
-                                                src={`${process.env.REACT_APP_API_URL}/${image}`}
-                                                alt={`Preview ${index + 1}`}
+                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
+                                                alt={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
                                                 className="w-28 h-16 object-cover rounded"
                                             />
-                                            <button
+                                            {/* <button
                                                 className="text-red-500 text-sm"
                                                 onClick={() => handleSecondRemoveImage(index)}
                                             >
                                                 Remove
-                                            </button>
+                                            </button> */}
                                         </div>
                                     ))}
-                                    <input
+                                    <button type="button" className="w-full mb-4 border border-black" onClick={() => setOpenPopupId(`constructionSheetEditBox`)}>Upload image</button>
+                                    {/* <input
                                         type="file"
                                         accept="image/*"
                                         multiple
@@ -1174,29 +1200,29 @@ export default function Setting() {
                                             }));
                                         }}
                                         className="w-full mb-4"
-                                    />
+                                    /> */}
                                 </div>
                                 {error && console.error('Error:', error)}
                                 {error && <p className="text-red-500 mb-2">{error}</p>}
                                 <div className="flex justify-end gap-2">
                                     <button
                                         className="px-4 py-2 border text-black rounded-lg text-sm"
-                                        onClick={() => setSecondPopup({ visible: false, id: null })}
+                                        onClick={() => setConstructionSheetEditBox(null)}
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         className="px-4 py-2 bg-black text-white rounded-lg text-sm"
-                                        onClick={handleSecondSave}
-                                        disabled={loading}
+                                        onClick={handleConstructionSheetEdit}
+                                        disabled={constructionSheetLoading}
                                     >
-                                        {loading ? "Saving..." : "Save"}
+                                        {constructionSheetLoading ? "Saving..." : "Save"}
                                     </button>
                                 </div>
                             </div>
 
                         </div>
-                    )} */}
+                    )}
                 </div>
             </div>
 
@@ -1882,6 +1908,22 @@ export default function Setting() {
                     )}
                 </div>
             </div>
+
+            {["constructionSheetEditBox"].map((elem, index) => {
+                return <ImageSelectorPopup
+                    key={elem}
+                    isOpen={openPopupId === elem}
+                    closeModal={() => setOpenPopupId(null)}
+                    onImageSelect={(imgName) => {
+                        if (elem === "constructionSheetEditBox") {
+                            setConstructionSheetEditBox((prev) => ({
+                                ...prev,
+                                images: [...prev.images, { "position": index.toString(), "src": imgName }],
+                            }));
+                        }
+                    }}
+                />
+            })}
 
         </section >
     );

@@ -299,6 +299,29 @@ export const genderDelete = async (name) => {
     }
 };
 
+export const constructionSheetEdit = async (name, data) => {
+    try {
+        console.log("name", name)
+        const response = await fetch(`${apiURL}/design/setting/constructionSheet/update/${name}`, {
+            method: 'POST',
+            body: JSON.stringify({ "constructionSheet": data }),
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw new Error('Failed to update Construction Sheet');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while updating Construction Sheet');
+    }
+};
+
 export const trimFetch = async () => {
     try {
         const response = await fetch(`${apiURL}/design/setting/trims`, {
