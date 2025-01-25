@@ -6,9 +6,12 @@ import { IoClose } from "react-icons/io5";
 const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
     const [images, setImages] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const fetchAllImage = async () => {
+        setIsLoading(true)
         try {
+            console.log("Images fetched")
             const data = await getUploadedImage(); // Use your API call here
             if (data.status) {
                 setImages(data.data); // Set the fetched images
@@ -17,12 +20,14 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
             }
         } catch (error) {
             console.error('Error fetching images:', error);
+        } finally {
+            setIsLoading(false)
         }
     };
 
     useEffect(() => {
         fetchAllImage();
-    }, []);
+    }, [isOpen]);
 
     const filteredImages = images.filter(image =>
         image.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -66,7 +71,8 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
 
     return (
         <div className="relative">
-            {isOpen && (
+            {isLoading && <div className='bg-white text-black flex items-center justify-center w-full h-full'>Loading..</div>}
+            {(!isLoading && isOpen) && (
                 <div className="fixed inset-0 bg-black z-[100] bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-[80%] h-[80%]">
                         <div className='flex justify-between pb-5'>

@@ -1,16 +1,10 @@
 
+import { useState } from 'react';
 import { jsPDF } from 'jspdf';
-import { useEffect, useState } from 'react';
 import { AiOutlineLoading } from "react-icons/ai";
-
 
 const TechPackPdfGenerator = (data) => {
     const [isDownloading, setIsDownloading] = useState(false);
-
-    useEffect(() => {
-        console.log(isDownloading)
-    }, [isDownloading])
-
 
     const pageWidth = 297;
     const pageHeight = 210;
