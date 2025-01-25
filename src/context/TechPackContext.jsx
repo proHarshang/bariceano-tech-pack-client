@@ -102,7 +102,7 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "3",
                         "name": "Collection",
-                        "value": localStorage.getItem("currentCollection")
+                        "value": "DEVAM"
                     },
                     {
                         "position": "4",

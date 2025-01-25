@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { AiOutlineLoading } from "react-icons/ai";
 
 const TechPackPDFGenrate = (data) => {
-    const [isLoading, setIsLoading] = useState(false)
+    const [isDownloading, setIsDownloading] = useState(false);
 
     const pageWidth = 297;
     const pageHeight = 210;
@@ -65,7 +65,7 @@ const TechPackPDFGenrate = (data) => {
 
     function generatePdf() {
         try {
-            setIsLoading(true)
+            setIsDownloading(true)
             const pageWidth = pdf.internal.pageSize.getWidth();
             const pageHeight = pdf.internal.pageSize.getHeight();
 
@@ -103,9 +103,13 @@ const TechPackPDFGenrate = (data) => {
 
 
             const processedSlides = slides.map((slide, index) => {
-                headerSection(slide.page, slide.name);
+                if (index > 0) {
+                    pdf.addPage();
+                }
 
+                headerSection(slide.page, slide.name);
                 if (slide.type === "Layout1") {
+
                     const colorImgWidth = 40;
                     const frontBackImgWidth = 75;
                     const frontBackImgHeight = 110;
@@ -222,6 +226,7 @@ const TechPackPDFGenrate = (data) => {
                     });
 
                 } else if (slide.type === "Layout3") {
+
                     const shirtImagePath1 = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout3[0].data.images[0].src}`;
                     const shirtImagePath2 = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout3[0].data.images[1].src}`;
                     const shirtWidth = 80;
@@ -278,8 +283,10 @@ const TechPackPDFGenrate = (data) => {
                     });
 
                 } else if (slide.type === "Layout0") {
+
                     pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout0[0].data.images[0].src}`, 'JPEG', 10, 25, 297 - 10, 167);
                 } else if (slide.type === "Information") {
+
                     const colWidth = (pageWidth - 20) / 4; // Divide into four equal columns
                     const col1X = 10; // First column start
                     const col2X = col1X + colWidth; // Second column start
@@ -362,10 +369,6 @@ const TechPackPDFGenrate = (data) => {
                     });
                 } else if (slide.type === "ArtworkPlacementSheet") {
                     if (ArtworkPlacementSheet[0] && ArtworkPlacementSheet[0].data.artworkPlacementSheet?.length > 0) {
-                        pdf.addPage();
-
-                        // Artwork placement sheet header
-                        headerSection(ArtworkPlacementSheet[0].page, ArtworkPlacementSheet[0].name);
 
                         // Adjust margins and table settings
                         const leftMargin = 10; // Left margin
@@ -502,7 +505,6 @@ const TechPackPDFGenrate = (data) => {
                             currentY += rowHeight;
                         });
 
-                        footerSection();
                     } else {
                         console.warn("No artwork placement sheet data available. Skipping placement section.");
                     }
@@ -510,15 +512,15 @@ const TechPackPDFGenrate = (data) => {
                 }
                 else if (slide.type === "ArtWork") {
                     if (ArtWork.length > 0 && ArtWork[0]?.data?.images?.length > 0) {
+
                         // Sort artwork images by position
                         ArtWork[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
 
                         ArtWork[0].data.images.forEach((image, index) => {
                             // Add a new page for each image
-                            pdf.addPage();
 
                             // Add the header section with the page number
-                            headerSection(ArtWork[0].page, "Artwork Sheet");
+                            headerSection(ArtWork[0].page, slide.name);
 
                             // Add the artwork image
                             pdf.addImage(
@@ -538,120 +540,55 @@ const TechPackPDFGenrate = (data) => {
                     }
                 }
                 else if (slide.type === "Page") {
-                    if (Array.isArray(Page) && Page.length > 0) {
-                        Page.sort((a, b) => parseInt(a.page) - parseInt(b.page));
-                        const maxWidth = 240;
-                        const xPosition = (pageWidth - maxWidth) / 2;  // Centering the image
+                    if (slide.type === "Page") {
+                        // Check if slide.data exists and contains images
+                        if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0) {
+                            const maxWidth = 240;
+                            const xPosition = (pageWidth - maxWidth) / 2; // Centering the image
 
-                        Page.forEach((page, index) => {
+                            // Loop through images within slide.data
+                            slide.data.images.forEach((image) => {
+                                const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
+                                console.log("Adding image from:", imagePath);
+
+                                // Add image to PDF with adjusted position and dimensions
+                                pdf.addImage(imagePath, "JPEG", xPosition, 25, maxWidth, 167);
+                            });
+                        } else {
+                            console.warn(`No images found for page ${slide.page}. Skipping image addition.`);
+                        }
+                    }
+
+                } else if (slide.type === "SiliconLabel") {
+                    if (SiliconLabel[0] && SiliconLabel[0].data.images && SiliconLabel[0].data.images.length > 0) {
+                        SiliconLabel[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
+                        const maxWidth = pdf.internal.pageSize.getWidth() - 40;
+                        const xPosition = (pageWidth - maxWidth) / 2;
+                        SiliconLabel[0].data.images.forEach((image, index) => {
                             if (index > 0) {
                                 pdf.addPage();
                             }
 
-                            // Add header for the current page
-                            headerSection(page.page, page.name);
-
-                            if (Array.isArray(page.data.images) && page.data.images.length > 0) {
-                                page.data.images.forEach((image) => {
-                                    const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
-                                    console.log("Adding image from:", imagePath); // Debug: Log image path
-
-                                    pdf.addImage(imagePath, "JPEG", xPosition, 25, maxWidth, 167); // Adjusted dimensions for A4
-                                });
-                            } else {
-                                console.warn(`No images found for page ${page.page}. Skipping image addition.`);
-                            }
-
-                            footerSection();
-                        });
-                    } else {
-                        console.error("Pages array is missing or empty.");
-                    }
-                }
-                else if (slide.type === "SiliconLabel") {
-                    const basePath = process.env.REACT_APP_API_URL;
-
-                    // Check if siliconLabelSheet is valid
-                    if (SiliconLabel[0] && SiliconLabel[0].data.images && SiliconLabel[0].data.images.length > 0) {
-                        // Sort images by position
-                        SiliconLabel[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
-
-                        SiliconLabel[0].data.images.forEach((image, index) => {
-                            headerSection(SiliconLabel[0].page, SiliconLabel[0].name);
-
-                            if (index > 0) {
-                                pdf.addPage(); // Add a new page for additional images
-                                // Add header for the page
-                            }
                             if (index === 0) {
                                 pdf.setFont('helvetica', 'bold');
-                                pdf.setFontSize(10); // Set a smaller text size (e.g., 10)
-                                pdf.text('PLACEMENT', 20, 30); // Title "Placement"
+                                pdf.setFontSize(10);
+                                pdf.text('PLACEMENT', 20, 30);
                                 pdf.setFont('helvetica', 'normal');
-                                pdf.setFontSize(10); // Set a smaller text size (e.g., 10)
+                                pdf.setFontSize(10);
                                 pdf.text(SiliconLabel[0]?.data?.title.toUpperCase(), 20, 36);
                             }
 
-
-                            // Add the image
-                            const imagePath = `${basePath}/uploads/techpack/${image.src}`;
-                            const xOffset = 10; // Left margin of 10
-                            const yOffset = 45; // Top margin of 10
-                            const pageWidth = pdf.internal.pageSize.getWidth(); // Full page width
-                            const pageHeight = pdf.internal.pageSize.getHeight(); // Full page height
-                            const imageWidth = pageWidth - 20; // Full width minus 10 units margin on each side
-                            const imageHeight = pageHeight - 65; // Full height minus 10 units margin on top and bottom
-
-                            try {
-                                // Use "jpeg" instead of "jpg" for JPG images
-                                pdf.addImage(imagePath, "jpeg", xOffset, yOffset, imageWidth, imageHeight); // Fill full width and height
-                            } catch (error) {
-                                console.error(`Failed to add image: ${imagePath}`, error);
-                            }
-
-                            // Add footer for the page
-                            footerSection();
+                            const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
+                            pdf.addImage(imagePath, "jpeg", xPosition, 45, maxWidth, pdf.internal.pageSize.getHeight() - 65);
                         });
                     } else {
                         console.log("No valid siliconLabelSheet data found. Skipping page creation.");
                     }
-                } else if (slide.type === "Page") {
-                    if (Array.isArray(Page) && Page.length > 0) {
-                        Page.sort((a, b) => parseInt(a.page) - parseInt(b.page));
-                        const maxWidth = 240;
-                        const xPosition = (pageWidth - maxWidth) / 2;  // Centering the image
-
-                        Page.forEach((page, index) => {
-                            if (index > 0) {
-                                pdf.addPage();
-                            }
-
-                            // Add header for the current page
-                            headerSection(page.page, page.name);
-
-                            if (Array.isArray(page.data.images) && page.data.images.length > 0) {
-                                page.data.images.forEach((image) => {
-                                    const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
-                                    console.log("Adding image from:", imagePath); // Debug: Log image path
-
-                                    pdf.addImage(imagePath, "JPEG", xPosition, 25, maxWidth, 167); // Adjusted dimensions for A4
-                                });
-                            } else {
-                                console.warn(`No images found for page ${page.page}. Skipping image addition.`);
-                            }
-
-                            footerSection();
-                        });
-                    } else {
-                        console.error("Pages array is missing or empty.");
-                    }
-                } else {
-                    console.log("No Type Found")
                 }
+
+                footerSection();
                 return slide; // Modify as needed
             });
-
-
             pdf.save(`${data.data.styleNo}.pdf`);
 
         }
@@ -659,15 +596,21 @@ const TechPackPDFGenrate = (data) => {
             alert("Something Went Wrong!")
             console.log(error)
         } finally {
-            setIsLoading(false)
+            setIsDownloading(false)
         }
 
     }
 
 
     return (
-        <button type='button' onClick={() => generatePdf()} className={`${isLoading ? 'animate-spin' : ''}`}>{isLoading ? <AiOutlineLoading /> : 'Download'}</button>
-    )
+        <button
+            type='button'
+            onClick={generatePdf}
+            className={`text-center flex items-center justify-center mx-auto ${isDownloading ? 'animate-spin' : ''}`}
+            disabled={isDownloading}
+        >
+            {isDownloading ? <AiOutlineLoading className='text-black font-bold' /> : 'Download'}
+        </button>)
 }
 
 export default TechPackPDFGenrate

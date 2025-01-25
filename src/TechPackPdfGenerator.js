@@ -108,7 +108,7 @@ const TechPackPdfGenerator = (data) => {
                 return acc;
             }, {});
 
-            console.log("data.data.slides",data.data.slides)
+            console.log("data.data.slides", data.data.slides)
 
             // Destructure filteredSlides into individual constants
             const {
@@ -666,7 +666,7 @@ const TechPackPdfGenerator = (data) => {
 
 
         } catch (error) {
-            alert("Ask Harshang because something went wrong!")
+            alert("something went wrong meet Developers!!")
             console.log(error)
         } finally {
             setIsDownloading(false)

@@ -464,5 +464,5 @@ select:focus-visible {
 }
 
 .animate-slide-down-up {
-  animation: slideDownUp 3s ease-in-out;
+  animation: slideDownUp 5s ease-in-out;
 }
