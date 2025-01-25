@@ -11,7 +11,7 @@ const Layout1 = ({ page }) => {
 
     return (
         <article>
-            <div className='flex justify-evenly w-full gap-10'>
+            <div className='flex justify-evenly w-full gap-5'>
                 <div className='flex flex-col h-full'>
                     <div className='w-full h-[140px] mb-12'>
                         <h1 className='mb-2'>Fabric Colour</h1>
@@ -48,7 +48,7 @@ const Layout1 = ({ page }) => {
                         </div>
                     </div>
                 </div>
-                <div className='w-[30%] h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
+                <div className='w-[40%] h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
                     {slide.data?.images[0].src ? (
                         <img
                             onClick={() => setOpenPopupId(`images-0`)}
@@ -62,7 +62,7 @@ const Layout1 = ({ page }) => {
                         </label>
                     )}
                 </div>
-                <div className='w-[30%] cursor-pointer h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
+                <div className='w-[40%] cursor-pointer h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
                     {slide.data?.images[1].src ? (
                         <img
                             onClick={() => setOpenPopupId(`images-1`)}
