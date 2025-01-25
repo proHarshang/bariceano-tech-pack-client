@@ -12,18 +12,18 @@ const Layout2 = ({ page }) => {
   return (
     <>
       <div className='flex flex-col gap-10'>
-        <div className='w-full flex justify-evenly gap-14 px-10'>
+        <div className='w-full flex justify-evenly gap-3'>
           {[0, 1, 2].map((key, index) => (
             <div
               key={key}
-              className='h-[270px] w-full rounded-2xl flex items-center justify-center'
+              className='h-[272px] w-[272px] rounded-2xl flex items-center justify-center'
             >
               {slide.data?.images.find((item) => item.position === key).src ? (
                 <img
                   onClick={() => setOpenPopupId(`images-${key}`)}
                   src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.images.find((item) => item.position === key).src}`}
                   alt={slide.data?.images.find((item) => item.position === key).src}
-                  className='object-fill h-full cursor-pointer rounded-2xl'
+                  className='w-full h-full cursor-pointer rounded-2xl'
                 />
               ) : (
                 <label onClick={() => setOpenPopupId(`images-${key}`)} className='bg-[#FCFCFC] rounded-2xl text-sm text-[#DFDFDF] border-2 border-dashed flex flex-col items-center justify-center w-full h-full cursor-pointer'>

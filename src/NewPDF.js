@@ -128,23 +128,41 @@ const TechPackPDFGenrate = (data) => {
 
                     // Add images to the PDF based on the sorted order
                     sortedImages.forEach((image, index) => {
+                        // Validate image dimensions
+                        const imageWidth = image.width || 1; // Default to 1 if undefined
+                        const imageHeight = image.height || 1; // Default to 1 if undefined
+
+                        // Maintain aspect ratio
+                        const aspectRatio = imageWidth / imageHeight;
+                        const adjustedHeight = frontBackImgHeight; // Fixed height
+                        const adjustedWidth = adjustedHeight * aspectRatio; // Adjusted width based on aspect ratio
+
+                        // Validate calculated width
+                        if (isNaN(adjustedWidth) || adjustedWidth <= 0) {
+                            console.error('Invalid image dimensions or aspect ratio:', { imageWidth, imageHeight });
+                            return;
+                        }
+
+                        const imageSpacing = 20; // Space between images
+                        const yPosition = firstRowY + 10;
+
                         if (index === 0) {
                             pdf.addImage(
                                 `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`,
                                 'JPEG',
                                 frontImgX + 44, // Adjusted X position for the first image
-                                firstRowY + 10,
-                                frontBackImgWidth + 10,
-                                frontBackImgHeight - 10
+                                yPosition,
+                                adjustedWidth,
+                                adjustedHeight
                             );
                         } else if (index === 1) {
                             pdf.addImage(
                                 `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`,
                                 'JPEG',
-                                backImgX + 64, // Adjusted X position for the second image
-                                firstRowY + 10,
-                                frontBackImgWidth + 10,
-                                frontBackImgHeight - 10
+                                frontImgX + 10 + adjustedWidth + imageSpacing, // X position for the second image
+                                yPosition,
+                                adjustedWidth,
+                                adjustedHeight
                             );
                         }
                     });
@@ -165,14 +183,14 @@ const TechPackPDFGenrate = (data) => {
                     const spacing = 20;
 
                     // Adjust dynamic image dimensions
-                    const largeImageWidth = 80;
+                    const largeImageWidth = 92;
                     const largeImageHeight = 92;
 
                     // Top three large rectangles centered with equal space using justify-between logic
                     const largeImageTop = topMargin + 10;
-                    const largeImageLeftX = centerX - largeImageWidth - spacing - largeImageWidth / 2;
+                    const largeImageLeftX = centerX - largeImageWidth - spacing - largeImageWidth / 2 + 20;
                     const largeImageCenterX = centerX - largeImageWidth / 2;
-                    const largeImageRightX = centerX + largeImageWidth + spacing - largeImageWidth / 2;
+                    const largeImageRightX = centerX + largeImageWidth + spacing - largeImageWidth / 2 - 20;
 
                     // Adding the first three main images in sorted order
                     if (Layout2[0] && Layout2[0].data.images.length > 0 && Layout2[0].data.images[0].src) {
@@ -229,9 +247,9 @@ const TechPackPDFGenrate = (data) => {
 
                     const shirtImagePath1 = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout3[0].data.images[0].src}`;
                     const shirtImagePath2 = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout3[0].data.images[1].src}`;
-                    const shirtWidth = 80;
-                    const shirtHeight = 90;
-                    const shirtY = (pageHeight - shirtHeight) / 3; // Center vertically
+                    const shirtWidth = 97;
+                    const shirtHeight = 97;
+                    const shirtY = (pageHeight - shirtHeight) / 3 - 17; // Center vertically
                     const shirtX1 = 30; // Position for the first shirt image
                     const shirtX2 = pageWidth - shirtWidth - 30; // Position for the second shirt image
 
@@ -247,7 +265,7 @@ const TechPackPDFGenrate = (data) => {
                     const colorHeight = 33; // Increased height
                     const colorSpacing = 10;
                     const colorMarginTop = 20; // Add margin between shirt and color swatches
-                    const colorYStart = shirtY + shirtHeight + colorMarginTop; // Start below shirt images
+                    const colorYStart = shirtY + shirtHeight + colorMarginTop + 10; // Start below shirt images
 
                     // Thread color positions
                     const threadColorXStart = shirtX1;
@@ -562,7 +580,7 @@ const TechPackPDFGenrate = (data) => {
                 } else if (slide.type === "SiliconLabel") {
                     if (SiliconLabel[0] && SiliconLabel[0].data.images && SiliconLabel[0].data.images.length > 0) {
                         SiliconLabel[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
-                        const maxWidth = pdf.internal.pageSize.getWidth() - 40;
+                        const maxWidth = pdf.internal.pageSize.getWidth() - 50;
                         const xPosition = (pageWidth - maxWidth) / 2;
                         SiliconLabel[0].data.images.forEach((image, index) => {
                             if (index > 0) {
