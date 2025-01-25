@@ -41,6 +41,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
         if (updateMode === "off" && selectedLabels && currentCategory) {
             updateInfoField(page, "Product Type", slide.data?.info?.find((item) => item.name === "Product Type").value, { "value": currentCategory })
             updateInfoField(page, "Designer", slide.data?.info?.find((item) => item.name === "Designer").value, { "value": JSON.parse(localStorage.getItem('user')).Name })
+            updateInfoField(page, "Designer", slide.data?.info?.find((item) => item.name === "Designer").value, { "value": JSON.parse(localStorage.getItem('user')).Name })
             updateInfoField(page, "Trim", slide.data?.info?.find((item) => item.name === "Trim").value, { "value": selectedLabels.join(', ') })
         }
     }, [updateMode, selectedLabels, currentCategory])
@@ -118,7 +119,9 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                                 updateInfoField(page, "Collection", slide.data?.info?.find((item) => item.name === "Collection").value, { "value": e.target.value })
                             }}
                             className="form__field break-words text-wrap"
-                            required>
+                            required
+                            disabled
+                        >
                             <option className="break-words text-wrap text-sm overflow-x-auto" value="select" disabled>select</option>
                             {collections.map((collection) => (
                                 <option className="break-words text-wrap text-sm overflow-x-auto" value={collection}>{collection}</option>
