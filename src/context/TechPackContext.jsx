@@ -323,6 +323,53 @@ export const TechPackProvider = ({ children }) => {
         }));
     };
 
+    const moveSlideUp = (page) => {
+        setTechPackData((prevData) => {
+          const slides = [...prevData.slides];
+          const index = slides.findIndex((slide) => slide.page === page);
+      
+          if (index > 0) {
+            // Swap the current slide with the previous slide
+            const temp = slides[index - 1];
+            slides[index - 1] = slides[index];
+            slides[index] = temp;
+      
+            // Adjust the page numbers
+            slides[index - 1].page -= 1;
+            slides[index].page += 1;
+      
+            return { ...prevData, slides };
+          }
+      
+          console.warn(`Slide with page ${page} is already at the top.`);
+          return prevData; // No changes if already at the top
+        });
+      };
+
+      const moveSlideDown = (page) => {
+        setTechPackData((prevData) => {
+          const slides = [...prevData.slides];
+          const index = slides.findIndex((slide) => slide.page === page);
+      
+          if (index < slides.length - 1) {
+            // Swap the current slide with the next slide
+            const temp = slides[index + 1];
+            slides[index + 1] = slides[index];
+            slides[index] = temp;
+      
+            // Adjust the page numbers
+            slides[index + 1].page += 1;
+            slides[index].page -= 1;
+      
+            return { ...prevData, slides };
+          }
+      
+          console.warn(`Slide with page ${page} is already at the bottom.`);
+          return prevData; // No changes if already at the bottom
+        });
+      };
+      
+
     const addInfoField = (page, newField) => {
         setTechPackData((prev) => {
             const updatedSlides = prev.slides.map((slide) => {
@@ -646,6 +693,8 @@ export const TechPackProvider = ({ children }) => {
                 setUpdateMode,
                 isUpdating,
                 isUpdatingAs,
+                moveSlideUp,
+                moveSlideDown,
                 updateTechPack,
                 updateAsTechPack,
                 createUpdateTechPackSetup,
