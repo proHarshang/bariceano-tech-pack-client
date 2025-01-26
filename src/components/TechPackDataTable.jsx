@@ -469,9 +469,9 @@ const TechPackDataTable = ({ data = [] }) => {
                                                 <button type="button" className="edit-button hover:bg-zinc-300" onClick={() => handleEditClick(item._id)}>Edit</button>
                                             </div>
                                             <div className="action-buttons w-1/2">
-                                                <button type="button" className="download-button hover:bg-green-300">
+                                                <div className="download-button hover:bg-green-300">
                                                     <NewPdfGenerator data={currentItems[index]} />
-                                                </button>
+                                                </div>
                                                 <button type="button" onClick={() => {
                                                     const confirmDelete = window.confirm(
                                                         "Are you sure you want to delete this TechPack?"
