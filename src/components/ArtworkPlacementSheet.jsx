@@ -12,9 +12,9 @@ const ArtworkPlacementSheet = ({ page }) => {
         <>
             <div className="text-xs flex gap-5 justify-end m-5">
                 <button
-                    className={`px-3 py-1 border rounded-lg border-black ${slide.data.artworkPlacementSheet.length >= 5 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`px-3 py-1 border rounded-lg border-black ${slide.data.artworkPlacementSheet.length >= 6 ? 'opacity-50 cursor-not-allowed' : ''}`}
                     type="button"
-                    disabled={slide.data.artworkPlacementSheet.length >= 5}
+                    disabled={slide.data.artworkPlacementSheet.length >= 6}
                     onClick={(e) => addArtworkPlacement(page, {
                         sNo: slide.data.artworkPlacementSheet.length + 1,
                         placement: "Back",
