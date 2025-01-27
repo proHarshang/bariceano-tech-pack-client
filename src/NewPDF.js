@@ -1,6 +1,7 @@
 import { jsPDF } from 'jspdf';
 import { useState } from 'react';
 import { AiOutlineLoading } from "react-icons/ai";
+import { getImageSize } from 'react-image-size';
 
 const TechPackPDFGenrate = (data) => {
     const [isDownloading, setIsDownloading] = useState(false);
@@ -111,11 +112,9 @@ const TechPackPDFGenrate = (data) => {
                 if (slide.type === "Layout1") {
 
                     const colorImgWidth = 40;
-                    const frontBackImgWidth = 75;
                     const frontBackImgHeight = 110;
                     const colorImgX = 20;
                     const frontImgX = colorImgX + colorImgWidth - 25;
-                    const backImgX = frontImgX + frontBackImgWidth + 15;
 
                     pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.fabricColorImages[0].src}`, 'JPEG', colorImgX, firstRowY + 10, colorImgWidth, colorImgHeight);
                     pdf.setFont('helvetica', 'bold');
@@ -600,7 +599,22 @@ const TechPackPDFGenrate = (data) => {
                             pdf.addImage(imagePath, "jpeg", xPosition, 45, maxWidth, pdf.internal.pageSize.getHeight() - 65);
                         });
                     } else {
-                        console.log("No valid siliconLabelSheet data found. Skipping page creation.");
+                        // Check if slide.data exists and contains images
+                        if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0) {
+                            const maxWidth = 240;
+                            const xPosition = (pageWidth - maxWidth) / 2; // Centering the image
+
+                            // Loop through images within slide.data
+                            slide.data.images.forEach((image) => {
+                                const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
+                                console.log("Adding image from:", imagePath);
+
+                                // Add image to PDF with adjusted position and dimensions
+                                pdf.addImage(imagePath, "JPEG", xPosition, 25, maxWidth, 167);
+                            });
+                        } else {
+                            console.warn(`No images found for page ${slide.page}. Skipping image addition.`);
+                        }
                     }
                 }
 
