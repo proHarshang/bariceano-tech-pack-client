@@ -99,7 +99,6 @@ const TechPackPDFGenrate = (data) => {
                 ArtworkPlacementSheet = [],
                 ArtWork = [],
                 SiliconLabel = [],
-                Page = [],
             } = filteredSlides;
 
 
@@ -576,7 +575,8 @@ const TechPackPDFGenrate = (data) => {
                         }
                     }
 
-                } else if (slide.type === "SiliconLabel") {
+                }
+                else if (slide.type === "SiliconLabel") {
                     if (SiliconLabel[0] && SiliconLabel[0].data.images && SiliconLabel[0].data.images.length > 0) {
                         SiliconLabel[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
                         const maxWidth = pdf.internal.pageSize.getWidth() - 50;
@@ -599,22 +599,24 @@ const TechPackPDFGenrate = (data) => {
                             pdf.addImage(imagePath, "jpeg", xPosition, 45, maxWidth, pdf.internal.pageSize.getHeight() - 65);
                         });
                     } else {
-                        // Check if slide.data exists and contains images
-                        if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0) {
-                            const maxWidth = 240;
-                            const xPosition = (pageWidth - maxWidth) / 2; // Centering the image
+                        console.log("No SiliconeLabel found")
+                    }
+                }
+                else {// Check if slide.data exists and contains images
+                    if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0) {
+                        const maxWidth = 240;
+                        const xPosition = (pageWidth - maxWidth) / 2; // Centering the image
 
-                            // Loop through images within slide.data
-                            slide.data.images.forEach((image) => {
-                                const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
-                                console.log("Adding image from:", imagePath);
+                        // Loop through images within slide.data
+                        slide.data.images.forEach((image) => {
+                            const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
+                            console.log("Adding image from:", imagePath);
 
-                                // Add image to PDF with adjusted position and dimensions
-                                pdf.addImage(imagePath, "JPEG", xPosition, 25, maxWidth, 167);
-                            });
-                        } else {
-                            console.warn(`No images found for page ${slide.page}. Skipping image addition.`);
-                        }
+                            // Add image to PDF with adjusted position and dimensions
+                            pdf.addImage(imagePath, "JPEG", xPosition, 25, maxWidth, 167);
+                        });
+                    } else {
+                        console.warn(`No images found for page ${slide.page}. Skipping image addition.`);
                     }
                 }
 
