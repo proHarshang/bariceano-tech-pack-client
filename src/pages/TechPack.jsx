@@ -8,48 +8,19 @@ import Header from '../common/header';
 import Footer from '../common/footer';
 import { useTechPack } from '../context/TechPackContext';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { fetchAll } from '../API/TechPacks';
 
 const TechPack = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { techPackData, updateField, addSlide, addSlideAtIndex, isUpdating, isUpdatingAs, updateAsTechPack, updateTechPack, getMaxPageNumber, updateMode, submitTechPack, resetTechPack, isAdding, submitStatus, createUpdateTechPackSetup } = useTechPack();
+  const { construction, trims, requirements, finishing, sizecharts, getType, techPackData, isSettingDataFetched, updateField, addSlide, addSlideAtIndex, isUpdating, isUpdatingAs, updateAsTechPack, updateTechPack, getMaxPageNumber, updateMode, submitTechPack, resetTechPack, isAdding, submitStatus, createUpdateTechPackSetup } = useTechPack();
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
-
-  const [construction, setConstructionSheets] = useState([]);
-  const [trims, setTrims] = useState([]);
-  const [requirements, setRequirements] = useState([]);
-  const [finishing, setFinishing] = useState([]);
-  const [sizecharts, setSizeCharts] = useState([]);
 
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPage, setSelectedPage] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
 
   const hasRun = useRef(false)
-
-  const fetchAllSetting = async () => {
-    try {
-      const data = await fetchAll(); // Use the categoryFetch hook                                    
-      if (data.status) {
-        setConstructionSheets(data.techPack.constructionSheets); // Set the fetched categories
-        setTrims(data.techPack.trims); // Set the fetched categories
-        setRequirements(data.techPack.requirements); // Set the fetched categories
-        setFinishing(data.techPack.finishing); // Set the fetched categories
-        setSizeCharts(data.techPack.sizeCharts); // Set the fetched categories
-      } else {
-        console.error('Failed to fetch categories');
-      }
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchAllSetting();
-  }, [])
-
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -60,7 +31,7 @@ const TechPack = () => {
     } else {
       if (!selectedLabels || !currentCategory || !currentSubCategory) {
         navigate('/', { replace: true });
-      } else {
+      } else if (isSettingDataFetched) {
         updateField("gender", currentSubCategory);
         updateField("category", currentCategory);
         updateField("designer", JSON.parse(localStorage.getItem('user')).Name);
@@ -81,7 +52,7 @@ const TechPack = () => {
             addSlide({
               "page": currentPage,
               "name": label.name,
-              "type": getType(label.name),
+              "type": getType(label, currentCategory, currentSubCategory),
               "data": {
                 "images": [
                   {
@@ -99,7 +70,7 @@ const TechPack = () => {
             addSlide({
               "page": currentPage,
               "name": label.name,
-              "type": getType(label.name),
+              "type": getType(label, currentCategory, currentSubCategory),
               "data": {
                 "images": [
                   {
@@ -117,7 +88,7 @@ const TechPack = () => {
             addSlide({
               "page": currentPage,
               "name": label.name,
-              "type": getType(label.name),
+              "type": getType(label, currentCategory, currentSubCategory),
               "data": {
                 "images": [
                   {
@@ -132,17 +103,8 @@ const TechPack = () => {
         hasRun.current = true
       }
     }
-  }, [location.search, selectedLabels, currentCategory, currentSubCategory, construction, requirements, finishing, sizecharts, trims]);
+  }, [location.search, selectedLabels, currentCategory, currentSubCategory, construction, requirements, finishing, sizecharts, trims, isSettingDataFetched]);
 
-
-  const getType = (label) => {
-    switch (label) {
-      case "Silicon Label Sheet":
-        return "SiliconLabel";
-      default:
-        return "Page"
-    }
-  }
 
   const getComponent = (type, page) => {
     switch (type) {

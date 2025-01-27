@@ -299,10 +299,9 @@ export const genderDelete = async (name) => {
     }
 };
 
-export const constructionSheetEdit = async (name, data) => {
+export const constructionSheetEdit = async (data) => {
     try {
-        console.log("name", name)
-        const response = await fetch(`${apiURL}/design/setting/constructionSheet/update/${name}`, {
+        const response = await fetch(`${apiURL}/design/setting/constructionSheet/update/${data.name}`, {
             method: 'POST',
             body: JSON.stringify({ "constructionSheet": data }),
             headers: {
@@ -319,6 +318,50 @@ export const constructionSheetEdit = async (name, data) => {
         }
     } catch (error) {
         throw new Error(error.message || 'An error occurred while updating Construction Sheet');
+    }
+};
+
+export const parameterEdit = async (data) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/requirements/update/`, {
+            method: 'POST',
+            body: JSON.stringify({ "requirements": data }),
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw new Error('Failed to update requirements parameter');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while updating requirements parameter');
+    }
+};
+
+export const finishingEdit = async (data) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/finishing/update/${data.name}`, {
+            method: 'POST',
+            body: JSON.stringify({ "finishing": data }),
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw new Error('Failed to update requirements parameter');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while updating requirements parameter');
     }
 };
 
@@ -343,26 +386,20 @@ export const trimFetch = async () => {
     }
 };
 
-export const trimAdd = async ({ name, images }) => {
+export const trimAdd = async (data) => {
     try {
-        const formData = new FormData();
-        formData.append("name", name); // Add the trim name
-
-        images.forEach((image, index) => {
-            formData.append(`images[${index}][position]`, index); // Image position
-            formData.append(`images[${index}][image]`, image.file); // Image file
-        });
-
         const response = await fetch(`${apiURL}/design/setting/trims/add`, {
             method: "POST",
+            body: JSON.stringify({ "trim": data }),
             headers: {
-                "api-key": apiKey, // Include the API key if needed
+                'Content-Type': 'application/json',
+                "api-key": apiKey,
             },
-            body: formData, // Send the FormData object
         });
 
         if (response.ok) {
-            return await response.json(); // Return the response data
+            const data = await response.json();
+            return data;
         } else {
             throw new Error("Failed to add trim");
         }
@@ -370,6 +407,29 @@ export const trimAdd = async ({ name, images }) => {
         throw new Error(error.message || "An error occurred while adding the trim");
     }
 };
+
+export const trimEdit = async (data) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/trims/update`, {
+            method: 'POST',
+            body: JSON.stringify({ "trim": data }),
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw new Error('Failed to update trims');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while updating trims');
+    }
+};
+
 
 export const requirementsFetch = async () => {
     try {
@@ -592,7 +652,7 @@ const useDeleteTrims = () => {
     const [errorTrims, setError] = useState(null);
     const [successTrims, setSuccess] = useState(null);
 
-    const deleteTrims = async (id) => {
+    const deleteTrims = async (name) => {
         setLoading(true);
         setError(null);
         setSuccess(null);
@@ -604,7 +664,7 @@ const useDeleteTrims = () => {
                     'Content-Type': 'application/json',
                     'api-key': apiKey,
                 },
-                body: JSON.stringify({ id }), // Use "id" as required by the backend
+                body: JSON.stringify({ name }),
             });
 
             const result = await response.json();

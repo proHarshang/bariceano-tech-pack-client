@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { addTechPacks, getTechPacksById, updateTechPacks } from '../API/TechPacks';
+import { addTechPacks, fetchAll, getTechPacksById, updateTechPacks } from '../API/TechPacks';
 import { useNavigate } from 'react-router-dom';
 
 const TechPackContext = createContext();
@@ -9,9 +9,16 @@ export const useTechPack = () => useContext(TechPackContext);
 export const TechPackProvider = ({ children }) => {
     const navigate = useNavigate();
 
+    const [construction, setConstructionSheets] = useState([]);
+    const [trims, setTrims] = useState([]);
+    const [requirements, setRequirements] = useState([]);
+    const [finishing, setFinishing] = useState([]);
+    const [sizecharts, setSizeCharts] = useState([]);
+
     const [isAdding, setIsAdding] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [isUpdatingAs, setIsUpdatingAs] = useState(false);
+    const [isSettingDataFetched, setIsSettingDataFetched] = useState(false);
     const [updateMode, setUpdateMode] = useState("off");
     const [submitStatus, setSubmitStatus] = useState({
         status: null,
@@ -219,6 +226,44 @@ export const TechPackProvider = ({ children }) => {
         ],
     });
 
+    const fetchAllSetting = async () => {
+        try {
+            const data = await fetchAll();
+            if (data.status) {
+                setConstructionSheets(data.techPack.constructionSheets);
+                setTrims(data.techPack.trims);
+                setRequirements(data.techPack.requirements);
+                setFinishing(data.techPack.finishing);
+                setSizeCharts(data.techPack.sizeCharts);
+                setIsSettingDataFetched(true);
+            } else {
+                console.error('Failed to fetch categories');
+            }
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAllSetting();
+    }, [])
+
+    const getType = (label, category, gender) => {
+        if (!isSettingDataFetched) return null;
+
+        if (label.name === "Silicon Label Sheet") {
+            return "SiliconLabel";
+        } else if (trims.some(item => item.name === label.name)) {
+            return label.name;
+        } else if (["Construction Sheet", "Requirements", "Finishing"].includes(label.name)) {
+            return `${label.name} - ${techPackData.category}`;
+        } else if (label.name === "Size Charts") {
+            return sizecharts.find(item => item.gender === gender && item.category === category).name;
+        } else {
+            return "Page";
+        }
+    }
+
     const createUpdateTechPackSetup = async (id) => {
         try {
             setUpdateMode(id);
@@ -322,6 +367,53 @@ export const TechPackProvider = ({ children }) => {
             ),
         }));
     };
+
+    const moveSlideUp = (page) => {
+        setTechPackData((prevData) => {
+            const slides = [...prevData.slides];
+            const index = slides.findIndex((slide) => slide.page === page);
+
+            if (index > 0) {
+                // Swap the current slide with the previous slide
+                const temp = slides[index - 1];
+                slides[index - 1] = slides[index];
+                slides[index] = temp;
+
+                // Adjust the page numbers
+                slides[index - 1].page -= 1;
+                slides[index].page += 1;
+
+                return { ...prevData, slides };
+            }
+
+            alert(`Slide with page ${page} is already at the top.`);
+            return prevData; // No changes if already at the top
+        });
+    };
+
+    const moveSlideDown = (page) => {
+        setTechPackData((prevData) => {
+            const slides = [...prevData.slides];
+            const index = slides.findIndex((slide) => slide.page === page);
+
+            if (index < slides.length - 1) {
+                // Swap the current slide with the next slide
+                const temp = slides[index + 1];
+                slides[index + 1] = slides[index];
+                slides[index] = temp;
+
+                // Adjust the page numbers
+                slides[index + 1].page += 1;
+                slides[index].page -= 1;
+
+                return { ...prevData, slides };
+            }
+
+            console.alert(`Slide with page ${page} is already at the bottom.`);
+            return prevData; // No changes if already at the bottom
+        });
+    };
+
 
     const addInfoField = (page, newField) => {
         setTechPackData((prev) => {
@@ -639,6 +731,19 @@ export const TechPackProvider = ({ children }) => {
     return (
         <TechPackContext.Provider
             value={{
+                construction,
+                trims,
+                requirements,
+                finishing,
+                sizecharts,
+                setConstructionSheets,
+                setTrims,
+                setRequirements,
+                setFinishing,
+                setSizeCharts,
+                fetchAllSetting,
+                isSettingDataFetched,
+                getType,
                 techPackData,
                 isAdding,
                 submitStatus,
@@ -646,6 +751,8 @@ export const TechPackProvider = ({ children }) => {
                 setUpdateMode,
                 isUpdating,
                 isUpdatingAs,
+                moveSlideUp,
+                moveSlideDown,
                 updateTechPack,
                 updateAsTechPack,
                 createUpdateTechPackSetup,

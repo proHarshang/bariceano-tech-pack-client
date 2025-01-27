@@ -1,10 +1,11 @@
 import { useTechPack } from '../context/TechPackContext';
+import { LuSquareArrowUp, LuSquareArrowDown } from "react-icons/lu";
 
 function Header({ name, page }) {
-    const { techPackData, updateSlideByPage, duplicateSlide, deleteSlideByPage } = useTechPack();
+    const { techPackData, updateSlideByPage, duplicateSlide, deleteSlideByPage, moveSlideUp, moveSlideDown } = useTechPack();
 
     return (
-        <section className='border-b-2 border-black'>
+        <section className='border-b-2 border-black relative'>
             <article className='relative flex items-start justify-between py-5 pb-12 px-10 pr-24'>
                 <div>
                     <h1 className='font-bold'>BARISCEANO</h1>
@@ -38,7 +39,8 @@ function Header({ name, page }) {
                                 }
                             }}
                             title='Delete'
-                            style={{ cursor: "pointer" }} // Optional: Add pointer cursor for better UX
+                            style={{ cursor: "pointer" }}
+                            className='hover:scale-125 transition-all active:scale-90' // Optional: Add pointer cursor for better UX
                         >
                             <svg
                                 width="20"
@@ -88,14 +90,30 @@ function Header({ name, page }) {
                             }}
                             title='Duplicate'
                             style={{ cursor: "pointer" }}
+                            className='hover:scale-125 transition-all active:scale-90'
                         >
-                            <svg width="20"
-                                height="24"
-                                viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg width="18"
+                                height="18"
+                                viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M3 16V4C3 2.89543 3.89543 2 5 2H15M9 22H18C19.1046 22 20 21.1046 20 20V8C20 6.89543 19.1046 6 18 6H9C7.89543 6 7 6.89543 7 8V20C7 21.1046 7.89543 22 9 22Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </div>
-
+                        <div
+                            onClick={() => moveSlideUp(page)}
+                            title='Move Up'
+                            style={{ cursor: "pointer" }}
+                            className='hover:scale-125 transition-all active:scale-90'
+                        >
+                            <LuSquareArrowUp />
+                        </div>
+                        <div
+                            onClick={() => moveSlideDown(page)}
+                            title='Move Down'
+                            style={{ cursor: "pointer" }}
+                            className='hover:scale-125 transition-all active:scale-90'
+                        >
+                            <LuSquareArrowDown />
+                        </div>
                     </div>
                 </div>
             </article>

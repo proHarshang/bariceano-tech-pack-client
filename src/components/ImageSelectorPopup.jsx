@@ -71,13 +71,13 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
 
     return (
         <div className="relative">
-            {isLoading && <div className='bg-white text-black flex items-center justify-center w-full h-full'>Loading..</div>}
             {(!isLoading && isOpen) && (
                 <div className="fixed inset-0 bg-black z-[100] bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-[80%] h-[80%]">
                         <div className='flex justify-between pb-5'>
                             <div className="w-1/2 border bg-white border-black px-1 md:px-[7px] h-8 md:h-8 flex justify-start">
                                 <input
+                                    className='w-full'
                                     type="text"
                                     placeholder="Search images by keyword..."
                                     value={searchTerm}
@@ -100,8 +100,8 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                             {/* Upload Image Button */}
                             <div className="relative">
                                 <div className="custom-file-label h-28 block border border-gray-300 rounded text-center cursor-pointer transition">
-                                    <label htmlFor="file-upload" className='text-nowrap flex flex-col items-center gap-3'>
-                                        {loading ? 'Uploading...' : 'Upload Image'}
+                                    <label htmlFor="file-upload" className='text-nowrap text-sm flex flex-col items-center gap-3'>
+                                        {loading ? 'Uploading...' : 'Upload'}
                                         <IoCloudUploadOutline className='size-10' />
                                     </label>
                                 </div>
@@ -124,7 +124,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                                 >
                                     {/* Image Container */}
                                     <div className="relative flex justify-center border border-gray-300 rounded overflow-hidden transition-transform duration-300 hover:scale-95">
-                                        <button onClick={() => handleImageSelect(image)}>
+                                        <button type='button' onClick={() => handleImageSelect(image)}>
                                             <img
                                                 src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image}`}
                                                 alt={`Uploaded ${index}`}

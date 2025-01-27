@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, constructionSheetEdit, useDeleteTrims, fabricEdit, fabricAdd, fabricDelete, collectionEdit, collectionAdd, collectionDelete } from "../API/TechPacks";
+import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, constructionSheetEdit, useDeleteTrims, fabricEdit, fabricAdd, fabricDelete, collectionEdit, collectionAdd, collectionDelete, parameterEdit, finishingEdit, trimEdit } from "../API/TechPacks";
 import ImageSelectorPopup from "./ImageSelectorPopup";
 
 export default function Setting() {
@@ -290,16 +290,15 @@ export default function Setting() {
 
     const handleConstructionSheetEdit = async () => {
         try {
-            console.log(construction)
             setConstructionSheetLoading(true)
             // Use the categoryEdit hook to update the category
-            const updated = await constructionSheetEdit(construction.name, constructionSheetEditBox);
-            console.log(updated)
-            // if (updated.status) {
-            //     fetchAllSetting(); // Refetch the data
-            // } else {
-            //     console.error('Failed to edit category');
-            // }
+            const updated = await constructionSheetEdit(constructionSheetEditBox);
+            if (updated.status) {
+                fetchAllSetting(); // Refetch the data
+                setConstructionSheetEditBox(null)
+            } else {
+                console.error('Failed to edit category');
+            }
         } catch (error) {
             console.log("error in construction sheet: ", error)
         } finally {
@@ -307,128 +306,107 @@ export default function Setting() {
         }
     }
 
-
-
     // Trims Logic Start
-    const [trimsPopup, setTrimsPopup] = useState({ visible: false, id: null });
-    const [trimsFormData, setTrimsFormData] = useState({
-        name: '',
-        images: [], // Initialize as an empty array
-    });
-    const handleTrimsAdd = () => {
-        setTrimsPopup({ visible: true, id: null });
-        setTrimsFormData({ name: '', images: [] }); // Initialize with empty array
-    };
 
-    const handleTrimsSave = async () => {
-        const trimData = {
-            name: trimsFormData.name, // Name entered in the popup
-            images: trimsFormData.images.map((image, index) => ({
-                position: index,
-                file: image.file,
-            })),
-        };
+    // trimEdit Logic start
+    const [trimAddBox, setTrimAddBox] = useState(null);
+    const [trimEditBox, setTrimEditBox] = useState(null);
+    const [trimLoading, setTrimLoading] = useState(false);
 
+    const handleTrimAdd = async () => {
         try {
-            await trimAdd(trimData);
-            alert("Trim added successfully!");
-            setTrimsPopup({ visible: false, id: null });
-            setTrimsFormData({ name: "", images: [] });
-            // Optionally refetch the trims list
+            setTrimLoading(true)
+            // Use the categoryEdit hook to update the category
+            const updated = await trimAdd(trimAddBox);
+            if (updated.status) {
+                fetchAllSetting(); // Refetch the data
+                setTrimAddBox(null)
+            } else {
+                console.error('Failed to add trim');
+            }
         } catch (error) {
-            alert(error.message || "Failed to add trim");
+            console.log("error in trims: ", error)
+        } finally {
+            setTrimLoading(false)
         }
-    };
+    }
 
-    const { deleteTrims, errorTrims } = useDeleteTrims();
-    const handleDeleteTrimBox = async (id) => {
-        console.log("Deleting trim with ID:", id); // Log the ID being passed
+    const handleTrimEdit = async () => {
+        try {
+            setTrimLoading(true)
+            // Use the categoryEdit hook to update the category
+            const updated = await trimEdit(trimEditBox);
+            if (updated.status) {
+                fetchAllSetting(); // Refetch the data
+                setTrimEditBox(null)
+            } else {
+                console.error('Failed to edit trim');
+            }
+        } catch (error) {
+            console.log("error in trimt: ", error)
+        } finally {
+            setTrimLoading(false)
+        }
+    }
+
+    const { deleteTrims } = useDeleteTrims();
+    const handleDeleteTrimBox = async (name) => {
         const confirmed = window.confirm("Are you sure you want to delete this trim?");
         if (!confirmed) return;
 
-        await deleteTrims(id); // Pass the ID to the hook
-
-        if (!errorTrims) {
-            setTrims((prevTrims) => prevTrims.filter((trim) => trim._id !== id));
-        }
+        await deleteTrims(name);
+        await fetchAllSetting()
     };
     // Trims Logic Over
 
 
     // Requirment Parameter Start
-    const [parameters, setParameters] = useState([
-        { id: 1, name: 'T-shirt', image: [] },
-        { id: 2, name: 'Sweatshirt', image: [] },
-        { id: 3, name: 'Hoodie', image: [] },
-    ]);
+    const [parameterEditBox, setParameterEditBox] = useState(null);
+    const [parameterLoading, setParameterLoading] = useState(false);
 
-    const [parameterspopup, setParametersPopup] = useState({ visible: false, id: null });
-    const [formData, setFormData] = useState({ name: '', images: [] });
-
-    const handleEditParameter = (id) => {
-        const parameter = parameters.find((param) => param.id === id);
-        setParametersPopup({ visible: true, id });
-        setFormData({ name: parameter.name, images: parameter.image });
-    };
-
-    const handleSaveParameter = () => {
-        if (parameterspopup.id) {
-            // Edit an existing parameter
-            setParameters((prev) =>
-                prev.map((parameter) =>
-                    parameter.id === parameterspopup.id
-                        ? { ...parameter, name: formData.name, image: formData.images }
-                        : parameter
-                )
-            );
-        } else {
-            // Add a new parameter
-            const newParameter = {
-                id: Date.now(),
-                name: formData.name,
-                image: formData.images,
-            };
-            setParameters((prev) => [...prev, newParameter]);
+    const handleParameterEditBox = async () => {
+        try {
+            setParameterLoading(true)
+            // Use the categoryEdit hook to update the category
+            const updated = await parameterEdit(parameterEditBox);
+            if (updated.status) {
+                fetchAllSetting(); // Refetch the data
+                setParameterEditBox(null)
+            } else {
+                console.error('Failed to edit parameter');
+            }
+        } catch (error) {
+            console.log("error in Parameter: ", error)
+        } finally {
+            setParameterLoading(false)
         }
-        setParametersPopup({ visible: false, id: null });
-        setFormData({ name: '', images: [] });
-    };
+    }
+
     // Requirment Parameter Over
 
 
 
     // finishing Logic Start
-    const [finishingData, setFinishingData] = useState({ name: '', images: [] });
+    const [finishingEditBox, setFinishingEditBox] = useState(null);
+    const [finishingLoading, setFinishingLoading] = useState(false);
 
-    const [finishingpopup, setFinishingPopup] = useState({ visible: false, id: null });
-
-    const handleEditFinishing = (id) => {
-        const finising = finishing.find((param) => param.id === id);
-        setFinishingPopup({ visible: true, id });
-        setFinishingData({ name: finising.name, images: finising.image });
-    };
-    const handleSaveFinising = () => {
-        if (finishingpopup.id) {
-            // Edit an existing parameter
-            setFinishing((prev) =>
-                prev.map((finishing) =>
-                    finishing.id === finishingpopup.id
-                        ? { ...finishing, name: finishingData.name, image: finishingData.images }
-                        : finishing
-                )
-            );
-        } else {
-            // Add a new parameter
-            const newFinising = {
-                id: Date.now(),
-                name: finishingData.name,
-                image: finishingData.images,
-            };
-            setFinishing((prev) => [...prev, newFinising]);
+    const handleFinishingEditBox = async () => {
+        try {
+            setFinishingLoading(true)
+            // Use the categoryEdit hook to update the category
+            const updated = await finishingEdit(finishingEditBox);
+            if (updated.status) {
+                fetchAllSetting(); // Refetch the data
+                setFinishingEditBox(null)
+            } else {
+                console.error('Failed to edit finishing');
+            }
+        } catch (error) {
+            console.log("error in finishing: ", error)
+        } finally {
+            setFinishingLoading(false)
         }
-        setFinishingPopup({ visible: false, id: null });
-        setFinishingData({ name: '', images: [] });
-    };
+    }
     // finishing Logic Over
 
 
@@ -1132,7 +1110,7 @@ export default function Setting() {
                                 <div key={box.id} className="p-4 border border-gray-400">
                                     <div className="flex justify-between items-center pb-2">
                                         <h1 className="text-xl text-center">{box.name}</h1>
-                                        <button className="text-gray-600 hover:text-black" onClick={() => setConstructionSheetEditBox(box)}>
+                                        <button type="button" className="text-gray-600 hover:text-black" onClick={() => setConstructionSheetEditBox(box)}>
                                             Edit
                                         </button>
                                     </div>
@@ -1140,8 +1118,8 @@ export default function Setting() {
                                         {box.images.map((image, index) => (
                                             <img
                                                 key={index}
-                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}` || "images.jpg"}
-                                                alt={box.name}
+                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}` || "default.jpg"}
+                                                alt={`${image.src}`}
                                                 className="w-24 h-20 object-cover bg-[#FCFCFC] border border-dashed border-[#CACACA] rounded"
                                             />
                                         ))}
@@ -1159,10 +1137,8 @@ export default function Setting() {
                                     type="text"
                                     placeholder="Enter Name"
                                     value={constructionSheetEditBox.name}
-                                    onChange={(e) =>
-                                        setConstructionSheetEditBox({ ...constructionSheetEditBox, name: e.target.value })
-                                    }
                                     className="w-full p-2 border bg-slate-100 rounded mb-4"
+                                    disabled
                                 />
                                 <div className="mb-4">
                                     <label className="block mb-2 font-semibold">Images:</label>
@@ -1173,34 +1149,24 @@ export default function Setting() {
                                         >
                                             <img
                                                 src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
-                                                alt={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
+                                                alt={`${image.src}`}
                                                 className="w-28 h-16 object-cover rounded"
                                             />
-                                            {/* <button
+                                            <button
+                                                type="button"
                                                 className="text-red-500 text-sm"
-                                                onClick={() => handleSecondRemoveImage(index)}
+                                                onClick={() => {
+                                                    setConstructionSheetEditBox((prev) => ({
+                                                        ...prev,
+                                                        images: prev.images.filter((_, i) => i !== index),
+                                                    }))
+                                                }}
                                             >
                                                 Remove
-                                            </button> */}
+                                            </button>
                                         </div>
                                     ))}
                                     <button type="button" className="w-full mb-4 border border-black" onClick={() => setOpenPopupId(`constructionSheetEditBox`)}>Upload image</button>
-                                    {/* <input
-                                        type="file"
-                                        accept="image/*"
-                                        multiple
-                                        onChange={(e) => {
-                                            const files = Array.from(e.target.files);
-                                            const fileURLs = files.map((file) => URL.createObjectURL(file));
-
-                                            setSecondFormData((prev) => ({
-                                                ...prev,
-                                                images: [...prev.images, ...fileURLs],
-                                                imageFiles: [...prev.imageFiles, ...files],
-                                            }));
-                                        }}
-                                        className="w-full mb-4"
-                                    /> */}
                                 </div>
                                 {error && console.error('Error:', error)}
                                 {error && <p className="text-red-500 mb-2">{error}</p>}
@@ -1235,7 +1201,7 @@ export default function Setting() {
                                 <h1 className="font-bold text-2xl">Trims</h1>
                             </div>
                             <div className="flex gap-3">
-                                <button className="underline" onClick={handleTrimsAdd}>
+                                <button type="button" className="underline" onClick={() => setTrimAddBox(true)}>
                                     Add
                                 </button>
                             </div>
@@ -1243,124 +1209,173 @@ export default function Setting() {
                     </div>
                     <div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {trims.map((trim) => (
-                                <div key={trim._id} className="p-4 border border-gray-400 group">
-                                    <div className="flex justify-between items-center pb-2">
-                                        <h1 className="text-xl whitespace-nowrap">{trim.name}</h1>
-                                        <div className="hidden gap-2 group-hover:flex">
-                                            <button>Edit</button>
-                                            <button onClick={() => handleDeleteTrimBox(trim._id)}>Delete</button>
+                            {trims.map(trim => {
+                                return (
+                                    <div key={trim._id} className="p-4 border border-gray-400 group">
+                                        <div className="flex justify-between items-center pb-2">
+                                            <h1 className="text-xl whitespace-nowrap">{trim.name}</h1>
+                                            <div className="hidden gap-2 group-hover:flex">
+                                                <button type="button" onClick={() => setTrimEditBox(trim)}>Edit</button>
+                                                <button type="button" onClick={() => handleDeleteTrimBox(trim.name)}>Delete</button>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            {Array.isArray(trim.images)
+                                                ? trim.images.map((image, index) => (
+                                                    <div key={index} className="relative">
+                                                        <img
+                                                            src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
+                                                            alt={`${image.src}`}
+                                                            className="w-24 h-20 object-cover bg-[#FCFCFC] border border-dashed border-[#CACACA] rounded"
+                                                        />
+                                                    </div>
+                                                ))
+                                                : trim.images && (
+                                                    <div className="relative">
+                                                        <img
+                                                            src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${trim.images.src}`}
+                                                            alt={`${trim.images.src}`}
+                                                            className="w-24 h-20 object-cover bg-[#FCFCFC] border border-dashed border-[#CACACA] rounded"
+                                                        />
+                                                    </div>
+                                                )}
                                         </div>
                                     </div>
-                                    <div className="grid grid-cols-3 gap-2">
-                                        {Array.isArray(trim.images)
-                                            ? trim.images.map((image, index) => (
-                                                <div key={index} className="relative">
-                                                    <img
-                                                        src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
-                                                        alt={`${trim.name} ${index + 1}`}
-                                                        className="w-24 h-20 object-cover bg-[#FCFCFC] border border-dashed border-[#CACACA] rounded"
-                                                    />
-                                                </div>
-                                            ))
-                                            : trim.images && (
-                                                <div className="relative">
-                                                    <img
-                                                        src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${trim.images.src}`}
-                                                        alt={`${trim.name} 1`}
-                                                        className="w-24 h-20 object-cover bg-[#FCFCFC] border border-dashed border-[#CACACA] rounded"
-                                                    />
-                                                </div>
-                                            )}
-                                    </div>
-                                </div>
-                            ))}
+                                )
+                            })}
 
                         </div>
 
 
                         {/* Popup Modal */}
-                        {trimsPopup.visible && (
+                        {trimEditBox && (
                             <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
                                 <div className="bg-white p-6 rounded shadow-md w-[400px] h-[85vh] overflow-scroll">
-                                    <h2 className="text-lg font-bold mb-4">
-                                        {trimsPopup.id ? 'Edit Box' : 'Add Box'}
-                                    </h2>
+                                    <h2 className="text-lg font-bold mb-4">Edit Box</h2>
                                     <input
                                         type="text"
                                         placeholder="Enter Name"
-                                        value={trimsFormData.name}
-                                        onChange={(e) =>
-                                            setTrimsFormData({ ...trimsFormData, name: e.target.value })
-                                        }
+                                        value={trimEditBox.name}
                                         className="w-full p-2 border bg-slate-100 rounded mb-4"
+                                        disabled
                                     />
                                     <div className="mb-4">
                                         <label className="block mb-2 font-semibold">Images:</label>
-                                        {trimsFormData.images?.map((image, index) => (
+                                        {trimEditBox.images?.map((image, index) => (
                                             <div
                                                 key={index}
                                                 className="flex items-center justify-between gap-2 mb-2 border p-2 rounded"
                                             >
                                                 <img
-                                                    src={image}
-                                                    alt={`Preview ${index + 1}`}
+                                                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
+                                                    alt={`${image.src}`}
                                                     className="w-28 h-16 object-cover rounded"
                                                 />
                                                 <button
+                                                    type="button"
                                                     className="text-red-500 text-sm"
                                                     onClick={() => {
-                                                        const updatedImages = trimsFormData.images.filter(
-                                                            (_, i) => i !== index
-                                                        );
-                                                        setTrimsFormData({
-                                                            ...trimsFormData,
-                                                            images: updatedImages,
-                                                        });
+                                                        setTrimEditBox((prev) => ({
+                                                            ...prev,
+                                                            images: prev.images.filter((_, i) => i !== index),
+                                                        }))
                                                     }}
                                                 >
                                                     Remove
                                                 </button>
                                             </div>
                                         ))}
-                                        <input
-                                            type="file"
-                                            accept="image/ .jpg,.jpeg,.png"
-                                            onChange={(e) => {
-                                                if (e.target.files[0]) {
-                                                    const file = e.target.files[0];
-                                                    const previewUrl = URL.createObjectURL(file);
-                                                    setTrimsFormData({
-                                                        ...trimsFormData,
-                                                        images: [...(trimsFormData.images || []), { previewUrl, file }],
-                                                    });
-                                                }
-                                            }}
-
-                                            className="w-full"
-                                        />
                                         <button
+                                            type="button"
                                             className="mt-5 px-3 py-1 bg-black text-white rounded-lg text-xs"
-                                            onClick={() => {
-                                                // Add logic for additional image functionality if required.
-                                            }}
+                                            onClick={() => setOpenPopupId(`trimEditBox`)}
                                         >
                                             Add More
                                         </button>
                                     </div>
                                     <div className="flex justify-end gap-2">
                                         <button
+                                            type="button"
                                             className="px-4 py-2 border text-black rounded-lg text-sm"
-                                            onClick={() => setTrimsPopup({ visible: false, id: null })}
+                                            onClick={() => setTrimEditBox(null)}
                                         >
                                             Cancel
                                         </button>
                                         <button
+                                            type="button"
                                             className="px-4 py-2 bg-black text-white rounded-lg text-sm"
-                                            onClick={handleTrimsSave}
-                                            disabled={loading}
+                                            onClick={handleTrimEdit}
+                                            disabled={trimLoading}
                                         >
-                                            {loading ? "Saving..." : "Save"}
+                                            {trimLoading ? "Saving..." : "Save"}
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Popup Modal */}
+                        {trimAddBox && (
+                            <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
+                                <div className="bg-white p-6 rounded shadow-md w-[400px] h-[85vh] overflow-scroll">
+                                    <h2 className="text-lg font-bold mb-4">Add Box</h2>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Name"
+                                        value={trimAddBox.name}
+                                        onChange={(e) => setTrimAddBox((prev) => ({ ...prev, name: e.target.value }))}
+                                        className="w-full p-2 border bg-slate-100 rounded mb-4"
+                                    />
+                                    <div className="mb-4">
+                                        <label className="block mb-2 font-semibold">Images:</label>
+                                        {trimAddBox.images?.map((image, index) => (
+                                            <div
+                                                key={index}
+                                                className="flex items-center justify-between gap-2 mb-2 border p-2 rounded"
+                                            >
+                                                <img
+                                                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
+                                                    alt={`${image.src}`}
+                                                    className="w-28 h-16 object-cover rounded"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="text-red-500 text-sm"
+                                                    onClick={() => {
+                                                        setTrimAddBox((prev) => ({
+                                                            ...prev,
+                                                            images: prev.images.filter((_, i) => i !== index),
+                                                        }))
+                                                    }}
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
+                                        ))}
+                                        <button
+                                            type="button"
+                                            className="mt-5 px-3 py-1 bg-black text-white rounded-lg text-xs"
+                                            onClick={() => setOpenPopupId(`trimAddBox`)}
+                                        >
+                                            Add More
+                                        </button>
+                                    </div>
+                                    <div className="flex justify-end gap-2">
+                                        <button
+                                            type="button"
+                                            className="px-4 py-2 border text-black rounded-lg text-sm"
+                                            onClick={() => setTrimAddBox(null)}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="px-4 py-2 bg-black text-white rounded-lg text-sm"
+                                            onClick={handleTrimAdd}
+                                            disabled={trimLoading}
+                                        >
+                                            {trimLoading ? "Saving..." : "Save"}
                                         </button>
 
                                     </div>
@@ -1389,7 +1404,7 @@ export default function Setting() {
                                     {/* Item Header */}
                                     <div className="flex gap-10 items-center justify-between pb-2">
                                         <h1 className="text-xl text-center mb-3">{requirement.name}</h1>
-                                        <button onClick={() => handleEditParameter(requirement._id)}>
+                                        <button type="button" onClick={() => setParameterEditBox(requirement)}>
                                             <svg
                                                 width="20"
                                                 height="20"
@@ -1415,10 +1430,10 @@ export default function Setting() {
 
                                     {/* Images Grid */}
                                     <div className="grid grid-cols-3 gap-2">
-                                        {requirement.images && requirement.images.src && (
+                                        {(requirement.images && requirement.images.src) && (
                                             <img
-                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${requirement.images.src}`}
-                                                alt={`${requirement.name}`}
+                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${requirement.images.src}` || 'default.jpg'}
+                                                alt={`${requirement.images.src}`}
                                                 className="h-24 w-24 object-cover"
                                             />
                                         )}
@@ -1427,64 +1442,41 @@ export default function Setting() {
                             ))}
                         </div>
                         {/* Popup Modal */}
-                        {parameterspopup.visible && (
+                        {parameterEditBox && (
                             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                                 <div className="bg-white p-6 rounded shadow-md w-[400px]">
-                                    <h2 className="text-lg font-bold mb-4">{parameterspopup.id ? 'Edit Parameter' : 'Add Parameter'}</h2>
+                                    <h2 className="text-lg font-bold mb-4">Edit Parameter</h2>
                                     <input
                                         type="text"
                                         placeholder="Enter Name"
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        value={parameterEditBox.name}
                                         className="w-full p-2 border bg-slate-100 rounded mb-4"
+                                        disabled
                                     />
                                     <div className="mb-4">
                                         <label className="block mb-2 font-semibold">Images:</label>
-                                        {formData.images?.map((image, index) => (
+                                        {(parameterEditBox.images && parameterEditBox.images.src) && (
                                             <div
-                                                key={index}
                                                 className="flex items-center justify-between gap-2 mb-2 border p-2 rounded"
                                             >
                                                 <img
-                                                    src={image}
-                                                    alt={`Preview ${index + 1}`}
+                                                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${parameterEditBox.images.src}`}
+                                                    alt={`${parameterEditBox.images.src}`}
                                                     className="w-28 h-16 object-cover rounded"
                                                 />
                                                 <button
                                                     className="text-red-500 text-sm"
-                                                    onClick={() => {
-                                                        const updatedImages = formData.images.filter(
-                                                            (_, i) => i !== index
-                                                        );
-                                                        setFormData({
-                                                            ...formData,
-                                                            images: updatedImages,
-                                                        });
-                                                    }}
+                                                    type="button"
+                                                    onClick={() => setParameterEditBox(null)}
                                                 >
                                                     Remove
                                                 </button>
                                             </div>
-                                        ))}
-                                        <input
-                                            type="file"
-                                            accept="image/ .jpg,.jpeg,.png"
-                                            onChange={(e) => {
-                                                if (e.target.files[0]) {
-                                                    const newImage = URL.createObjectURL(e.target.files[0]);
-                                                    setFormData({
-                                                        ...formData,
-                                                        images: [...(formData.images || []), newImage],
-                                                    });
-                                                }
-                                            }}
-                                            className="w-full"
-                                        />
+                                        )}
                                         <button
+                                            type="button"
                                             className="mt-5 px-3 py-1 bg-black text-white rounded-lg text-xs"
-                                            onClick={() => {
-                                                // Add logic for additional image functionality if required.
-                                            }}
+                                            onClick={() => setOpenPopupId(`parameterEditBox`)}
                                         >
                                             Add More
                                         </button>
@@ -1492,15 +1484,16 @@ export default function Setting() {
                                     <div className="flex justify-end gap-2">
                                         <button
                                             className="px-4 py-2 border text-black rounded-lg text-sm"
-                                            onClick={() => setParametersPopup({ visible: false, id: null })}
+                                            onClick={() => setParameterEditBox(null)}
                                         >
                                             Cancel
                                         </button>
                                         <button
                                             className="px-4 py-2 bg-black text-white rounded-lg text-sm"
-                                            onClick={handleSaveParameter}
+                                            onClick={handleParameterEditBox}
+                                            disabled={parameterLoading}
                                         >
-                                            Save
+                                            {parameterLoading ? "Saving..." : "Save"}
                                         </button>
                                     </div>
                                 </div>
@@ -1523,10 +1516,10 @@ export default function Setting() {
                     <div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {finishing.map((item) => (
-                                <div key={item.id} className="p-4 border border-gray-400">
+                                <div key={item._id} className="p-4 border border-gray-400">
                                     <div className="flex gap-10 items-center justify-between pb-2">
                                         <h1 className="text-xl text-center mb-3">{item.name}</h1>
-                                        <button onClick={() => handleEditFinishing(item.id)}>
+                                        <button type="button" onClick={() => setFinishingEditBox(item)}>
                                             <svg
                                                 width="20"
                                                 height="20"
@@ -1551,10 +1544,10 @@ export default function Setting() {
                                     </div>
                                     {/* Display images in grid */}
                                     <div className="grid grid-cols-3 gap-2">
-                                        {item.images && item.images.src && (
+                                        {(item.images && item.images.src) && (
                                             <img
                                                 src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${item.images.src}`}
-                                                alt={`${item.name}`}
+                                                alt={`${item.images.src}`}
                                                 className="h-24 w-24 object-cover"
                                             />
                                         )}
@@ -1564,80 +1557,58 @@ export default function Setting() {
                             ))}
                         </div>
                         {/* Popup Modal */}
-                        {finishingpopup.visible && (
+                        {finishingEditBox && (
                             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                                 <div className="bg-white p-6 rounded shadow-md w-[400px]">
-                                    <h2 className="text-lg font-bold mb-4">{finishingpopup.id ? 'Edit Finishing' : 'Add Finishing'}</h2>
+                                    <h2 className="text-lg font-bold mb-4">Edit Finishing</h2>
                                     <input
                                         type="text"
                                         placeholder="Enter Name"
-                                        value={finishingData.name}
-                                        onChange={(e) => setFinishingData({ ...finishingData, name: e.target.value })}
+                                        value={finishingEditBox.name}
                                         className="w-full p-2 border bg-slate-100 rounded mb-4"
+                                        disabled
                                     />
                                     <div className="mb-4">
                                         <label className="block mb-2 font-semibold">Images:</label>
-                                        {finishingData.images?.map((image, index) => (
-                                            <div
-                                                key={index}
-                                                className="flex items-center justify-between gap-2 mb-2 border p-2 rounded"
-                                            >
+                                        {(finishingEditBox.images && finishingEditBox.images.src) && (
+                                            <div className="flex items-center justify-between gap-2 mb-2 border p-2 rounded">
                                                 <img
-                                                    src={image}
-                                                    alt={`Preview ${index + 1}`}
+                                                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${finishingEditBox.images.src}`}
+                                                    alt={`${finishingEditBox.images.src}`}
                                                     className="w-28 h-16 object-cover rounded"
                                                 />
                                                 <button
+                                                    type="button"
                                                     className="text-red-500 text-sm"
-                                                    onClick={() => {
-                                                        const updatedImages = finishingData.images.filter(
-                                                            (_, i) => i !== index
-                                                        );
-                                                        setFinishingData({
-                                                            ...finishingData,
-                                                            images: updatedImages,
-                                                        });
-                                                    }}
+                                                    onClick={() => setFinishingEditBox(null)}
                                                 >
                                                     Remove
                                                 </button>
                                             </div>
-                                        ))}
-                                        <input
-                                            type="file"
-                                            accept="image/ .jpg,.jpeg,.png"
-                                            onChange={(e) => {
-                                                if (e.target.files[0]) {
-                                                    const newImage = URL.createObjectURL(e.target.files[0]);
-                                                    setFinishingData({
-                                                        ...finishingData,
-                                                        images: [...(finishingData.images || []), newImage],
-                                                    });
-                                                }
-                                            }}
-                                            className="w-full"
-                                        />
+                                        )}
                                         <button
+                                            type="button"
                                             className="mt-5 px-3 py-1 bg-black text-white rounded-lg text-xs"
-                                            onClick={() => {
-                                                // Add logic for additional image functionality if required.
-                                            }}
+                                            onClick={() => setOpenPopupId(`finishingEditBox`)}
                                         >
                                             Add More
                                         </button>
                                     </div>
                                     <div className="flex justify-end gap-2">
                                         <button
+                                            type="button"
                                             className="px-4 py-2 border text-black rounded-lg text-sm"
-                                            onClick={() => setFinishingPopup({ visible: false, id: null })}
+                                            onClick={() => setFinishingEditBox(null)}
                                         >
                                             Cancel
                                         </button>
                                         <button
+                                            type="button"
                                             className="px-4 py-2 bg-black text-white rounded-lg text-sm"
-                                            onClick={handleSaveFinising}
+                                            onClick={handleFinishingEditBox}
+                                            disabled={finishingLoading}
                                         >
-                                            Save
+                                            {finishingLoading ? "Saving..." : "Save"}
                                         </button>
                                     </div>
                                 </div>
@@ -1909,7 +1880,7 @@ export default function Setting() {
                 </div>
             </div>
 
-            {["constructionSheetEditBox"].map((elem, index) => {
+            {["constructionSheetEditBox", "parameterEditBox", "finishingEditBox", "trimEditBox", "trimAddBox"].map(elem => {
                 return <ImageSelectorPopup
                     key={elem}
                     isOpen={openPopupId === elem}
@@ -1918,7 +1889,27 @@ export default function Setting() {
                         if (elem === "constructionSheetEditBox") {
                             setConstructionSheetEditBox((prev) => ({
                                 ...prev,
-                                images: [...prev.images, { "position": index.toString(), "src": imgName }],
+                                images: [...prev.images, { "position": prev.images.length.toString(), "src": imgName }],
+                            }));
+                        } else if (elem === "parameterEditBox") {
+                            setParameterEditBox((prev) => ({
+                                ...prev,
+                                images: { "position": "0", "src": imgName },
+                            }));
+                        } else if (elem === "finishingEditBox") {
+                            setFinishingEditBox((prev) => ({
+                                ...prev,
+                                images: { "position": "0", "src": imgName },
+                            }));
+                        } else if (elem === "trimEditBox") {
+                            setTrimEditBox((prev) => ({
+                                ...prev,
+                                images: [...prev.images, { "position": prev.images.length.toString(), "src": imgName }],
+                            }));
+                        } else if (elem === "trimAddBox") {
+                            setTrimAddBox((prev) => ({
+                                ...prev,
+                                images: [{ "position": prev.images ? prev.images.length.toString() : 0, "src": imgName }],
                             }));
                         }
                     }}
