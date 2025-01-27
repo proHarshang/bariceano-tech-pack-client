@@ -129,38 +129,56 @@ const TechPack = () => {
 
   const handleAddPage = () => {
     if (selectedPage) {
+      const type = getType(selectedPage, currentCategory, currentSubCategory)
       addSlideAtIndex(selectedIndex, {
         "page": 10,
         "name": selectedPage.name,
-        "type": selectedPage.type,
-        "data": {
-          "images": [
-            {
-              "position": 0,
-              "src": ""
-            }
-          ]
-        }
+        "type": type,
+        "data": selectedPage.data,
       });
     }
+
     setShowPopup(false);
     setSelectedPage(null);
   };
 
   const staticArray = [
-    { "name": "Layout0", "type": "Layout0" },
-    { "name": "Layout1", "type": "Layout1" },
-    { "name": "Layout2", "type": "Layout2" },
-    { "name": "Layout3", "type": "Layout3" },
-    { "name": "Art Work", "type": "ArtWork" },
-    { "name": "Blank Page", "type": "Page" }
+    {
+      "name": "Art Work",
+      "type": "ArtWork",
+      "data": {
+        "images": [
+          {
+            "position": 0,
+            "src": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "Blank Page",
+      "type": "Page",
+      "data": {
+        "images": [
+          {
+            "position": 0,
+            "src": ""
+          }
+        ]
+      }
+    }
   ];
 
   // Map the dynamic array to add the `type` property (same as `name`)
-  const dynamicArray = trims.map((item) => ({
-    name: item.name,
-    type: item.name
-  }));
+  const dynamicArray = trims.map((item) => {
+    return {
+      "name": item.name,
+      "type": item.name,
+      "data": {
+        "images": item.images
+      }
+    }
+  });
 
   // Combine static and dynamic arrays
   const combinedArray = [...staticArray, ...dynamicArray];
@@ -186,18 +204,20 @@ const TechPack = () => {
           <div className="bg-white p-6 rounded-md w-1/2">
             <h2 className="text-xl font-semibold mb-4">Add a Page</h2>
             <div className="grid grid-cols-5 gap-4">
-              {combinedArray.map((page) => (
-                <div
-                  key={page.name}
-                  className={`w-28 h-28 border-2 rounded-md flex justify-center items-center cursor-pointer ${(selectedPage && (selectedPage.name === page.name)) ? "bg-gray-200" : ""
-                    }`}
-                  onClick={() => setSelectedPage(page)}
-                >
-                  <span className="text-center text-sm">
-                    {page.name}
-                  </span>
-                </div>
-              ))}
+              {combinedArray.map((page) => {
+                return (
+                  <div
+                    key={page.name}
+                    className={`w-28 h-28 border-2 rounded-md flex justify-center items-center cursor-pointer ${(selectedPage && (selectedPage.name === page.name)) ? "bg-gray-200" : ""
+                      }`}
+                    onClick={() => setSelectedPage(page)}
+                  >
+                    <span className="text-center text-sm">
+                      {page.name}
+                    </span>
+                  </div>
+                )
+              })}
             </div>
             <div className="flex justify-end mt-10 space-x-2">
               <button
