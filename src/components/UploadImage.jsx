@@ -3,6 +3,8 @@ import { getUploadedImage, useUploadImage } from "../API/TechPacks";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
 
+const apiURL = process.env.REACT_APP_API_URL;
+const apiKey = process.env.REACT_APP_API_KEY;
 
 const UploadImage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,8 +42,34 @@ const UploadImage = () => {
         link.click();
     };
 
-    const handleDelete = (image) => {
-        console.log("Delete", image); // Replace with your delete logic
+    const handleDelete = async (image) => {
+        console.log("first")
+        try {
+            const response = await fetch(`${apiURL}/design/techpacks/images/delete`, {
+                method: 'DELETE', // Use DELETE method
+                headers: {
+                    'Content-Type': 'application/json', // Send JSON data
+                    'api-Key': apiKey,
+                },
+                body: JSON.stringify({
+                    filename: image, // Send the image filename to be deleted
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.status === 200) {
+                alert(data.message); // Show success message
+                // Optionally, remove the image from the UI if deletion is successful
+                // For example, update the image list in the state if needed
+            } else {
+                alert(data.message); // Show error message
+            }
+        } catch (error) {
+            console.error('Error deleting image:', error);
+            alert('An error occurred while deleting the image.');
+        }
+        console.log("image image",image)
     };
 
     const selectimage = (image) => {
@@ -160,7 +188,7 @@ const UploadImage = () => {
                                             >
                                                 Download
                                             </button>
-                                            <button
+                                            <button type='button'
                                                 className="block w-full text-left px-4 py-2 text-sm text-red-500"
                                                 onClick={() => handleDelete(image)}
                                             >

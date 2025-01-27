@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { handleCommentSubmit, deleteTechPack } from '../API/TechPacks';
-import TechPackPdfGenerator from '../TechPackPdfGenerator';
+// import TechPackPdfGenerator from '../TechPackPdfGenerator';
 import NewPdfGenerator from '../NewPDF';
 import { useForm } from "react-hook-form";
 import Pagination from '../common/Pagination.jsx';
@@ -215,6 +215,7 @@ const TechPackDataTable = ({ data = [] }) => {
     const handleEditClick = (itemId) => {
         navigate(`/tech-pack?id=${itemId}`);
     };
+
     return (
         <>
             <div className='w-full mx-auto max-w-[1500px] table px-10 pb-10'>
@@ -416,9 +417,15 @@ const TechPackDataTable = ({ data = [] }) => {
                             {submitStatus?.message}
                         </p>
                     )}
-                    <span>
-                        Total {sortedData?.length} Tech Packs
-                    </span>
+                    <div className="flex justify-between items-end">
+                        <span>
+                            Total {sortedData?.length} Tech Packs
+                        </span>
+                        <button className="border py-1 bg-black text-white text-nowrap flex gap-2 px-4">
+                            <NewPdfGenerator data={sortedData} /> All
+                        </button>
+
+                    </div>
                     <table className='techPack-table'>
                         <thead>
                             <tr>
