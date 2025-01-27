@@ -421,9 +421,9 @@ const TechPackDataTable = ({ data = [] }) => {
                         <span>
                             Total {sortedData?.length} Tech Packs
                         </span>
-                        <button className="border py-1 bg-black text-white text-nowrap flex gap-2 px-4">
+                        <div className="border py-1 bg-black text-white text-nowrap flex gap-2 px-4">
                             <NewPdfGenerator data={sortedData} /> All
-                        </button>
+                        </div>
 
                     </div>
                     <table className='techPack-table'>
@@ -518,13 +518,13 @@ const TechPackDataTable = ({ data = [] }) => {
                     <br />
                     <span>{formatDate(comment?.date)}</span>
                     <div className="flex mt-20">
-                        <button onClick={() => {
+                        <button type="button" onClick={() => {
                             handleCommentSubmit(isSidebarOpen, comment);
                             toggleSidebar(false);
                         }} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
                             Apply
                         </button>
-                        <button onClick={() => toggleSidebar(false)} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
+                        <button type="button" onClick={() => toggleSidebar(false)} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
                             Close
                         </button>
                     </div>
