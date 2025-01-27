@@ -18,6 +18,7 @@ export const TechPackProvider = ({ children }) => {
     const [isAdding, setIsAdding] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [isUpdatingAs, setIsUpdatingAs] = useState(false);
+    const [isSettingDataFetched, setIsSettingDataFetched] = useState(false);
     const [updateMode, setUpdateMode] = useState("off");
     const [submitStatus, setSubmitStatus] = useState({
         status: null,
@@ -35,7 +36,6 @@ export const TechPackProvider = ({ children }) => {
             "page": 1,
             "name": "Spec Sheet",
             "type": "Layout2",
-            "class": "Layout2",
             "data": {
                 "fabricColorImages": [
                     {
@@ -85,7 +85,6 @@ export const TechPackProvider = ({ children }) => {
             "page": 2,
             "name": "Spec Sheet",
             "type": "Information",
-            "class": "Information",
             "data": {
                 "info": [
                     {
@@ -170,7 +169,6 @@ export const TechPackProvider = ({ children }) => {
             "page": 3,
             "name": "Artwork Placement Sheet",
             "type": "ArtworkPlacementSheet",
-            "class": "ArtworkPlacementSheet",
             "data": {
                 "artworkPlacementSheet": [
                     {
@@ -216,7 +214,6 @@ export const TechPackProvider = ({ children }) => {
             "page": 4,
             "name": "Art Work",
             "type": "ArtWork",
-            "class": "ArtWork",
             "data": {
                 "images": [
                     {
@@ -238,6 +235,7 @@ export const TechPackProvider = ({ children }) => {
                 setRequirements(data.techPack.requirements);
                 setFinishing(data.techPack.finishing);
                 setSizeCharts(data.techPack.sizeCharts);
+                setIsSettingDataFetched(true);
             } else {
                 console.error('Failed to fetch categories');
             }
@@ -250,11 +248,21 @@ export const TechPackProvider = ({ children }) => {
         fetchAllSetting();
     }, [])
 
-    const trimsClasses = trims.map(item => item.name);
+    const getType = (label, category, gender) => {
+        if (!isSettingDataFetched) return null;
 
-    const sizechartClasses = sizecharts.filter(item => item.gender === techPackData.gender && item.category === techPackData.category).map(item => item.name);
-
-    const classesArray = ["Layout0", "Layout1", "Layout2", "Layout3", "Information", "ArtworkPlacementSheet", "SiliconLabel", "ArtWork", `Construction Sheet - ${techPackData.gender}`, `Requirements - ${techPackData.gender}`, `Finishing - ${techPackData.gender}`, ...trimsClasses, ...sizechartClasses, "Undefined"];
+        if (label.name === "Silicon Label Sheet") {
+            return "SiliconLabel";
+        } else if (trims.some(item => item.name === label.name)) {
+            return label.name;
+        } else if (["Construction Sheet", "Requirements", "Finishing"].includes(label.name)) {
+            return `${label.name} - ${techPackData.category}`;
+        } else if (label.name === "Size Charts") {
+            return sizecharts.find(item => item.gender === gender && item.category === category).name;
+        } else {
+            return "Page";
+        }
+    }
 
     const createUpdateTechPackSetup = async (id) => {
         try {
@@ -734,8 +742,9 @@ export const TechPackProvider = ({ children }) => {
                 setFinishing,
                 setSizeCharts,
                 fetchAllSetting,
+                isSettingDataFetched,
+                getType,
                 techPackData,
-                classesArray,
                 isAdding,
                 submitStatus,
                 updateMode,

@@ -2,20 +2,10 @@ import { useTechPack } from '../context/TechPackContext';
 import { LuSquareArrowUp, LuSquareArrowDown } from "react-icons/lu";
 
 function Header({ name, page }) {
-    const { techPackData, getSlideByPage, updateSlideByPage, duplicateSlide, deleteSlideByPage, moveSlideUp, moveSlideDown, classesArray } = useTechPack();
-
-    const slide = getSlideByPage(page);
+    const { techPackData, updateSlideByPage, duplicateSlide, deleteSlideByPage, moveSlideUp, moveSlideDown } = useTechPack();
 
     return (
         <section className='border-b-2 border-black relative'>
-            <div className='absolute top-0 left-0 -translate-y-full px-2 py-1 text-xs border border-black border-b-0'>
-                <select value={slide.class} onChange={(e) => updateSlideByPage(page, "class", e.target.value)} className='focus:border-0 focus-visible:border-0 focus:outline-none focus-visible:outline-none' required>
-                    <option value="" disabled>--select--</option>
-                    {classesArray.map((classItem) => (
-                        <option value={classItem} key={classItem}>{classItem}</option>
-                    ))}
-                </select>
-            </div>
             <article className='relative flex items-start justify-between py-5 pb-12 px-10 pr-24'>
                 <div>
                     <h1 className='font-bold'>BARISCEANO</h1>

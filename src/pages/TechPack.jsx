@@ -13,7 +13,7 @@ const TechPack = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { construction, trims, requirements, finishing, sizecharts, techPackData, updateField, addSlide, addSlideAtIndex, isUpdating, isUpdatingAs, updateAsTechPack, updateTechPack, getMaxPageNumber, updateMode, submitTechPack, resetTechPack, isAdding, submitStatus, createUpdateTechPackSetup } = useTechPack();
+  const { construction, trims, requirements, finishing, sizecharts, getType, techPackData, isSettingDataFetched, updateField, addSlide, addSlideAtIndex, isUpdating, isUpdatingAs, updateAsTechPack, updateTechPack, getMaxPageNumber, updateMode, submitTechPack, resetTechPack, isAdding, submitStatus, createUpdateTechPackSetup } = useTechPack();
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || {};
 
   const [showPopup, setShowPopup] = useState(false);
@@ -31,7 +31,7 @@ const TechPack = () => {
     } else {
       if (!selectedLabels || !currentCategory || !currentSubCategory) {
         navigate('/', { replace: true });
-      } else {
+      } else if (isSettingDataFetched) {
         updateField("gender", currentSubCategory);
         updateField("category", currentCategory);
         updateField("designer", JSON.parse(localStorage.getItem('user')).Name);
@@ -52,8 +52,7 @@ const TechPack = () => {
             addSlide({
               "page": currentPage,
               "name": label.name,
-              "type": getType(label.name),
-              "class": getClass(label),
+              "type": getType(label, currentCategory, currentSubCategory),
               "data": {
                 "images": [
                   {
@@ -71,8 +70,7 @@ const TechPack = () => {
             addSlide({
               "page": currentPage,
               "name": label.name,
-              "type": getType(label.name),
-              "class": getClass(label),
+              "type": getType(label, currentCategory, currentSubCategory),
               "data": {
                 "images": [
                   {
@@ -90,8 +88,7 @@ const TechPack = () => {
             addSlide({
               "page": currentPage,
               "name": label.name,
-              "type": getType(label.name),
-              "class": getClass(label),
+              "type": getType(label, currentCategory, currentSubCategory),
               "data": {
                 "images": [
                   {
@@ -106,31 +103,8 @@ const TechPack = () => {
         hasRun.current = true
       }
     }
-  }, [location.search, selectedLabels, currentCategory, currentSubCategory, construction, requirements, finishing, sizecharts, trims]);
+  }, [location.search, selectedLabels, currentCategory, currentSubCategory, construction, requirements, finishing, sizecharts, trims, isSettingDataFetched]);
 
-
-  const getType = (label) => {
-    switch (label) {
-      case "Silicon Label Sheet":
-        return "SiliconLabel";
-      default:
-        return "Page"
-    }
-  }
-
-  const getClass = (label) => {
-    if (["Layout0", "Layout1", "Layout2", "Layout3", "Information", "ArtworkPlacementSheet", "SiliconLabel", "ArtWork"].includes(label.type)) {
-      return label.type;
-    } else if (trims.some(item => item.name === label.name)) {
-      return label.name;
-    } else if (["Construction Sheet", "Requirements", "Finishing"].includes(label.name)) {
-      return `${label.name} - ${currentCategory}`;
-    } else if (label.name === "Size Charts") {
-      return label.name;
-    } else {
-      return "Undefined";
-    }
-  }
 
   const getComponent = (type, page) => {
     switch (type) {
@@ -158,7 +132,6 @@ const TechPack = () => {
         "page": 10,
         "name": selectedPage.name,
         "type": selectedPage.type,
-        "class": getClass(selectedPage),
         "data": {
           "images": [
             {
