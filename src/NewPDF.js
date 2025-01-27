@@ -384,7 +384,6 @@ const TechPackPDFGenrate = (data) => {
                     });
                 } else if (slide.type === "ArtworkPlacementSheet") {
                     if (ArtworkPlacementSheet[0] && ArtworkPlacementSheet[0].data.artworkPlacementSheet?.length > 0) {
-
                         // Adjust margins and table settings
                         const leftMargin = 10; // Left margin
                         const rightMargin = 10; // Right margin
@@ -410,7 +409,6 @@ const TechPackPDFGenrate = (data) => {
                             lines.push(text);
                             return lines;
                         }
-
 
                         const rows = ArtworkPlacementSheet[0].data.artworkPlacementSheet.map((item) => ({
                             placement: item.placement,
@@ -456,7 +454,9 @@ const TechPackPDFGenrate = (data) => {
                                 pdf.addPage();
                                 headerSection(ArtworkPlacementSheet[0].page + 1, ArtworkPlacementSheet[0].name);
                                 drawHeaders(); // Redraw headers on the new page
-                                currentY = startY + rowHeight / 2; // Reset to below headers
+
+                                // Adjust currentY to reduce the row margin on new pages
+                                currentY = startY + rowHeight / 2 - 15; // Reduced by 20
                             }
 
                             let currentX = leftMargin; // Reset to left margin for each row
