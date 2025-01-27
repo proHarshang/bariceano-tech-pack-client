@@ -17,11 +17,11 @@ const ArtworkPlacementSheet = ({ page }) => {
                     disabled={slide.data.artworkPlacementSheet.length >= 6}
                     onClick={(e) => addArtworkPlacement(page, {
                         sNo: slide.data.artworkPlacementSheet.length + 1,
-                        placement: "Back",
-                        technique: "Embroidery",
-                        color: "#000000",
-                        artworkimage: [{ position: 0, src: "default.png" }],
-                        placementimage: [{ position: 0, src: "default.png" }],
+                        placement: "",
+                        technique: "",
+                        color: "",
+                        artworkimage: [{ position: 0, src: "" }],
+                        placementimage: [{ position: 0, src: "" }],
                     })}
                 >
                     Add new
