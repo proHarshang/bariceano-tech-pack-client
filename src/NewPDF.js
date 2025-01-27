@@ -1,7 +1,6 @@
 import { jsPDF } from 'jspdf';
 import { useState } from 'react';
 import { AiOutlineLoading } from "react-icons/ai";
-import { getImageSize } from 'react-image-size';
 
 const TechPackPDFGenrate = (data) => {
     const [isDownloading, setIsDownloading] = useState(false);
