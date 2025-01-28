@@ -39,9 +39,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
 
     useEffect(() => {
         if (updateMode === "off" && selectedLabels && currentCategory) {
-            updateInfoField(page, "Product Type", slide.data?.info?.find((item) => item.name === "Product Type").value, { "value": currentCategory })
-            updateInfoField(page, "Designer", slide.data?.info?.find((item) => item.name === "Designer").value, { "value": JSON.parse(localStorage.getItem('user')).Name })
-            updateInfoField(page, "Designer", slide.data?.info?.find((item) => item.name === "Designer").value, { "value": JSON.parse(localStorage.getItem('user')).Name })
+            updateInfoField(page, "Product Type", slide.data?.info?.find((item) => item.name === "Product Type").value, { "value": currentCategory })            
             updateInfoField(page, "Trim", slide.data?.info?.find((item) => item.name === "Trim").value, { "value": selectedLabels.join(', ') })
         }
     }, [updateMode, selectedLabels, currentCategory])
@@ -74,16 +72,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                         className="form__field"
                         required
                     />
-                </div>
-                <div className="form__group field w-[45%] relative group">
-                    <label className="form__label capitalize">Designer</label>
-                    <input
-                        type="text"
-                        value={slide.data?.info?.find((item) => item.name === "Designer").value}
-                        className="form__field cursor-not-allowed"
-                        required
-                    />
-                </div>
+                </div>                
                 <div className="form__group field w-[45%] relative group">
                     <label className="form__label capitalize">Size</label>
                     <input

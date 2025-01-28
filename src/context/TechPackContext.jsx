@@ -91,14 +91,9 @@ export const TechPackProvider = ({ children }) => {
                         "position": "1",
                         "name": "Style No",
                         "value": ""
-                    },
+                    },                  
                     {
-                        "position": "1",
-                        "name": "Designer",
-                        "value": ""
-                    },
-                    {
-                        "position": "2",
+                        "position": "Last",
                         "name": "Fabric color",
                         "value": ""
                     },
