@@ -4,7 +4,6 @@ import ImageSelectorPopup from "./ImageSelectorPopup";
 
 export default function Setting() {
 
-
     // Fetch All Data Logic Start
     const [categories, setCategories] = useState([]);
     const [genders, setGenders] = useState([]);

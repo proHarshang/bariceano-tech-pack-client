@@ -101,7 +101,7 @@ const TechPackPDFGenrate = (data) => {
             } = filteredSlides;
 
 
-            const processedSlides = slides.map((slide, index) => {
+            slides.map((slide, index) => {
                 if (index > 0) {
                     pdf.addPage();
                 }
@@ -183,13 +183,13 @@ const TechPackPDFGenrate = (data) => {
                     const largeImageWidth = 77;
                     const largeImageHeight = 85;
 
-                    
+
                     // Top three large rectangles centered with equal space using justify-between logic
                     const largeImageTop = topMargin + 10;
                     const largeImageLeftX = centerX - largeImageWidth - spacing - largeImageWidth / 2 + 20;
                     const largeImageCenterX = centerX - largeImageWidth / 2;
                     const largeImageRightX = centerX + largeImageWidth + spacing - largeImageWidth / 2 - 20;
-                    
+
                     // Adding the first three main images in sorted order comment start
                     // if (Layout2[0] && Layout2[0].data.images.length > 0 && Layout2[0].data.images[0].src) {
                     //     const image = new Image()
@@ -217,19 +217,19 @@ const TechPackPDFGenrate = (data) => {
                         const image = new Image();
                         image.src = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`;
                         console.log("Image Source:", image.src);
-                    
+
                         image.onload = () => {
                             console.log("Image Loaded");
                             console.log("Height:", image.height);
                             console.log("Width:", image.width);
-                    
+
                             const og_width = 75;
                             console.log("Original Width:", og_width);
-                    
+
                             const og_height = (image.height * og_width) / image.width;
                             console.log("Original Height:", og_height);
                         };
-                    
+
                         image.onerror = (error) => {
                             console.error("Failed to load image:", error);
                         };
@@ -635,7 +635,8 @@ const TechPackPDFGenrate = (data) => {
                         console.log("No SiliconeLabel found")
                     }
                 }
-                else {// Check if slide.data exists and contains images
+                else {
+                    // Check if slide.data exists and contains images
                     if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0) {
                         const maxWidth = 240;
                         const xPosition = (pageWidth - maxWidth) / 2; // Centering the image

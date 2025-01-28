@@ -228,7 +228,7 @@ const MainHeader = () => {
                 )}
 
             </div>
-            <div className="flex items-center gap-3 pr-10" onClick={toggleLogout}>
+            <div className="flex items-center gap-3 pr-10 cursor-pointer" onClick={toggleLogout}>
                 <CgProfile className="size-9" />
                 <div>
                     {user ? (
@@ -242,7 +242,7 @@ const MainHeader = () => {
                 </div>
             </div>
             {isOpen && (
-                <div ref={logoutRef} className="absolute right-0 top-[83%] mt-2 mr-3 w-[250px] bg-white dark:bg-gray-800 rounded-lg shadow-lg z-10">
+                <div ref={logoutRef} className="absolute right-0 top-[60px] mt-2 mr-3 w-[250px] bg-white dark:bg-gray-800 rounded-lg shadow-lg z-10">
                     <ul className="py-2">
                         {/* Additional items can be added here */}
                         <li>
