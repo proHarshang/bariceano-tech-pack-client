@@ -180,8 +180,8 @@ const TechPackPDFGenrate = (data) => {
                     const spacing = 20;
 
                     // Adjust dynamic image dimensions
-                    const largeImageWidth = 92;
-                    const largeImageHeight = 92;
+                    const largeImageWidth = 77;
+                    const largeImageHeight = 85;
 
                     // Top three large rectangles centered with equal space using justify-between logic
                     const largeImageTop = topMargin + 10;

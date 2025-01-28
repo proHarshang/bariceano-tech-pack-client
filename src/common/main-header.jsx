@@ -1,17 +1,19 @@
 import React from 'react';
 import { CgProfile } from 'react-icons/cg';
 import { useAuth } from '../context/AuthContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { fetchAll } from '../API/TechPacks';
+import { MdOutlineLogout } from "react-icons/md";
+import { Link } from 'react-router-dom';
 
 const MainHeader = () => {
     const { user } = useAuth();  // Get user from context
     const location = useLocation();
     const currentPath = location.pathname;
     const navigate = useNavigate();
-
+    const logoutRef = useRef(null);
     const [menu, setMenu] = useState([]);
     const [collection, setCollection] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
@@ -20,6 +22,7 @@ const MainHeader = () => {
     const [currentSubCategory, setCurrentSubCategory] = useState(null);
     const [selectedLabels, setSelectedLabels] = useState(["Silicon Label Sheet", "Main Label Sheet", "Size Label Sheet", "Wash Care Label Sheet", "Hang Tag"]);
     const [showCategories, setShowCategories] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         const fetchMenuData = async () => {
@@ -68,6 +71,22 @@ const MainHeader = () => {
         setCurrentSubCategory(false)
     };
 
+    const toggleLogout = () => {
+        setIsOpen((prev) => !prev);
+    };
+    // to close div when click outside of div
+    const handleClickOutside = (event) => {
+        if (logoutRef.current && !logoutRef.current.contains(event.target)) {
+            setIsOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     return (
         <div className="p-5 flex justify-between border-b pl-10 pr-0 max-w-[1500px] mx-auto">
@@ -209,7 +228,7 @@ const MainHeader = () => {
                 )}
 
             </div>
-            <div className="flex items-center gap-3 pr-10">
+            <div className="flex items-center gap-3 pr-10" onClick={toggleLogout}>
                 <CgProfile className="size-9" />
                 <div>
                     {user ? (
@@ -222,6 +241,35 @@ const MainHeader = () => {
                     )}
                 </div>
             </div>
+            {isOpen && (
+                <div ref={logoutRef} className="absolute right-0 top-[83%] mt-2 mr-3 w-[250px] bg-white dark:bg-gray-800 rounded-lg shadow-lg z-10">
+                    <ul className="py-2">
+                        {/* Additional items can be added here */}
+                        <li>
+                            <h1
+                                className="flex items-center p-2 pb-1 text-gray-900 rounded-lg dark:text-white group">
+                                <span className="ms-3 whitespace-nowrap text-sm uppercase">{user.Role}</span>
+                            </h1>
+                        </li>
+                        <li>
+                            <h1
+                                className="flex items-center p-2 pt-0 text-gray-900 rounded-lg dark:text-gray-400 group">
+                                <span className="ms-3 whitespace-nowrap text-sm">{user.email}</span>
+                            </h1>
+                        </li>
+                        <li>
+                            <Link
+                                className="flex items-center p-2 mt-4 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                to="/logout">
+                                <span className="ms-3 whitespace-nowrap">
+                                    <MdOutlineLogout />
+                                </span>
+                                <span className="ms-3 whitespace-nowrap">Logout</span>
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+            )}
         </div >
     );
 };

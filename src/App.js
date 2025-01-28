@@ -7,6 +7,7 @@ import Setting from './components/Setting';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import AddTechpack from './pages/AddTechpack';
 import PrivateRoute from './components/PrivateRoute';
+import Logout from './pages/Logout';
 
 function App() {
   return (
@@ -35,6 +36,14 @@ function App() {
                 <AddTechpack />
               </PrivateRoute>
             } />
+            <Route
+              path="/logout"
+              element={
+                <PrivateRoute>
+                  <Logout />
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </MainLayout>
       </Router>
