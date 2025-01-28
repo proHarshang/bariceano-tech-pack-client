@@ -516,7 +516,7 @@ export const fetchAll = async () => {
     }
 };
 
-const useAddSizeChart = (apiURL, apiKey) => {
+const useAddSizeChart = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -530,12 +530,9 @@ const useAddSizeChart = (apiURL, apiKey) => {
                 !sizeCharts.name ||
                 !sizeCharts.category ||
                 !sizeCharts.gender ||
-                !sizeCharts.images?.position ||
-                !sizeCharts.images?.src
+                !sizeCharts.images
             ) {
-                throw new Error(
-                    "Name, category, gender, position, and images (position & src) are required"
-                );
+                throw new Error("Invalid Fields");
             }
 
             const response = await fetch(`${apiURL}/design/setting/sizeChart/add`, {
@@ -607,22 +604,19 @@ const useEditSizeChart = () => {
     const [errorEditSize, setError] = useState(null);
     const [successEditSize, setSuccess] = useState(null);
 
-    const editSizeChart = async (name, newData) => {
+    const editSizeChart = async (oldName, sizeCharts) => {
         setLoading(true);
         setError(null);
         setSuccess(null);
 
         try {
-            const response = await fetch(`${apiURL}/design/setting/sizeChart/update`, {
+            const response = await fetch(`${apiURL}/design/setting/sizeChart/update/${oldName}`, {
                 method: 'POST',  // Assuming your API uses PUT for updates
                 headers: {
                     'Content-Type': 'application/json',
                     'api-key': apiKey,
                 },
-                body: JSON.stringify({
-                    name, // the name of the size chart you're editing
-                    ...newData, // any other data you're updating (e.g., image or name)
-                }),
+                body: JSON.stringify({ sizeCharts }),
             });
 
             const data = await response.json();
