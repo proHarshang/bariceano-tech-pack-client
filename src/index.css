@@ -13,7 +13,11 @@ body {
 }
 
 * {
-  scrollbar-width: none !important;
+  scrollbar-width: none;
+}
+
+.scroller {
+  scrollbar-width: 2px !important;
 }
 
 .container {
@@ -82,7 +86,7 @@ input {
     }
 
     &:placeholder-shown {
-      ~.form__label {
+      ~ .form__label {
         padding: 0px 0px;
         font-size: inherit;
         cursor: text;
@@ -93,7 +97,7 @@ input {
     }
 
     &:focus {
-      ~.form__label {
+      ~ .form__label {
         position: absolute;
         top: 0;
         display: block;

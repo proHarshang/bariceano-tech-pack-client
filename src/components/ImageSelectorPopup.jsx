@@ -124,10 +124,10 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
 
                         </div>
 
-                        <div className="grid grid-cols-6 gap-x-7 overflow-y-auto h-[85%]">
+                        <div className="flex flex-wrap gap-x-7 gap-y-5 overflow-y-auto h-[85%] scroller">
                             {/* Upload Image Button */}
                             <div className="relative">
-                                <div className="custom-file-label h-28 block border border-gray-300 rounded text-center cursor-pointer transition">
+                                <div className="custom-file-label h-28 block border border-gray-500 rounded text-center cursor-pointer transition">
                                     <label htmlFor="file-upload" className='text-nowrap text-sm flex flex-col items-center gap-3'>
                                         {loading ? 'Uploading...' : 'Upload'}
                                         <IoCloudUploadOutline className='size-10' />
@@ -146,12 +146,12 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                             {/* Render Images */}
                             {filteredImages.map((image, index) => (
                                 <div
-                                    className="mb-6 group relative"
+                                    className="mb-6 group relative w-fit"
                                     key={index}
                                     onMouseLeave={() => setActivePopup(null)}
                                 >
                                     {/* Image Container */}
-                                    <div className="relative flex justify-center border border-gray-300 rounded overflow-hidden transition-transform duration-300 hover:scale-95">
+                                    <div className="relative flex justify-center border border-gray-300 rounded overflow-hidden transition-transform duration-300">
                                         <button type='button' onClick={() => handleImageSelect(image)}>
                                             <img
                                                 src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image}`}
