@@ -113,11 +113,13 @@ const TechPackPDFGenrate = (data) => {
                     const frontBackImgHeight = 110;
                     const colorImgX = 20;
                     const frontImgX = colorImgX + colorImgWidth - 25;
-
+                    const FabricColorImages = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.fabricColorImages[0].src}}`
                     pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.fabricColorImages[0].src}`, 'JPEG', colorImgX, firstRowY + 10, colorImgWidth, colorImgHeight);
                     pdf.setFont('helvetica', 'bold');
+                    if (FabricColorImages) {
+                        pdf.text('Fabric Image', 20, firstRowY + 66);
+                    }
                     pdf.setTextColor('black');
-                    pdf.text('Fabric Image', 20, firstRowY + 66);
                     // Sort images based on their numeric position
                     const sortedImages = Layout1[0].data.images.sort((a, b) => {
                         return parseInt(a.position, 10) - parseInt(b.position, 10);
@@ -163,9 +165,12 @@ const TechPackPDFGenrate = (data) => {
                             );
                         }
                     });
-
                     pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.threadColorImages[0].src}`, 'JPEG', colorImgX, secondColorImgY + 20, colorImgWidth, colorImgHeight);
-                    pdf.text('Thread Color', 20, firstRowY + 133);
+                    const threadColorImages = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.threadColorImages[0].src}`
+                    if (threadColorImages) {
+                        pdf.text('Thread Color', 20, firstRowY + 133);
+                    }
+
 
                 } else if (slide.type === "Layout2") {
                     // Sorting the images in different categories
@@ -559,7 +564,7 @@ const TechPackPDFGenrate = (data) => {
                                 'PNG', // Image format
                                 10, // X position
                                 25, // Y position
-                                287, // Width (A4 width minus 10px margin on both sides)
+                                270, // Width (A4 width minus 10px margin on both sides)
                                 167 // Height
                             );
 
