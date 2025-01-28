@@ -180,25 +180,59 @@ const TechPackPDFGenrate = (data) => {
                     const spacing = 20;
 
                     // Adjust dynamic image dimensions
-                    const largeImageWidth = 92;
-                    const largeImageHeight = 92;
+                    const largeImageWidth = 77;
+                    const largeImageHeight = 85;
 
+                    
                     // Top three large rectangles centered with equal space using justify-between logic
                     const largeImageTop = topMargin + 10;
                     const largeImageLeftX = centerX - largeImageWidth - spacing - largeImageWidth / 2 + 20;
                     const largeImageCenterX = centerX - largeImageWidth / 2;
                     const largeImageRightX = centerX + largeImageWidth + spacing - largeImageWidth / 2 - 20;
-
-                    // Adding the first three main images in sorted order
-                    if (Layout2[0] && Layout2[0].data.images.length > 0 && Layout2[0].data.images[0].src) {
-                        pdf.addImage(
-                            `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`,
-                            "png",
-                            largeImageLeftX,
-                            largeImageTop,
-                            largeImageWidth,
-                            largeImageHeight
-                        );
+                    
+                    // Adding the first three main images in sorted order comment start
+                    // if (Layout2[0] && Layout2[0].data.images.length > 0 && Layout2[0].data.images[0].src) {
+                    //     const image = new Image()
+                    //     image.src = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`
+                    //     console.log("raa", image)
+                    //     console.log("raa11", image.src)
+                    //     console.log("hahaah", `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`)                                                
+                    //     console.log("aaaaaaaaa", image.height)
+                    //     console.log("bbbbbbbbb", image.width)
+                    //     const og_width = 75
+                    //     console.log("ccccccc", og_width)
+                    //     const og_height = image.height * og_width / image.width
+                    //     console.log("ddddddd", og_height)
+                    //     pdf.addImage(
+                    //         `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`,
+                    //         "png",
+                    //         largeImageLeftX,
+                    //         largeImageTop,
+                    //         largeImageWidth,
+                    //         largeImageHeight
+                    //     );
+                    // }
+                    // comment over
+                    if (Layout2?.[0]?.data?.images?.length > 0 && Layout2[0].data.images[0]?.src) {
+                        const image = new Image();
+                        image.src = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`;
+                        console.log("Image Source:", image.src);
+                    
+                        image.onload = () => {
+                            console.log("Image Loaded");
+                            console.log("Height:", image.height);
+                            console.log("Width:", image.width);
+                    
+                            const og_width = 75;
+                            console.log("Original Width:", og_width);
+                    
+                            const og_height = (image.height * og_width) / image.width;
+                            console.log("Original Height:", og_height);
+                        };
+                    
+                        image.onerror = (error) => {
+                            console.error("Failed to load image:", error);
+                        };
                     }
                     if (Layout2[0] && Layout2[0].data.images.length > 1 && Layout2[0].data.images[1].src) {
                         pdf.addImage(
@@ -384,7 +418,6 @@ const TechPackPDFGenrate = (data) => {
                     });
                 } else if (slide.type === "ArtworkPlacementSheet") {
                     if (ArtworkPlacementSheet[0] && ArtworkPlacementSheet[0].data.artworkPlacementSheet?.length > 0) {
-
                         // Adjust margins and table settings
                         const leftMargin = 10; // Left margin
                         const rightMargin = 10; // Right margin
@@ -410,7 +443,6 @@ const TechPackPDFGenrate = (data) => {
                             lines.push(text);
                             return lines;
                         }
-
 
                         const rows = ArtworkPlacementSheet[0].data.artworkPlacementSheet.map((item) => ({
                             placement: item.placement,
@@ -456,7 +488,9 @@ const TechPackPDFGenrate = (data) => {
                                 pdf.addPage();
                                 headerSection(ArtworkPlacementSheet[0].page + 1, ArtworkPlacementSheet[0].name);
                                 drawHeaders(); // Redraw headers on the new page
-                                currentY = startY + rowHeight / 2; // Reset to below headers
+
+                                // Adjust currentY to reduce the row margin on new pages
+                                currentY = startY + rowHeight / 2 - 15; // Reduced by 20
                             }
 
                             let currentX = leftMargin; // Reset to left margin for each row

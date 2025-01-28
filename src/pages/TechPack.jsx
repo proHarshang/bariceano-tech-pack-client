@@ -35,7 +35,8 @@ const TechPack = () => {
         updateField("gender", currentSubCategory);
         updateField("category", currentCategory);
         updateField("designer", JSON.parse(localStorage.getItem('user')).Name);
-        updateField("collection", localStorage.getItem("currentCollection"));
+        // updateField("collection", localStorage.getItem("currentCollection"));
+        updateField("collection", "Collection 1");
 
         // if (hasRun.current) return;
 
@@ -128,23 +129,59 @@ const TechPack = () => {
 
   const handleAddPage = () => {
     if (selectedPage) {
+      const type = getType(selectedPage, currentCategory, currentSubCategory)
       addSlideAtIndex(selectedIndex, {
         "page": 10,
         "name": selectedPage.name,
-        "type": selectedPage.type,
-        "data": {
-          "images": [
-            {
-              "position": 0,
-              "src": "default.png"
-            }
-          ]
-        }
+        "type": type,
+        "data": selectedPage.data,
       });
     }
+
     setShowPopup(false);
     setSelectedPage(null);
   };
+
+  const staticArray = [
+    {
+      "name": "Art Work",
+      "type": "ArtWork",
+      "data": {
+        "images": [
+          {
+            "position": 0,
+            "src": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "Blank Page",
+      "type": "Page",
+      "data": {
+        "images": [
+          {
+            "position": 0,
+            "src": ""
+          }
+        ]
+      }
+    }
+  ];
+
+  // Map the dynamic array to add the `type` property (same as `name`)
+  const dynamicArray = trims.map((item) => {
+    return {
+      "name": item.name,
+      "type": item.name,
+      "data": {
+        "images": item.images
+      }
+    }
+  });
+
+  // Combine static and dynamic arrays
+  const combinedArray = [...staticArray, ...dynamicArray];
 
   return (
     <form className="w-[841px] mx-auto mt-10" >
@@ -164,21 +201,23 @@ const TechPack = () => {
 
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-md w-96">
+          <div className="bg-white p-6 rounded-md w-1/2">
             <h2 className="text-xl font-semibold mb-4">Add a Page</h2>
-            <div className="grid grid-cols-2 gap-4">
-              {[{ "name": "Blank Sheet", "type": "Page" }].map((page) => (
-                <div
-                  key={page.name}
-                  className={`w-28 h-28 border rounded-md flex justify-center items-center cursor-pointer ${(selectedPage && (selectedPage.name === page.name)) ? "bg-gray-200" : ""
-                    }`}
-                  onClick={() => setSelectedPage(page)}
-                >
-                  <span className="text-center text-xs">
-                    {page.name}
-                  </span>
-                </div>
-              ))}
+            <div className="grid grid-cols-5 gap-4">
+              {combinedArray.map((page) => {
+                return (
+                  <div
+                    key={page.name}
+                    className={`w-28 h-28 border-2 rounded-md flex justify-center items-center cursor-pointer ${(selectedPage && (selectedPage.name === page.name)) ? "bg-gray-200" : ""
+                      }`}
+                    onClick={() => setSelectedPage(page)}
+                  >
+                    <span className="text-center text-sm">
+                      {page.name}
+                    </span>
+                  </div>
+                )
+              })}
             </div>
             <div className="flex justify-end mt-10 space-x-2">
               <button

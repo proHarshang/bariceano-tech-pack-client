@@ -434,9 +434,9 @@ const TechPackDataTable = ({ data = [] }) => {
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Name</th>
+                                <th>Style No</th>
                                 <th onClick={handleSort}>Last Edited {isAscending ? '▼' : '▲'}</th>
-                                <th>Designer Name</th>
+                                <th>Designer</th>
                                 <th>Status</th>
                                 <th>Gender</th>
                                 <th>Category</th>
