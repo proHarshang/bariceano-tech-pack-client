@@ -3,6 +3,9 @@ import { getUploadedImage, useUploadImage } from '../API/TechPacks';
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
 
+const apiURL = process.env.REACT_APP_API_URL;
+const apiKey = process.env.REACT_APP_API_KEY;
+
 const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
     const [images, setImages] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -44,8 +47,33 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
         link.click();
     };
 
-    const handleDelete = (image) => {
-        console.log("Delete", image); // Replace with your delete logic
+    const handleDelete = async (image) => {
+        try {
+            const response = await fetch(`${apiURL}/design/techpacks/images/delete`, {
+                method: 'POST', // Use DELETE method
+                headers: {
+                    'Content-Type': 'application/json', // Send JSON data
+                    'api-Key': apiKey,
+                },
+                body: JSON.stringify({
+                    filename: image, // Send the image filename to be deleted
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.status === 200) {
+                alert(data.message); // Show success message
+                fetchAllImage();
+                // Optionally, remove the image from the UI if deletion is successful
+                // For example, update the image list in the state if needed
+            } else {
+                alert(data.message); // Show error message
+            }
+        } catch (error) {
+            console.error('Error deleting image:', error);
+            alert('An error occurred while deleting the image.');
+        }
     };
 
     const { uploadImage, loading, error } = useUploadImage();
