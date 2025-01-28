@@ -408,9 +408,9 @@ export const trimAdd = async (data) => {
     }
 };
 
-export const trimEdit = async (data) => {
+export const trimEdit = async (oldName, data) => {
     try {
-        const response = await fetch(`${apiURL}/design/setting/trims/update`, {
+        const response = await fetch(`${apiURL}/design/setting/trims/update/${oldName}`, {
             method: 'POST',
             body: JSON.stringify({ "trim": data }),
             headers: {

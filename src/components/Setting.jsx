@@ -267,6 +267,7 @@ export default function Setting() {
     const [trimAddBox, setTrimAddBox] = useState(null);
     const [trimEditBox, setTrimEditBox] = useState(null);
     const [trimLoading, setTrimLoading] = useState(false);
+    const [trimEditOldName, setTrimEditOldName] = useState(null);
 
     const handleTrimAdd = async () => {
         try {
@@ -290,7 +291,7 @@ export default function Setting() {
         try {
             setTrimLoading(true)
             // Use the categoryEdit hook to update the category
-            const updated = await trimEdit(trimEditBox);
+            const updated = await trimEdit(trimEditOldName, trimEditBox);
             if (updated.status) {
                 fetchAllSetting(); // Refetch the data
                 setTrimEditBox(null)
@@ -298,7 +299,8 @@ export default function Setting() {
                 console.error('Failed to edit trim');
             }
         } catch (error) {
-            console.log("error in trimt: ", error)
+            console.log("error in trims editing : ", error)
+            alert("Could not edit trim")
         } finally {
             setTrimLoading(false)
         }
@@ -1140,18 +1142,18 @@ export default function Setting() {
                         </div>
                     </div>
                     <div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex flex-wrap gap-3">
                             {trims.map(trim => {
                                 return (
                                     <div key={trim._id} className="p-4 border border-gray-400 group">
                                         <div className="flex justify-between items-center pb-2">
                                             <h1 className="text-xl whitespace-nowrap">{trim.name}</h1>
                                             <div className="hidden gap-2 group-hover:flex">
-                                                <button type="button" onClick={() => setTrimEditBox(trim)}>Edit</button>
+                                                <button type="button" onClick={() => { setTrimEditBox(trim); setTrimEditOldName(trim.name) }}>Edit</button>
                                                 <button type="button" onClick={() => handleDeleteTrimBox(trim.name)}>Delete</button>
                                             </div>
                                         </div>
-                                        <div className="grid grid-cols-3 gap-2">
+                                        <div className="flex flex-wrap gap-2 w-fit">
                                             {Array.isArray(trim.images)
                                                 ? trim.images.map((image, index) => (
                                                     <div key={index} className="relative">
@@ -1189,7 +1191,7 @@ export default function Setting() {
                                         placeholder="Enter Name"
                                         value={trimEditBox.name}
                                         className="w-full p-2 border bg-slate-100 rounded mb-4"
-                                        disabled
+                                        onChange={(e) => setTrimEditBox((prev) => ({ ...prev, "name": e.target.value }))}
                                     />
                                     <div className="mb-4">
                                         <label className="block mb-2 font-semibold">Images:</label>
@@ -1330,9 +1332,9 @@ export default function Setting() {
                 </div>
                 <div>
                     <div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex flex-wrap gap-2">
                             {requirements.map((requirement) => (
-                                <div key={requirement._id} className="p-4 border border-gray-400">
+                                <div key={requirement._id} className="p-4 border border-gray-400 w-fit">
                                     {/* Item Header */}
                                     <div className="flex gap-10 items-center justify-between pb-2">
                                         <h1 className="text-xl text-center mb-3">{requirement.name}</h1>
@@ -1361,12 +1363,12 @@ export default function Setting() {
                                     </div>
 
                                     {/* Images Grid */}
-                                    <div className="grid grid-cols-3 gap-2">
+                                    <div className="flex flex-wrap gap-2 w-fit">
                                         {(requirement.images && requirement.images.src) && (
                                             <img
                                                 src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${requirement.images.src}` || 'default.jpg'}
                                                 alt={`${requirement.images.src}`}
-                                                className="h-24 w-24 object-cover"
+                                                className="h-24 w-24 object-cover border-2"
                                             />
                                         )}
                                     </div>
@@ -1446,9 +1448,9 @@ export default function Setting() {
                 </div>
                 <div>
                     <div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex flex-wrap gap-2">
                             {finishing.map((item) => (
-                                <div key={item._id} className="p-4 border border-gray-400">
+                                <div key={item._id} className="p-4 border border-gray-400 w-fit">
                                     <div className="flex gap-10 items-center justify-between pb-2">
                                         <h1 className="text-xl text-center mb-3">{item.name}</h1>
                                         <button type="button" onClick={() => setFinishingEditBox(item)}>
@@ -1475,12 +1477,12 @@ export default function Setting() {
                                         </button>
                                     </div>
                                     {/* Display images in grid */}
-                                    <div className="grid grid-cols-3 gap-2">
+                                    <div className="flex flex-wrap gap-2">
                                         {(item.images && item.images.src) && (
                                             <img
                                                 src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${item.images.src}`}
                                                 alt={`${item.images.src}`}
-                                                className="h-24 w-24 object-cover"
+                                                className="h-24 w-24 object-cover border-2"
                                             />
                                         )}
                                     </div>
@@ -1818,7 +1820,7 @@ export default function Setting() {
                     isOpen={openPopupId === elem}
                     closeModal={() => setOpenPopupId(null)}
                     onImageSelect={(imgName) => {
-                        if (elem === "sizeChartBox") {                            
+                        if (elem === "sizeChartBox") {
                             setFormValues((prev) => ({
                                 ...prev,
                                 images: prev.images ? [...prev.images, { "position": prev.images.length.toString(), "src": imgName }] : [{ "position": 0, "src": imgName }],
