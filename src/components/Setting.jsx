@@ -159,22 +159,10 @@ export default function Setting() {
 
     // Sizechart Logic Start
     const [selectedOption, setSelectedOption] = useState("");
-    const [formValues, setFormValues] = useState({
-        name: '',
-        category: '',
-        gender: '',
-        position: '',
-    });
-    const [imageFile, setImageFile] = useState(null);
+    const [formValues, setFormValues] = useState({});
     const [isAdding, setIsAdding] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editedOption, setEditedOption] = useState('');
-    const [editedImage, setEditedImage] = useState(null);
-    const options = sizecharts.map(item => item.name);
-    const images = sizecharts.reduce((acc, item) => {
-        acc[item.name] = item.images?.src || "";  // Default to empty string if no image found
-        return acc;
-    }, {});
     const { addSizeChart, success, error } = useAddSizeChart();
     const { editSizeChart, } = useEditSizeChart();
     const { deleteSizeChart } = useDeleteSizeChart();
@@ -183,71 +171,38 @@ export default function Setting() {
         setFormValues(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        setImageFile(file);  // Store the new image file temporarily
-        setEditedImage(null); // Clear the existing image preview
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append('name', formValues.name);
-        formData.append('category', formValues.category);
-        formData.append('gender', formValues.gender);
-        formData.append('position', formValues.position);
-        if (imageFile) formData.append('image', imageFile);
-
         try {
-            await addSizeChart(formData);
-            alert('Size guide added successfully!');
-            setIsAdding(false); // Close modal
+            await addSizeChart(formValues);
+            fetchAllSetting();
+            setIsAdding(false);
         } catch (err) {
-            console.error(err);
+            alert("Could not Save!")
         }
     };
 
     useEffect(() => {
         if (isEditing && selectedOption) {
             const selectedData = sizecharts.find(item => item.name === selectedOption);
-            if (selectedData) {
-                setFormValues({
-                    name: selectedData.name,
-                    category: selectedData.category,
-                    gender: selectedData.gender,
-                    position: selectedData.images?.position || "", // Set default if not available
-                });
-                setEditedImage(selectedData.images?.src || null);
-            }
+            setFormValues({
+                name: selectedData.name,
+                category: selectedData.category,
+                gender: selectedData.gender,
+                images: selectedData.images
+            });
         }
     }, [isEditing, selectedOption, sizecharts]);
 
     const handleEditOption = async () => {
         if (selectedOption) {
-            const formData = new FormData();
-
-            // Append name, category, gender, position
-            formData.append('name', formValues.name);
-            formData.append('category', formValues.category);
-            formData.append('gender', formValues.gender);
-            formData.append('position', formValues.position);
-
-            // Check if there's a new image and append it
-            if (editedImage) {
-                formData.append('image', editedImage);  // Ensure 'image' is the field name
-            }
-
-            // Debugging: log the FormData content
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
-
             try {
-                await editSizeChart(selectedOption, formData);
-                alert("Size guide updated successfully!");
+                await editSizeChart(selectedOption, formValues);
+                fetchAllSetting();
+                setIsEditing(false);
             } catch (err) {
-                console.error(err);
+                alert("Could not Update!")
             }
         } else {
             alert("Please select a size chart to edit.");
@@ -259,6 +214,7 @@ export default function Setting() {
             const confirmed = window.confirm("Are you sure you want to delete this size chart?");
             if (confirmed) {
                 await deleteSizeChart(selectedOption);
+                fetchAllSetting();
                 alert("Size chart deleted successfully!");
             }
         } else {
@@ -266,20 +222,19 @@ export default function Setting() {
         }
     };
 
-    const handleCancelEdit = () => {
-        // Close the editing form without applying changes
-        setIsEditing(false);
-    };
-
     const handleAddOption = () => {
-        setIsAdding(true); // Open the "add option" modal
-        setEditedOption(""); // Reset the input fields
-        setEditedImage(null); // Reset the image preview
+        setIsAdding(true);
+        setEditedOption("");
     };
 
     const handleCancelAddOption = () => {
-        setIsAdding(false); // Close the "add option" modal
+        setIsAdding(false);
     };
+
+    const handleCancelEdit = () => {
+        setIsEditing(false);
+    }
+
     // Sizechart Logic Over
 
 
@@ -311,6 +266,7 @@ export default function Setting() {
     const [trimAddBox, setTrimAddBox] = useState(null);
     const [trimEditBox, setTrimEditBox] = useState(null);
     const [trimLoading, setTrimLoading] = useState(false);
+    const [trimEditOldName, setTrimEditOldName] = useState(null);
 
     const handleTrimAdd = async () => {
         try {
@@ -334,7 +290,7 @@ export default function Setting() {
         try {
             setTrimLoading(true)
             // Use the categoryEdit hook to update the category
-            const updated = await trimEdit(trimEditBox);
+            const updated = await trimEdit(trimEditOldName, trimEditBox);
             if (updated.status) {
                 fetchAllSetting(); // Refetch the data
                 setTrimEditBox(null)
@@ -342,7 +298,8 @@ export default function Setting() {
                 console.error('Failed to edit trim');
             }
         } catch (error) {
-            console.log("error in trimt: ", error)
+            console.log("error in trims editing : ", error)
+            alert("Could not edit trim")
         } finally {
             setTrimLoading(false)
         }
@@ -821,14 +778,12 @@ export default function Setting() {
                             <button className="underline" onClick={handleAddOption}>
                                 Add
                             </button>
-                            <button className="underline" onClick={handleDelete}>
-                                Delete
-                            </button>
-                            <button className="underline" onClick={() => setIsEditing(true)}>Edit</button>
+                            {selectedOption && <button className="underline" onClick={handleDelete}>Delete</button>}
+                            {selectedOption && <button className="underline" onClick={() => setIsEditing(true)}>Edit</button>}
                         </div>
                     </div>
 
-                    <div className="w-full flex gap-10 items-center">
+                    <div className="w-full flex gap-5 items-start flex-col">
                         <div className="dropdown-container">
                             <select
                                 className="custom-dropdown border border-gray-300 p-2 rounded"
@@ -837,28 +792,22 @@ export default function Setting() {
                                 value={selectedOption}
                                 onChange={(e) => setSelectedOption(e.target.value)}
                             >
-                                <option value="" disabled>
-                                    Please select chart
-                                </option>
-                                {options.map((option) => (
-                                    <option key={option} value={option}>
-                                        {option}
-                                    </option>
-                                ))}
+                                <option value="" disabled>Please select chart</option>
+                                {sizecharts.map(item => item.name).map((option) => <option key={option} value={option}>{option}</option>)}
                             </select>
                         </div>
-                        <div
-                            className="border-2 w-[300px] left-0 mt-10 border-dashed border-gray-300 bg-[#FCFCFC] flex items-center justify-center"
-                            style={{ height: "150px" }}
-                        >
-                            {images[selectedOption] ? (
-                                <img
-                                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${images[selectedOption]}`}
-                                    alt={selectedOption}
-                                    className="h-full object-fill"
-                                />
+                        <div className="flex items-center flex-wrap justify-center gap-8">
+                            {sizecharts.find(item => item.name === selectedOption) ? (
+                                sizecharts.find(item => item.name === selectedOption).images.map(img => (
+                                    <img
+                                        src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${img.src}`}
+                                        alt={img.src}
+                                        className="h-full object-fill border w-[200px]"
+                                    />
+                                )
+                                )
                             ) : (
-                                <p className="text-gray-400">Drop an Image here</p>
+                                <p className="flex items-center justify-center border-2 w-[300px] h-[150px] text-gray-400 border-dashed border-gray-300 bg-[#FCFCFC]">No Image</p>
                             )}
                         </div>
                     </div>
@@ -872,7 +821,7 @@ export default function Setting() {
                     {/* Modal for adding an option */}
                     {isAdding && (
                         <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
-                            <div className="bg-white p-6 rounded shadow-lg w-96">
+                            <div className="bg-white p-6 rounded shadow-lg">
                                 <h2 className="text-xl mb-4">Add Size Guide</h2>
 
                                 {/* Select Category */}
@@ -888,7 +837,7 @@ export default function Setting() {
                                                     onChange={handleInputChange}
                                                     checked={formValues.category === cat}
                                                 />
-                                                <label>{cat}</label>
+                                                <label className="text-nowrap">{cat}</label>
                                             </div>
                                         ))}
                                     </div>
@@ -907,7 +856,7 @@ export default function Setting() {
                                                     onChange={handleInputChange}
                                                     checked={formValues.gender === gen}
                                                 />
-                                                <label>{gen}</label>
+                                                <label className="text-nowrap">{gen}</label>
                                             </div>
                                         ))}
                                     </div>
@@ -919,43 +868,39 @@ export default function Setting() {
                                     name="name"
                                     value={formValues.name}
                                     onChange={handleInputChange}
-                                    className="outline p-2 rounded mb-4 w-full"
+                                    className="p-2 rounded mb-4 w-full"
                                     placeholder="Enter size guide name"
                                     required
                                 />
 
-                                {/* Position */}
-                                <input
-                                    type="text"
-                                    name="position"
-                                    value={formValues.position}
-                                    onChange={handleInputChange}
-                                    className="outline p-2 rounded mb-4 w-full"
-                                    placeholder="Enter image position"
-                                    required
-                                />
-
-                                {/* Image Preview */}
-                                <div className="border-2 w-full h-40 border-dashed border-gray-300 bg-[#FCFCFC] flex items-center justify-center">
-                                    {imageFile ? (
-                                        <img
-                                            src={URL.createObjectURL(imageFile)}
-                                            alt="Preview"
-                                            className="h-full object-contain"
-                                        />
-                                    ) : (
-                                        <p className="text-gray-400">No image selected</p>
-                                    )}
+                                <div className="mb-4">
+                                    <label className="block mb-2 font-semibold">Images:</label>
+                                    {formValues.images && formValues.images.map((image, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex items-center justify-between gap-2 mb-2 border p-2 rounded"
+                                        >
+                                            <img
+                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
+                                                alt={`${image.src}`}
+                                                className="w-28 h-16 object-cover rounded"
+                                            />
+                                            <button
+                                                type="button"
+                                                className="text-red-500 text-sm"
+                                                onClick={() => {
+                                                    setFormValues((prev) => ({
+                                                        ...prev,
+                                                        images: prev.images.filter((_, i) => i !== index),
+                                                    }))
+                                                }}
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    ))}
+                                    <button type="button" className="w-full mb-4 border border-black" onClick={() => setOpenPopupId(`sizeChartBox`)}>Upload image</button>
                                 </div>
-
-                                {/* File Input */}
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="my-4"
-                                    onChange={handleImageChange}
-                                    required
-                                />
 
                                 {/* Buttons */}
                                 <div className="flex gap-4">
@@ -986,7 +931,7 @@ export default function Setting() {
                     {/* Modal for editing a size guide */}
                     {isEditing && (
                         <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
-                            <div className="bg-white p-6 rounded shadow-lg w-96">
+                            <div className="bg-white p-6 rounded shadow-lg">
                                 <h2 className="text-xl mb-4">Edit Size Guide</h2>
 
                                 {/* Name Input */}
@@ -1012,7 +957,7 @@ export default function Setting() {
                                                     onChange={handleInputChange}
                                                     checked={formValues.category === cat}
                                                 />
-                                                <label>{cat}</label>
+                                                <label className="text-nowrap">{cat}</label>
                                             </div>
                                         ))}
                                     </div>
@@ -1031,51 +976,40 @@ export default function Setting() {
                                                     onChange={handleInputChange}
                                                     checked={formValues.gender === gen}
                                                 />
-                                                <label>{gen}</label>
+                                                <label className="text-nowrap">{gen}</label>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
-                                {/* Position Input */}
-                                <input
-                                    type="text"
-                                    name="position"
-                                    value={formValues.position}
-                                    onChange={handleInputChange}
-                                    className="outline p-2 rounded mb-4 w-full"
-                                    placeholder="Enter position"
-                                />
-
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageChange}
-                                    className="my-4"
-                                />
-                                {/* Current Image (if exists) */}
-                                {editedImage && !imageFile && (
-                                    <div className="mb-4 h-[100px] mx-auto">
-                                        <img
-                                            src={`${process.env.REACT_APP_API_URL}/${editedImage}`}
-                                            alt="Current"
-                                            className="h-full object-fill"
-                                        />
-                                    </div>
-                                )}
-
-                                {/* New Image Preview (if new image is uploaded) */}
-                                {imageFile && (
-                                    <div className="mb-4 h-[100px] mx-auto">
-                                        <img
-                                            src={URL.createObjectURL(imageFile)}  // Temporary preview of the uploaded image
-                                            alt="Uploaded Preview"
-                                            className="h-full object-fill"
-                                        />
-                                    </div>
-                                )}
-
-
+                                <div className="mb-4">
+                                    <label className="block mb-2 font-semibold">Images:</label>
+                                    {formValues.images && formValues.images.map((image, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex items-center justify-between gap-2 mb-2 border p-2 rounded"
+                                        >
+                                            <img
+                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
+                                                alt={`${image.src}`}
+                                                className="w-28 h-16 object-cover rounded"
+                                            />
+                                            <button
+                                                type="button"
+                                                className="text-red-500 text-sm"
+                                                onClick={() => {
+                                                    setFormValues((prev) => ({
+                                                        ...prev,
+                                                        images: prev.images.filter((_, i) => i !== index),
+                                                    }))
+                                                }}
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    ))}
+                                    <button type="button" className="w-full mb-4 border border-black" onClick={() => setOpenPopupId(`sizeChartBox`)}>Upload image</button>
+                                </div>
 
                                 {/* Buttons */}
                                 <div className="flex gap-4">
@@ -1141,7 +1075,7 @@ export default function Setting() {
                                 />
                                 <div className="mb-4">
                                     <label className="block mb-2 font-semibold">Images:</label>
-                                    {constructionSheetEditBox.images.map((image, index) => (
+                                    {constructionSheetEditBox.images && constructionSheetEditBox.images.map((image, index) => (
                                         <div
                                             key={index}
                                             className="flex items-center justify-between gap-2 mb-2 border p-2 rounded"
@@ -1207,18 +1141,18 @@ export default function Setting() {
                         </div>
                     </div>
                     <div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex flex-wrap gap-3">
                             {trims.map(trim => {
                                 return (
                                     <div key={trim._id} className="p-4 border border-gray-400 group">
                                         <div className="flex justify-between items-center pb-2">
                                             <h1 className="text-xl whitespace-nowrap">{trim.name}</h1>
                                             <div className="hidden gap-2 group-hover:flex">
-                                                <button type="button" onClick={() => setTrimEditBox(trim)}>Edit</button>
+                                                <button type="button" onClick={() => { setTrimEditBox(trim); setTrimEditOldName(trim.name) }}>Edit</button>
                                                 <button type="button" onClick={() => handleDeleteTrimBox(trim.name)}>Delete</button>
                                             </div>
                                         </div>
-                                        <div className="grid grid-cols-3 gap-2">
+                                        <div className="flex flex-wrap gap-2 w-fit">
                                             {Array.isArray(trim.images)
                                                 ? trim.images.map((image, index) => (
                                                     <div key={index} className="relative">
@@ -1256,7 +1190,7 @@ export default function Setting() {
                                         placeholder="Enter Name"
                                         value={trimEditBox.name}
                                         className="w-full p-2 border bg-slate-100 rounded mb-4"
-                                        disabled
+                                        onChange={(e) => setTrimEditBox((prev) => ({ ...prev, "name": e.target.value }))}
                                     />
                                     <div className="mb-4">
                                         <label className="block mb-2 font-semibold">Images:</label>
@@ -1397,9 +1331,9 @@ export default function Setting() {
                 </div>
                 <div>
                     <div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex flex-wrap gap-2">
                             {requirements.map((requirement) => (
-                                <div key={requirement._id} className="p-4 border border-gray-400">
+                                <div key={requirement._id} className="p-4 border border-gray-400 w-fit">
                                     {/* Item Header */}
                                     <div className="flex gap-10 items-center justify-between pb-2">
                                         <h1 className="text-xl text-center mb-3">{requirement.name}</h1>
@@ -1428,12 +1362,12 @@ export default function Setting() {
                                     </div>
 
                                     {/* Images Grid */}
-                                    <div className="grid grid-cols-3 gap-2">
+                                    <div className="flex flex-wrap gap-2 w-fit">
                                         {(requirement.images && requirement.images.src) && (
                                             <img
                                                 src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${requirement.images.src}` || 'default.jpg'}
                                                 alt={`${requirement.images.src}`}
-                                                className="h-24 w-24 object-cover"
+                                                className="h-24 w-24 object-cover border-2"
                                             />
                                         )}
                                     </div>
@@ -1513,9 +1447,9 @@ export default function Setting() {
                 </div>
                 <div>
                     <div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex flex-wrap gap-2">
                             {finishing.map((item) => (
-                                <div key={item._id} className="p-4 border border-gray-400">
+                                <div key={item._id} className="p-4 border border-gray-400 w-fit">
                                     <div className="flex gap-10 items-center justify-between pb-2">
                                         <h1 className="text-xl text-center mb-3">{item.name}</h1>
                                         <button type="button" onClick={() => setFinishingEditBox(item)}>
@@ -1542,12 +1476,12 @@ export default function Setting() {
                                         </button>
                                     </div>
                                     {/* Display images in grid */}
-                                    <div className="grid grid-cols-3 gap-2">
+                                    <div className="flex flex-wrap gap-2">
                                         {(item.images && item.images.src) && (
                                             <img
                                                 src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${item.images.src}`}
                                                 alt={`${item.images.src}`}
-                                                className="h-24 w-24 object-cover"
+                                                className="h-24 w-24 object-cover border-2"
                                             />
                                         )}
                                     </div>
@@ -1879,13 +1813,18 @@ export default function Setting() {
                 </div>
             </div>
 
-            {["constructionSheetEditBox", "parameterEditBox", "finishingEditBox", "trimEditBox", "trimAddBox"].map(elem => {
+            {["sizeChartBox", "constructionSheetEditBox", "parameterEditBox", "finishingEditBox", "trimEditBox", "trimAddBox"].map(elem => {
                 return <ImageSelectorPopup
                     key={elem}
                     isOpen={openPopupId === elem}
                     closeModal={() => setOpenPopupId(null)}
                     onImageSelect={(imgName) => {
-                        if (elem === "constructionSheetEditBox") {
+                        if (elem === "sizeChartBox") {
+                            setFormValues((prev) => ({
+                                ...prev,
+                                images: prev.images ? [...prev.images, { "position": prev.images.length.toString(), "src": imgName }] : [{ "position": 0, "src": imgName }],
+                            }));
+                        } else if (elem === "constructionSheetEditBox") {
                             setConstructionSheetEditBox((prev) => ({
                                 ...prev,
                                 images: [...prev.images, { "position": prev.images.length.toString(), "src": imgName }],

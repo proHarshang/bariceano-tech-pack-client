@@ -10,6 +10,7 @@ const Auth = () => {
 
     const validCredentials = [
         { email: 'thakardevam@gmail.com', password: 'adminadmin', Name: "Devam", Role: "Developer" },
+        { email: 'harshang.developer@gmail.com', password: 'adminadmin', Name: "Harshang", Role: "Developer" },
         { email: 'harshitabharadwaj@gmail.com', password: 'Harsita@0319', Name: "Harshita", Role: "Designer" },
         { email: 'ritikaanupam@gmail.com', password: 'Ritika@1311', Name: "Ritika", Role: "Designer" },
         { email: 'Mayuraestin@gmail.com', password: 'Aestin@1211', Name: "Mayur", Role: "Manager" },
