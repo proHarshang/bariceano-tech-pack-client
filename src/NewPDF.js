@@ -191,67 +191,49 @@ const TechPackPDFGenrate = (data) => {
                     const largeImageRightX = centerX + largeImageWidth + spacing - largeImageWidth / 2 - 20;
 
                     // Adding the first three main images in sorted order comment start
-                    // if (Layout2[0] && Layout2[0].data.images.length > 0 && Layout2[0].data.images[0].src) {
-                    //     const image = new Image()
-                    //     image.src = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`
-                    //     console.log("raa", image)
-                    //     console.log("raa11", image.src)
-                    //     console.log("hahaah", `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`)                                                
-                    //     console.log("aaaaaaaaa", image.height)
-                    //     console.log("bbbbbbbbb", image.width)
-                    //     const og_width = 75
-                    //     console.log("ccccccc", og_width)
-                    //     const og_height = image.height * og_width / image.width
-                    //     console.log("ddddddd", og_height)
-                    //     pdf.addImage(
-                    //         `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`,
-                    //         "png",
-                    //         largeImageLeftX,
-                    //         largeImageTop,
-                    //         largeImageWidth,
-                    //         largeImageHeight
-                    //     );
-                    // }
-                    // comment over
-                    if (Layout2?.[0]?.data?.images?.length > 0 && Layout2[0].data.images[0]?.src) {
-                        const image = new Image();
-                        image.src = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`;
-                        console.log("Image Source:", image.src);
-
-                        image.onload = () => {
-                            console.log("Image Loaded");
-                            console.log("Height:", image.height);
-                            console.log("Width:", image.width);
-
-                            const og_width = 75;
-                            console.log("Original Width:", og_width);
-
-                            const og_height = (image.height * og_width) / image.width;
-                            console.log("Original Height:", og_height);
-                        };
-
-                        image.onerror = (error) => {
-                            console.error("Failed to load image:", error);
-                        };
+                    if (Layout2[0] && Layout2[0].data.images.length > 0 && Layout2[0].data.images[0].src) {
+                        const image = new Image()
+                        image.src = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`
+                        const og_width = 75
+                        const og_height = image.height * og_width / image.width
+                        console.log("og_height", og_height)
+                        pdf.addImage(
+                            `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`,
+                            "png",
+                            largeImageLeftX,
+                            largeImageTop,
+                            og_width,
+                            og_height
+                        );
                     }
                     if (Layout2[0] && Layout2[0].data.images.length > 1 && Layout2[0].data.images[1].src) {
+                        const image = new Image()
+                        image.src = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[1].src}`
+                        const og_width = 75
+                        const og_height = image.height * og_width / image.width
+                        console.log("og_height : 2nd image", og_height)
                         pdf.addImage(
                             `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[1].src}`,
                             "png",
                             largeImageCenterX,
                             largeImageTop,
-                            largeImageWidth,
-                            largeImageHeight
+                            og_width,
+                            og_height
                         );
                     }
                     if (Layout2[0] && Layout2[0].data.images.length > 2 && Layout2[0].data.images[2].src) {
+                        const image = new Image()
+                        image.src = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[2].src}`
+                        const og_width = 75
+                        const og_height = image.height * og_width / image.width
+                        console.log("og_height : 3rd image", og_height)
                         pdf.addImage(
                             `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[2].src}`,
                             "png",
                             largeImageRightX,
                             largeImageTop,
-                            largeImageWidth,
-                            largeImageHeight
+                            og_width,
+                            og_height
                         );
                     }
                     // Thread color section
