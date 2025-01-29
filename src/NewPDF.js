@@ -113,11 +113,13 @@ const TechPackPDFGenrate = (data) => {
                     const frontBackImgHeight = 110;
                     const colorImgX = 20;
                     const frontImgX = colorImgX + colorImgWidth - 25;
-
+                    const FabricColorImages = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.fabricColorImages[0].src}}`
                     pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.fabricColorImages[0].src}`, 'JPEG', colorImgX, firstRowY + 10, colorImgWidth, colorImgHeight);
                     pdf.setFont('helvetica', 'bold');
+                    if (FabricColorImages) {
+                        pdf.text('Fabric Image', 20, firstRowY + 66);
+                    }
                     pdf.setTextColor('black');
-                    pdf.text('Fabric Image', 20, firstRowY + 66);
                     // Sort images based on their numeric position
                     const sortedImages = Layout1[0].data.images.sort((a, b) => {
                         return parseInt(a.position, 10) - parseInt(b.position, 10);
@@ -163,9 +165,12 @@ const TechPackPDFGenrate = (data) => {
                             );
                         }
                     });
-
                     pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.threadColorImages[0].src}`, 'JPEG', colorImgX, secondColorImgY + 20, colorImgWidth, colorImgHeight);
-                    pdf.text('Thread Color', 20, firstRowY + 133);
+                    const threadColorImages = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.threadColorImages[0].src}`
+                    if (threadColorImages) {
+                        pdf.text('Thread Color', 20, firstRowY + 133);
+                    }
+
 
                 } else if (slide.type === "Layout2") {
                     // Sorting the images in different categories
@@ -180,8 +185,8 @@ const TechPackPDFGenrate = (data) => {
                     const spacing = 20;
 
                     // Adjust dynamic image dimensions
-                    const largeImageWidth = 77;
-                    const largeImageHeight = 85;
+                    const largeImageWidth = 92;
+                    const largeImageHeight = 92;
 
 
                     // Top three large rectangles centered with equal space using justify-between logic
@@ -191,50 +196,19 @@ const TechPackPDFGenrate = (data) => {
                     const largeImageRightX = centerX + largeImageWidth + spacing - largeImageWidth / 2 - 20;
 
                     // Adding the first three main images in sorted order comment start
-                    // if (Layout2[0] && Layout2[0].data.images.length > 0 && Layout2[0].data.images[0].src) {
-                    //     const image = new Image()
-                    //     image.src = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`
-                    //     console.log("raa", image)
-                    //     console.log("raa11", image.src)
-                    //     console.log("hahaah", `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`)                                                
-                    //     console.log("aaaaaaaaa", image.height)
-                    //     console.log("bbbbbbbbb", image.width)
-                    //     const og_width = 75
-                    //     console.log("ccccccc", og_width)
-                    //     const og_height = image.height * og_width / image.width
-                    //     console.log("ddddddd", og_height)
-                    //     pdf.addImage(
-                    //         `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`,
-                    //         "png",
-                    //         largeImageLeftX,
-                    //         largeImageTop,
-                    //         largeImageWidth,
-                    //         largeImageHeight
-                    //     );
-                    // }
-                    // comment over
-                    if (Layout2?.[0]?.data?.images?.length > 0 && Layout2[0].data.images[0]?.src) {
-                        const image = new Image();
-                        image.src = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`;
-                        console.log("Image Source:", image.src);
+                    if (Layout2[0] && Layout2[0].data.images.length > 0 && Layout2[0].data.images[0].src) {
 
-                        image.onload = () => {
-                            console.log("Image Loaded");
-                            console.log("Height:", image.height);
-                            console.log("Width:", image.width);
-
-                            const og_width = 75;
-                            console.log("Original Width:", og_width);
-
-                            const og_height = (image.height * og_width) / image.width;
-                            console.log("Original Height:", og_height);
-                        };
-
-                        image.onerror = (error) => {
-                            console.error("Failed to load image:", error);
-                        };
+                        pdf.addImage(
+                            `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[0].src}`,
+                            "png",
+                            largeImageLeftX,
+                            largeImageTop,
+                            largeImageWidth,
+                            largeImageHeight
+                        );
                     }
                     if (Layout2[0] && Layout2[0].data.images.length > 1 && Layout2[0].data.images[1].src) {
+
                         pdf.addImage(
                             `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout2[0].data.images[1].src}`,
                             "png",
@@ -577,7 +551,7 @@ const TechPackPDFGenrate = (data) => {
                                 'PNG', // Image format
                                 10, // X position
                                 25, // Y position
-                                287, // Width (A4 width minus 10px margin on both sides)
+                                270, // Width (A4 width minus 10px margin on both sides)
                                 167 // Height
                             );
 
