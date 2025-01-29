@@ -1852,74 +1852,7 @@ export default function Setting() {
                         }
                     }}
                 />
-            })}
-
-            {/* Modal for adding an option */}
-            {update && (
-                <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
-                    <div className="bg-white p-6 rounded shadow-lg">
-                        <h2 className="text-xl mb-4">Add Size Guide</h2>
-
-                        {[1, 2, 3].includes(update.name) &&
-                            <div className="mb-3">
-                                <h3 className="mb-1">Select Category</h3>
-                                <div className="flex gap-5">
-                                    {categories.map((cat) => (
-                                        <div key={cat} className="flex gap-2 items-center">
-                                            <input
-                                                type="checkbox"
-                                                name="category"
-                                                value={cat}
-                                                onChange={handleInputChange}
-                                                checked={formValues.category === cat}
-                                            />
-                                            <label className="text-nowrap">{cat}</label>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        }
-
-                        {[1, 2, 3].includes(update.name) &&
-                            <div className="mb-3">
-                                <h3 className="mb-1">Select Gender</h3>
-                                <div className="flex gap-5">
-                                    {genders.map((gen) => (
-                                        <div key={gen} className="flex gap-2 items-center">
-                                            <input
-                                                type="checkbox"
-                                                name="gender"
-                                                value={gen}
-                                                onChange={handleInputChange}
-                                                checked={formValues.gender === gen}
-                                            />
-                                            <label className="text-nowrap">{gen}</label>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        }
-
-                        {/* Buttons */}
-                        <div className="flex gap-4">
-                            <button
-                                onClick={handleUpdate}
-                                disabled={updateLoading}
-                                className="bg-black text-white px-4 py-2 rounded-lg"
-                            >
-                                {updateLoading ? 'Update...' : 'Update'}
-                            </button>
-                            <button
-                                onClick={handleCancelUpdateCancle}
-                                className="border border-black px-4 py-2 rounded-lg"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )
-            }
+            })}           
 
         </section >
     );
