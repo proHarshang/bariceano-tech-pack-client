@@ -1,7 +1,53 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getUploadedImage, useUploadImage } from '../API/TechPacks';
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
+import Cropper from "react-easy-crop";
+
+const createImage = (url) =>
+    new Promise((resolve, reject) => {
+        const image = new Image();
+        image.crossOrigin = "anonymous"; // To prevent CORS issues
+        image.src = url;
+        image.onload = () => resolve(image);
+        image.onerror = (error) => reject(error);
+    });
+
+const getCroppedImg = async (imageSrc, crop) => {
+    const image = await createImage(imageSrc);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) {
+        throw new Error("Could not get canvas context");
+    }
+
+    canvas.width = crop.width;
+    canvas.height = crop.height;
+
+    ctx.drawImage(
+        image,
+        crop.x,
+        crop.y,
+        crop.width,
+        crop.height,
+        0,
+        0,
+        crop.width,
+        crop.height
+    );
+
+    return new Promise((resolve) => {
+        canvas.toBlob((blob) => {
+            if (!blob) {
+                console.error("Canvas is empty");
+                return;
+            }
+            const file = new File([blob], "cropped_image.png", { type: "image/png" });
+            resolve(file); // Returns cropped image as a File
+        }, "image/png");
+    });
+};
 
 const apiURL = process.env.REACT_APP_API_URL;
 const apiKey = process.env.REACT_APP_API_KEY;
@@ -11,6 +57,16 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
+    const [image, setImage] = useState(null);
+    const [crop, setCrop] = useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(1);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+    const [croppedImage, setCroppedImage] = useState(null);
+
+    const onCropComplete = useCallback((_, croppedAreaPixels) => {
+        setCroppedAreaPixels(croppedAreaPixels);
+    }, []);
+
     const fetchAllImage = async () => {
         setIsLoading(true)
         try {
@@ -18,6 +74,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
             const data = await getUploadedImage(); // Use your API call here
             if (data.status) {
                 setImages(data.data); // Set the fetched images
+                console.log("🖼 Images fetched")
             } else {
                 console.error('Failed to fetch images');
             }
@@ -29,7 +86,9 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
     };
 
     useEffect(() => {
-        fetchAllImage();
+        if (isOpen) {
+            fetchAllImage();
+        }
     }, [isOpen]);
 
     const filteredImages = images.filter(image =>
@@ -79,23 +138,51 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
     const { uploadImage, loading, error } = useUploadImage();
 
     // Handle file selection and trigger upload immediately
-    const handleFileChange = (e) => {
-        if (e.target.files && e.target.files.length > 0) {
+    const handleFileChange = async (e) => {
+        if (e.target.files && e.target.files.length > 1) {
             uploadImage([...e.target.files]); // Trigger the upload automatically
+        } else if (e.target.files[0] && e.target.files.length === 1) {
+            const imageUrl = URL.createObjectURL(e.target.files[0]);
+            setImage(imageUrl);
         }
-        fetchAllImage();
-    };
-
-
-    if (!isOpen) {
-        return null; // Don't render the popup if not open
+        await fetchAllImage();
     }
 
+
+    const handleCrop = async () => {
+        if (!image || !croppedAreaPixels) return;
+        const croppedImgFile = await getCroppedImg(image, croppedAreaPixels);
+
+        setCroppedImage(URL.createObjectURL(croppedImgFile)); // Preview cropped image
+        console.log("Cropped Image File:", croppedImgFile);
+
+        // Upload the cropped image to the backend
+        uploadImage([croppedImgFile]);
+
+        setImage(null);
+    };
+
+    const handleCancelCrop = async () => {
+        if (!image || !croppedAreaPixels) return;
+        const croppedImgFile = await getCroppedImg(image, croppedAreaPixels);
+
+        setCroppedImage(URL.createObjectURL(croppedImgFile)); // Preview cropped image
+        console.log("Cropped Image File:", croppedImgFile);
+
+        // Upload the cropped image to the backend
+        uploadImage([croppedImgFile]);
+
+        setImage(null);
+    };
+
+    if (!isOpen) return;
 
     const handleImageSelect = (image) => {
         onImageSelect(image);
         closeModal();
     };
+
+    // if (isLoading) return <div className='fixed top-0 left-0 bg-white z-50 h-screen w-screen flex items-center justify-center'>Loading...</div>
 
     return (
         <div className="relative">
@@ -142,6 +229,35 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                                     onChange={handleFileChange}  // Automatically triggers upload
                                 />
                             </div>
+
+                            {image && (
+                                <div className='fixed top-0 left-0 bg-white z-50 h-screen w-screen flex items-center justify-center'>
+                                    <div className='flex flex-col justify-center items-center gap-y-5'>
+                                        <div className="relative w-80 h-80 bg-gray-200">
+                                            <Cropper
+                                                image={image}
+                                                crop={crop}
+                                                zoom={zoom}
+                                                aspect={1 / 1}
+                                                onCropChange={setCrop}
+                                                onZoomChange={setZoom}
+                                                onCropComplete={onCropComplete}
+                                            />
+                                        </div>
+                                        <div className="flex gap-x-4 justify-around">
+                                            <button type='button' onClick={handleCrop} className="mt-4 py-3 px-6 bg-black text-white rounded-md w-fit active:scale-95 hover:scale-105 transition-all">
+                                                Crop & Upload
+                                            </button>
+                                            <button type='button' onClick={() => { image ? uploadImage([image]) : handleCancelCrop() }} className="mt-4 py-3 px-6 bg-black text-white rounded-md w-fit active:scale-95 hover:scale-105 transition-all">
+                                                Upload Original
+                                            </button>
+                                            <button type='button' onClick={handleCancelCrop} className="mt-4 py-3 px-6 bg-white text-black outline-1 outline-solid outline-black rounded-md w-fit active:scale-95 hover:scale-105 transition-all">
+                                                Cancle
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Render Images */}
                             {filteredImages.map((image, index) => (
