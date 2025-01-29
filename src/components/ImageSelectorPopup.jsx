@@ -13,7 +13,7 @@ const createImage = (url) =>
         image.onerror = (error) => reject(error);
     });
 
-const getCroppedImg = async (imageSrc, crop) => {
+const getCroppedImg = async (selectedFile, imageSrc, crop) => {
     const image = await createImage(imageSrc);
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -43,9 +43,16 @@ const getCroppedImg = async (imageSrc, crop) => {
                 console.error("Canvas is empty");
                 return;
             }
-            const file = new File([blob], "cropped_image.png", { type: "image/png" });
+            // Extract the original file name
+            const originalFileName = selectedFile?.name || "image.png";
+            const fileExtension = originalFileName.split(".").pop();
+            const newFileName = `${originalFileName}`;
+
+            // Create a new File with the original name and correct extension
+            const file = new File([blob], newFileName, { type: `image/${fileExtension}` });
+
             resolve(file); // Returns cropped image as a File
-        }, "image/png");
+        }, selectedFile?.type || "image/png");
     });
 };
 
@@ -57,11 +64,13 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
+    const [selectedFile, setSelectedFile] = useState(null);
+
     const [image, setImage] = useState(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-    const [croppedImage, setCroppedImage] = useState(null);
+    const [aspectRatio, setAspectRatio] = useState(1);
 
     const onCropComplete = useCallback((_, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
@@ -143,6 +152,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
             uploadImage([...e.target.files]); // Trigger the upload automatically
         } else if (e.target.files[0] && e.target.files.length === 1) {
             const imageUrl = URL.createObjectURL(e.target.files[0]);
+            setSelectedFile(e.target.files[0]); // Store the selected file
             setImage(imageUrl);
         }
         await fetchAllImage();
@@ -151,10 +161,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
 
     const handleCrop = async () => {
         if (!image || !croppedAreaPixels) return;
-        const croppedImgFile = await getCroppedImg(image, croppedAreaPixels);
-
-        setCroppedImage(URL.createObjectURL(croppedImgFile)); // Preview cropped image
-        console.log("Cropped Image File:", croppedImgFile);
+        const croppedImgFile = await getCroppedImg(selectedFile, image, croppedAreaPixels);
 
         // Upload the cropped image to the backend
         uploadImage([croppedImgFile]);
@@ -164,10 +171,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
 
     const handleCancelCrop = async () => {
         if (!image || !croppedAreaPixels) return;
-        const croppedImgFile = await getCroppedImg(image, croppedAreaPixels);
-
-        setCroppedImage(URL.createObjectURL(croppedImgFile)); // Preview cropped image
-        console.log("Cropped Image File:", croppedImgFile);
+        const croppedImgFile = await getCroppedImg(selectedFile, image, croppedAreaPixels);
 
         // Upload the cropped image to the backend
         uploadImage([croppedImgFile]);
@@ -231,14 +235,23 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                             </div>
 
                             {image && (
-                                <div className='fixed top-0 left-0 bg-white z-50 h-screen w-screen flex items-center justify-center'>
+                                <div className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white z-50 h-[90vh] w-[90vw] flex items-center justify-center'>
                                     <div className='flex flex-col justify-center items-center gap-y-5'>
+                                        {/* Aspect Ratio Selection */}
+                                        <div className="flex gap-2">
+                                            <label>Aspect Ratio:</label>
+                                            <select onChange={(e) => setAspectRatio(e.target.value)} className="border px-2 py-1 rounded">
+                                                <option value={1}>1:1</option>                                                
+                                                <option value={4 / 3}>4:3</option>                                                
+                                            </select>
+                                        </div>
+                                        {croppedAreaPixels && <span className='text-sm opacity-60'>{croppedAreaPixels.width} X {croppedAreaPixels.height}</span>}
                                         <div className="relative w-80 h-80 bg-gray-200">
                                             <Cropper
                                                 image={image}
                                                 crop={crop}
                                                 zoom={zoom}
-                                                aspect={1 / 1}
+                                                aspect={aspectRatio === "free" ? undefined : parseFloat(aspectRatio)}
                                                 onCropChange={setCrop}
                                                 onZoomChange={setZoom}
                                                 onCropComplete={onCropComplete}
@@ -251,7 +264,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                                             <button type='button' onClick={() => { image ? uploadImage([image]) : handleCancelCrop() }} className="mt-4 py-3 px-6 bg-black text-white rounded-md w-fit active:scale-95 hover:scale-105 transition-all">
                                                 Upload Original
                                             </button>
-                                            <button type='button' onClick={handleCancelCrop} className="mt-4 py-3 px-6 bg-white text-black outline-1 outline-solid outline-black rounded-md w-fit active:scale-95 hover:scale-105 transition-all">
+                                            <button type='button' onClick={handleCancelCrop} className="mt-4 py-3 px-6 bg-white text-black outline-1 [outline-style:solid] outline-black rounded-md w-fit active:scale-95 hover:scale-105 transition-all">
                                                 Cancle
                                             </button>
                                         </div>
