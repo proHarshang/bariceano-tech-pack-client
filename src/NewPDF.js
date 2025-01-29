@@ -541,18 +541,20 @@ const TechPackPDFGenrate = (data) => {
 
                         ArtWork[0].data.images.forEach((image, index) => {
                             // Add a new page for each image
-
                             // Add the header section with the page number
                             headerSection(ArtWork[0].page, slide.name);
+                            const maxWidth = pdf.internal.pageSize.getWidth()
+                            const imageWidth = 213;
+                            const xPosition = (maxWidth - imageWidth) / 2;
 
                             // Add the artwork image
                             pdf.addImage(
                                 `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`, // Image path
                                 'PNG', // Image format
-                                10, // X position
+                                xPosition, // X position
                                 25, // Y position
-                                270, // Width (A4 width minus 10px margin on both sides)
-                                167 // Height
+                                imageWidth, // Width (A4 width minus 10px margin on both sides)
+                                160 // Height
                             );
 
                             // Add the footer section
@@ -566,16 +568,16 @@ const TechPackPDFGenrate = (data) => {
                     if (slide.type === "Page") {
                         // Check if slide.data exists and contains images
                         if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0) {
-                            const maxWidth = 240;
-                            const xPosition = (pageWidth - maxWidth) / 2; // Centering the image
+                            const maxWidth = pdf.internal.pageSize.getWidth()
+                            const imageWidth = 213;
+                            const xPosition = (maxWidth - imageWidth) / 2;
 
                             // Loop through images within slide.data
                             slide.data.images.forEach((image) => {
                                 const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
-                                console.log("Adding image from:", imagePath);
 
                                 // Add image to PDF with adjusted position and dimensions
-                                pdf.addImage(imagePath, "JPEG", xPosition, 25, maxWidth, 167);
+                                pdf.addImage(imagePath, "JPEG", xPosition, 25, imageWidth, 160);
                             });
                         } else {
                             console.warn(`No images found for page ${slide.page}. Skipping image addition.`);
@@ -586,8 +588,9 @@ const TechPackPDFGenrate = (data) => {
                 else if (slide.type === "SiliconLabel") {
                     if (SiliconLabel[0] && SiliconLabel[0].data.images && SiliconLabel[0].data.images.length > 0) {
                         SiliconLabel[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
-                        const maxWidth = pdf.internal.pageSize.getWidth() - 50;
-                        const xPosition = (pageWidth - maxWidth) / 2;
+                        const maxWidth = pdf.internal.pageSize.getWidth()
+                        const imageWidth = 213;
+                        const xPosition = (maxWidth - imageWidth) / 2;
                         SiliconLabel[0].data.images.forEach((image, index) => {
                             if (index > 0) {
                                 pdf.addPage();
@@ -596,14 +599,14 @@ const TechPackPDFGenrate = (data) => {
                             if (index === 0) {
                                 pdf.setFont('helvetica', 'bold');
                                 pdf.setFontSize(10);
-                                pdf.text('PLACEMENT', 20, 30);
+                                pdf.text('PLACEMENT : ', 20, 30);
                                 pdf.setFont('helvetica', 'normal');
                                 pdf.setFontSize(10);
-                                pdf.text(SiliconLabel[0]?.data?.title.toUpperCase(), 20, 36);
+                                pdf.text(SiliconLabel[0]?.data?.title.toUpperCase(), 46, 30);
                             }
 
                             const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
-                            pdf.addImage(imagePath, "jpeg", xPosition, 45, maxWidth, pdf.internal.pageSize.getHeight() - 65);
+                            pdf.addImage(imagePath, "jpeg", xPosition, 45, imageWidth, 140);
                         });
                     } else {
                         console.log("No SiliconeLabel found")
@@ -612,16 +615,15 @@ const TechPackPDFGenrate = (data) => {
                 else {
                     // Check if slide.data exists and contains images
                     if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0) {
-                        const maxWidth = 240;
-                        const xPosition = (pageWidth - maxWidth) / 2; // Centering the image
+                        const maxWidth = pdf.internal.pageSize.getWidth()
+                        const imageWidth = 213;
+                        const xPosition = (maxWidth - imageWidth) / 2;
 
                         // Loop through images within slide.data
                         slide.data.images.forEach((image) => {
                             const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
-                            console.log("Adding image from:", imagePath);
-
                             // Add image to PDF with adjusted position and dimensions
-                            pdf.addImage(imagePath, "JPEG", xPosition, 25, maxWidth, 167);
+                            pdf.addImage(imagePath, "JPEG", xPosition, 25, imageWidth, 160);
                         });
                     } else {
                         console.warn(`No images found for page ${slide.page}. Skipping image addition.`);
