@@ -15,6 +15,12 @@ export default function Setting() {
     const [collections, setCollections] = useState([]);
     const [fabrics, setFabrics] = useState([]);
 
+    const [update, setUpdate] = useState(false);
+    const [updateFormFData, setUpdateFormFData] = useState({
+        genders: [],
+        categories: []
+    });
+
     const [openPopupId, setOpenPopupId] = useState(null);
 
     const fetchAllSetting = async () => {
@@ -52,7 +58,7 @@ export default function Setting() {
         const newCategoryName = prompt('Enter the new category name:', cat);
         if (newCategoryName && newCategoryName !== cat) {
             // Use the categoryEdit hook to update the category
-            const updated = await categoryEdit(cat, newCategoryName);
+            const updated = await categoryEdit(update, cat, newCategoryName);
             if (updated.status) {
                 // Update the state with the new category
                 setCategories((prevCategories) =>
@@ -246,7 +252,7 @@ export default function Setting() {
         try {
             setConstructionSheetLoading(true)
             // Use the categoryEdit hook to update the category
-            const updated = await constructionSheetEdit(constructionSheetEditBox);
+            const updated = await constructionSheetEdit(updateFormFData, constructionSheetEditBox);
             if (updated.status) {
                 fetchAllSetting(); // Refetch the data
                 setConstructionSheetEditBox(null)
@@ -1103,14 +1109,21 @@ export default function Setting() {
                                 </div>
                                 {error && console.error('Error:', error)}
                                 {error && <p className="text-red-500 mb-2">{error}</p>}
+                                <div className="flex gap-4 my-5">
+                                    <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black ${update ? 'bg-black' : 'bg-white'}`} onClick={() => setUpdate(!update)}></div>
+                                    <span>Update In all the tackpacks including previous one</span>
+                                </div>
+                                {update && <UpdateForm field="constructionSheet" updateFormFData={updateFormFData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} />}
                                 <div className="flex justify-end gap-2">
                                     <button
+                                        type="button"
                                         className="px-4 py-2 border text-black rounded-lg text-sm"
                                         onClick={() => setConstructionSheetEditBox(null)}
                                     >
                                         Cancel
                                     </button>
                                     <button
+                                        type="button"
                                         className="px-4 py-2 bg-black text-white rounded-lg text-sm"
                                         onClick={handleConstructionSheetEdit}
                                         disabled={constructionSheetLoading}
@@ -1852,8 +1865,74 @@ export default function Setting() {
                         }
                     }}
                 />
-            })}           
+            })}
 
         </section >
     );
 };
+
+const UpdateForm = ({ field, updateFormFData, setUpdateFormFData, genders, categories }) => {
+
+    const handleCategoryChange = (e) => {
+        const newCategory = e.target.value;
+        setUpdateFormFData((prev) => {
+            const updatedCategories = prev.categories.includes(newCategory)
+                ? prev.categories.filter((cat) => cat !== newCategory)  // Remove if already selected
+                : [...prev.categories, newCategory];  // Add if not selected
+            return { ...prev, categories: updatedCategories };
+        });
+    };
+
+    const handleGenderChange = (e) => {
+        const newGender = e.target.value;
+        setUpdateFormFData((prev) => {
+            const updatedGenders = prev.genders.includes(newGender)
+                ? prev.genders.filter((gen) => gen !== newGender)  // Remove if already selected
+                : [...prev.genders, newGender];  // Add if not selected
+            return { ...prev, genders: updatedGenders };
+        });
+    };
+
+    return (
+        <div className="bg-gray p-6">
+
+            {[1, 2, 3].includes(field) &&
+                <div className="mb-3">
+                    <h3 className="mb-1">Select Category</h3>
+                    <div className="flex gap-5">
+                        {categories.map((cat) => (
+                            <div key={cat} className="flex gap-2 items-center">
+                                <input
+                                    type="checkbox"
+                                    value={cat}
+                                    onChange={handleCategoryChange}
+                                    checked={updateFormFData.categories.includes(cat)}
+                                />
+                                <label className="text-nowrap">{cat}</label>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            }
+
+            {["constructionSheet", 2, 3].includes(field) &&
+                <div className="mb-3">
+                    <h3 className="mb-1">Select Gender</h3>
+                    <div className="flex gap-5">
+                        {genders.map((gen) => (
+                            <div key={gen} className="flex gap-2 items-center">
+                                <input
+                                    type="checkbox"
+                                    value={gen}
+                                    onChange={handleGenderChange}
+                                    checked={updateFormFData.genders.includes(gen)}
+                                />
+                                <label className="text-nowrap">{gen}</label>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            }
+        </div>
+    )
+}

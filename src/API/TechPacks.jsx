@@ -299,11 +299,11 @@ export const genderDelete = async (name) => {
     }
 };
 
-export const constructionSheetEdit = async (data) => {
+export const constructionSheetEdit = async (updateFormFData, data) => {
     try {
         const response = await fetch(`${apiURL}/design/setting/constructionSheet/update/${data.name}`, {
             method: 'POST',
-            body: JSON.stringify({ "constructionSheet": data }),
+            body: JSON.stringify({ "update": updateFormFData, "constructionSheet": data }),
             headers: {
                 'Content-Type': 'application/json',
                 'api-key': apiKey,
