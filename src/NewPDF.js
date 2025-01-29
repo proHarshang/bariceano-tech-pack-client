@@ -13,6 +13,7 @@ const TechPackPDFGenrate = (data) => {
         orientation: 'landscape',
         unit: 'mm',
         format: [pageWidth, pageHeight],
+        compress: true,
     });
 
 
@@ -152,7 +153,8 @@ const TechPackPDFGenrate = (data) => {
                                 frontImgX + 44, // Adjusted X position for the first image
                                 yPosition,
                                 adjustedWidth,
-                                adjustedHeight
+                                adjustedHeight,
+
                             );
                         } else if (index === 1) {
                             pdf.addImage(
@@ -161,7 +163,8 @@ const TechPackPDFGenrate = (data) => {
                                 frontImgX + 10 + adjustedWidth + imageSpacing, // X position for the second image
                                 yPosition,
                                 adjustedWidth,
-                                adjustedHeight
+                                adjustedHeight,
+
                             );
                         }
                     });
@@ -204,7 +207,8 @@ const TechPackPDFGenrate = (data) => {
                             largeImageLeftX,
                             largeImageTop,
                             largeImageWidth,
-                            largeImageHeight
+                            largeImageHeight,
+
                         );
                     }
                     if (Layout2[0] && Layout2[0].data.images.length > 1 && Layout2[0].data.images[1].src) {
@@ -215,7 +219,8 @@ const TechPackPDFGenrate = (data) => {
                             largeImageCenterX,
                             largeImageTop,
                             largeImageWidth,
-                            largeImageHeight
+                            largeImageHeight,
+
                         );
                     }
                     if (Layout2[0] && Layout2[0].data.images.length > 2 && Layout2[0].data.images[2].src) {
@@ -225,7 +230,8 @@ const TechPackPDFGenrate = (data) => {
                             largeImageRightX,
                             largeImageTop,
                             largeImageWidth,
-                            largeImageHeight
+                            largeImageHeight,
+
                         );
                     }
                     // Thread color section
@@ -569,7 +575,7 @@ const TechPackPDFGenrate = (data) => {
                         // Check if slide.data exists and contains images
                         if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0) {
                             const maxWidth = pdf.internal.pageSize.getWidth()
-                            const imageWidth = 213;
+                            const imageWidth = 233;
                             const xPosition = (maxWidth - imageWidth) / 2;
 
                             // Loop through images within slide.data
