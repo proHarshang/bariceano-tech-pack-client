@@ -32,6 +32,9 @@ const TechPack = () => {
       if (!selectedLabels || !currentCategory || !currentSubCategory) {
         navigate('/', { replace: true });
       } else if (isSettingDataFetched) {
+        console.log(selectedLabels, currentCategory, currentSubCategory)
+
+
         updateField("gender", currentSubCategory);
         updateField("category", currentCategory);
         updateField("designer", JSON.parse(localStorage.getItem('user')).Name);

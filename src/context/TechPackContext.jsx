@@ -91,7 +91,7 @@ export const TechPackProvider = ({ children }) => {
                         "position": "1",
                         "name": "Style No",
                         "value": ""
-                    },                  
+                    },
                     {
                         "position": "Last",
                         "name": "Fabric color",
@@ -243,7 +243,8 @@ export const TechPackProvider = ({ children }) => {
         fetchAllSetting();
     }, [])
 
-    const getType = (label, category, gender) => {
+    const getType = (label, category, gender) => {        
+        // console.log(`${label.name} - ${techPackData.category}`)
         if (!isSettingDataFetched) return null;
 
         if (label.name === "Silicon Label Sheet") {
@@ -251,7 +252,7 @@ export const TechPackProvider = ({ children }) => {
         } else if (trims.some(item => item.name === label.name)) {
             return label.name;
         } else if (["Construction Sheet", "Requirements", "Finishing"].includes(label.name)) {
-            return `${label.name} - ${techPackData.category}`;
+            return `${label.name} - ${category}`;
         } else if (label.name === "Size Charts") {
             return sizecharts.find(item => item.gender === gender && item.category === category).name;
         } else {
