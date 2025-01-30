@@ -480,7 +480,7 @@ const TechPackDataTable = ({ data = [] }) => {
                                                 <button type="button" className="edit-button hover:bg-zinc-300" onClick={() => handleEditClick(item._id)}>Edit</button>
                                             </div>
                                             <div className="action-buttons w-1/2">
-                                                <div className="download-button hover:bg-green-300">
+                                                <div className="flex justify-center items-center download-button hover:bg-green-300">
                                                     <NewPdfGenerator data={currentItems[index]} />
                                                 </div>
                                                 <button type="button" onClick={() => {

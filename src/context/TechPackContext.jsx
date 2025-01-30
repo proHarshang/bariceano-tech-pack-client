@@ -243,7 +243,7 @@ export const TechPackProvider = ({ children }) => {
         fetchAllSetting();
     }, [])
 
-    const getType = (label, category, gender) => {        
+    const getType = (label, category, gender) => {
         // console.log(`${label.name} - ${techPackData.category}`)
         if (!isSettingDataFetched) return null;
 
@@ -263,7 +263,6 @@ export const TechPackProvider = ({ children }) => {
     const createUpdateTechPackSetup = async (id) => {
         try {
             setUpdateMode(id);
-            console.log("🔄 updateMode - ", updateMode)
             if (id) {
                 const techpack = await getTechPacksById(id);
                 setTechPackData({
@@ -276,10 +275,11 @@ export const TechPackProvider = ({ children }) => {
                     slides: techpack.data.slides
                 });
             }
+            console.log("🔄 updateMode - ", updateMode)
             return;
         } catch (e) {
             console.log(e)
-            alert("Something Went Wrong!")
+            alert("Something Went Wrong! Ask Harshang")
         }
     }
 
@@ -703,14 +703,16 @@ export const TechPackProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setSubmitStatus({
-                status: null,
-                message: null,
-            });
-        }, 5000);
+        if (submitStatus.status) {
+            const timer = setTimeout(() => {
+                setSubmitStatus({
+                    status: null,
+                    message: null,
+                });
+            }, 5000);
 
-        return () => clearTimeout(timer);
+            return () => clearTimeout(timer);
+        }
     }, [submitStatus]);
 
     useEffect(() => {

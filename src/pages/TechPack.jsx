@@ -8,6 +8,7 @@ import Header from '../common/header';
 import Footer from '../common/footer';
 import { useTechPack } from '../context/TechPackContext';
 import { useLocation, useNavigate } from 'react-router-dom';
+import NewPdfGenerator from '../NewPDF';
 
 const TechPack = () => {
   const navigate = useNavigate();
@@ -110,7 +111,7 @@ const TechPack = () => {
   }, [location.search, selectedLabels, currentCategory, currentSubCategory, construction, requirements, finishing, sizecharts, trims, isSettingDataFetched]);
 
 
-  const getComponent = (type, page) => {
+  const getComponent = (type, page, image = null) => {
     switch (type) {
       case "Layout0":
       case "Layout1":
@@ -126,7 +127,10 @@ const TechPack = () => {
       case "ArtWork":
         return <BlankSheet page={page} />
       default:
-        return <BlankSheet page={page} />
+        if (image) {
+          return <BlankSheet page={page} image={image} />
+        }
+        return <BlankSheet page={page} />;
     }
   }
 
@@ -189,18 +193,34 @@ const TechPack = () => {
   return (
     <form className="w-[841px] mx-auto mt-10" >
       {techPackData.slides.map((item, index) => {
-        return (
-          <div key={index}>
-            <div className="border-2 border-black mb-7">
-              <Header name={item.name} page={item.page} />
-              {getComponent(item.type, item.page)}
-              <Footer />
+        const { images } = item.data;
+        if (images && images.length > 1 && !["Layout0", "Layout1", "Layout2", "Layout3", "Information", "ArtworkPlacementSheet", "SiliconLabel", "ArtWork"].includes(item.type)) {
+          // If there are multiple images, create a separate slide for each one
+          return images.map((image, imageIndex) => {
+            return (
+              <div key={`${index}-${imageIndex}`}>
+                <div className="border-2 border-black mb-7">
+                  <Header name={item.name} page={item.page} />
+                  {getComponent(item.type, item.page, image)}
+                  <Footer />
+                </div>
+                <AddButton index={index} setShowPopup={setShowPopup} setSelectedIndex={setSelectedIndex} />
+              </div>
+            );
+          });
+        } else {
+          return (
+            <div key={index}>
+              <div className="border-2 border-black mb-7">
+                <Header name={item.name} page={item.page} />
+                {getComponent(item.type, item.page)}
+                <Footer />
+              </div>
+              <AddButton index={index} setShowPopup={setShowPopup} setSelectedIndex={setSelectedIndex} />
             </div>
-            <AddButton index={index} setShowPopup={setShowPopup} setSelectedIndex={setSelectedIndex} />
-          </div>
-        )
-      }
-      )}
+          )
+        }
+      })}
 
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -283,6 +303,13 @@ const TechPack = () => {
               </button>
             </>
           }
+
+          <div
+            className={`text-sm px-6 py-2 bg-white rounded-full border border-black transition-all duration-300 ease-in-out transform hover:scale-105 ${isAdding || isUpdating || isUpdatingAs ? 'pointer-events-none' : ''}`}
+            disabled={isAdding || isUpdating || isUpdatingAs}
+          >
+            <NewPdfGenerator data={techPackData} />
+          </div>
 
           <button
             type="button"

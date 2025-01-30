@@ -15,13 +15,25 @@ export default function Setting() {
     const [collections, setCollections] = useState([]);
     const [fabrics, setFabrics] = useState([]);
 
+    const [submitStatus, setSubmitStatus] = useState(null);
+
+    const [openPopupId, setOpenPopupId] = useState(null);
     const [update, setUpdate] = useState(false);
     const [updateFormFData, setUpdateFormFData] = useState({
         genders: [],
         categories: []
     });
 
-    const [openPopupId, setOpenPopupId] = useState(null);
+
+    useEffect(() => {
+        if (submitStatus) {
+            const timer = setTimeout(() => {
+                setSubmitStatus(null);
+            }, 5000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [submitStatus]);
 
     const fetchAllSetting = async () => {
         try {
@@ -255,7 +267,8 @@ export default function Setting() {
             const updated = await constructionSheetEdit(updateFormFData, constructionSheetEditBox);
             if (updated.status) {
                 fetchAllSetting(); // Refetch the data
-                setConstructionSheetEditBox(null)
+                setConstructionSheetEditBox(null);
+                setSubmitStatus(updated)
             } else {
                 console.error('Failed to edit category');
             }
@@ -515,7 +528,11 @@ export default function Setting() {
 
     return (
         <section className="container mx-auto">
-
+            {submitStatus && (
+                <p className={`fixed left-[50%] top-[10%] -translate-x-1/2 z-50 px-3 text-sm font-bold py-2 rounded-lg shadow-xl text-white ${submitStatus.message == null ? "hidden" : "visible"} ${submitStatus?.status ? "bg-green-600" : "bg-red-600"}`}>
+                    {submitStatus?.message}
+                </p>
+            )}
             {/* Category & Gender  */}
             <div className="border-b p-10 flex flex-col gap-10">
                 <div>
