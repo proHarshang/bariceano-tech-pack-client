@@ -659,7 +659,7 @@ export const TechPackProvider = ({ children }) => {
             setSubmitStatus(response)
             console.log("response", response)
             if (response.status === true) {
-                navigate('/tech-pack-data')
+                window.location.href = '/tech-pack-data'
             }
         } catch (error) {
             throw new Error("Error creating TechPack:", error.message);
@@ -676,7 +676,7 @@ export const TechPackProvider = ({ children }) => {
             setSubmitStatus(response)
             console.log("response", response)
             if (response.status === true) {
-                navigate('/tech-pack-data')
+                window.location.href = '/tech-pack-data'
             }
         } catch (error) {
             throw new Error("Error creating TechPack:", error.message);
@@ -723,7 +723,7 @@ export const TechPackProvider = ({ children }) => {
     }, [techPackData]);
 
     const resetTechPack = async () => {
-        console.log("reset techpack")
+        window.location.reload()
     };
 
     return (

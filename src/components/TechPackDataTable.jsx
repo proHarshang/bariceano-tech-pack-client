@@ -228,10 +228,8 @@ const TechPackDataTable = ({ data = [] }) => {
         }
     };
 
-    const navigate = useNavigate();
-
     const handleEditClick = (itemId) => {
-        navigate(`/tech-pack?id=${itemId}`);
+        window.location.href = `/tech-pack?id=${itemId}`;
     };
 
     return (
