@@ -128,18 +128,36 @@ const TechPackDataTable = ({ data = [] }) => {
     });
 
     // shorting logic
-    const [isAscending, setIsAscending] = useState(false);
-    const handleSort = () => {
-        setIsAscending(!isAscending); // Toggle sorting order
+    const [isTimeAscending, setIsTimeAscending] = useState(false); // For time (modifiedAt) sorting
+    const [isStyleNoAscending, setIsStyleNoAscending] = useState(false); // For styleNo sorting
+    const [isStyleNoSorting, setIsStyleNoSorting] = useState(false); // Flag to check if we are sorting by styleNo
+
+    const handleSort = (column) => {
+        if (column === 'date') {
+            setIsStyleNoSorting(false); // Stop sorting by styleNo
+            setIsTimeAscending(!isTimeAscending); // Toggle sorting order for date
+        } else if (column === 'styleNo') {
+            setIsStyleNoSorting(true); // Enable sorting by styleNo
+            setIsStyleNoAscending(!isStyleNoAscending); // Toggle sorting order for StyleNo
+        }
     };
 
+    // Sorting logic
     const sortedData = [...filteredData].sort((a, b) => {
-        if (isAscending) {
-            return new Date(a.modifiedAt) - new Date(b.modifiedAt); // Oldest to newest
+        if (isStyleNoSorting) {
+            // If sorting by Style No
+            return isStyleNoAscending
+                ? a.styleNo.localeCompare(b.styleNo) // Ascending order
+                : b.styleNo.localeCompare(a.styleNo); // Descending order
         } else {
-            return new Date(b.modifiedAt) - new Date(a.modifiedAt); // Newest to oldest
+            // If sorting by modifiedAt
+            return isTimeAscending
+                ? new Date(a.modifiedAt) - new Date(b.modifiedAt) // Oldest to newest
+                : new Date(b.modifiedAt) - new Date(a.modifiedAt); // Newest to oldest
         }
     });
+
+
     const currentItems = sortedData.slice(indexOfFirstItem, indexOfLastItem);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -434,8 +452,8 @@ const TechPackDataTable = ({ data = [] }) => {
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Style No</th>
-                                <th onClick={handleSort}>Last Edited {isAscending ? '▼' : '▲'}</th>
+                                <th onClick={() => handleSort('styleNo')}>Style No {isStyleNoAscending ? '▲' : '▼'}</th>
+                                <th onClick={() => handleSort('date')}>Last Edited {isTimeAscending ? '▼' : '▲'}</th>
                                 <th>Designer</th>
                                 <th>Status</th>
                                 <th>Gender</th>
@@ -506,7 +524,7 @@ const TechPackDataTable = ({ data = [] }) => {
                         currentPage={currentPage}
                     />
                 </div>
-            </div>
+            </div >
             {isSidebarOpen && (
                 <div ref={sidebarRef} className="fixed top-0 right-0 h-full w-1/4 max-w-sm bg-white shadow-lg z-50 p-6">
                     <div className="flex justify-between items-center mb-4">
@@ -533,7 +551,8 @@ const TechPackDataTable = ({ data = [] }) => {
                         </button>
                     </div>
                 </div>
-            )}
+            )
+            }
         </>
     );
 };
