@@ -127,9 +127,9 @@ const TechPack = () => {
       case "ArtWork":
         return <BlankSheet page={page} />
       default:
-        if (image) {
-          return <BlankSheet page={page} image={image} />
-        }
+        // if (image) {
+        //   return <BlankSheet page={page} image={image} />
+        // }
         return <BlankSheet page={page} />;
     }
   }

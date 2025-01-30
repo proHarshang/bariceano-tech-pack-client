@@ -309,10 +309,11 @@ export default function Setting() {
         try {
             setTrimLoading(true)
             // Use the categoryEdit hook to update the category
-            const updated = await trimEdit(trimEditOldName, trimEditBox);
+            const updated = await trimEdit(updateFormFData, trimEditOldName, trimEditBox);
             if (updated.status) {
                 fetchAllSetting(); // Refetch the data
-                setTrimEditBox(null)
+                setTrimEditBox(null);
+                setSubmitStatus(updated)
             } else {
                 console.error('Failed to edit trim');
             }
@@ -1444,6 +1445,11 @@ export default function Setting() {
                                             Add More
                                         </button>
                                     </div>
+                                    <div className="flex gap-4 my-5">
+                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black ${update ? 'bg-black' : 'bg-white'}`} onClick={() => setUpdate(!update)}></div>
+                                        <span>Update In all the tackpacks including previous one</span>
+                                    </div>
+                                    {update && <UpdateForm field="constructionSheet" updateFormFData={updateFormFData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} />}
                                     <div className="flex justify-end gap-2">
                                         <button
                                             className="px-4 py-2 border text-black rounded-lg text-sm"
