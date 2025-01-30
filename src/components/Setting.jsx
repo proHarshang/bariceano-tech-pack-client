@@ -1863,7 +1863,7 @@ export default function Setting() {
                         } else if (elem === "constructionSheetEditBox") {
                             setConstructionSheetEditBox((prev) => ({
                                 ...prev,
-                                images: [...prev.images, { "position": prev.images.length.toString(), "src": imgName }],
+                                images: [...prev.images, { "position": 0, "src": imgName }],
                             }));
                         } else if (elem === "parameterEditBox") {
                             setParameterEditBox((prev) => ({

@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { addTechPacks, fetchAll, getTechPacksById, updateTechPacks } from '../API/TechPacks';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const TechPackContext = createContext();
 
@@ -9,22 +9,9 @@ export const useTechPack = () => useContext(TechPackContext);
 export const TechPackProvider = ({ children }) => {
     const navigate = useNavigate();
 
-    const [construction, setConstructionSheets] = useState([]);
-    const [trims, setTrims] = useState([]);
-    const [requirements, setRequirements] = useState([]);
-    const [finishing, setFinishing] = useState([]);
-    const [sizecharts, setSizeCharts] = useState([]);
+    const location = useLocation();
 
-    const [isAdding, setIsAdding] = useState(false);
-    const [isUpdating, setIsUpdating] = useState(false);
-    const [isUpdatingAs, setIsUpdatingAs] = useState(false);
-    const [isSettingDataFetched, setIsSettingDataFetched] = useState(false);
-    const [updateMode, setUpdateMode] = useState("off");
-    const [submitStatus, setSubmitStatus] = useState({
-        status: null,
-        message: null,
-    });
-    const [techPackData, setTechPackData] = useState({
+    const initialTechPackData = {
         designer: JSON.parse(localStorage.getItem('user')).Name || "",
         styleNo: "",
         // collection: localStorage.getItem("currentCollection"),
@@ -219,7 +206,24 @@ export const TechPackProvider = ({ children }) => {
             }
         },
         ],
+    }
+
+    const [construction, setConstructionSheets] = useState([]);
+    const [trims, setTrims] = useState([]);
+    const [requirements, setRequirements] = useState([]);
+    const [finishing, setFinishing] = useState([]);
+    const [sizecharts, setSizeCharts] = useState([]);
+
+    const [isAdding, setIsAdding] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [isUpdatingAs, setIsUpdatingAs] = useState(false);
+    const [isSettingDataFetched, setIsSettingDataFetched] = useState(false);
+    const [updateMode, setUpdateMode] = useState("off");
+    const [submitStatus, setSubmitStatus] = useState({
+        status: null,
+        message: null,
     });
+    const [techPackData, setTechPackData] = useState(initialTechPackData);
 
     const fetchAllSetting = async () => {
         try {
@@ -545,10 +549,8 @@ export const TechPackProvider = ({ children }) => {
                     const updatedSlide = { ...slide };
                     const fieldParts = fieldPath.split(".");
                     let currentField = updatedSlide;
-
                     // Traverse to the target field
                     fieldParts.forEach((key, index) => {
-
                         if (index === fieldParts.length - 1) {
                             // Update the target field
                             if (Array.isArray(currentField[key])) {
@@ -702,6 +704,20 @@ export const TechPackProvider = ({ children }) => {
         }
     };
 
+    const resetTechPack = () => {
+        if (updateMode === "off") {
+            setTechPackData(initialTechPackData);
+        } else {
+            createUpdateTechPackSetup(updateMode);
+        }
+        // setConstructionSheets([]);
+        // setTrims([]);
+        // setRequirements([]);
+        // setFinishing([]);
+        // setSizeCharts([]);
+        // setIsSettingDataFetched(false);
+    };
+
     useEffect(() => {
         if (submitStatus.status) {
             const timer = setTimeout(() => {
@@ -715,6 +731,7 @@ export const TechPackProvider = ({ children }) => {
         }
     }, [submitStatus]);
 
+
     useEffect(() => {
         setSubmitStatus({
             status: null,
@@ -722,9 +739,10 @@ export const TechPackProvider = ({ children }) => {
         });
     }, [techPackData]);
 
-    const resetTechPack = async () => {
-        window.location.reload()
-    };
+    // Reset state when location changes
+    useEffect(() => {
+        resetTechPack();
+    }, [location]);
 
     return (
         <TechPackContext.Provider

@@ -193,34 +193,18 @@ const TechPack = () => {
   return (
     <form className="w-[841px] mx-auto mt-10" >
       {techPackData.slides.map((item, index) => {
-        const { images } = item.data;
-        if (images && images.length > 1 && !["Layout0", "Layout1", "Layout2", "Layout3", "Information", "ArtworkPlacementSheet", "SiliconLabel", "ArtWork"].includes(item.type)) {
-          // If there are multiple images, create a separate slide for each one
-          return images.map((image, imageIndex) => {
-            return (
-              <div key={`${index}-${imageIndex}`}>
-                <div className="border-2 border-black mb-7">
-                  <Header name={item.name} page={item.page} />
-                  {getComponent(item.type, item.page, image)}
-                  <Footer />
-                </div>
-                <AddButton index={index} setShowPopup={setShowPopup} setSelectedIndex={setSelectedIndex} />
-              </div>
-            );
-          });
-        } else {
-          return (
-            <div key={index}>
-              <div className="border-2 border-black mb-7">
-                <Header name={item.name} page={item.page} />
-                {getComponent(item.type, item.page)}
-                <Footer />
-              </div>
-              <AddButton index={index} setShowPopup={setShowPopup} setSelectedIndex={setSelectedIndex} />
+        return (
+          <div key={index}>
+            <div className="border-2 border-black mb-7">
+              <Header name={item.name} page={item.page} />
+              {getComponent(item.type, item.page)}
+              <Footer />
             </div>
-          )
-        }
-      })}
+            <AddButton index={index} setShowPopup={setShowPopup} setSelectedIndex={setSelectedIndex} />
+          </div>
+        )
+      }
+      )}
 
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
