@@ -14,8 +14,8 @@ export const TechPackProvider = ({ children }) => {
     const initialTechPackData = {
         designer: JSON.parse(localStorage.getItem('user')).Name || "",
         styleNo: "",
-        // collection: localStorage.getItem("currentCollection"),
-        collection: "Collection 1",
+        // designCollection: localStorage.getItem("currentCollection"),
+        designCollection: "Collection 1",
         state: "",
         gender: "",
         category: "",
@@ -272,7 +272,7 @@ export const TechPackProvider = ({ children }) => {
                 setTechPackData({
                     designer: techpack.data.designer,
                     styleNo: techpack.data.styleNo,
-                    collection: techpack.data.collection,
+                    designCollection: techpack.data.designCollection,
                     state: techpack.data.state,
                     gender: techpack.data.gender,
                     category: techpack.data.category,
@@ -710,6 +710,7 @@ export const TechPackProvider = ({ children }) => {
         } else {
             createUpdateTechPackSetup(updateMode);
         }
+        console.log("♻ Form reseted")
         // setConstructionSheets([]);
         // setTrims([]);
         // setRequirements([]);
@@ -742,7 +743,7 @@ export const TechPackProvider = ({ children }) => {
     // Reset state when location changes
     useEffect(() => {
         resetTechPack();
-    }, [location]);
+    }, [location.pathname]);
 
     return (
         <TechPackContext.Provider

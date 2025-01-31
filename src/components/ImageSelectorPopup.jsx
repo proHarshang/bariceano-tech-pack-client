@@ -3,6 +3,7 @@ import { getUploadedImage, useUploadImage } from '../API/TechPacks';
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
 import Cropper from "react-easy-crop";
+import { LazyLoadImage } from 'react-lazy-load-image-component'; // Import LazyLoadImage
 
 const createImage = (url) =>
     new Promise((resolve, reject) => {
@@ -169,6 +170,16 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
         setImage(null);
     };
 
+    const handleUploadOrigional = () => {
+        if (image) {
+            console.log(image)
+            uploadImage([image])
+        } else {
+            handleCancelCrop()
+        }
+        setImage(null)
+    }
+
     const handleCancelCrop = async () => {
         if (!image || !croppedAreaPixels) return;
         const croppedImgFile = await getCroppedImg(selectedFile, image, croppedAreaPixels);
@@ -179,8 +190,6 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
         setImage(null);
     };
 
-    if (!isOpen) return;
-
     const handleImageSelect = (image) => {
         onImageSelect(image);
         closeModal();
@@ -190,9 +199,9 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
 
     return (
         <div className="relative">
-            {(!isLoading && isOpen) && (
-                <div className="fixed inset-0 bg-black z-[100] bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-[80%] h-[80%]">
+            {(
+                <div className={`fixed inset-0 bg-black z-[100] bg-opacity-50 ${isOpen ? 'flex justify-center items-center' : 'hidden'}`}>
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] h-[90%]">
                         <div className='flex justify-between pb-5'>
                             <div className="w-1/2 border bg-white border-black px-1 md:px-[7px] h-8 md:h-8 flex justify-start">
                                 <input
@@ -241,8 +250,8 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                                         <div className="flex gap-2">
                                             <label>Aspect Ratio:</label>
                                             <select onChange={(e) => setAspectRatio(e.target.value)} className="border px-2 py-1 rounded">
-                                                <option value={1}>1:1</option>                                                
-                                                <option value={4 / 3}>4:3</option>                                                
+                                                <option value={1}>1:1</option>
+                                                <option value={4 / 3}>4:3</option>
                                             </select>
                                         </div>
                                         {croppedAreaPixels && <span className='text-sm opacity-60'>{croppedAreaPixels.width} X {croppedAreaPixels.height}</span>}
@@ -261,7 +270,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                                             <button type='button' onClick={handleCrop} className="mt-4 py-3 px-6 bg-black text-white rounded-md w-fit active:scale-95 hover:scale-105 transition-all">
                                                 Crop & Upload
                                             </button>
-                                            <button type='button' onClick={() => { image ? uploadImage([image]) : handleCancelCrop() }} className="mt-4 py-3 px-6 bg-black text-white rounded-md w-fit active:scale-95 hover:scale-105 transition-all">
+                                            <button type='button' onClick={handleUploadOrigional} className="mt-4 py-3 px-6 bg-black text-white rounded-md w-fit active:scale-95 hover:scale-105 transition-all">
                                                 Upload Original
                                             </button>
                                             <button type='button' onClick={handleCancelCrop} className="mt-4 py-3 px-6 bg-white text-black outline-1 [outline-style:solid] outline-black rounded-md w-fit active:scale-95 hover:scale-105 transition-all">
@@ -282,7 +291,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                                     {/* Image Container */}
                                     <div className="relative flex justify-center border border-gray-300 rounded overflow-hidden transition-transform duration-300">
                                         <button type='button' onClick={() => handleImageSelect(image)}>
-                                            <img
+                                            <LazyLoadImage
                                                 src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image}`}
                                                 alt={`Uploaded ${index}`}
                                                 className="w-full h-28 object-contain transition-transform duration-300 group-hover:scale-90"

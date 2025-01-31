@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
-import { fetchAll, categoryAdd, categoryEdit, categoryDelete, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, constructionSheetEdit, useDeleteTrims, fabricEdit, fabricAdd, fabricDelete, collectionEdit, collectionAdd, collectionDelete, parameterEdit, finishingEdit, trimEdit } from "../API/TechPacks";
+import { fetchAll, categoryAdd, categoryEdit, categoryDelete, getTechPacks, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, constructionSheetEdit, useDeleteTrims, fabricEdit, fabricAdd, fabricDelete, collectionEdit, collectionAdd, collectionDelete, parameterEdit, finishingEdit, trimEdit } from "../API/TechPacks";
 import ImageSelectorPopup from "./ImageSelectorPopup";
 
 export default function Setting() {
+
+    const initialUpdateFormData = {
+        genders: [],
+        categories: [],
+        styleNo: []
+    }
 
     // Fetch All Data Logic Start
     const [categories, setCategories] = useState([]);
@@ -14,15 +20,19 @@ export default function Setting() {
     const [finishing, setFinishing] = useState([]);
     const [collections, setCollections] = useState([]);
     const [fabrics, setFabrics] = useState([]);
+    const [techpacks, setTechpacks] = useState([]);
 
     const [submitStatus, setSubmitStatus] = useState(null);
 
     const [openPopupId, setOpenPopupId] = useState(null);
     const [update, setUpdate] = useState(false);
-    const [updateFormFData, setUpdateFormFData] = useState({
-        genders: [],
-        categories: []
-    });
+    const [updateFormData, setUpdateFormFData] = useState(initialUpdateFormData);
+
+    useEffect(() => {
+        if (!update) {
+            setUpdateFormFData(initialUpdateFormData)
+        }
+    }, [update])
 
 
     useEffect(() => {
@@ -56,8 +66,22 @@ export default function Setting() {
         }
     };
 
+    const fetchAllTechpacks = async () => {
+        try {
+            const data = await getTechPacks();
+            if (data.status) {
+                setTechpacks(data.data)
+            } else {
+                setTechpacks([])
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     useEffect(() => {
         fetchAllSetting();
+        fetchAllTechpacks()
     }, []);
 
 
@@ -264,7 +288,7 @@ export default function Setting() {
         try {
             setConstructionSheetLoading(true)
             // Use the categoryEdit hook to update the category
-            const updated = await constructionSheetEdit(updateFormFData, constructionSheetEditBox);
+            const updated = await constructionSheetEdit(updateFormData, constructionSheetEditBox);
             if (updated.status) {
                 fetchAllSetting(); // Refetch the data
                 setConstructionSheetEditBox(null);
@@ -309,7 +333,7 @@ export default function Setting() {
         try {
             setTrimLoading(true)
             // Use the categoryEdit hook to update the category
-            const updated = await trimEdit(updateFormFData, trimEditOldName, trimEditBox);
+            const updated = await trimEdit(updateFormData, trimEditOldName, trimEditBox);
             if (updated.status) {
                 fetchAllSetting(); // Refetch the data
                 setTrimEditBox(null);
@@ -344,10 +368,11 @@ export default function Setting() {
         try {
             setParameterLoading(true)
             // Use the categoryEdit hook to update the category
-            const updated = await parameterEdit(parameterEditBox);
+            const updated = await parameterEdit(updateFormData, parameterEditBox);
             if (updated.status) {
                 fetchAllSetting(); // Refetch the data
                 setParameterEditBox(null)
+                setSubmitStatus(updated)
             } else {
                 console.error('Failed to edit parameter');
             }
@@ -370,10 +395,11 @@ export default function Setting() {
         try {
             setFinishingLoading(true)
             // Use the categoryEdit hook to update the category
-            const updated = await finishingEdit(finishingEditBox);
+            const updated = await finishingEdit(updateFormData, finishingEditBox);
             if (updated.status) {
                 fetchAllSetting(); // Refetch the data
                 setFinishingEditBox(null)
+                setSubmitStatus(updated)
             } else {
                 console.error('Failed to edit finishing');
             }
@@ -387,27 +413,27 @@ export default function Setting() {
 
 
     // Fabric Logic Start
-    const [editedFabric, setEditedFabric] = useState('');
-    const [showFabricPopup, setShowFabricPopup] = useState(false);
+    const [editFabric, setEditFabric] = useState(null);
+    const [addFabric, setAddFabric] = useState(null);
     const [loadingFabric, setLoadingFabric] = useState(false);
+    const [fabricEditOldName, setFabricEditOldName] = useState(null);
 
-    const handleAddFabric = async () => {
-        setShowFabricPopup(true);
-    };
-
-    const handleEditFabric = async (fabric) => {
-        const newFabricName = prompt('Enter the new fabric name:', fabric);
-        if (newFabricName && newFabricName !== fabric) {
+    const handleEditFabric = async () => {
+        try {
+            setLoadingFabric(true)
             // Use the fabricEdit hook to update the fabric
-            const updated = await fabricEdit(fabric, newFabricName);
+            const updated = await fabricEdit(updateFormData, fabricEditOldName, editFabric);
             if (updated.status) {
-                // Update the state with the new fabric name
-                setFabrics((prevFabrics) =>
-                    prevFabrics.map((item) => (item === fabric ? newFabricName : item))
-                );
+                fetchAllSetting();
+                setEditFabric(null)
+                setSubmitStatus(updated)
             } else {
                 console.error('Failed to edit fabric');
             }
+        } catch (error) {
+            console.log("error in fabric editing: ", error)
+        } finally {
+            setLoadingFabric(false)
         }
     };
 
@@ -422,45 +448,43 @@ export default function Setting() {
         }
     };
 
-    const handleSaveNewFabric = async (e) => {
-        e.preventDefault();
-        setLoadingFabric(true);
-
-        // Use the fabricAdd hook to add a new fabric
-        const newFabric = await fabricAdd(editedFabric);
-        if (newFabric.status) {
-            setFabrics((prevFabrics) => [...prevFabrics, editedFabric]);
-            setEditedFabric('');
-            setShowFabricPopup(false);
-        } else {
-            console.error('Failed to add fabric');
+    const handleSaveNewFabric = async () => {
+        try {
+            setLoadingFabric(true);
+            // Use the fabricAdd hook to add a new fabric
+            const newFabric = await fabricAdd(addFabric);
+            if (newFabric.status) {
+                fetchAllSetting();
+                setAddFabric(null)
+                setSubmitStatus(newFabric)
+            } else {
+                console.error('Failed to add fabric');
+            }
+        } catch (error) {
+            console.log("error in fabric creating: ", error)
+        } finally {
+            setLoadingFabric(false)
         }
-        setLoadingFabric(false);
     };
     // Fabric Logic Over
 
 
     // Collection Logic Start
-    const [editedCollection, setEditedCollection] = useState('');
-    const [showCollectionPopup, setShowCollectionPopup] = useState(false);
+
+    const [addCollection, setAddCollection] = useState(false);
+    const [editCollection, setEditCollection] = useState(false);
     const [loadingCollection, setLoadingCollection] = useState(false);
+    const [collectionEditOldName, setCollectionEditOldName] = useState(null);
 
-    const handleAddCollection = () => {
-        setEditedCollection(''); // Clear any previously entered data
-        setShowCollectionPopup(true);
-    };
-
-    const handleEditCollection = async (collection) => {
-        const newCollectionName = prompt('Enter the new collection name:', collection);
-
-        if (newCollectionName && newCollectionName.trim() !== '' && newCollectionName !== collection) {
+    const handleEditCollection = async () => {
+        if (editCollection && editCollection.trim() !== '') {
+            setLoadingCollection(true);
             try {
-                const updated = await collectionEdit(collection, newCollectionName); // Call API
+                const updated = await collectionEdit(updateFormData, collectionEditOldName, editCollection);
                 if (updated.status) {
-                    setCollections((prevCollections) =>
-                        prevCollections.map((item) => (item === collection ? newCollectionName : item))
-                    );
-                    alert('Collection updated successfully!');
+                    await fetchAllSetting();
+                    setAddCollection(false)
+                    setSubmitStatus(updated)
                 } else {
                     console.error('Failed to edit collection');
                     alert('Failed to update collection. Please try again.');
@@ -468,6 +492,8 @@ export default function Setting() {
             } catch (error) {
                 console.error('Error editing collection:', error);
                 alert('An error occurred while updating the collection.');
+            } finally {
+                setLoadingCollection(false);
             }
         }
     };
@@ -479,7 +505,7 @@ export default function Setting() {
 
         if (confirmDelete) {
             try {
-                const deleted = await collectionDelete(collection); // Call API
+                const deleted = await collectionDelete(collection);
                 if (deleted.status) {
                     setCollections((prevCollections) =>
                         prevCollections.filter((item) => item !== collection)
@@ -496,23 +522,21 @@ export default function Setting() {
         }
     };
 
-    const handleSaveNewCollection = async (e) => {
-        e.preventDefault();
-        setLoadingCollection(true);
+    const handleSaveNewCollection = async () => {
 
-        if (editedCollection.trim() === '') {
+        if (addCollection.trim() === '') {
             alert('Collection name cannot be empty.');
             setLoadingCollection(false);
             return;
         }
 
         try {
-            const newCollection = await collectionAdd(editedCollection); // Call API
+            setLoadingCollection(true);
+            const newCollection = await collectionAdd(addCollection);
             if (newCollection.status) {
-                setCollections((prevCollections) => [...prevCollections, editedCollection]);
-                setEditedCollection('');
-                setShowCollectionPopup(false);
-                alert('Collection added successfully!');
+                await fetchAllSetting();
+                setAddCollection(false)
+                setSubmitStatus(newCollection)
             } else {
                 console.error('Failed to add collection');
                 alert('Failed to add collection. Please try again.');
@@ -1128,10 +1152,14 @@ export default function Setting() {
                                 {error && console.error('Error:', error)}
                                 {error && <p className="text-red-500 mb-2">{error}</p>}
                                 <div className="flex gap-4 my-5">
-                                    <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black ${update ? 'bg-black' : 'bg-white'}`} onClick={() => setUpdate(!update)}></div>
+                                    {update ?
+                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-black`} onClick={() => setUpdate(false)}></div>
+                                        :
+                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-white`} onClick={() => setUpdate(true)}></div>
+                                    }
                                     <span>Update In all the tackpacks including previous one</span>
                                 </div>
-                                {update && <UpdateForm field="constructionSheet" updateFormFData={updateFormFData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} />}
+                                {update && <UpdateForm field="constructionSheet" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
                                 <div className="flex justify-end gap-2">
                                     <button
                                         type="button"
@@ -1394,13 +1422,14 @@ export default function Setting() {
 
                                     {/* Images Grid */}
                                     <div className="flex flex-wrap gap-2 w-fit">
-                                        {(requirement.images && requirement.images.src) && (
+                                        {requirement.images && requirement.images.map((image, index) => (
                                             <img
-                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${requirement.images.src}` || 'default.jpg'}
-                                                alt={`${requirement.images.src}`}
+                                                key={index}
+                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}` || 'default.jpg'}
+                                                alt={`${image.src}`}
                                                 className="h-24 w-24 object-cover border-2"
                                             />
-                                        )}
+                                        ))}
                                     </div>
                                 </div>
                             ))}
@@ -1419,24 +1448,30 @@ export default function Setting() {
                                     />
                                     <div className="mb-4">
                                         <label className="block mb-2 font-semibold">Images:</label>
-                                        {(parameterEditBox.images && parameterEditBox.images.src) && (
+                                        {(parameterEditBox.images && parameterEditBox.images.map((image, index) => (
                                             <div
+                                                key={index}
                                                 className="flex items-center justify-between gap-2 mb-2 border p-2 rounded"
                                             >
                                                 <img
-                                                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${parameterEditBox.images.src}`}
-                                                    alt={`${parameterEditBox.images.src}`}
+                                                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
+                                                    alt={`${image.src}`}
                                                     className="w-28 h-16 object-cover rounded"
                                                 />
                                                 <button
                                                     className="text-red-500 text-sm"
                                                     type="button"
-                                                    onClick={() => setParameterEditBox(null)}
+                                                    onClick={() => {
+                                                        setParameterEditBox((prev) => ({
+                                                            ...prev,
+                                                            images: prev.images.filter((_, i) => i !== index),
+                                                        }))
+                                                    }}
                                                 >
                                                     Remove
                                                 </button>
                                             </div>
-                                        )}
+                                        )))}
                                         <button
                                             type="button"
                                             className="mt-5 px-3 py-1 bg-black text-white rounded-lg text-xs"
@@ -1449,7 +1484,7 @@ export default function Setting() {
                                         <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black ${update ? 'bg-black' : 'bg-white'}`} onClick={() => setUpdate(!update)}></div>
                                         <span>Update In all the tackpacks including previous one</span>
                                     </div>
-                                    {update && <UpdateForm field="constructionSheet" updateFormFData={updateFormFData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} />}
+                                    {update && <UpdateForm field="parameter" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
                                     <div className="flex justify-end gap-2">
                                         <button
                                             className="px-4 py-2 border text-black rounded-lg text-sm"
@@ -1513,13 +1548,14 @@ export default function Setting() {
                                     </div>
                                     {/* Display images in grid */}
                                     <div className="flex flex-wrap gap-2">
-                                        {(item.images && item.images.src) && (
+                                        {(item.images && item.images.map((image, index) => (
                                             <img
-                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${item.images.src}`}
-                                                alt={`${item.images.src}`}
+                                                key={index}
+                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
+                                                alt={`${image.src}`}
                                                 className="h-24 w-24 object-cover border-2"
                                             />
-                                        )}
+                                        )))}
                                     </div>
 
                                 </div>
@@ -1539,22 +1575,27 @@ export default function Setting() {
                                     />
                                     <div className="mb-4">
                                         <label className="block mb-2 font-semibold">Images:</label>
-                                        {(finishingEditBox.images && finishingEditBox.images.src) && (
-                                            <div className="flex items-center justify-between gap-2 mb-2 border p-2 rounded">
+                                        {(finishingEditBox.images && finishingEditBox.images.map((image, index) => (
+                                            <div key={index} className="flex items-center justify-between gap-2 mb-2 border p-2 rounded">
                                                 <img
-                                                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${finishingEditBox.images.src}`}
-                                                    alt={`${finishingEditBox.images.src}`}
+                                                    src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
+                                                    alt={`${image.src}`}
                                                     className="w-28 h-16 object-cover rounded"
                                                 />
                                                 <button
                                                     type="button"
                                                     className="text-red-500 text-sm"
-                                                    onClick={() => setFinishingEditBox(null)}
+                                                    onClick={() => {
+                                                        setFinishingEditBox((prev) => ({
+                                                            ...prev,
+                                                            images: prev.images.filter((_, i) => i !== index),
+                                                        }))
+                                                    }}
                                                 >
                                                     Remove
                                                 </button>
                                             </div>
-                                        )}
+                                        )))}
                                         <button
                                             type="button"
                                             className="mt-5 px-3 py-1 bg-black text-white rounded-lg text-xs"
@@ -1563,6 +1604,11 @@ export default function Setting() {
                                             Add More
                                         </button>
                                     </div>
+                                    <div className="flex gap-4 my-5">
+                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black ${update ? 'bg-black' : 'bg-white'}`} onClick={() => setUpdate(!update)}></div>
+                                        <span>Update In all the tackpacks including previous one</span>
+                                    </div>
+                                    {update && <UpdateForm field="finishing" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
                                     <div className="flex justify-end gap-2">
                                         <button
                                             type="button"
@@ -1595,7 +1641,7 @@ export default function Setting() {
                             <h1 className="font-bold text-xl">Fabric</h1>
                         </div>
                         <div className="flex gap-3">
-                            <button className="underline" onClick={handleAddFabric}>
+                            <button type="button" className="underline" onClick={() => setAddFabric("Fabric")}>
                                 Add
                             </button>
                         </div>
@@ -1604,7 +1650,7 @@ export default function Setting() {
                         {fabrics.map((fabric) => (
                             <div
                                 key={fabric}
-                                className="flex w-1/4 relative mb-4 group items-center border-2 rounded-xl px-4 py-5 text-center text-lg"
+                                className="flex w-1/4 mb-4 items-center border-2 rounded-xl px-4 py-5 text-center text-lg"
                             >
                                 <textarea
                                     value={fabric}
@@ -1612,9 +1658,9 @@ export default function Setting() {
                                     rows={5} // Allows for 2-3 lines
                                     className="border-none w-full text-sm text-center text-black outline-none resize-none"
                                 />
-                                <div className="hidden gap-1 group-hover:flex absolute right-0 bottom-0 ml-2 p-3">
+                                <div className="gap-4 ml-3 flex flex-col border bg-white py-2 px-3">
                                     {/* Edit Button */}
-                                    <button onClick={() => handleEditFabric(fabric)}>
+                                    <button type="button" onClick={() => { setEditFabric(fabric); setFabricEditOldName(fabric) }}>
                                         <span><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
                                                 d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
@@ -1633,6 +1679,7 @@ export default function Setting() {
 
                                     {/* Delete Button */}
                                     <button
+                                        type="button"
                                         onClick={() => {
                                             const confirmDelete = window.confirm(
                                                 'Are you sure you want to delete this fabric?'
@@ -1684,36 +1731,73 @@ export default function Setting() {
                         ))}
                     </div>
 
-                    {/* Fabric Popup */}
-                    {showFabricPopup && (
+                    {/* Fabric add Popup */}
+                    {addFabric && (
                         <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
-                            <form
-                                onSubmit={handleSaveNewFabric}
-                                className="bg-white p-6 rounded-lg"
-                            >
+                            <div className="bg-white p-6 rounded-lg">
                                 <h3 className="mb-4">New Fabric</h3>
                                 <textarea
                                     placeholder="Enter Fabric Name"
-                                    value={editedFabric}
-                                    onChange={(e) => setEditedFabric(e.target.value)}
+                                    value={addFabric}
+                                    onChange={(e) => setAddFabric(e.target.value)}
                                     required
-                                    rows={3} // Allows for 2-3 lines
-                                    className="p-2  rounded w-full mb-4 resize-none"
+                                    rows={3}
+                                    className="p-2  rounded w-full mb-4 resize-none border border-black"
                                 />
                                 <button
-                                    onClick={() => setShowFabricPopup(false)}
+                                    type="button"
+                                    onClick={() => setAddFabric(null)}
                                     className="border px-4 text-sm py-2 rounded-lg"
                                 >
                                     Cancel
                                 </button>
                                 <button
-                                    type="submit"
+                                    type="button"
                                     disabled={loadingFabric}
+                                    onClick={handleSaveNewFabric}
                                     className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
                                 >
                                     Save Fabric
                                 </button>
-                            </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Fabric edit Popup */}
+                    {editFabric && (
+                        <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
+                            <div className="bg-white p-6 rounded-lg">
+                                <h3 className="mb-4">Edit Fabric</h3>
+                                <textarea
+                                    placeholder="Enter Fabric Name"
+                                    value={editFabric}
+                                    onChange={(e) => setEditFabric(e.target.value)}
+                                    required
+                                    rows={3}
+                                    className="p-2  rounded w-full mb-4 resize-none border border-black"
+                                />
+                                <div className="flex gap-4 my-5">
+                                    <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black ${update ? 'bg-black' : 'bg-white'}`} onClick={() => setUpdate(!update)}></div>
+                                    <span>Update In all the tackpacks including previous one</span>
+                                </div>
+                                {update && <UpdateForm field="fabric" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
+
+                                <button
+                                    type="button"
+                                    onClick={() => setEditFabric(null)}
+                                    className="border px-4 text-sm py-2 rounded-lg"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled={loadingFabric}
+                                    onClick={handleEditFabric}
+                                    className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
+                                >
+                                    Save Fabric
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -1725,8 +1809,9 @@ export default function Setting() {
                     <div className="flex gap-10 pb-5">
                         <h1 className="font-bold text-xl">Collection</h1>
                         <button
+                            type="button"
                             className="underline"
-                            onClick={handleAddCollection}
+                            onClick={() => setAddCollection("collection")}
                         >
                             Add
                         </button>
@@ -1745,7 +1830,7 @@ export default function Setting() {
                                 />
                                 <div className="hidden gap-1 group-hover:flex absolute right-0 bottom-0 ml-2 p-3">
                                     {/* Edit Button */}
-                                    <button onClick={() => handleEditCollection(collection)}>
+                                    <button type="button" onClick={() => { setEditCollection(collection); setCollectionEditOldName(collection) }}>
                                         <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
                                                 d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
@@ -1811,41 +1896,83 @@ export default function Setting() {
                         ))}
                     </div>
 
-                    {/* Collection Popup */}
-                    {showCollectionPopup && (
+                    {/* Collection add Popup */}
+                    {addCollection && (
                         <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
-                            <form
-                                onSubmit={handleSaveNewCollection}
-                                className="bg-white p-6 rounded-lg"
-                            >
-                                <h3 className="mb-4">{editedOption ? 'Edit Collection' : 'New Collection'}</h3>
+                            <div className="bg-white p-6 rounded-lg">
+                                <h3 className="mb-4">New Collection</h3>
                                 <textarea
                                     placeholder="Enter Collection Name"
-                                    value={editedCollection}
-                                    onChange={(e) => setEditedCollection(e.target.value)}
+                                    value={addCollection}
+                                    onChange={(e) => setAddCollection(e.target.value)}
                                     required
                                     rows={1}
-                                    className="p-2 rounded w-full mb-4 resize-none"
+                                    className="p-2 rounded w-full mb-4 resize-none border"
                                 />
                                 <div className="flex justify-end">
                                     <button
                                         type="button"
-                                        onClick={() => setShowCollectionPopup(false)}
+                                        onClick={() => setAddCollection(false)}
                                         className="border px-4 text-sm py-2 rounded-lg mr-2"
                                     >
                                         Cancel
                                     </button>
                                     <button
-                                        type="submit"
+                                        type="button"
+                                        onClick={handleSaveNewCollection}
                                         disabled={loadingCollection}
                                         className="bg-black text-white text-sm px-4 py-2 rounded-lg"
                                     >
                                         {loadingCollection ? 'Saving...' : 'Save'}
                                     </button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     )}
+
+                    {/* Collection edit Popup */}
+                    {editCollection && (
+                        <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
+                            <div className="bg-white p-6 rounded-lg">
+                                <h3 className="mb-4">Edit Collection</h3>
+                                <textarea
+                                    placeholder="Enter Collection Name"
+                                    value={editCollection}
+                                    onChange={(e) => setEditCollection(e.target.value)}
+                                    required
+                                    rows={1}
+                                    className="p-2 rounded w-full mb-4 resize-none border"
+                                />
+                                <div className="flex gap-4 my-5">
+                                    {update ?
+                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-black`} onClick={() => setUpdate(false)}></div>
+                                        :
+                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-white`} onClick={() => setUpdate(true)}></div>
+                                    }
+                                    <span>Update In all the tackpacks including previous one</span>
+                                </div>
+                                {update && <UpdateForm field="collection" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
+                                <div className="flex justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={() => setEditCollection(false)}
+                                        className="border px-4 text-sm py-2 rounded-lg mr-2"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleEditCollection}
+                                        disabled={loadingCollection}
+                                        className="bg-black text-white text-sm px-4 py-2 rounded-lg"
+                                    >
+                                        {loadingCollection ? 'Saving...' : 'Save'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             </div>
 
@@ -1868,12 +1995,12 @@ export default function Setting() {
                         } else if (elem === "parameterEditBox") {
                             setParameterEditBox((prev) => ({
                                 ...prev,
-                                images: { "position": "0", "src": imgName },
+                                images: prev.images ? [...prev.images, { "position": 0, "src": imgName }] : [{ "position": 0, "src": imgName }],
                             }));
                         } else if (elem === "finishingEditBox") {
                             setFinishingEditBox((prev) => ({
                                 ...prev,
-                                images: { "position": "0", "src": imgName },
+                                images: prev.images ? [...prev.images, { "position": 0, "src": imgName }] : [{ "position": 0, "src": imgName }],
                             }));
                         } else if (elem === "trimEditBox") {
                             setTrimEditBox((prev) => ({
@@ -1894,7 +2021,7 @@ export default function Setting() {
     );
 };
 
-const UpdateForm = ({ field, updateFormFData, setUpdateFormFData, genders, categories }) => {
+const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, categories, techpacks }) => {
 
     const handleCategoryChange = (e) => {
         const newCategory = e.target.value;
@@ -1916,10 +2043,21 @@ const UpdateForm = ({ field, updateFormFData, setUpdateFormFData, genders, categ
         });
     };
 
+    const handleStyleNoChange = (e) => {
+        const newStyleNo = e.target.value;
+        setUpdateFormFData((prev) => {
+            const updatedStyleNo = prev.styleNo.includes(newStyleNo)
+                ? prev.styleNo.filter((tp) => tp !== newStyleNo)
+                : [...prev.styleNo, newStyleNo];
+            return { ...prev, styleNo: updatedStyleNo };
+        });
+    };
+    console.log('techpacks : ', techpacks)
+
     return (
         <div className="bg-gray p-6">
 
-            {[1, 2, 3].includes(field) &&
+            {["fabric", "collection", 2, 3].includes(field) &&
                 <div className="mb-3">
                     <h3 className="mb-1">Select Category</h3>
                     <div className="flex gap-5">
@@ -1929,7 +2067,7 @@ const UpdateForm = ({ field, updateFormFData, setUpdateFormFData, genders, categ
                                     type="checkbox"
                                     value={cat}
                                     onChange={handleCategoryChange}
-                                    checked={updateFormFData.categories.includes(cat)}
+                                    checked={updateFormData.categories.includes(cat)}
                                 />
                                 <label className="text-nowrap">{cat}</label>
                             </div>
@@ -1938,7 +2076,7 @@ const UpdateForm = ({ field, updateFormFData, setUpdateFormFData, genders, categ
                 </div>
             }
 
-            {["constructionSheet", 2, 3].includes(field) &&
+            {["constructionSheet", "parameter", "finishing", "fabric", "collection"].includes(field) &&
                 <div className="mb-3">
                     <h3 className="mb-1">Select Gender</h3>
                     <div className="flex gap-5">
@@ -1948,9 +2086,32 @@ const UpdateForm = ({ field, updateFormFData, setUpdateFormFData, genders, categ
                                     type="checkbox"
                                     value={gen}
                                     onChange={handleGenderChange}
-                                    checked={updateFormFData.genders.includes(gen)}
+                                    checked={updateFormData.genders.includes(gen)}
                                 />
                                 <label className="text-nowrap">{gen}</label>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            }
+
+            {["constructionSheet", "parameter", "finishing", "fabric", "collection"].includes(field) &&
+                <div className="mb-3">
+                    <h3 className="mb-1">Select TechPack</h3>
+                    <div className="flex flex-col gap-5">
+                        {techpacks.map((techpack) => (
+                            <div className="flex gap-4">
+                                <div key={techpack._id} className="flex gap-2 items-center">
+                                    <input
+                                        type="checkbox"
+                                        value={techpack.styleNo}
+                                        onChange={handleStyleNoChange}
+                                        checked={updateFormData.styleNo.includes(techpack.styleNo)}
+                                    />
+                                    <label className="text-nowrap">{techpack.styleNo}</label>
+                                </div>
+                                <span className="text-nowrap">{techpack.gender}</span>
+                                <span className="text-nowrap">{techpack.category}</span>
                             </div>
                         ))}
                     </div>

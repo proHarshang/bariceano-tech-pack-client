@@ -39,8 +39,8 @@ const TechPack = () => {
         updateField("gender", currentSubCategory);
         updateField("category", currentCategory);
         updateField("designer", JSON.parse(localStorage.getItem('user')).Name);
-        // updateField("collection", localStorage.getItem("currentCollection"));
-        updateField("collection", "Collection 1");
+        // updateField("designCollection", localStorage.getItem("currentCollection"));
+        updateField("designCollection", "Collection 1");
 
         // if (hasRun.current) return;
 
@@ -111,7 +111,7 @@ const TechPack = () => {
   }, [location.search, selectedLabels, currentCategory, currentSubCategory, construction, requirements, finishing, sizecharts, trims, isSettingDataFetched]);
 
 
-  const getComponent = (type, page, image = null) => {
+  const getComponent = (type, page) => {
     switch (type) {
       case "Layout0":
       case "Layout1":
@@ -127,9 +127,6 @@ const TechPack = () => {
       case "ArtWork":
         return <BlankSheet page={page} />
       default:
-        // if (image) {
-        //   return <BlankSheet page={page} image={image} />
-        // }
         return <BlankSheet page={page} />;
     }
   }

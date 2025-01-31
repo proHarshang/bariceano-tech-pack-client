@@ -104,12 +104,7 @@ const MainHeader = () => {
                             }`}
                         onChange={(e) => {
                             localStorage.setItem("currentCollection", e.target.value);
-                            if (e.target.value === "Collection First") {
-                                window.location.href = "/tech-pack-data";
-                            } else if (e.target.value === "Collection 2") {
-                                // Handle Collection 2 link
-                            }
-                            // Handle other cases dynamically if needed
+                            window.location.href = "/tech-pack-data";
                         }}
                     >
                         <option value="" className='bg-black text-white'>Select Collection</option>

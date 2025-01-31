@@ -321,11 +321,11 @@ export const constructionSheetEdit = async (updateFormFData, data) => {
     }
 };
 
-export const parameterEdit = async (data) => {
+export const parameterEdit = async (updateFormFData, data) => {
     try {
         const response = await fetch(`${apiURL}/design/setting/requirements/update/`, {
             method: 'POST',
-            body: JSON.stringify({ "requirements": data }),
+            body: JSON.stringify({ "update": updateFormFData, "requirements": data }),
             headers: {
                 'Content-Type': 'application/json',
                 'api-key': apiKey,
@@ -343,11 +343,11 @@ export const parameterEdit = async (data) => {
     }
 };
 
-export const finishingEdit = async (data) => {
+export const finishingEdit = async (updateFormFData, data) => {
     try {
         const response = await fetch(`${apiURL}/design/setting/finishing/update/${data.name}`, {
             method: 'POST',
-            body: JSON.stringify({ "finishing": data }),
+            body: JSON.stringify({ "update": updateFormFData, "finishing": data }),
             headers: {
                 'Content-Type': 'application/json',
                 'api-key': apiKey,
@@ -739,7 +739,7 @@ export const fabricAdd = async (name) => {
 };
 
 
-export const fabricEdit = async (oldName, newName) => {
+export const fabricEdit = async (updateFormFData, oldName, newName) => {
     try {
         const response = await fetch(`${apiURL}/design/setting/fabric/update`, {
             method: 'POST',
@@ -747,7 +747,7 @@ export const fabricEdit = async (oldName, newName) => {
                 'Content-Type': 'application/json',
                 'api-key': apiKey,
             },
-            body: JSON.stringify({ oldName, newName }),
+            body: JSON.stringify({ "update": updateFormFData, oldName, newName }),
         });
 
         if (response.ok) {
@@ -804,7 +804,7 @@ export const collectionAdd = async (name) => {
 };
 
 
-export const collectionEdit = async (oldName, newName) => {
+export const collectionEdit = async (updateFormFData, oldName, newName) => {
     try {
         const response = await fetch(`${apiURL}/design/setting/collection/update`, {
             method: 'POST',
@@ -812,7 +812,7 @@ export const collectionEdit = async (oldName, newName) => {
                 'Content-Type': 'application/json',
                 'api-key': apiKey,
             },
-            body: JSON.stringify({ oldName, newName }),
+            body: JSON.stringify({ "update": updateFormFData, oldName, newName }),
         });
 
         if (response.ok) {

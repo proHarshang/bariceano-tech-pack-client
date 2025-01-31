@@ -14,7 +14,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
         "Production",
     ]);
 
-    const { addInfoField, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
+    const { techPackData, addInfoField, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
 
     const slide = getSlideByPage(page);
 
@@ -39,7 +39,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
 
     useEffect(() => {
         if (updateMode === "off" && selectedLabels && currentCategory) {
-            updateInfoField(page, "Product Type", slide.data?.info?.find((item) => item.name === "Product Type").value, { "value": currentCategory })            
+            updateInfoField(page, "Product Type", slide.data?.info?.find((item) => item.name === "Product Type").value, { "value": techPackData.category })
             updateInfoField(page, "Trim", slide.data?.info?.find((item) => item.name === "Trim").value, { "value": selectedLabels.join(', ') })
         }
     }, [updateMode, selectedLabels, currentCategory])
@@ -104,7 +104,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                         <select
                             value={slide.data?.info?.find((item) => item.name === "Collection").value}
                             onChange={(e) => {
-                                updateField("collection", e.target.value);
+                                updateField("designCollection", e.target.value);
                                 updateInfoField(page, "Collection", slide.data?.info?.find((item) => item.name === "Collection").value, { "value": e.target.value })
                             }}
                             className="form__field break-words text-wrap"
@@ -164,7 +164,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                     <label className="form__label capitalize">Product Type</label>
                     <input
                         type="text"
-                        value={slide.data?.info?.find((item) => item.name === "Product Type").value}
+                        value={techPackData.category}
                         className="form__field"
                         required
                         disabled
