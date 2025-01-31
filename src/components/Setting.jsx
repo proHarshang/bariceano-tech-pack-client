@@ -39,7 +39,7 @@ export default function Setting() {
         if (submitStatus) {
             const timer = setTimeout(() => {
                 setSubmitStatus(null);
-            }, 5000);
+            }, 10000);
 
             return () => clearTimeout(timer);
         }
@@ -86,22 +86,18 @@ export default function Setting() {
 
 
     // Category Logic start
-    const [editedCategory, setEditedCategory] = useState('');
-    const [showCategoryPopup, setShowCategoryPopup] = useState(false);
+    const [addCategory, setAddCategory] = useState('');
+    const [categoryAddBox, setCategoryAddBox] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleEditCategory = async (cat) => {
         const newCategoryName = prompt('Enter the new category name:', cat);
         if (newCategoryName && newCategoryName !== cat) {
             // Use the categoryEdit hook to update the category
-            const updated = await categoryEdit(update, cat, newCategoryName);
+            const updated = await categoryEdit(cat, newCategoryName);
             if (updated.status) {
-                // Update the state with the new category
-                setCategories((prevCategories) =>
-                    prevCategories.map((category) =>
-                        category === cat ? newCategoryName : category
-                    )
-                );
+                fetchAllSetting();
+                setSubmitStatus(updated)
             } else {
                 console.error('Failed to edit category');
             }
@@ -112,10 +108,8 @@ export default function Setting() {
         // Use the categoryDelete hook to delete the category
         const deleted = await categoryDelete(cat);
         if (deleted.status) {
-            // Remove the deleted category from the state
-            setCategories((prevCategories) =>
-                prevCategories.filter((category) => category !== cat)
-            );
+            fetchAllSetting();
+            setSubmitStatus(deleted)
         } else {
             console.error('Failed to delete category');
         }
@@ -126,11 +120,12 @@ export default function Setting() {
         setLoading(true);
 
         // Use the categoryAdd hook to add a new category
-        const newCategory = await categoryAdd(editedCategory);
+        const newCategory = await categoryAdd(addCategory);
         if (newCategory.status) {
-            setCategories((prevCategories) => [...prevCategories, editedCategory]);
-            setEditedCategory('');
-            setShowCategoryPopup(false);
+            fetchAllSetting();
+            setAddCategory('');
+            setCategoryAddBox(false);
+            setSubmitStatus(newCategory)
         } else {
             console.error('Failed to add category');
         }
@@ -143,11 +138,7 @@ export default function Setting() {
     // Gender Logic Start
 
     const [editedGender, setEditedGender] = useState('');
-    const [showGenderPopup, setShowGenderPopup] = useState(false);
-
-    const handleAddGender = async () => {
-        setShowGenderPopup(true);
-    };
+    const [genderAddBox, setGenderAddBox] = useState(false);
 
     const handleEditGender = async (gen) => {
         const newGenderName = prompt('Enter the new gender name:', gen);
@@ -155,12 +146,8 @@ export default function Setting() {
             // Use the categoryEdit hook to update the category
             const updated = await genderEdit(gen, newGenderName);
             if (updated.status) {
-                // Update the state with the new category
-                setGenders((prevGenders) =>
-                    prevGenders.map((gender) =>
-                        gender === gen ? newGenderName : gender
-                    )
-                );
+                fetchAllSetting();
+                setSubmitStatus(updated)
             } else {
                 console.error('Failed to edit gender');
             }
@@ -172,9 +159,8 @@ export default function Setting() {
         const deleted = await genderDelete(gen);
         if (deleted.status) {
             // Remove the deleted category from the state
-            setGenders((prevGenders) =>
-                prevGenders.filter((gender) => gender !== gen)
-            );
+            fetchAllSetting();
+            setSubmitStatus(deleted)
         } else {
             console.error('Failed to delete category');
         }
@@ -187,9 +173,10 @@ export default function Setting() {
         // Use the categoryAdd hook to add a new category
         const newGender = await genderAdd(editedGender);
         if (newGender.status) {
-            setGenders((prevGenders) => [...prevGenders, editedGender]);
             setEditedGender('');
-            setShowGenderPopup(false);
+            setGenderAddBox(false);
+            fetchAllSetting();
+            setSubmitStatus(newGender)
         } else {
             console.error('Failed to add category');
         }
@@ -204,10 +191,11 @@ export default function Setting() {
     const [formValues, setFormValues] = useState({});
     const [isAdding, setIsAdding] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [editedOption, setEditedOption] = useState('');
+
     const { addSizeChart, success, error } = useAddSizeChart();
     const { editSizeChart, } = useEditSizeChart();
     const { deleteSizeChart } = useDeleteSizeChart();
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormValues(prev => ({ ...prev, [name]: value }));
@@ -266,7 +254,6 @@ export default function Setting() {
 
     const handleAddOption = () => {
         setIsAdding(true);
-        setEditedOption("");
     };
 
     const handleCancelAddOption = () => {
@@ -422,7 +409,7 @@ export default function Setting() {
         try {
             setLoadingFabric(true)
             // Use the fabricEdit hook to update the fabric
-            const updated = await fabricEdit(updateFormData, fabricEditOldName, editFabric);
+            const updated = await fabricEdit(fabricEditOldName, editFabric);
             if (updated.status) {
                 fetchAllSetting();
                 setEditFabric(null)
@@ -480,7 +467,7 @@ export default function Setting() {
         if (editCollection && editCollection.trim() !== '') {
             setLoadingCollection(true);
             try {
-                const updated = await collectionEdit(updateFormData, collectionEditOldName, editCollection);
+                const updated = await collectionEdit(collectionEditOldName, editCollection);
                 if (updated.status) {
                     await fetchAllSetting();
                     setAddCollection(false)
@@ -554,10 +541,16 @@ export default function Setting() {
     return (
         <section className="container mx-auto">
             {submitStatus && (
-                <p className={`fixed left-[50%] top-[10%] -translate-x-1/2 z-50 px-3 text-sm font-bold py-2 rounded-lg shadow-xl text-white ${submitStatus.message == null ? "hidden" : "visible"} ${submitStatus?.status ? "bg-green-600" : "bg-red-600"}`}>
-                    {submitStatus?.message}
-                </p>
+                <div className={`fixed left-[50%] top-[10%] -translate-x-1/2 z-50 px-3 text-sm font-bold py-2 rounded-lg group shadow-xl text-white ${submitStatus.message == null ? "hidden" : "flex gap-x-4 justify-between items-center"} ${submitStatus?.status ? "bg-green-600" : "bg-red-600"}`}>
+                    <span>{submitStatus?.message}</span>
+                    <button
+                        type="button"
+                        className="hidden group-hover:flex items-center justify-center hover:scale-150 transition-all"
+                        onClick={() => setSubmitStatus(initialUpdateFormData)}
+                    >X</button>
+                </div>
             )}
+
             {/* Category & Gender  */}
             <div className="border-b p-10 flex flex-col gap-10">
                 <div>
@@ -566,7 +559,7 @@ export default function Setting() {
                             <h1 className="font-bold text-xl">New Category</h1>
                         </div>
                         <div className="flex gap-3">
-                            <button className="underline" onClick={() => setShowCategoryPopup(true)}>
+                            <button type="button" className="underline" onClick={() => setCategoryAddBox(true)}>
                                 Add
                             </button>
                         </div>
@@ -580,12 +573,12 @@ export default function Setting() {
                                 <input
                                     type="text"
                                     value={cat}
-                                    readOnly={true} // Make it read-only by default
+                                    readOnly={true}
                                     className="border-none text-center text-black outline-none"
                                 />
                                 <div className="hidden gap-1 group-hover:flex absolute right-0 bottom-0 ml-2 p-3">
                                     {/* Edit Button */}
-                                    <button onClick={() => handleEditCategory(cat)}>
+                                    <button type="button" onClick={() => handleEditCategory(cat)}>
                                         <span><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
                                                 d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
@@ -603,7 +596,7 @@ export default function Setting() {
                                     </button>
 
                                     {/* Delete Button */}
-                                    <button onClick={() => {
+                                    <button type="button" onClick={() => {
                                         const confirmDelete = window.confirm(
                                             "Are you sure you want to delete this category?"
                                         );
@@ -654,20 +647,20 @@ export default function Setting() {
                     </div>
 
                     {/* Category Popup */}
-                    {showCategoryPopup && (
+                    {categoryAddBox && (
                         <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
                             <form onSubmit={handleSaveNewCategory} className="bg-white p-6 rounded-lg">
                                 <h3 className="mb-4">New Category</h3>
                                 <input
                                     type="text"
                                     placeholder="Enter Category Name"
-                                    value={editedCategory}
-                                    onChange={(e) => setEditedCategory(e.target.value)}
+                                    value={addCategory}
+                                    onChange={(e) => setAddCategory(e.target.value)}
                                     required
                                     className="p-2 rounded w-full mb-4"
                                 />
                                 <button
-                                    onClick={() => setShowCategoryPopup(false)}
+                                    onClick={() => setCategoryAddBox(false)}
                                     className="border px-4 text-sm py-2 rounded-lg"
                                 >
                                     Cancel
@@ -690,7 +683,7 @@ export default function Setting() {
                             <h1 className="font-bold text-xl">Category (Gender wise)</h1>
                         </div>
                         <div className="flex gap-3">
-                            <button className="underline" onClick={handleAddGender}>
+                            <button type="button" className="underline" onClick={() => setGenderAddBox(true)}>
                                 Add
                             </button>
                         </div>
@@ -705,12 +698,12 @@ export default function Setting() {
                                     <input
                                         type="text"
                                         value={gen}
-                                        readOnly={true} // Make it read-only by default
+                                        readOnly={true}
                                         className="border-none text-center text-black outline-none"
                                     />
                                     <div className="hidden gap-1 group-hover:flex absolute right-0 bottom-0 ml-2 p-3">
                                         {/* Edit Button */}
-                                        <button onClick={() => handleEditGender(gen)}>
+                                        <button type="button" onClick={() => handleEditGender(gen)}>
                                             <span><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path
                                                     d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
@@ -728,7 +721,7 @@ export default function Setting() {
                                         </button>
 
                                         {/* Delete Button */}
-                                        <button onClick={() => {
+                                        <button type="button" onClick={() => {
                                             const confirmDeleteGen = window.confirm(
                                                 "Are you sure you want to delete this Gender?"
                                             );
@@ -782,7 +775,7 @@ export default function Setting() {
                     </div>
 
                     {/* Gender Popup */}
-                    {showGenderPopup && (
+                    {genderAddBox && (
                         <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
                             <form onSubmit={handleSaveNewGender} className="bg-white p-6 rounded-lg">
                                 <h3 className="mb-4">New Gender</h3>
@@ -795,7 +788,8 @@ export default function Setting() {
                                     className="p-2 rounded w-full mb-4"
                                 />
                                 <button
-                                    onClick={() => setShowGenderPopup(false)}
+                                    type="button"
+                                    onClick={() => setGenderAddBox(false)}
                                     className="border px-4 text-sm py-2 rounded-lg"
                                 >
                                     Cancel
@@ -819,15 +813,11 @@ export default function Setting() {
             <div className="border-b p-10 space-y-10">
                 <div>
                     <div className="flex gap-10 pb-5">
-                        <div>
-                            <h1 className="font-bold text-xl">Gender (size chart)</h1>
-                        </div>
+                        <h1 className="font-bold text-xl">Gender (size chart)</h1>
                         <div className="flex gap-5">
-                            <button className="underline" onClick={handleAddOption}>
-                                Add
-                            </button>
-                            {selectedOption && <button className="underline" onClick={handleDelete}>Delete</button>}
-                            {selectedOption && <button className="underline" onClick={() => setIsEditing(true)}>Edit</button>}
+                            <button type="button" className="underline" onClick={handleAddOption}>Add</button>
+                            {selectedOption && <button type="button" className="underline" onClick={handleDelete}>Delete</button>}
+                            {selectedOption && <button type="button" className="underline" onClick={() => setIsEditing(true)}>Edit</button>}
                         </div>
                     </div>
 
@@ -1285,6 +1275,15 @@ export default function Setting() {
                                             Add More
                                         </button>
                                     </div>
+                                    <div className="flex gap-4 my-5">
+                                        {update ?
+                                            <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-black`} onClick={() => setUpdate(false)}></div>
+                                            :
+                                            <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-white`} onClick={() => setUpdate(true)}></div>
+                                        }
+                                        <span>Update In all the tackpacks including previous one</span>
+                                    </div>
+                                    {update && <UpdateForm field="trims" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
                                     <div className="flex justify-end gap-2">
                                         <button
                                             type="button"
@@ -1776,11 +1775,6 @@ export default function Setting() {
                                     rows={3}
                                     className="p-2  rounded w-full mb-4 resize-none border border-black"
                                 />
-                                <div className="flex gap-4 my-5">
-                                    <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black ${update ? 'bg-black' : 'bg-white'}`} onClick={() => setUpdate(!update)}></div>
-                                    <span>Update In all the tackpacks including previous one</span>
-                                </div>
-                                {update && <UpdateForm field="fabric" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
 
                                 <button
                                     type="button"
@@ -1943,15 +1937,6 @@ export default function Setting() {
                                     rows={1}
                                     className="p-2 rounded w-full mb-4 resize-none border"
                                 />
-                                <div className="flex gap-4 my-5">
-                                    {update ?
-                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-black`} onClick={() => setUpdate(false)}></div>
-                                        :
-                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-white`} onClick={() => setUpdate(true)}></div>
-                                    }
-                                    <span>Update In all the tackpacks including previous one</span>
-                                </div>
-                                {update && <UpdateForm field="collection" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
                                 <div className="flex justify-end">
                                     <button
                                         type="button"
@@ -2057,7 +2042,7 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
     return (
         <div className="bg-gray p-6">
 
-            {["fabric", "collection", 2, 3].includes(field) &&
+            {["trims"].includes(field) &&
                 <div className="mb-3">
                     <h3 className="mb-1">Select Category</h3>
                     <div className="flex gap-5">
@@ -2076,7 +2061,7 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
                 </div>
             }
 
-            {["constructionSheet", "parameter", "finishing", "fabric", "collection"].includes(field) &&
+            {["constructionSheet", "parameter", "finishing", "trims"].includes(field) &&
                 <div className="mb-3">
                     <h3 className="mb-1">Select Gender</h3>
                     <div className="flex gap-5">
@@ -2095,7 +2080,7 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
                 </div>
             }
 
-            {["constructionSheet", "parameter", "finishing", "fabric", "collection"].includes(field) &&
+            {["constructionSheet", "parameter", "finishing", "trims"].includes(field) &&
                 <div className="mb-3">
                     <h3 className="mb-1">Select TechPack</h3>
                     <div className="flex flex-col gap-5">

@@ -408,11 +408,11 @@ export const trimAdd = async (data) => {
     }
 };
 
-export const trimEdit = async (oldName, data) => {
+export const trimEdit = async (updateFormFData, oldName, data) => {
     try {
         const response = await fetch(`${apiURL}/design/setting/trims/update/${oldName}`, {
             method: 'POST',
-            body: JSON.stringify({ "trim": data }),
+            body: JSON.stringify({ "update": updateFormFData, "trim": data }),
             headers: {
                 'Content-Type': 'application/json',
                 'api-key': apiKey,
@@ -739,7 +739,7 @@ export const fabricAdd = async (name) => {
 };
 
 
-export const fabricEdit = async (updateFormFData, oldName, newName) => {
+export const fabricEdit = async (oldName, newName) => {
     try {
         const response = await fetch(`${apiURL}/design/setting/fabric/update`, {
             method: 'POST',
@@ -747,7 +747,7 @@ export const fabricEdit = async (updateFormFData, oldName, newName) => {
                 'Content-Type': 'application/json',
                 'api-key': apiKey,
             },
-            body: JSON.stringify({ "update": updateFormFData, oldName, newName }),
+            body: JSON.stringify({ oldName, newName }),
         });
 
         if (response.ok) {
@@ -804,7 +804,7 @@ export const collectionAdd = async (name) => {
 };
 
 
-export const collectionEdit = async (updateFormFData, oldName, newName) => {
+export const collectionEdit = async (oldName, newName) => {
     try {
         const response = await fetch(`${apiURL}/design/setting/collection/update`, {
             method: 'POST',
@@ -812,7 +812,7 @@ export const collectionEdit = async (updateFormFData, oldName, newName) => {
                 'Content-Type': 'application/json',
                 'api-key': apiKey,
             },
-            body: JSON.stringify({ "update": updateFormFData, oldName, newName }),
+            body: JSON.stringify({ oldName, newName }),
         });
 
         if (response.ok) {

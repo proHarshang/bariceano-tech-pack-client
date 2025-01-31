@@ -705,11 +705,11 @@ export const TechPackProvider = ({ children }) => {
     };
 
     const resetTechPack = () => {
-        if (updateMode === "off") {
-            setTechPackData(initialTechPackData);
-        } else {
-            createUpdateTechPackSetup(updateMode);
-        }
+        // if (updateMode === "off") {
+        //     setTechPackData(initialTechPackData);
+        // } else {
+        //     createUpdateTechPackSetup(updateMode);
+        // }
         console.log("♻ Form reseted")
         // setConstructionSheets([]);
         // setTrims([]);
