@@ -182,8 +182,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
     }
 
     const handleCancelCrop = async () => {
-        setImage(null);
-        uploadImage(null);
+        setImage(null);        
         setSelectedFile(null);
     };
 
