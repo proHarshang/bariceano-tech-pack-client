@@ -12,6 +12,7 @@
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "axios": "^1.7.9",
+    "browser-image-compression": "^2.0.2",
     "cra-template": "1.2.0",
     "jpeg-js": "^0.4.4",
     "jspdf": "^2.5.2",

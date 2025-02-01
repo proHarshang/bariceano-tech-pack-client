@@ -4,6 +4,7 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
 import Cropper from "react-easy-crop";
 import { LazyLoadImage } from 'react-lazy-load-image-component'; // Import LazyLoadImage
+import imageCompression from 'browser-image-compression';
 
 const createImage = (url) =>
     new Promise((resolve, reject) => {
@@ -74,6 +75,35 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
     const [zoom, setZoom] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     const [aspectRatio, setAspectRatio] = useState(1);
+
+    const { uploadImage, loading, error } = useUploadImage();
+
+    const uploadCompressedImage = async (files) => {
+        try {
+            // Compress the image
+            const options = {
+                maxSizeMB: 3,
+                maxWidthOrHeight: 1920,
+                useWebWorker: true
+            };
+
+            const compressedFiles = await Promise.all(
+                files.map(async (file) => {
+                    const compressedBlob = await imageCompression(file, options);
+                    return new File([compressedBlob], file.name, { type: file.type });
+                })
+            );
+
+            console.log("compressedFiles :", compressedFiles)
+            console.log("files :", files)
+            await uploadImage(compressedFiles)
+
+        } catch (error) {
+            alert("Something Went Wrong! Ask Harshang")
+            console.error('Error uploading image:', error);
+            throw error;
+        }
+    };
 
     const onCropComplete = useCallback((_, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
@@ -147,12 +177,10 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
         }
     };
 
-    const { uploadImage, loading, error } = useUploadImage();
-
     // Handle file selection and trigger upload immediately
     const handleFileChange = async (e) => {
         if (e.target.files && e.target.files.length > 1) {
-            uploadImage([...e.target.files]); // Trigger the upload automatically            
+            uploadCompressedImage([...e.target.files]); // Trigger the upload automatically            
         } else if (e.target.files[0] && e.target.files.length === 1) {
             const imageUrl = URL.createObjectURL(e.target.files[0]);
             setOGSingleImg(e.target.files[0]);
@@ -172,17 +200,17 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
         const croppedImgFile = await getCroppedImg(selectedFile, image, croppedAreaPixels);
 
         // Upload the cropped image to the backend
-        uploadImage([croppedImgFile]);
+        uploadCompressedImage([croppedImgFile]);
         setImage(null);
     };
 
     const handleUploadOrigional = () => {
-        uploadImage([OGSingleImg]);
+        uploadCompressedImage([OGSingleImg]);
         setImage(null);
     }
 
     const handleCancelCrop = async () => {
-        setImage(null);        
+        setImage(null);
         setSelectedFile(null);
     };
 
