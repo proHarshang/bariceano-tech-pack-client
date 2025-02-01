@@ -5,17 +5,23 @@ import NewPdfGenerator from '../NewPDF';
 import { useForm } from "react-hook-form";
 import Pagination from '../common/Pagination.jsx';
 import { useTechPack } from "../context/TechPackContext";
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-const TechPackDataTable = ({ data = [] }) => {
+const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
+    const { user } = useAuth();
     const sidebarRef = useRef(null);
     const [itemsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [isSidebarOpen, setIsSidebarOpen] = useState(null);
     const { register, watch } = useForm();
     const isCommentChecked = watch("Comment"); // Watch the checkbox state
-
     const { submitStatus } = useTechPack();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const selectedCollection = queryParams.get("collection");
+
+    data = data?.filter(item => item.designCollection === selectedCollection || selectedCollection === "all collection") || [];
 
     data = isCommentChecked
         ? data.filter(item => item.comment?.message) // Filter data with a comment
@@ -36,29 +42,33 @@ const TechPackDataTable = ({ data = [] }) => {
     };
 
     const [comment, setComment] = useState({
-        name: "user",  // Temporary name
+        name: "",  // Temporary name
         message: "",   // Comment message
         date: new Date().toISOString() // Comment date
     });
 
-
     const toggleSidebar = useCallback((styleNo = null, comment = null) => {
         if (styleNo) {
             setIsSidebarOpen(styleNo); // Open sidebar with styleNo
-            setComment({
-                name: "user",  // Temporarily set name to "user"
-                message: comment?.message || "", // Ensure message is set even if undefined
-                date: comment?.date || new Date().toISOString(), // Ensure date is set even if undefined
+            const comment = data.find(tp => tp.styleNo === styleNo)?.comment 
+            setComment(comment ? {
+                name: comment.name || "",
+                message: comment.message || "",
+                date: comment.date,
+            } : {
+                name: user.Name || "",
+                message: "",   // Ensure message is empty
+                date: new Date().toISOString(), // Ensure date is reset
             });
         } else {
             setIsSidebarOpen(null); // Close sidebar
             setComment({
-                name: "user",  // Temporarily set name to "user"
+                name: user.Name || "",
                 message: "",   // Ensure message is empty
                 date: new Date().toISOString(), // Ensure date is reset
             });
         }
-    }, []);
+    }, [user.Name]);
 
     const handleCommentChange = (event) => {
         const { name, value } = event.target;
@@ -68,6 +78,11 @@ const TechPackDataTable = ({ data = [] }) => {
             date: new Date().toISOString(), // Automatically set the current date
         }));
     };
+    const handleApply = () => {
+        toggleSidebar(false)
+        fetchTechPacks();
+    }
+
 
 
     // -- to close sidebar by clicking outside of div --
@@ -510,6 +525,38 @@ const TechPackDataTable = ({ data = [] }) => {
                                                 }} className="delete-button  hover:bg-red-300">Delete</button>
                                             </div>
                                         </td>
+                                        {isSidebarOpen && (
+                                            <div ref={sidebarRef} className="fixed top-0 right-0 h-full w-1/4 max-w-sm bg-white shadow-lg z-50 p-6">
+                                                <div className="flex justify-between items-center mb-4">
+                                                    <h2 className="text-lg font-bold">Add Comment</h2>
+                                                </div>
+                                                <textarea
+                                                    className="w-full h-40 p-2 border rounded"
+                                                    name="message"  // Bind the name to the comment message field
+                                                    value={comment.message}  // Bind the textarea to the state
+                                                    onChange={handleCommentChange}  // Handle the change of comment
+                                                    placeholder="Enter your comment here..."
+                                                ></textarea>
+                                                <span>{comment.name}</span>
+                                                <br />
+                                                <span>{isSidebarOpen}</span>
+                                                <br />
+                                                <span>{formatDate(comment?.date)}</span>
+                                                <div className="flex mt-20">
+                                                    <button type="button" onClick={() => {
+                                                        handleCommentSubmit(isSidebarOpen, comment);
+                                                        handleApply();
+                                                    }} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
+                                                        Apply
+                                                    </button>
+
+                                                    <button type="button" onClick={() => toggleSidebar(false)} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
+                                                        Close
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+
                                     </tr>
                                 )
                             })}
@@ -523,34 +570,7 @@ const TechPackDataTable = ({ data = [] }) => {
                     />
                 </div>
             </div >
-            {isSidebarOpen && (
-                <div ref={sidebarRef} className="fixed top-0 right-0 h-full w-1/4 max-w-sm bg-white shadow-lg z-50 p-6">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-bold">Add Comment</h2>
-                    </div>
-                    <textarea
-                        className="w-full h-40 p-2 border rounded"
-                        value={comment.message}
-                        onChange={handleCommentChange}
-                        placeholder="Enter your comment here..."
-                    ></textarea>
-                    <span>{comment.name}</span>
-                    <br />
-                    <span>{formatDate(comment?.date)}</span>
-                    <div className="flex mt-20">
-                        <button type="button" onClick={() => {
-                            handleCommentSubmit(isSidebarOpen, comment);
-                            toggleSidebar(false);
-                        }} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
-                            Apply
-                        </button>
-                        <button type="button" onClick={() => toggleSidebar(false)} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
-                            Close
-                        </button>
-                    </div>
-                </div>
-            )
-            }
+
         </>
     );
 };
