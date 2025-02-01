@@ -20,7 +20,7 @@ const MainHeader = () => {
     const [labels, setLabels] = useState([]);
     const [currentCategory, setCurrentCategory] = useState(null);
     const [currentSubCategory, setCurrentSubCategory] = useState(null);
-    const [selectedLabels, setSelectedLabels] = useState(["Silicon Label Sheet", "Main Label Sheet", "Size Label Sheet", "Wash Care Label Sheet", "Hang Tag"]);
+    const [selectedLabels, setSelectedLabels] = useState([]);
     const [showCategories, setShowCategories] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -34,6 +34,7 @@ const MainHeader = () => {
                     setCollection(data.techPack.collections || []);
                     setSubCategories(data.techPack.gender || []);
                     setLabels(data.techPack.trims.map(trim => trim.name) || []);
+                    setSelectedLabels(data.techPack.trims.map(trim => trim.name) || [])
                 } else {
                     console.error('Failed to fetch menu');
                 }
@@ -82,6 +83,13 @@ const MainHeader = () => {
     };
 
     useEffect(() => {
+        if (currentSubCategory && labels) {
+            setSelectedLabels(labels)
+        }
+    }, [currentSubCategory, labels])
+
+
+    useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
@@ -100,8 +108,7 @@ const MainHeader = () => {
                     <select
                         name="Collection"
                         id="collectionSelect"
-                        className={`bg-transparent ${currentPath === "/tech-pack-data" ? "bg-black text-white" : ""
-                            }`}
+                        className={`bg-transparent focus:border-none focus:outline-0 focus-visible:border-none focus-visible:outline-0  ${currentPath === "/tech-pack-data" ? "bg-black text-white" : ""}`}
                         onChange={(e) => {
                             localStorage.setItem("currentCollection", e.target.value);
                             window.location.href = "/tech-pack-data";
@@ -116,7 +123,7 @@ const MainHeader = () => {
                     </select>
                 </button>
 
-                <a href="/setting">
+                <Link to="/setting">
                     <button
                         className={`border-[1px] text-sm font-bold px-3 py-2 rounded-2xl uppercase hover:bg-black hover:text-white  ${currentPath === "/setting"
                             ? "bg-black text-white"
@@ -125,7 +132,7 @@ const MainHeader = () => {
                     >
                         Setting
                     </button>
-                </a>
+                </Link>
 
                 {location.pathname !== '/tech-pack' && (
                     <div className="relative">
