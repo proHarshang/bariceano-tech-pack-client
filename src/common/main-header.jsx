@@ -23,6 +23,7 @@ const MainHeader = () => {
     const [selectedLabels, setSelectedLabels] = useState(["Silicon Label Sheet", "Main Label Sheet", "Size Label Sheet", "Wash Care Label Sheet", "Hang Tag"]);
     const [showCategories, setShowCategories] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [collectionSelector, setCollectionSelector] = useState(false);
 
     useEffect(() => {
         const fetchMenuData = async () => {
@@ -88,6 +89,29 @@ const MainHeader = () => {
         };
     }, []);
 
+
+    const handleNavigation = (e) => {
+        const selectedCollection = e.target.value;
+        setCollectionSelector(selectedCollection)
+    };
+
+    useEffect(() => {
+        if (collectionSelector) {
+            console.log("collectionSelector : ", collectionSelector)
+            localStorage.setItem("currentCollection", collectionSelector);
+            navigate(`/tech-pack-data?collection=${collectionSelector}`);
+        }
+    }, [collectionSelector])
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const selectedCollection = queryParams.get("collection");
+        if (selectedCollection) {
+            setCollectionSelector(selectedCollection)
+        }
+    }, [location])
+
+
     return (
         <div className="p-5 flex justify-between border-b pl-10 pr-0 max-w-[1500px] mx-auto">
             <div className='flex gap-5 items-center'>
@@ -100,14 +124,12 @@ const MainHeader = () => {
                     <select
                         name="Collection"
                         id="collectionSelect"
-                        className={`bg-transparent ${currentPath === "/tech-pack-data" ? "bg-black text-white" : ""
+                        className={`!border-none focus:outline-none bg-transparent ${currentPath === "/tech-pack-data" ? "bg-black text-white" : ""
                             }`}
-                        onChange={(e) => {
-                            localStorage.setItem("currentCollection", e.target.value);
-                            window.location.href = "/tech-pack-data";
-                        }}
+                        onChange={handleNavigation}
+                        value={collectionSelector}
                     >
-                        <option value="" className='bg-black text-white'>Select Collection</option>
+                        <option className='bg-black text-white' value="all collection">All Collection</option>
                         {collection.map((option, index) => (
                             <option className='bg-black text-white' key={index} value={option}>
                                 {option}
