@@ -33,7 +33,7 @@ const TechPack = () => {
       if (!selectedLabels || !currentCategory || !currentSubCategory) {
         navigate('/', { replace: true });
       } else if (isSettingDataFetched) {
-        console.log(selectedLabels, currentCategory, currentSubCategory)
+        console.log("Selections from header ", selectedLabels, currentCategory, currentSubCategory)
 
 
         updateField("gender", currentSubCategory);
@@ -118,7 +118,7 @@ const TechPack = () => {
       case "Layout3":
         return <LayoutSelection page={page} />
       case "Information":
-        return <SpecSheet page={page} currentCategory={currentCategory} selectedLabels={selectedLabels} />
+        return <SpecSheet page={page} currentCategory={currentCategory} currentSubCategory={currentSubCategory} selectedLabels={selectedLabels} />
       case "ArtworkPlacementSheet":
         return <ArtworkPlacementSheet page={page} />
       case "SiliconLabel":
@@ -132,13 +132,21 @@ const TechPack = () => {
 
   const handleAddPage = () => {
     if (selectedPage) {
-      const type = getType(selectedPage, currentCategory, currentSubCategory)
-      addSlideAtIndex(selectedIndex, {
-        "page": 10,
-        "name": selectedPage.name,
-        "type": type,
-        "data": selectedPage.data,
-      });
+      selectedPage.data.images.map(item => {
+        addSlideAtIndex(selectedIndex, {
+          "page": 10,
+          "name": selectedPage.name,
+          "type": getType(selectedPage, currentCategory, currentSubCategory),
+          "data": {
+            "images": [
+              {
+                "position": 0,
+                "src": item.src
+              }
+            ]
+          }
+        });
+      })
     }
 
     setShowPopup(false);
@@ -173,7 +181,7 @@ const TechPack = () => {
   ];
 
   // Map the dynamic array to add the `type` property (same as `name`)
-  const dynamicArray = trims.map((item) => {
+  const dynamicArray = trims.map(item => {
     return {
       "name": item.name,
       "type": item.name,
@@ -224,12 +232,14 @@ const TechPack = () => {
             </div>
             <div className="flex justify-end mt-10 space-x-2">
               <button
+                type='button'
                 onClick={() => setShowPopup(false)}
                 className="px-4 py-2 border rounded-md"
               >
                 Cancel
               </button>
               <button
+                type='button'
                 onClick={handleAddPage}
                 className="px-4 py-2 bg-black text-white rounded-md text-sm"
                 disabled={!selectedPage}

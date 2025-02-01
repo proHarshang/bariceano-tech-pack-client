@@ -3,9 +3,8 @@ import { useTechPack } from '../context/TechPackContext';
 import { fetchAll } from "../API/TechPacks";
 import { useState, useEffect } from "react";
 
-const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
+const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }) => {
     const [fabric, setFabric] = useState([]);
-    const [genders, setGenders] = useState([]);
     const [collections, setCollections] = useState([]);
 
     const [states] = useState([
@@ -23,10 +22,8 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
             try {
                 const data = await fetchAll(); // Use the categoryFetch hook                                    
                 if (data.status) {
-                    setFabric(data.techPack.fabric); // Set the fetched fabric
-                    setGenders(data.techPack.gender); // Set the fetched fabric
+                    setFabric(data.techPack.fabric); // Set the fetched fabric                    
                     setCollections(data.techPack.collections); // Set the fetched categories
-
                 } else {
                     console.error('Failed to fetch fabric');
                 }
@@ -38,12 +35,12 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
     }, []);
 
     useEffect(() => {
-        if (updateMode === "off" && selectedLabels) {
-            updateInfoField(page, "Product Type", slide.data?.info?.find((item) => item.name === "Product Type").value, { "value": techPackData.category })
-            updateInfoField(page, "Gender", slide.data?.info?.find((item) => item.name === "Gender").value, { "value": techPackData.gender })
+        if (updateMode === "off" && selectedLabels && currentSubCategory && currentCategory) {            
+            updateInfoField(page, "Product Type", slide.data?.info?.find((item) => item.name === "Product Type").value, { "value": currentCategory })
+            updateInfoField(page, "Gender", slide.data?.info?.find((item) => item.name === "Gender").value, { "value": currentSubCategory })
             updateInfoField(page, "Trim", slide.data?.info?.find((item) => item.name === "Trim").value, { "value": selectedLabels.join(', ') })
         }
-    }, [updateMode, selectedLabels])
+    }, [updateMode, selectedLabels, currentCategory, currentSubCategory])
 
     return (
         <section className='mx-auto mb-20 pl-7 pr-2'>
