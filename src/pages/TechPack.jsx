@@ -211,7 +211,7 @@ const TechPack = () => {
       )}
 
       {showPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-md w-1/2">
             <h2 className="text-xl font-semibold mb-4">Add a Page</h2>
             <div className="flex flex-wrap gap-4">
