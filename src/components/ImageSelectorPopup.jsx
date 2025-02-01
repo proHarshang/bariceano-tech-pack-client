@@ -67,6 +67,8 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
 
     const [selectedFile, setSelectedFile] = useState(null);
 
+    const [OGSingleImg, setOGSingleImg] = useState(null);
+
     const [image, setImage] = useState(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
@@ -133,7 +135,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
 
             if (response.status === 200) {
                 alert(data.message); // Show success message
-                fetchAllImage();
+                await fetchAllImage();
                 // Optionally, remove the image from the UI if deletion is successful
                 // For example, update the image list in the state if needed
             } else {
@@ -150,44 +152,39 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
     // Handle file selection and trigger upload immediately
     const handleFileChange = async (e) => {
         if (e.target.files && e.target.files.length > 1) {
-            uploadImage([...e.target.files]); // Trigger the upload automatically
+            uploadImage([...e.target.files]); // Trigger the upload automatically            
         } else if (e.target.files[0] && e.target.files.length === 1) {
             const imageUrl = URL.createObjectURL(e.target.files[0]);
-            setSelectedFile(e.target.files[0]); // Store the selected file
+            setOGSingleImg(e.target.files[0]);
+            setSelectedFile(e.target.files[0]);
             setImage(imageUrl);
+        } else {
+            setSelectedFile(null);
+            setImage(null);
         }
-        await fetchAllImage();
+        fetchAllImage();
     }
 
 
     const handleCrop = async () => {
+        console.log("croppedAreaPixels :", croppedAreaPixels)
         if (!image || !croppedAreaPixels) return;
         const croppedImgFile = await getCroppedImg(selectedFile, image, croppedAreaPixels);
 
         // Upload the cropped image to the backend
         uploadImage([croppedImgFile]);
-
         setImage(null);
     };
 
     const handleUploadOrigional = () => {
-        if (image) {
-            console.log(image)
-            uploadImage([image])
-        } else {
-            handleCancelCrop()
-        }
-        setImage(null)
+        uploadImage([OGSingleImg]);
+        setImage(null);
     }
 
     const handleCancelCrop = async () => {
-        if (!image || !croppedAreaPixels) return;
-        const croppedImgFile = await getCroppedImg(selectedFile, image, croppedAreaPixels);
-
-        // Upload the cropped image to the backend
-        uploadImage([croppedImgFile]);
-
         setImage(null);
+        uploadImage(null);
+        setSelectedFile(null);
     };
 
     const handleImageSelect = (image) => {

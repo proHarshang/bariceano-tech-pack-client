@@ -687,7 +687,6 @@ const useUploadImage = () => {
     const uploadImage = async (files) => {
         setLoading(true);
         setError(null);
-
         const formData = new FormData();
         files.forEach((image) => formData.append("images", image));
 
