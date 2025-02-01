@@ -105,8 +105,6 @@ export const deleteTechPack = async (id) => {
 
 const handleCommentSubmit = async (styleNo, comment) => {
     try {
-        console.log("Submitting Comment:", { styleNo, ...comment });  // Log the payload to check the structure
-
         const response = await fetch(`${apiURL}/design/comment`, {
             method: 'POST',
             headers: {
@@ -120,15 +118,19 @@ const handleCommentSubmit = async (styleNo, comment) => {
             }),
         });
 
+        const result = await response.json();  // Parse the JSON response from the server
+
         if (response.ok) {
-            window.location.reload(); // Reload the page after successful submission
+            console.log("Comment Submitted Successfully:", result);  // Log the response from the server
+            // Optionally update the state here (if required) to show the new comment
         } else {
-            console.error('Failed to submit comment');
+            console.error('Failed to submit comment:', result.error || 'Unknown Error');
         }
     } catch (error) {
         console.error('Error:', error);
     }
 };
+
 
 
 export const categoryFetch = async () => {

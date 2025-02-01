@@ -1211,12 +1211,60 @@ export default function Setting() {
                         <div className="flex flex-wrap gap-3">
                             {trims.map(trim => {
                                 return (
-                                    <div key={trim._id} className="p-4 border border-gray-400 group">
+                                    <div key={trim._id} className="p-4 border border-gray-400 w-[30%] group">
                                         <div className="flex justify-between items-center pb-2">
-                                            <h1 className="text-xl whitespace-nowrap">{trim.name}</h1>
+                                            <h1 className="text-base whitespace-nowrap">{trim.name}</h1>
                                             <div className="hidden gap-2 group-hover:flex">
-                                                <button type="button" onClick={() => { setTrimEditBox(trim); setTrimEditOldName(trim.name) }}>Edit</button>
-                                                <button type="button" onClick={() => handleDeleteTrimBox(trim.name)}>Delete</button>
+                                                <button type="button" onClick={() => { setTrimEditBox(trim); setTrimEditOldName(trim.name) }}> <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
+                                                        stroke="#0C2F2F"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    />
+                                                    <path
+                                                        d="M11.875 9.375V11.25C11.875 11.9404 11.3154 12.5 10.625 12.5H3.75C3.05964 12.5 2.5 11.9404 2.5 11.25V4.375C2.5 3.68464 3.05964 3.125 3.75 3.125H5.625"
+                                                        stroke="#0C2F2F"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    />
+                                                </svg></button>
+                                                <button type="button" onClick={() => handleDeleteTrimBox(trim.name)}><svg
+                                                    width="18"
+                                                    height="18"
+                                                    viewBox="0 0 13 15"
+                                                    fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path
+                                                        d="M1.625 3.54541H2.70833H11.375"
+                                                        stroke="black"
+                                                        strokeWidth="0.6"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    />
+                                                    <path
+                                                        d="M10.2923 3.54528V11.818C10.2923 12.1314 10.1782 12.432 9.97502 12.6537C9.77185 12.8753 9.4963 12.9998 9.20898 12.9998H3.79232C3.505 12.9998 3.22945 12.8753 3.02629 12.6537C2.82312 12.432 2.70898 12.1314 2.70898 11.818V3.54528M4.33398 3.54528V2.36346C4.33398 2.05002 4.44812 1.74942 4.65129 1.52779C4.85445 1.30615 5.13 1.18164 5.41732 1.18164H7.58398C7.8713 1.18164 8.14685 1.30615 8.35002 1.52779C8.55318 1.74942 8.66732 2.05002 8.66732 2.36346V3.54528"
+                                                        stroke="black"
+                                                        strokeWidth="0.6"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    />
+                                                    <path
+                                                        d="M5.41602 6.5V10.0455"
+                                                        stroke="black"
+                                                        strokeWidth="0.6"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    />
+                                                    <path
+                                                        d="M7.58398 6.5V10.0455"
+                                                        stroke="black"
+                                                        strokeWidth="0.6"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    />
+                                                </svg></button>
                                             </div>
                                         </div>
                                         <div className="flex flex-wrap gap-2 w-fit">
@@ -1418,10 +1466,10 @@ export default function Setting() {
                     <div>
                         <div className="flex flex-wrap gap-2">
                             {requirements.map((requirement) => (
-                                <div key={requirement._id} className="p-4 border border-gray-400 w-fit">
+                                <div key={requirement._id} className="p-4 border border-gray-400 w-[30%]">
                                     {/* Item Header */}
                                     <div className="flex gap-10 items-center justify-between pb-2">
-                                        <h1 className="text-xl text-center mb-3">{requirement.name}</h1>
+                                        <h1 className="text-base text-center mb-3">{requirement.name}</h1>
                                         <button type="button" onClick={() => setParameterEditBox(requirement)}>
                                             <svg
                                                 width="20"
@@ -1546,7 +1594,7 @@ export default function Setting() {
                     <div>
                         <div className="flex flex-wrap gap-2">
                             {finishing.map((item) => (
-                                <div key={item._id} className="p-4 border border-gray-400 w-fit">
+                                <div key={item._id} className="p-4 border border-gray-400 w-[30%]">
                                     <div className="flex gap-10 items-center justify-between pb-2">
                                         <h1 className="text-xl text-center mb-3">{item.name}</h1>
                                         <button type="button" onClick={() => setFinishingEditBox(item)}>

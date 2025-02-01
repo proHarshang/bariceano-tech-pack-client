@@ -13,7 +13,6 @@ const TechPackPDFGenrate = (data) => {
         orientation: 'landscape',
         unit: 'mm',
         format: [pageWidth, pageHeight],
-        compress: true,
     });
 
 
@@ -64,9 +63,12 @@ const TechPackPDFGenrate = (data) => {
         pdf.text(importantNote, leftMargin, bottomLineY + 5, { maxWidth: noteWidth, align: 'justify' });
     }
 
-    function generatePdf() {
+    const generatePdf = async () => {
+        setIsDownloading(true)
+
         try {
-            setIsDownloading(true)
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
             const pageWidth = pdf.internal.pageSize.getWidth();
             const pageHeight = pdf.internal.pageSize.getHeight();
 
@@ -656,7 +658,7 @@ const TechPackPDFGenrate = (data) => {
         <button
             type='button'
             onClick={generatePdf}
-            className={`text-center flex items-center justify-center mx-auto ${isDownloading ? 'animate-spin' : ''}`}
+            className={`text-center flex items-center justify-center mx-auto ${isDownloading ? 'animate-spin cursor-not-allowed' : ''}`}
             disabled={isDownloading}
         >
             {isDownloading ? <AiOutlineLoading className='text-black font-bold' /> : 'Download'}
