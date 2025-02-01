@@ -11,7 +11,7 @@ const Logout = () => {
             <div className="bg-[#D6E0F0]  text-black p-14 rounded-lg max-w-md mx-auto">
                 <p className="text-center text-xl font-medium mb-12">Are you sure you want to logout?</p>
                 <div className="flex justify-around">
-                    <button onClick={() => logout()} className="text-white font-bold bg-[#393B44] py-1 px-[50px] rounded" >
+                    <button onClick={() => { logout(); navigate('/') }} className="text-white font-bold bg-[#393B44] py-1 px-[50px] rounded" >
                         Yes
                     </button>
                     <button onClick={() => navigate(`/tech-pack-data`)} className="bg-[#393B44] text-white font-bold py-1 px-[50px] rounded" >

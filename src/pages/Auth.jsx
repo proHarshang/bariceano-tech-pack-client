@@ -26,7 +26,7 @@ const Auth = () => {
         <div className="bg-[#F1F3F8] w-full h-screen pt-0">
             <h1 className="text-center text-3xl font-bold pt-20 pb-5">TechPacks Word</h1>
             <div className="bg-[#D6E0F0] text-white p-8 rounded-lg max-w-md mx-auto">
-                <form className="space-y-6" onSubmit={(e) => handleLogin()} >
+                <form className="space-y-6" onSubmit={handleLogin} >
                     <div>
                         <label className="block text-sm font-medium mb-2 text-black" htmlFor="email">
                             Email:
