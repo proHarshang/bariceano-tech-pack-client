@@ -42,7 +42,7 @@ const ArtworkPlacementSheet = ({ page }) => {
                     </thead>
                     <tbody>
                         {slide.data.artworkPlacementSheet.map((item, index) => (
-                            <FormRow formIndex={index} page={page} item={item} />
+                            <FormRow key={index} formIndex={index} page={page} item={item} />
                         ))}
                     </tbody>
                 </table>

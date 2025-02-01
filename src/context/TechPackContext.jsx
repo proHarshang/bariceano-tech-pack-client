@@ -14,8 +14,7 @@ export const TechPackProvider = ({ children }) => {
     const initialTechPackData = {
         designer: JSON.parse(localStorage.getItem('user')).Name || "",
         styleNo: "",
-        // designCollection: localStorage.getItem("currentCollection"),
-        designCollection: "Collection 1",
+        designCollection: localStorage.getItem("currentCollection"),
         state: "",
         gender: "",
         category: "",
@@ -92,7 +91,7 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "3",
                         "name": "Collection",
-                        "value": "Collection 1"
+                        "value": localStorage.getItem("currentCollection")
                     },
                     {
                         "position": "4",

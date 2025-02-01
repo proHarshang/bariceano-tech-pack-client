@@ -35,7 +35,7 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
     }, []);
 
     useEffect(() => {
-        if (updateMode === "off" && selectedLabels && currentSubCategory && currentCategory) {            
+        if (updateMode === "off" && selectedLabels && currentSubCategory && currentCategory) {
             updateInfoField(page, "Product Type", slide.data?.info?.find((item) => item.name === "Product Type").value, { "value": currentCategory })
             updateInfoField(page, "Gender", slide.data?.info?.find((item) => item.name === "Gender").value, { "value": currentSubCategory })
             updateInfoField(page, "Trim", slide.data?.info?.find((item) => item.name === "Trim").value, { "value": selectedLabels.join(', ') })
@@ -106,11 +106,10 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                             }}
                             className="form__field break-words text-wrap"
                             required
-                            disabled
                         >
                             <option className="break-words text-wrap text-sm overflow-x-auto" value="select" disabled>select</option>
                             {collections.map((collection) => (
-                                <option className="break-words text-wrap text-sm overflow-x-auto" value={collection}>{collection}</option>
+                                <option key={collection} className="break-words text-wrap text-sm overflow-x-auto" value={collection}>{collection}</option>
                             ))}
                         </select>
                     </div>
@@ -127,7 +126,7 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                         required>
                         <option className="break-words text-wrap text-sm overflow-x-auto" value="select" disabled>select</option>
                         {states.map((state) => (
-                            <option className="break-words text-wrap text-sm overflow-x-auto" value={state}>{state}</option>
+                            <option key={state} className="break-words text-wrap text-sm overflow-x-auto" value={state}>{state}</option>
                         ))}
                     </select>
                 </div>
@@ -142,8 +141,8 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                         className="form__field break-words text-wrap"
                         required>
                         <option className="break-words text-wrap text-sm overflow-x-auto" value="select" disabled>select</option>
-                        {fabric.map((fabric) => (
-                            <option className="break-words text-wrap overflow-hidden max-w-[200px] text-sm overflow-x-auto" title={fabric} value={fabric}>{fabric}</option>
+                        {fabric.map((fabric, index) => (
+                            <option key={fabric} className="break-words text-wrap overflow-hidden max-w-[200px] text-sm overflow-x-auto" title={fabric} value={fabric}>{fabric}</option>
                         ))}
                     </select>
                 </div>
