@@ -24,25 +24,25 @@ const MainHeader = () => {
     const [showCategories, setShowCategories] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchMenuData = async () => {
-            try {
-                const data = await fetchAll();
-                if (data.status && data.techPack) {
-                    // Update menu and other state variables based on the API structure
-                    setMenu(data.techPack.category || []);
-                    setCollection(data.techPack.collections || []);
-                    setSubCategories(data.techPack.gender || []);
-                    setLabels(data.techPack.trims.map(trim => trim.name) || []);
-                    setSelectedLabels(data.techPack.trims.map(trim => trim.name) || [])
-                } else {
-                    console.error('Failed to fetch menu');
-                }
-            } catch (error) {
-                console.error('Error fetching menu:', error);
+    const fetchMenuData = async () => {
+        try {
+            const data = await fetchAll();
+            if (data.status && data.techPack) {
+                // Update menu and other state variables based on the API structure
+                setMenu(data.techPack.category || []);
+                setCollection(data.techPack.collections || []);
+                setSubCategories(data.techPack.gender || []);
+                setLabels(data.techPack.trims.map(trim => trim.name) || []);
+                setSelectedLabels(data.techPack.trims.map(trim => trim.name) || [])
+            } else {
+                console.error('Failed to fetch menu');
             }
-        };
+        } catch (error) {
+            console.error('Error fetching menu:', error);
+        }
+    };
 
+    useEffect(() => {
         fetchMenuData();
     }, []);
 
@@ -81,6 +81,11 @@ const MainHeader = () => {
             setIsOpen(false);
         }
     };
+
+    useEffect(() => {
+        fetchMenuData();
+    }, [showCategories])
+
 
     useEffect(() => {
         if (currentSubCategory && labels) {

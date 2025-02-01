@@ -118,7 +118,7 @@ const TechPack = () => {
       case "Layout3":
         return <LayoutSelection page={page} />
       case "Information":
-        return <SpecSheet page={page} currentCategory={currentCategory} selectedLabels={selectedLabels} />
+        return <SpecSheet page={page} currentCategory={currentCategory} currentSubCategory={currentSubCategory} selectedLabels={selectedLabels} />
       case "ArtworkPlacementSheet":
         return <ArtworkPlacementSheet page={page} />
       case "SiliconLabel":
@@ -185,6 +185,8 @@ const TechPack = () => {
 
   // Combine static and dynamic arrays
   const combinedArray = [...staticArray, ...dynamicArray];
+
+  console.log("combinedArray :", combinedArray)
 
   return (
     <form className="w-[841px] mx-auto mt-10" >
