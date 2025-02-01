@@ -96,7 +96,7 @@ export default function Setting() {
             // Use the categoryEdit hook to update the category
             const updated = await categoryEdit(cat, newCategoryName);
             if (updated.status) {
-                fetchAllSetting();
+                await fetchAllSetting();
                 setSubmitStatus(updated)
             } else {
                 console.error('Failed to edit category');
@@ -108,7 +108,7 @@ export default function Setting() {
         // Use the categoryDelete hook to delete the category
         const deleted = await categoryDelete(cat);
         if (deleted.status) {
-            fetchAllSetting();
+            await fetchAllSetting();
             setSubmitStatus(deleted)
         } else {
             console.error('Failed to delete category');
@@ -198,21 +198,30 @@ export default function Setting() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormValues(prev => ({ ...prev, [name]: value }));
+        setFormValues(prev => {
+            const updatedValues = { ...prev, [name]: value };
+            if (updatedValues.gender && updatedValues.category) {
+                updatedValues.name = `${updatedValues.gender}_${updatedValues.category}`.toLowerCase();
+            }
+            return updatedValues;
+        });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        try {
-            await addSizeChart(formValues);
-            fetchAllSetting();
-            setIsAdding(false);
-        } catch (err) {
-            alert("Could not Save!")
+        if (formValues && formValues.name) {
+            try {
+                const added = await addSizeChart(formValues);
+                fetchAllSetting();
+                setSubmitStatus(added)
+                setIsAdding(false);
+            } catch (err) {
+                alert("Could not Save!")
+            }
         }
     };
 
+    // Prefill form fields on size chart edit 
     useEffect(() => {
         if (isEditing && selectedOption) {
             const selectedData = sizecharts.find(item => item.name === selectedOption);
@@ -228,8 +237,9 @@ export default function Setting() {
     const handleEditOption = async () => {
         if (selectedOption) {
             try {
-                await editSizeChart(selectedOption, formValues);
+                const updated = await editSizeChart(updateFormData, formValues);
                 fetchAllSetting();
+                setSubmitStatus(updated)
                 setIsEditing(false);
             } catch (err) {
                 alert("Could not Update!")
@@ -243,9 +253,9 @@ export default function Setting() {
         if (selectedOption) {
             const confirmed = window.confirm("Are you sure you want to delete this size chart?");
             if (confirmed) {
-                await deleteSizeChart(selectedOption);
+                const deleted = await deleteSizeChart(selectedOption);
                 fetchAllSetting();
-                alert("Size chart deleted successfully!");
+                setSubmitStatus(deleted)
             }
         } else {
             alert("Please select a size chart to delete.");
@@ -302,10 +312,11 @@ export default function Setting() {
         try {
             setTrimLoading(true)
             // Use the categoryEdit hook to update the category
-            const updated = await trimAdd(trimAddBox);
+            const updated = await trimAdd(updateFormData, trimAddBox);
             if (updated.status) {
-                fetchAllSetting(); // Refetch the data
+                fetchAllSetting();
                 setTrimAddBox(null)
+                setSubmitStatus(updated)
             } else {
                 console.error('Failed to add trim');
             }
@@ -341,8 +352,9 @@ export default function Setting() {
         const confirmed = window.confirm("Are you sure you want to delete this trim?");
         if (!confirmed) return;
 
-        await deleteTrims(name);
+        const deleted = await deleteTrims(name);
         await fetchAllSetting()
+        setSubmitStatus(deleted)
     };
     // Trims Logic Over
 
@@ -796,7 +808,6 @@ export default function Setting() {
                                 </button>
                                 <button
                                     type="submit"
-                                    disabled={loading}
                                     className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
                                 >
                                     Save Category
@@ -830,7 +841,7 @@ export default function Setting() {
                                 value={selectedOption}
                                 onChange={(e) => setSelectedOption(e.target.value)}
                             >
-                                <option value="" disabled>Please select chart</option>
+                                <option value="">Please select chart</option>
                                 {sizecharts.map(item => item.name).map((option) => <option key={option} value={option}>{option}</option>)}
                             </select>
                         </div>
@@ -850,8 +861,6 @@ export default function Setting() {
                         </div>
                     </div>
 
-                    {/* Success and Error Messages */}
-                    {loading && <p>Loading...</p>}
                     {error && <p className="text-red-500">{error}</p>}
                     {success && <p className="text-green-500">{success}</p>}
 
@@ -859,7 +868,7 @@ export default function Setting() {
                     {/* Modal for adding an option */}
                     {isAdding && (
                         <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
-                            <div className="bg-white p-6 rounded shadow-lg">
+                            <div className="bg-white p-6 rounded shadow-lg h-[85vh] overflow-scroll">
                                 <h2 className="text-xl mb-4">Add Size Guide</h2>
 
                                 {/* Select Category */}
@@ -905,10 +914,9 @@ export default function Setting() {
                                     type="text"
                                     name="name"
                                     value={formValues.name}
-                                    onChange={handleInputChange}
-                                    className="p-2 rounded mb-4 w-full"
+                                    className="p-2 rounded mb-4 w-full border"
                                     placeholder="Enter size guide name"
-                                    required
+                                    disabled
                                 />
 
                                 <div className="mb-4">
@@ -969,7 +977,7 @@ export default function Setting() {
                     {/* Modal for editing a size guide */}
                     {isEditing && (
                         <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
-                            <div className="bg-white p-6 rounded shadow-lg">
+                            <div className="bg-white p-6 rounded shadow-lg h-[85vh] overflow-scroll">
                                 <h2 className="text-xl mb-4">Edit Size Guide</h2>
 
                                 {/* Name Input */}
@@ -977,9 +985,9 @@ export default function Setting() {
                                     type="text"
                                     name="name"
                                     value={formValues.name}
-                                    onChange={handleInputChange}
-                                    className="outline p-2 rounded mb-4 w-full"
+                                    className="outline p-2 rounded mb-4 w-full border"
                                     placeholder="Enter updated size guide name"
+                                    disabled
                                 />
 
                                 {/* Category Radio Buttons */}
@@ -1048,16 +1056,26 @@ export default function Setting() {
                                     ))}
                                     <button type="button" className="w-full mb-4 border border-black" onClick={() => setOpenPopupId(`sizeChartBox`)}>Upload image</button>
                                 </div>
-
+                                <div className="flex gap-4 my-5">
+                                    {update ?
+                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-black`} onClick={() => setUpdate(false)}></div>
+                                        :
+                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-white`} onClick={() => setUpdate(true)}></div>
+                                    }
+                                    <span>Update In all the tackpacks including previous one</span>
+                                </div>
+                                {update && <UpdateForm field="sizeChart" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
                                 {/* Buttons */}
                                 <div className="flex gap-4">
                                     <button
+                                        type="button"
                                         onClick={handleEditOption}
                                         className="bg-black text-white px-4 py-2 rounded-lg"
                                     >
                                         {loading ? 'Updating...' : 'Update Size Guide'}
                                     </button>
                                     <button
+                                        type="button"
                                         onClick={handleCancelEdit}
                                         className="border border-black px-4 py-2 rounded-lg"
                                     >
@@ -1102,7 +1120,7 @@ export default function Setting() {
 
                     {constructionSheetEditBox && (
                         <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
-                            <div className="bg-white p-6 rounded shadow-md w-[400px] h-[85vh] overflow-scroll">
+                            <div className="bg-white p-6 rounded shadow-md h-[85vh] overflow-scroll">
                                 <h2 className="text-lg font-bold mb-4">Edit Construction Sheet</h2>
                                 <input
                                     type="text"
@@ -1352,6 +1370,15 @@ export default function Setting() {
                                             Add More
                                         </button>
                                     </div>
+                                    <div className="flex gap-4 my-5">
+                                        {update ?
+                                            <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-black`} onClick={() => setUpdate(false)}></div>
+                                            :
+                                            <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-white`} onClick={() => setUpdate(true)}></div>
+                                        }
+                                        <span>Update In all the tackpacks including previous one</span>
+                                    </div>
+                                    {update && <UpdateForm field="trims" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
                                     <div className="flex justify-end gap-2">
                                         <button
                                             type="button"
@@ -1765,7 +1792,7 @@ export default function Setting() {
                     {/* Fabric edit Popup */}
                     {editFabric && (
                         <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
-                            <div className="bg-white p-6 rounded-lg">
+                            <div className="bg-white p-6 rounded-lg h-[85vh] overflow-scroll">
                                 <h3 className="mb-4">Edit Fabric</h3>
                                 <textarea
                                     placeholder="Enter Fabric Name"
@@ -1842,6 +1869,7 @@ export default function Setting() {
                                     </button>
                                     {/* Delete Button */}
                                     <button
+                                        type="button"
                                         onClick={() => {
                                             if (window.confirm('Are you sure you want to delete this collection?')) {
                                                 handleDeleteCollection(collection);
@@ -1893,7 +1921,7 @@ export default function Setting() {
                     {/* Collection add Popup */}
                     {addCollection && (
                         <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
-                            <div className="bg-white p-6 rounded-lg">
+                            <div className="bg-white p-6 rounded-lg h-[85vh] overflow-scroll">
                                 <h3 className="mb-4">New Collection</h3>
                                 <textarea
                                     placeholder="Enter Collection Name"
@@ -2037,7 +2065,6 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
             return { ...prev, styleNo: updatedStyleNo };
         });
     };
-    console.log('techpacks : ', techpacks)
 
     return (
         <div className="bg-gray p-6">
@@ -2080,7 +2107,7 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
                 </div>
             }
 
-            {["constructionSheet", "parameter", "finishing", "trims"].includes(field) &&
+            {["constructionSheet", "parameter", "finishing", "trims", "sizeChart"].includes(field) &&
                 <div className="mb-3">
                     <h3 className="mb-1">Select TechPack</h3>
                     <div className="flex flex-col gap-5">

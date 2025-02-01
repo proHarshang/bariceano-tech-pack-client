@@ -87,7 +87,7 @@ export const TechPackProvider = ({ children }) => {
                     {
                         "position": "3",
                         "name": "Gender",
-                        "value": "Male"
+                        "value": ""
                     },
                     {
                         "position": "3",

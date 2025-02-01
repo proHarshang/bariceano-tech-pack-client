@@ -48,7 +48,6 @@ const TechPack = () => {
         const requirementsMaterial = { "name": "Requirements", "images": requirements.filter(item => item.name === currentCategory).map(item => item.images).flat() };
         const finishingMaterial = { "name": "Finishing", "images": finishing.filter(item => item.name === currentCategory).map(item => item.images).flat() };
         const sizechartsMaterial = { "name": "Size Charts", "images": sizecharts.filter(item => item.gender === currentSubCategory && item.category === currentCategory).map(item => item.images).flat() };
-
         let currentPage = getMaxPageNumber(); // Get the current max page number
 
         [constructionMaterial, sizechartsMaterial].forEach(label => {
@@ -102,9 +101,9 @@ const TechPack = () => {
                   }
                 ]
               }
-            });
+            })
           })
-        });
+        })
         hasRun.current = true
       }
     }

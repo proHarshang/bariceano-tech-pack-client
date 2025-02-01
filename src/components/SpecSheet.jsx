@@ -73,7 +73,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                         className="form__field"
                         required
                     />
-                </div>                
+                </div>
                 <div className="form__group field w-[45%] relative group">
                     <label className="form__label capitalize">Size</label>
                     <input
@@ -88,17 +88,16 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                 <div className="flex w-[45%] gap-5">
                     <div className="form__group field w-1/2 relative group">
                         <label className="form__label capitalize">Gender</label>
-                        <select disabled={true} value={slide.data?.info?.find((item) => item.name === "Gender").value}
-                            onChange={(e) => {
-                                updateField("gender", e.target.value);
-                                updateInfoField(page, "Gender", slide.data?.info?.find((item) => item.name === "Gender").value, { "value": e.target.value })
-                            }}
+                        <input
+                            disabled={true}
+                            value={slide.data?.info?.find((item) => item.name === "Gender").value}
+                            // onChange={(e) => {
+                            //     updateField("gender", e.target.value);
+                            //     updateInfoField(page, "Gender", slide.data?.info?.find((item) => item.name === "Gender").value, { "value": e.target.value })
+                            // }}
                             className="form__field break-words text-wrap cursor-not-allowed"
                             required>
-                            {genders.map((gender) => (
-                                <option className="break-words text-wrap text-sm overflow-x-auto" value={gender}>{gender}</option>
-                            ))}
-                        </select>
+                        </input>
                     </div>
                     <div className="form__group field w-1/2 relative group">
                         <label className="form__label capitalize">Collection</label>
@@ -165,7 +164,7 @@ const SpecSheet = ({ page, currentCategory, selectedLabels }) => {
                     <label className="form__label capitalize">Product Type</label>
                     <input
                         type="text"
-                        value={techPackData.category}
+                        value={slide.data?.info?.find((item) => item.name === "Product Type").value}
                         className="form__field"
                         required
                         disabled

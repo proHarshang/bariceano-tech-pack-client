@@ -386,11 +386,11 @@ export const trimFetch = async () => {
     }
 };
 
-export const trimAdd = async (data) => {
+export const trimAdd = async (updateFormData, data) => {
     try {
         const response = await fetch(`${apiURL}/design/setting/trims/add`, {
             method: "POST",
-            body: JSON.stringify({ "trim": data }),
+            body: JSON.stringify({ "update": updateFormData, "trim": data }),
             headers: {
                 'Content-Type': 'application/json',
                 "api-key": apiKey,
@@ -604,19 +604,19 @@ const useEditSizeChart = () => {
     const [errorEditSize, setError] = useState(null);
     const [successEditSize, setSuccess] = useState(null);
 
-    const editSizeChart = async (oldName, sizeCharts) => {
+    const editSizeChart = async (updateFormFData, sizeCharts) => {
         setLoading(true);
         setError(null);
         setSuccess(null);
 
         try {
-            const response = await fetch(`${apiURL}/design/setting/sizeChart/update/${oldName}`, {
+            const response = await fetch(`${apiURL}/design/setting/sizeChart/update`, {
                 method: 'POST',  // Assuming your API uses PUT for updates
                 headers: {
                     'Content-Type': 'application/json',
                     'api-key': apiKey,
                 },
-                body: JSON.stringify({ sizeCharts }),
+                body: JSON.stringify({ "update": updateFormFData, sizeCharts }),
             });
 
             const data = await response.json();
