@@ -721,9 +721,9 @@ export const TechPackProvider = ({ children }) => {
     };
 
     // Reset state when location changes
-    // useEffect(() => {
-    //     resetTechPack();
-    // }, [location.pathname]);
+    useEffect(() => {
+        resetTechPack();
+    }, [location.pathname]);
 
     useEffect(() => {
         if (submitStatus.status) {
