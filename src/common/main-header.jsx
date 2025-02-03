@@ -20,31 +20,44 @@ const MainHeader = () => {
     const [labels, setLabels] = useState([]);
     const [currentCategory, setCurrentCategory] = useState(null);
     const [currentSubCategory, setCurrentSubCategory] = useState(null);
-    const [selectedLabels, setSelectedLabels] = useState(["Silicon Label Sheet", "Main Label Sheet", "Size Label Sheet", "Wash Care Label Sheet", "Hang Tag"]);
+    const [selectedLabels, setSelectedLabels] = useState([]);
     const [showCategories, setShowCategories] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [collectionSelector, setCollectionSelector] = useState(false);
 
-    useEffect(() => {
-        const fetchMenuData = async () => {
-            try {
-                const data = await fetchAll();
-                if (data.status && data.techPack) {
-                    // Update menu and other state variables based on the API structure
-                    setMenu(data.techPack.category || []);
-                    setCollection(data.techPack.collections || []);
-                    setSubCategories(data.techPack.gender || []);
-                    setLabels(data.techPack.trims.map(trim => trim.name) || []);
-                } else {
-                    console.error('Failed to fetch menu');
-                }
-            } catch (error) {
-                console.error('Error fetching menu:', error);
+    const fetchMenuData = async () => {
+        try {
+            const data = await fetchAll();
+            if (data.status && data.techPack) {
+                // Update menu and other state variables based on the API structure
+                setMenu(data.techPack.category || []);
+                setCollection(data.techPack.collections || []);
+                setSubCategories(data.techPack.gender || []);
+                setLabels(data.techPack.trims.map(trim => trim.name) || []);
+            } else {
+                console.error('Failed to fetch menu');
             }
-        };
+        } catch (error) {
+            console.error('Error fetching menu:', error);
+        }
+    };
 
+    useEffect(() => {
         fetchMenuData();
     }, []);
+
+    useEffect(() => {
+        if (labels) {
+            setSelectedLabels(labels)
+        }
+    }, [labels])
+
+    useEffect(() => {
+        if (showCategories) {
+            fetchMenuData();
+        }
+    }, [showCategories])
+
 
     const handlenew = () => {
         setShowCategories(!showCategories);

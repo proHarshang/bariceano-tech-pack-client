@@ -709,7 +709,10 @@ export const TechPackProvider = ({ children }) => {
         // } else {
         //     createUpdateTechPackSetup(updateMode);
         // }
-        console.log("♻ Form reseted")
+
+        window.location.reload();
+
+        console.log("♻ Form Reset")
         // setConstructionSheets([]);
         // setTrims([]);
         // setRequirements([]);
@@ -717,6 +720,11 @@ export const TechPackProvider = ({ children }) => {
         // setSizeCharts([]);
         // setIsSettingDataFetched(false);
     };
+
+    // Reset state when location changes
+    // useEffect(() => {
+    //     resetTechPack();
+    // }, [location.pathname]);
 
     useEffect(() => {
         if (submitStatus.status) {
@@ -738,11 +746,6 @@ export const TechPackProvider = ({ children }) => {
             message: null,
         });
     }, [techPackData]);
-
-    // Reset state when location changes
-    useEffect(() => {
-        resetTechPack();
-    }, [location.pathname]);
 
     return (
         <TechPackContext.Provider

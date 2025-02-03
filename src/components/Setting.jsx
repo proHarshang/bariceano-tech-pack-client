@@ -868,7 +868,7 @@ export default function Setting() {
                     {/* Modal for adding an option */}
                     {isAdding && (
                         <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
-                            <div className="bg-white p-6 rounded shadow-lg h-[85vh] overflow-scroll">
+                            <div className="bg-white p-6 rounded shadow-lg h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
                                 <h2 className="text-xl mb-4">Add Size Guide</h2>
 
                                 {/* Select Category */}
@@ -910,14 +910,17 @@ export default function Setting() {
                                 </div>
 
                                 {/* Option Name */}
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={formValues.name}
-                                    className="p-2 rounded mb-4 w-full border"
-                                    placeholder="Enter size guide name"
-                                    disabled
-                                />
+                                <div className="flex flex-col">
+                                    <label htmlFor="name">Name</label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={formValues.name}
+                                        className="p-2 rounded mb-4 w-full border border-black outline outline-1"
+                                        placeholder="Enter size guide name"
+                                        disabled
+                                    />
+                                </div>
 
                                 <div className="mb-4">
                                     <label className="block mb-2 font-semibold">Images:</label>
@@ -977,7 +980,7 @@ export default function Setting() {
                     {/* Modal for editing a size guide */}
                     {isEditing && (
                         <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
-                            <div className="bg-white p-6 rounded shadow-lg h-[85vh] overflow-scroll">
+                            <div className="bg-white p-6 rounded shadow-lg h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
                                 <h2 className="text-xl mb-4">Edit Size Guide</h2>
 
                                 {/* Name Input */}
@@ -991,7 +994,7 @@ export default function Setting() {
                                 />
 
                                 {/* Category Radio Buttons */}
-                                <div className="mb-4">
+                                <div className="mb-4 hidden">
                                     <h3>Select Category</h3>
                                     <div className="flex gap-5">
                                         {categories.map((cat) => (
@@ -1010,7 +1013,7 @@ export default function Setting() {
                                 </div>
 
                                 {/* Gender Radio Buttons */}
-                                <div className="mb-4">
+                                <div className="mb-4 hidden">
                                     <h3>Select Gender</h3>
                                     <div className="flex gap-5">
                                         {genders.map((gen) => (
@@ -1120,7 +1123,7 @@ export default function Setting() {
 
                     {constructionSheetEditBox && (
                         <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
-                            <div className="bg-white p-6 rounded shadow-md h-[85vh] overflow-scroll">
+                            <div className="bg-white p-6 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
                                 <h2 className="text-lg font-bold mb-4">Edit Construction Sheet</h2>
                                 <input
                                     type="text"
@@ -1298,7 +1301,7 @@ export default function Setting() {
                         {/* Popup Modal */}
                         {trimEditBox && (
                             <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
-                                <div className="bg-white p-6 rounded shadow-md w-[400px] h-[85vh] overflow-scroll">
+                                <div className="bg-white p-6 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
                                     <h2 className="text-lg font-bold mb-4">Edit Box</h2>
                                     <input
                                         type="text"
@@ -1375,7 +1378,7 @@ export default function Setting() {
                         {/* Popup Modal */}
                         {trimAddBox && (
                             <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
-                                <div className="bg-white p-6 rounded shadow-md w-[400px] h-[85vh] overflow-scroll">
+                                <div className="bg-white p-6 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
                                     <h2 className="text-lg font-bold mb-4">Add Box</h2>
                                     <input
                                         type="text"
@@ -1511,7 +1514,7 @@ export default function Setting() {
                         {/* Popup Modal */}
                         {parameterEditBox && (
                             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                                <div className="bg-white p-6 rounded shadow-md w-[400px]">
+                                <div className="bg-white p-6 rounded shadow-md w-[80%] max-w-[1000px]">
                                     <h2 className="text-lg font-bold mb-4">Edit Parameter</h2>
                                     <input
                                         type="text"
@@ -1638,7 +1641,7 @@ export default function Setting() {
                         {/* Popup Modal */}
                         {finishingEditBox && (
                             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                                <div className="bg-white p-6 rounded shadow-md w-[400px]">
+                                <div className="bg-white p-6 rounded shadow-md w-[80%] max-w-[1000px]">
                                     <h2 className="text-lg font-bold mb-4">Edit Finishing</h2>
                                     <input
                                         type="text"
@@ -1808,7 +1811,7 @@ export default function Setting() {
                     {/* Fabric add Popup */}
                     {addFabric && (
                         <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
-                            <div className="bg-white p-6 rounded-lg">
+                            <div className="bg-white p-6 rounded-lg w-[80%] max-w-[1000px]">
                                 <h3 className="mb-4">New Fabric</h3>
                                 <textarea
                                     placeholder="Enter Fabric Name"
@@ -1840,7 +1843,7 @@ export default function Setting() {
                     {/* Fabric edit Popup */}
                     {editFabric && (
                         <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
-                            <div className="bg-white p-6 rounded-lg h-[85vh] overflow-scroll">
+                            <div className="bg-white p-6 rounded-lg h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
                                 <h3 className="mb-4">Edit Fabric</h3>
                                 <textarea
                                     placeholder="Enter Fabric Name"
@@ -1969,7 +1972,7 @@ export default function Setting() {
                     {/* Collection add Popup */}
                     {addCollection && (
                         <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
-                            <div className="bg-white p-6 rounded-lg h-[85vh] overflow-scroll">
+                            <div className="bg-white p-6 rounded-lg overflow-scroll w-[90%] max-w-[500px]">
                                 <h3 className="mb-4">New Collection</h3>
                                 <textarea
                                     placeholder="Enter Collection Name"
