@@ -291,7 +291,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                                             </div>
                                             {/* Zoom Control */}
                                             <div className="flex gap-2 items-center">
-                                                <label>Zoom:</label>
+                                                <label>{zoom ? `${zoom}x` : "Zoom :"}</label>
                                                 <input
                                                     type="range"
                                                     min="1"
