@@ -554,7 +554,6 @@ export default function Setting() {
     };
     // Collection Logic Over
 
-
     return (
         <section className="container mx-auto">
             {submitStatus && (
@@ -986,8 +985,26 @@ export default function Setting() {
                     {isEditing && (
                         <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
                             <div className="bg-white p-6 rounded shadow-lg h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                <h2 className="text-xl mb-4">Edit Size Guide</h2>
-
+                                <div className="flex justify-between item-center mb-4">
+                                    <h2 className="text-xl">Edit Size Guide</h2>
+                                    {/* Buttons */}
+                                    <div className="flex gap-4">
+                                        <button
+                                            type="button"
+                                            onClick={handleEditOption}
+                                            className="bg-black text-white px-4 py-2 rounded-lg"
+                                        >
+                                            {loading ? 'Updating...' : 'Update Size Guide'}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={handleCancelEdit}
+                                            className="border border-black px-4 py-2 rounded-lg"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
                                 {/* Name Input */}
                                 <input
                                     type="text"
@@ -1064,32 +1081,16 @@ export default function Setting() {
                                     ))}
                                     <button type="button" className="w-full mb-4 border border-black" onClick={() => setOpenPopupId(`sizeChartBox`)}>Upload image</button>
                                 </div>
-                                <div className="flex gap-4 my-5">
+                                <div className="flex gap-4 my-5 items-center">
                                     {update ?
-                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-black`} onClick={() => setUpdate(false)}></div>
+                                        <div className={`rounded-full aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-black`} onClick={() => setUpdate(false)}></div>
                                         :
-                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-white`} onClick={() => setUpdate(true)}></div>
+                                        <div className={`rounded-full aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-white`} onClick={() => setUpdate(true)}></div>
                                     }
                                     <span>Update In all the tackpacks including previous one</span>
                                 </div>
                                 {update && <UpdateForm field="sizeChart" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
-                                {/* Buttons */}
-                                <div className="flex gap-4">
-                                    <button
-                                        type="button"
-                                        onClick={handleEditOption}
-                                        className="bg-black text-white px-4 py-2 rounded-lg"
-                                    >
-                                        {loading ? 'Updating...' : 'Update Size Guide'}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={handleCancelEdit}
-                                        className="border border-black px-4 py-2 rounded-lg"
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
+
                             </div>
                         </div>
                     )}
@@ -1129,7 +1130,26 @@ export default function Setting() {
                     {constructionSheetEditBox && (
                         <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
                             <div className="bg-white p-6 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                <h2 className="text-lg font-bold mb-4">Edit Construction Sheet</h2>
+                                <div className="flex items-center justify-between  mb-4">
+                                    <h2 className="text-lg font-bold">Edit Construction Sheet</h2>
+                                    <div className="flex justify-end gap-2">
+                                        <button
+                                            type="button"
+                                            className="px-4 py-2 border text-black rounded-lg text-sm"
+                                            onClick={() => setConstructionSheetEditBox(null)}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="px-4 py-2 bg-black text-white rounded-lg text-sm"
+                                            onClick={handleConstructionSheetEdit}
+                                            disabled={constructionSheetLoading}
+                                        >
+                                            {constructionSheetLoading ? "Saving..." : "Save"}
+                                        </button>
+                                    </div>
+                                </div>
                                 <input
                                     type="text"
                                     placeholder="Enter Name"
@@ -1167,32 +1187,16 @@ export default function Setting() {
                                 </div>
                                 {error && console.error('Error:', error)}
                                 {error && <p className="text-red-500 mb-2">{error}</p>}
-                                <div className="flex gap-4 my-5">
+                                <div className="flex gap-4 my-5 items-center">
                                     {update ?
-                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-black`} onClick={() => setUpdate(false)}></div>
+                                        <div className={`rounded-full aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-black`} onClick={() => setUpdate(false)}></div>
                                         :
-                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-white`} onClick={() => setUpdate(true)}></div>
+                                        <div className={`rounded-full aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-white`} onClick={() => setUpdate(true)}></div>
                                     }
-                                    <span>Update In all the tackpacks including previous one</span>
+                                    <span className="mt-1">Update In all the tackpacks including previous one</span>
                                 </div>
                                 {update && <UpdateForm field="constructionSheet" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
-                                <div className="flex justify-end gap-2">
-                                    <button
-                                        type="button"
-                                        className="px-4 py-2 border text-black rounded-lg text-sm"
-                                        onClick={() => setConstructionSheetEditBox(null)}
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="px-4 py-2 bg-black text-white rounded-lg text-sm"
-                                        onClick={handleConstructionSheetEdit}
-                                        disabled={constructionSheetLoading}
-                                    >
-                                        {constructionSheetLoading ? "Saving..." : "Save"}
-                                    </button>
-                                </div>
+
                             </div>
 
                         </div>
@@ -1307,7 +1311,26 @@ export default function Setting() {
                         {trimEditBox && (
                             <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
                                 <div className="bg-white p-6 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                    <h2 className="text-lg font-bold mb-4">Edit Box</h2>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h2 className="text-lg font-bold">Edit Trims</h2>
+                                        <div className="flex justify-end gap-2">
+                                            <button
+                                                type="button"
+                                                className="px-4 py-2 border text-black rounded-lg text-sm"
+                                                onClick={() => setTrimEditBox(null)}
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="px-4 py-2 bg-black text-white rounded-lg text-sm"
+                                                onClick={handleTrimEdit}
+                                                disabled={trimLoading}
+                                            >
+                                                {trimLoading ? "Saving..." : "Save"}
+                                            </button>
+                                        </div>
+                                    </div>
                                     <input
                                         type="text"
                                         placeholder="Enter Name"
@@ -1349,33 +1372,16 @@ export default function Setting() {
                                             Add More
                                         </button>
                                     </div>
-                                    <div className="flex gap-4 my-5">
+                                    <div className="flex gap-4 my-5 items-center">
                                         {update ?
-                                            <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-black`} onClick={() => setUpdate(false)}></div>
+                                            <div className={`rounded-full aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-black`} onClick={() => setUpdate(false)}></div>
                                             :
-                                            <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-white`} onClick={() => setUpdate(true)}></div>
+                                            <div className={`rounded-full aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-white`} onClick={() => setUpdate(true)}></div>
                                         }
                                         <span>Update In all the tackpacks including previous one</span>
                                     </div>
                                     {update && <UpdateForm field="trims" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
-                                    <div className="flex justify-end gap-2">
-                                        <button
-                                            type="button"
-                                            className="px-4 py-2 border text-black rounded-lg text-sm"
-                                            onClick={() => setTrimEditBox(null)}
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="px-4 py-2 bg-black text-white rounded-lg text-sm"
-                                            onClick={handleTrimEdit}
-                                            disabled={trimLoading}
-                                        >
-                                            {trimLoading ? "Saving..." : "Save"}
-                                        </button>
 
-                                    </div>
                                 </div>
                             </div>
                         )}
@@ -1518,9 +1524,26 @@ export default function Setting() {
                         </div>
                         {/* Popup Modal */}
                         {parameterEditBox && (
-                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                                <div className="bg-white p-6 rounded shadow-md w-[80%] max-w-[1000px]">
-                                    <h2 className="text-lg font-bold mb-4">Edit Parameter</h2>
+                            <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
+                                <div className="bg-white p-6 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
+                                    <div className="mb-4 flex justify-between items-center">
+                                        <h2 className="text-lg font-bold">Edit Parameter</h2>
+                                        <div className="flex justify-end gap-2">
+                                            <button
+                                                className="px-4 py-2 border text-black rounded-lg text-sm"
+                                                onClick={() => setParameterEditBox(null)}
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                className="px-4 py-2 bg-black text-white rounded-lg text-sm"
+                                                onClick={handleParameterEditBox}
+                                                disabled={parameterLoading}
+                                            >
+                                                {parameterLoading ? "Saving..." : "Save"}
+                                            </button>
+                                        </div>
+                                    </div>
                                     <input
                                         type="text"
                                         placeholder="Enter Name"
@@ -1562,26 +1585,12 @@ export default function Setting() {
                                             Add More
                                         </button>
                                     </div>
-                                    <div className="flex gap-4 my-5">
-                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black ${update ? 'bg-black' : 'bg-white'}`} onClick={() => setUpdate(!update)}></div>
+                                    <div className="flex gap-4 my-5 items-center">
+                                        <div className={`rounded-full aspect-square size-[15px] outline-1 [outline-style:solid] outline-black ${update ? 'bg-black' : 'bg-white'}`} onClick={() => setUpdate(!update)}></div>
                                         <span>Update In all the tackpacks including previous one</span>
                                     </div>
                                     {update && <UpdateForm field="parameter" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
-                                    <div className="flex justify-end gap-2">
-                                        <button
-                                            className="px-4 py-2 border text-black rounded-lg text-sm"
-                                            onClick={() => setParameterEditBox(null)}
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            className="px-4 py-2 bg-black text-white rounded-lg text-sm"
-                                            onClick={handleParameterEditBox}
-                                            disabled={parameterLoading}
-                                        >
-                                            {parameterLoading ? "Saving..." : "Save"}
-                                        </button>
-                                    </div>
+
                                 </div>
                             </div>
                         )}
@@ -1645,9 +1654,28 @@ export default function Setting() {
                         </div>
                         {/* Popup Modal */}
                         {finishingEditBox && (
-                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                                <div className="bg-white p-6 rounded shadow-md w-[80%] max-w-[1000px]">
-                                    <h2 className="text-lg font-bold mb-4">Edit Finishing</h2>
+                            <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
+                                <div className="bg-white p-6 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
+                                    <div className="mb-4 flex justify-between items-center">
+                                        <h2 className="text-lg font-bold mb-4">Edit Finishing</h2>
+                                        <div className="flex justify-end gap-2">
+                                            <button
+                                                type="button"
+                                                className="px-4 py-2 border text-black rounded-lg text-sm"
+                                                onClick={() => setFinishingEditBox(null)}
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="px-4 py-2 bg-black text-white rounded-lg text-sm"
+                                                onClick={handleFinishingEditBox}
+                                                disabled={finishingLoading}
+                                            >
+                                                {finishingLoading ? "Saving..." : "Save"}
+                                            </button>
+                                        </div>
+                                    </div>
                                     <input
                                         type="text"
                                         placeholder="Enter Name"
@@ -1686,28 +1714,12 @@ export default function Setting() {
                                             Add More
                                         </button>
                                     </div>
-                                    <div className="flex gap-4 my-5">
-                                        <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black ${update ? 'bg-black' : 'bg-white'}`} onClick={() => setUpdate(!update)}></div>
+                                    <div className="flex gap-4 my-5 items-center">
+                                        <div className={`rounded-full aspect-square size-[15px] outline-1 [outline-style:solid] outline-black ${update ? 'bg-black' : 'bg-white'}`} onClick={() => setUpdate(!update)}></div>
                                         <span>Update In all the tackpacks including previous one</span>
                                     </div>
                                     {update && <UpdateForm field="finishing" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
-                                    <div className="flex justify-end gap-2">
-                                        <button
-                                            type="button"
-                                            className="px-4 py-2 border text-black rounded-lg text-sm"
-                                            onClick={() => setFinishingEditBox(null)}
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="px-4 py-2 bg-black text-white rounded-lg text-sm"
-                                            onClick={handleFinishingEditBox}
-                                            disabled={finishingLoading}
-                                        >
-                                            {finishingLoading ? "Saving..." : "Save"}
-                                        </button>
-                                    </div>
+
                                 </div>
                             </div>
                         )}
@@ -2121,14 +2133,92 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
             return { ...prev, styleNo: updatedStyleNo };
         });
     };
+    console.log("techpacks", techpacks)
+
+
+
+
+
+    // search logic 
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const filteredBySearch = techpacks.filter(techpack =>
+        techpack.styleNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        techpack.designer?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const handleSearch = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    // filter logic
+    const [selectedDesigner, setSelectedDesigner] = useState([]); // Array to hold selected designers
+    const [selectedGender, setSelectedGender] = useState(""); // State for gender filter
+    const [selectedCategory, setSelectedCategory] = useState(""); // State for gender filter
+    const [showDesignerOptions, setShowDesignerOptions] = useState(false); // State to control visibility of designer options
+    const [showGenderOptions, setShowGenderOptions] = useState(false); // State to control visibility of designer options
+    const [showCategoryOptions, setShowCategoryOptions] = useState(false); // State to control visibility of designer options
+
+    const uniqueDesigners = Array.from(new Set(filteredBySearch.map(item => item.designer)));
+    const uniqueGenders = Array.from(new Set(filteredBySearch.map(item => item.gender)));
+    const uniqueCategory = Array.from(new Set(filteredBySearch.map(item => item.category)));
+
+    // Filter data based on selected designer and gender
+    const filteredData = filteredBySearch.filter(item => {
+        const isDesignerSelected = selectedDesigner.length === 0 || selectedDesigner.includes(item.designer);
+        const isGenderSelected = selectedGender.length === 0 || selectedGender.includes(item.gender);
+        const isCategorySelected = selectedCategory.length === 0 || selectedCategory.includes(item.category);
+        return isDesignerSelected && isGenderSelected && isCategorySelected;
+    });
+
+    // Add this function to handle the "Check All" button click
+    const handleSelectAll = (event) => {
+        if (event.target.checked) {
+            // Select all checkboxes
+            setUpdateFormFData(prev => ({
+                ...prev,
+                styleNo: filteredData.map(techpack => techpack.styleNo)
+            }));
+        } else {
+            // Deselect all checkboxes
+            setUpdateFormFData(prev => ({
+                ...prev,
+                styleNo: []
+            }));
+        }
+    };
+
+
+    const handleSelectAllCategories = (event) => {
+        setUpdateFormFData(prev => ({
+            ...prev,
+            categories: event.target.checked ? categories : []
+        }));
+    };
+
+    const handleSelectAllGenders = (event) => {
+        setUpdateFormFData(prev => ({
+            ...prev,
+            genders: event.target.checked ? genders : []
+        }));
+    };
+
 
     return (
-        <div className="bg-gray p-6">
-
+        <div className="p-6 pt-4">
             {["trims"].includes(field) &&
-                <div className="mb-3">
-                    <h3 className="mb-1">Select Category</h3>
-                    <div className="flex gap-5">
+                <div className="mb-7">
+                    <div className="flex gap-3 items-center justify-start mb-2">
+                        <h3 className="font-semibold">Select Category</h3>
+                        <div>
+                            <input
+                                type="checkbox"
+                                onChange={handleSelectAllCategories}
+                                checked={updateFormData.categories.length === categories.length && categories.length > 0}
+                            />
+                        </div>
+                    </div>
+                    <div className="flex gap-4 flex-wrap">
                         {categories.map((cat) => (
                             <div key={cat} className="flex gap-2 items-center">
                                 <input
@@ -2136,8 +2226,9 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
                                     value={cat}
                                     onChange={handleCategoryChange}
                                     checked={updateFormData.categories.includes(cat)}
+                                    className=""
                                 />
-                                <label className="text-nowrap">{cat}</label>
+                                <label className="text-sm">{cat}</label>
                             </div>
                         ))}
                     </div>
@@ -2145,8 +2236,15 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
             }
 
             {["constructionSheet", "parameter", "finishing", "trims"].includes(field) &&
-                <div className="mb-3">
-                    <h3 className="mb-1">Select Gender</h3>
+                <div className="mb-7">
+                    <div className="flex gap-3 items-center justify-start mb-2">
+                        <h3 className="font-semibold">Select Gender</h3>
+                        <input
+                            type="checkbox"
+                            onChange={handleSelectAllGenders}
+                            checked={updateFormData.genders.length === genders.length && genders.length > 0}
+                        />
+                    </div>
                     <div className="flex gap-5">
                         {genders.map((gen) => (
                             <div key={gen} className="flex gap-2 items-center">
@@ -2163,27 +2261,179 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
                 </div>
             }
 
-            {["constructionSheet", "parameter", "finishing", "trims", "sizeChart"].includes(field) &&
-                <div className="mb-3">
-                    <h3 className="mb-1">Select TechPack</h3>
-                    <div className="flex flex-col gap-5">
-                        {techpacks.map((techpack) => (
-                            <div className="flex gap-4">
-                                <div key={techpack._id} className="flex gap-2 items-center">
-                                    <input
-                                        type="checkbox"
-                                        value={techpack.styleNo}
-                                        onChange={handleStyleNoChange}
-                                        checked={updateFormData.styleNo.includes(techpack.styleNo)}
-                                    />
-                                    <label className="text-nowrap">{techpack.styleNo}</label>
-                                </div>
-                                <span className="text-nowrap">{techpack.gender}</span>
-                                <span className="text-nowrap">{techpack.category}</span>
-                            </div>
-                        ))}
+            <div className='w-full flex gap-10 my-5'>
+                <div className="flex flex-col w-full gap-2">
+                    <span>Search</span>
+                    <div className="border bg-white border-black px-1 md:px-[7px] h-8 md:h-8 flex justify-start">
+                        <input
+                            type="text"
+                            placeholder="Enter Techpack Id or Name"
+                            value={searchTerm}
+                            onChange={handleSearch} // Ensure state update
+                            className="w-full"
+                        />
                     </div>
                 </div>
+                <div className='flex flex-col w-1/2 gap-2'>
+                    <span>Designer</span>
+                    <div className="border bg-white border-black px-2  h-auto flex flex-col">
+                        <button
+                            type="button"
+                            className="w-full text-left py-1"
+                            onClick={() => setShowDesignerOptions(!showDesignerOptions)}
+                        >
+                            {selectedDesigner.length > 0 ? `${selectedDesigner.length} Selected` : 'All Designers'}
+                        </button>
+
+                        {showDesignerOptions && (
+                            <div className="flex flex-col space-y-2 mt-2">
+                                {uniqueDesigners.map((designer, index) => (
+                                    <div key={index} className="flex items-center gap-3">
+                                        <input
+                                            type="checkbox"
+                                            id={`designer-${index}`}
+                                            value={designer}
+                                            checked={selectedDesigner.includes(designer)}
+                                            onChange={(e) => {
+                                                const { value, checked } = e.target;
+                                                if (checked) {
+                                                    setSelectedDesigner((prev) => [...prev, value]);
+                                                } else {
+                                                    setSelectedDesigner((prev) =>
+                                                        prev.filter((designer) => designer !== value)
+                                                    );
+                                                }
+                                            }}
+                                            className="mr-2"
+                                        />
+                                        <label htmlFor={`designer-${index}`}>{designer}</label>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <div className='flex flex-col gap-2 w-1/2'>
+                    <span>Gender</span>
+                    <div className="border bg-white border-black px-2  h-auto flex flex-col">
+                        <button
+                            type="button"
+                            className="w-full text-left py-1"
+                            onClick={() => setShowGenderOptions(!showGenderOptions)}
+                        >
+                            Select Gender
+                        </button>
+
+                        {showGenderOptions && (
+                            <div className="flex flex-col space-y-2 mt-2">
+                                {uniqueGenders.map((gender, index) => (
+                                    <div key={index} className="flex items-center gap-3">
+                                        <input
+                                            type="checkbox"
+                                            id={`gender-${index}`}
+                                            value={gender}
+                                            checked={selectedGender.includes(gender)}
+                                            onChange={(e) => {
+                                                const { value, checked } = e.target;
+                                                if (checked) {
+                                                    setSelectedGender((prev) => [...prev, value]);
+                                                } else {
+                                                    setSelectedGender((prev) =>
+                                                        prev.filter((gender) => gender !== value)
+                                                    );
+                                                }
+                                            }}
+                                            className="mr-2"
+                                        />
+                                        <label htmlFor={`gender-${index}`}>{gender}</label>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <div className='flex flex-col gap-2 w-1/2'>
+                    <span>Category</span>
+                    <div className="border bg-white border-black px-2  h-auto flex flex-col">
+                        <button
+                            type="button"
+                            className="w-full text-left py-1"
+                            onClick={() => setShowCategoryOptions(!showCategoryOptions)}
+                        >
+                            Select Category
+                        </button>
+
+                        {showCategoryOptions && (
+                            <div className="flex flex-col space-y-2 mt-2">
+                                {uniqueCategory.map((category, index) => (
+                                    <div key={index} className="flex items-center gap-3">
+                                        <input
+                                            type="checkbox"
+                                            id={`category-${index}`}
+                                            value={category}
+                                            checked={selectedCategory.includes(category)}
+                                            onChange={(e) => {
+                                                const { value, checked } = e.target;
+                                                if (checked) {
+                                                    setSelectedCategory((prev) => [...prev, value]);
+                                                } else {
+                                                    setSelectedCategory((prev) =>
+                                                        prev.filter((category) => category !== value)
+                                                    );
+                                                }
+                                            }}
+                                            className="mr-2"
+                                        />
+                                        <label htmlFor={`category-${index}`}>{category}</label>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {["constructionSheet", "parameter", "finishing", "trims", "sizeChart"].includes(field) &&
+                <>
+                    <h1>Total {filteredData?.length} Tech Packs</h1>
+                    <table className='techPack-table'>
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input
+                                        type="checkbox"
+                                        className="size-5 p-1"
+                                        onChange={handleSelectAll}
+                                        checked={updateFormData.styleNo.length === filteredData.length && filteredData.length > 0}
+                                    />
+                                </th>
+                                <th>Style No</th>
+                                <th>Gender</th>
+                                <th>Category</th>
+                                <th>Designer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredData.map((techpack) => (
+                                <tr key={techpack._id}>
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            className="size-5"
+                                            value={techpack.styleNo}
+                                            onChange={handleStyleNoChange}
+                                            checked={updateFormData.styleNo.includes(techpack.styleNo)}
+                                        />
+                                    </td>
+                                    <td className="text-nowrap">{techpack.styleNo}</td>
+                                    <td className="text-nowrap">{techpack.gender}</td>
+                                    <td className="text-nowrap">{techpack.category}</td>
+                                    <td className="text-nowrap">{techpack.designer}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </>
             }
         </div>
     )
