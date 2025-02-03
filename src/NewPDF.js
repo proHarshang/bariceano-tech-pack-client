@@ -147,15 +147,19 @@ const TechPackPDFGenrate = (data) => {
 
                         const imageSpacing = 20; // Space between images
                         const yPosition = firstRowY + 10;
+                        // Adjust dynamic image dimensions
+
+                        const largeImageWidth = 90;
+                        const largeImageHeight = 90;
 
                         if (index === 0) {
                             pdf.addImage(
                                 `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`,
                                 'JPEG',
                                 frontImgX + 44, // Adjusted X position for the first image
-                                yPosition,
-                                adjustedWidth,
-                                adjustedHeight,
+                                yPosition + 10,
+                                largeImageWidth,
+                                largeImageHeight,
 
                             );
                         } else if (index === 1) {
@@ -163,9 +167,9 @@ const TechPackPDFGenrate = (data) => {
                                 `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`,
                                 'JPEG',
                                 frontImgX + 10 + adjustedWidth + imageSpacing, // X position for the second image
-                                yPosition,
-                                adjustedWidth,
-                                adjustedHeight,
+                                yPosition + 10,
+                                largeImageWidth,
+                                largeImageHeight,
 
                             );
                         }
@@ -190,9 +194,8 @@ const TechPackPDFGenrate = (data) => {
                     const spacing = 20;
 
                     // Adjust dynamic image dimensions
-                    const largeImageWidth = 92;
-                    const largeImageHeight = 92;
-
+                    const largeImageWidth = 85;
+                    const largeImageHeight = 85;
 
                     // Top three large rectangles centered with equal space using justify-between logic
                     const largeImageTop = topMargin + 10;
@@ -260,9 +263,9 @@ const TechPackPDFGenrate = (data) => {
 
                     const shirtImagePath1 = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout3[0].data.images[0].src}`;
                     const shirtImagePath2 = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout3[0].data.images[1].src}`;
-                    const shirtWidth = 97;
-                    const shirtHeight = 97;
-                    const shirtY = (pageHeight - shirtHeight) / 3 - 17; // Center vertically
+                    const shirtWidth = 85;
+                    const shirtHeight = 85;
+                    const shirtY = (pageHeight - shirtHeight) / 3 - 10; // Center vertically
                     const shirtX1 = 30; // Position for the first shirt image
                     const shirtX2 = pageWidth - shirtWidth - 30; // Position for the second shirt image
 
@@ -289,8 +292,8 @@ const TechPackPDFGenrate = (data) => {
                     const fabricColorLabelY = colorYStart - 5;
 
                     // Add shirt images
-                    pdf.addImage(shirtImagePath1, "PNG", shirtX1, shirtY, shirtWidth, shirtHeight);
-                    pdf.addImage(shirtImagePath2, "PNG", shirtX2, shirtY, shirtWidth, shirtHeight);
+                    pdf.addImage(shirtImagePath1, "PNG", shirtX1 + 20, shirtY, shirtWidth, shirtHeight);
+                    pdf.addImage(shirtImagePath2, "PNG", shirtX2 - 20, shirtY, shirtWidth, shirtHeight);
 
                     // Add "Thread colour" and "Fabric colour" labels
                     pdf.setFontSize(12);
@@ -661,7 +664,7 @@ const TechPackPDFGenrate = (data) => {
             className={`text-center flex items-center justify-center mx-auto ${isDownloading ? 'animate-spin cursor-not-allowed' : ''}`}
             disabled={isDownloading}
         >
-            {isDownloading ? <AiOutlineLoading className='text-black font-bold' /> : 'Download'}
+            {isDownloading ? <AiOutlineLoading className='text-black font-bold h-5' /> : 'Download'}
         </button>)
 }
 

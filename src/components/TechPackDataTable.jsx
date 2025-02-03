@@ -21,7 +21,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
     const queryParams = new URLSearchParams(location.search);
     const selectedCollection = queryParams.get("collection");
 
-    data = data?.filter(item => item.designCollection === selectedCollection || selectedCollection === "all collection") || [];
+    data = data?.filter(item => item.designCollection === selectedCollection || selectedCollection === "all collection" || queryParams.size === 0) || [];
 
     data = isCommentChecked
         ? data.filter(item => item.comment?.message) // Filter data with a comment
@@ -50,7 +50,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
     const toggleSidebar = useCallback((styleNo = null, comment = null) => {
         if (styleNo) {
             setIsSidebarOpen(styleNo); // Open sidebar with styleNo
-            const comment = data.find(tp => tp.styleNo === styleNo)?.comment 
+            const comment = data.find(tp => tp.styleNo === styleNo)?.comment
             setComment(comment ? {
                 name: comment.name || "",
                 message: comment.message || "",
