@@ -985,7 +985,7 @@ export default function Setting() {
                     {isEditing && (
                         <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
                             <div className="bg-white p-6 pt-3 rounded shadow-lg h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                <div className="flex justify-between item-center mb-4  sticky z-50 top-[-24px] pt-5  left-0">
+                                <div className="flex justify-between item-center mb-4  sticky z-50 top-[-24px] pt-5  left-0 bg-white">
                                     <h2 className="text-xl">Edit Size Guide</h2>
                                     {/* Buttons */}
                                     <div className="flex gap-4">
@@ -1130,7 +1130,7 @@ export default function Setting() {
                     {constructionSheetEditBox && (
                         <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
                             <div className="bg-white p-6 pt-3 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                <div className="flex items-center justify-between  mb-4  sticky z-50 top-[-24px] pt-5  left-0">
+                                <div className="flex items-center justify-between  mb-4  sticky z-50 top-[-24px] pt-5  left-0 bg-white">
                                     <h2 className="text-lg font-bold">Edit Construction Sheet</h2>
                                     <div className="flex justify-end gap-2">
                                         <button
@@ -1311,7 +1311,7 @@ export default function Setting() {
                         {trimEditBox && (
                             <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
                                 <div className="bg-white p-6 pt-3 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                    <div className="flex items-center justify-between mb-4  sticky z-50 top-[-24px] pt-5  left-0">
+                                    <div className="flex items-center justify-between mb-4  sticky z-50 top-[-24px] pt-5  left-0 bg-white">
                                         <h2 className="text-lg font-bold">Edit Trims</h2>
                                         <div className="flex justify-end gap-2">
                                             <button
@@ -1526,7 +1526,7 @@ export default function Setting() {
                         {parameterEditBox && (
                             <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
                                 <div className="bg-white p-6 pt-3 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                    <div className="mb-4 flex justify-between items-center  sticky z-50 top-[-24px] pt-5  left-0">
+                                    <div className="mb-4 flex justify-between items-center  sticky z-50 top-[-24px] pt-5  left-0 bg-white">
                                         <h2 className="text-lg font-bold">Edit Parameter</h2>
                                         <div className="flex justify-end gap-2">
                                             <button
@@ -1656,7 +1656,7 @@ export default function Setting() {
                         {finishingEditBox && (
                             <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
                                 <div className="bg-white p-6 pt-3 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                    <div className="mb-4 flex justify-between items-center sticky z-50 top-[-24px] pt-5  left-0 w-full bg-white">
+                                    <div className="mb-4 flex justify-between items-center sticky z-50 top-[-24px] pt-5  left-0 bg-white w-full bg-white">
                                         <h2 className="text-lg font-bold mb-4">Edit Finishing</h2>
                                         <div className="flex justify-end gap-2">
                                             <button
