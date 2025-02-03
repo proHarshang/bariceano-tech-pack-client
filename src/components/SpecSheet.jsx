@@ -167,7 +167,7 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                     />
                 </div>
                 {slide.data?.info?.map((field, index) => {
-                    if (["Style No", "Designer", "Size", "Gender", "State", "Fabric", "Collection", "Trim", "Product Type"].includes(field.name)) {
+                    if (["Style No", "Size", "Gender", "State", "Fabric", "Collection", "Trim", "Product Type"].includes(field.name)) {
                         return null;
                     }
                     return (

@@ -1848,7 +1848,7 @@ export default function Setting() {
                     {/* Fabric edit Popup */}
                     {editFabric && (
                         <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
-                            <div className="bg-white p-6 rounded-lg h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
+                            <div className="bg-white p-6 rounded-lg overflow-scroll w-[80%] max-w-[1000px]">
                                 <h3 className="mb-4">Edit Fabric</h3>
                                 <textarea
                                     placeholder="Enter Fabric Name"
