@@ -149,8 +149,8 @@ const TechPackPDFGenrate = (data) => {
                         const yPosition = firstRowY + 10;
                         // Adjust dynamic image dimensions
 
-                        const largeImageWidth = 90;
-                        const largeImageHeight = 90;
+                        const largeImageWidth = 110;
+                        const largeImageHeight = 110;
 
                         if (index === 0) {
                             pdf.addImage(
