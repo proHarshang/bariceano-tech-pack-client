@@ -82,7 +82,7 @@ const TechPackPDFGenrate = (data) => {
                 "Information",
                 "ArtworkPlacementSheet",
                 "ArtWork",
-                "SiliconLabel",
+                "Silicon Label",
                 "Page",
             ];
 
@@ -596,7 +596,7 @@ const TechPackPDFGenrate = (data) => {
                     }
 
                 }
-                else if (slide.type === "SiliconLabel") {
+                else if (slide.type === "Silicon Label") {
                     if (SiliconLabel[0] && SiliconLabel[0].data.images && SiliconLabel[0].data.images.length > 0) {
                         SiliconLabel[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
                         const maxWidth = pdf.internal.pageSize.getWidth()
