@@ -273,7 +273,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                                         {/* Aspect Ratio Selection */}
                                         <div className="flex gap-2">
                                             <label>Aspect Ratio:</label>
-                                            <select onChange={(e) => setAspectRatio(e.target.value)} className="border px-2 py-1 rounded">
+                                            <select value={aspectRatio} onChange={(e) => setAspectRatio(e.target.value)} className="border px-2 py-1 rounded">
                                                 <option value={1}>1:1</option>
                                                 <option value={4 / 3}>4:3</option>
                                             </select>
@@ -288,6 +288,19 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                                                 onCropChange={setCrop}
                                                 onZoomChange={setZoom}
                                                 onCropComplete={onCropComplete}
+                                            />
+                                        </div>
+                                        {/* Zoom Control */}
+                                        <div className="flex gap-2 items-center">
+                                            <label>Zoom:</label>
+                                            <input
+                                                type="range"
+                                                min="1"
+                                                max="3"
+                                                step="0.1"
+                                                value={zoom}
+                                                onChange={(e) => setZoom(e.target.value)}
+                                                className="w-32"
                                             />
                                         </div>
                                         <div className="flex gap-x-4 justify-around">
