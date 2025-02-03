@@ -121,7 +121,7 @@ const TechPack = () => {
         return <SpecSheet page={page} currentCategory={currentCategory} currentSubCategory={currentSubCategory} selectedLabels={selectedLabels} />
       case "ArtworkPlacementSheet":
         return <ArtworkPlacementSheet page={page} />
-      case "SiliconLabel":
+      case "Silicon Label":
         return <SiliconLabel page={page} />
       case "ArtWork":
         return <BlankSheet page={page} />
@@ -131,7 +131,24 @@ const TechPack = () => {
   }
 
   const handleAddPage = () => {
-    if (selectedPage) {
+    if (selectedPage.type === "Silicon Label") {
+      selectedPage.data.images.map(item => {
+        addSlideAtIndex(selectedIndex, {
+          "page": 10,
+          "name": selectedPage.name,
+          "type": getType(selectedPage, currentCategory, currentSubCategory),
+          "data": {
+            "title": "",
+            "images": [
+              {
+                "position": 0,
+                "src": item.src
+              }
+            ]
+          }
+        });
+      })
+    } else {
       selectedPage.data.images.map(item => {
         addSlideAtIndex(selectedIndex, {
           "page": 10,

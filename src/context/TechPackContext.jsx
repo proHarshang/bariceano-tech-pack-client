@@ -15,7 +15,7 @@ export const TechPackProvider = ({ children }) => {
         designer: JSON.parse(localStorage.getItem('user')).Name || "",
         styleNo: "",
         designCollection: localStorage.getItem("currentCollection"),
-        state: "",
+        state: "Sample",
         gender: "",
         category: "",
         slides: [{
@@ -251,7 +251,7 @@ export const TechPackProvider = ({ children }) => {
         if (!isSettingDataFetched) return null;
 
         if (label.name === "Silicon Label Sheet") {
-            return "SiliconLabel";
+            return "Silicon Label";
         } else if (trims.some(item => item.name === label.name)) {
             return label.name;
         } else if (["Construction Sheet", "Requirements", "Finishing"].includes(label.name)) {
@@ -704,13 +704,12 @@ export const TechPackProvider = ({ children }) => {
     };
 
     const resetTechPack = () => {
-        // if (updateMode === "off") {
-        //     setTechPackData(initialTechPackData);
-        // } else {
-        //     createUpdateTechPackSetup(updateMode);
-        // }
-
-        window.location.reload();
+        // window.location.reload();
+        if (updateMode === "on") {
+            createUpdateTechPackSetup(updateMode);
+        } else {
+            setTechPackData(initialTechPackData);
+        }
 
         console.log("♻ Form Reset")
         // setConstructionSheets([]);
@@ -722,9 +721,9 @@ export const TechPackProvider = ({ children }) => {
     };
 
     // Reset state when location changes
-    // useEffect(() => {
-    //     resetTechPack();
-    // }, [location.pathname]);
+    useEffect(() => {
+        resetTechPack();
+    }, [location.pathname]);
 
     useEffect(() => {
         if (submitStatus.status) {
