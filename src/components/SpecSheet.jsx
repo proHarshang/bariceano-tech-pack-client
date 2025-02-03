@@ -13,7 +13,7 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
         "Production",
     ]);
 
-    const { techPackData, addInfoField, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
+    const { addInfoField, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
 
     const slide = getSlideByPage(page);
 
