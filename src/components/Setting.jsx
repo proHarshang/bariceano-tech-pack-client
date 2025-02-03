@@ -231,6 +231,8 @@ export default function Setting() {
                 gender: selectedData.gender,
                 images: selectedData.images
             });
+        } else {
+            setFormValues({})
         }
     }, [isEditing, selectedOption, sizecharts]);
 
@@ -484,6 +486,7 @@ export default function Setting() {
                     await fetchAllSetting();
                     setAddCollection(false)
                     setSubmitStatus(updated)
+                    window.location.reload();
                 } else {
                     console.error('Failed to edit collection');
                     alert('Failed to update collection. Please try again.');
@@ -509,7 +512,7 @@ export default function Setting() {
                     setCollections((prevCollections) =>
                         prevCollections.filter((item) => item !== collection)
                     );
-                    alert('Collection deleted successfully!');
+                    window.location.reload();
                 } else {
                     console.error('Failed to delete collection');
                     alert('Failed to delete collection. Please try again.');
@@ -517,6 +520,7 @@ export default function Setting() {
             } catch (error) {
                 console.error('Error deleting collection:', error);
                 alert('An error occurred while deleting the collection.');
+            } finally {
             }
         }
     };
@@ -536,6 +540,7 @@ export default function Setting() {
                 await fetchAllSetting();
                 setAddCollection(false)
                 setSubmitStatus(newCollection)
+                window.location.reload();
             } else {
                 console.error('Failed to add collection');
                 alert('Failed to add collection. Please try again.');
