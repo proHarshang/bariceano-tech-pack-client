@@ -15,7 +15,7 @@ export const TechPackProvider = ({ children }) => {
         designer: JSON.parse(localStorage.getItem('user')).Name || "",
         styleNo: "",
         designCollection: localStorage.getItem("currentCollection"),
-        state: "",
+        state: "Sample",
         gender: "",
         category: "",
         slides: [{
