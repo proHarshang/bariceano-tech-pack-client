@@ -984,8 +984,8 @@ export default function Setting() {
                     {/* Modal for editing a size guide */}
                     {isEditing && (
                         <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
-                            <div className="bg-white p-6 rounded shadow-lg h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                <div className="flex justify-between item-center mb-4">
+                            <div className="bg-white p-6 pt-3 rounded shadow-lg h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
+                                <div className="flex justify-between item-center mb-4  sticky z-50 top-[-24px] pt-5  left-0">
                                     <h2 className="text-xl">Edit Size Guide</h2>
                                     {/* Buttons */}
                                     <div className="flex gap-4">
@@ -1089,7 +1089,7 @@ export default function Setting() {
                                     }
                                     <span>Update In all the tackpacks including previous one</span>
                                 </div>
-                                {update && <UpdateForm field="sizeChart" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
+                                {update && <UpdateForm field="sizeChart" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} selectedSizeCategory={formValues.category} selectedSizeGender={formValues.gender} techpacks={techpacks} />}
 
                             </div>
                         </div>
@@ -1129,8 +1129,8 @@ export default function Setting() {
 
                     {constructionSheetEditBox && (
                         <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
-                            <div className="bg-white p-6 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                <div className="flex items-center justify-between  mb-4">
+                            <div className="bg-white p-6 pt-3 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
+                                <div className="flex items-center justify-between  mb-4  sticky z-50 top-[-24px] pt-5  left-0">
                                     <h2 className="text-lg font-bold">Edit Construction Sheet</h2>
                                     <div className="flex justify-end gap-2">
                                         <button
@@ -1195,7 +1195,7 @@ export default function Setting() {
                                     }
                                     <span className="mt-1">Update In all the tackpacks including previous one</span>
                                 </div>
-                                {update && <UpdateForm field="constructionSheet" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
+                                {update && <UpdateForm field="constructionSheet" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} selectedConstruction={constructionSheetEditBox.name} techpacks={techpacks} />}
 
                             </div>
 
@@ -1310,8 +1310,8 @@ export default function Setting() {
                         {/* Popup Modal */}
                         {trimEditBox && (
                             <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
-                                <div className="bg-white p-6 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                    <div className="flex items-center justify-between mb-4">
+                                <div className="bg-white p-6 pt-3 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
+                                    <div className="flex items-center justify-between mb-4  sticky z-50 top-[-24px] pt-5  left-0">
                                         <h2 className="text-lg font-bold">Edit Trims</h2>
                                         <div className="flex justify-end gap-2">
                                             <button
@@ -1525,8 +1525,8 @@ export default function Setting() {
                         {/* Popup Modal */}
                         {parameterEditBox && (
                             <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
-                                <div className="bg-white p-6 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                    <div className="mb-4 flex justify-between items-center">
+                                <div className="bg-white p-6 pt-3 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
+                                    <div className="mb-4 flex justify-between items-center  sticky z-50 top-[-24px] pt-5  left-0">
                                         <h2 className="text-lg font-bold">Edit Parameter</h2>
                                         <div className="flex justify-end gap-2">
                                             <button
@@ -1589,7 +1589,7 @@ export default function Setting() {
                                         <div className={`rounded-full aspect-square size-[15px] outline-1 [outline-style:solid] outline-black ${update ? 'bg-black' : 'bg-white'}`} onClick={() => setUpdate(!update)}></div>
                                         <span>Update In all the tackpacks including previous one</span>
                                     </div>
-                                    {update && <UpdateForm field="parameter" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
+                                    {update && <UpdateForm field="parameter" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} selectedParameter={parameterEditBox.name} techpacks={techpacks} />}
 
                                 </div>
                             </div>
@@ -1655,8 +1655,8 @@ export default function Setting() {
                         {/* Popup Modal */}
                         {finishingEditBox && (
                             <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
-                                <div className="bg-white p-6 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                    <div className="mb-4 flex justify-between items-center">
+                                <div className="bg-white p-6 pt-3 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
+                                    <div className="mb-4 flex justify-between items-center sticky z-50 top-[-24px] pt-5  left-0 w-full bg-white">
                                         <h2 className="text-lg font-bold mb-4">Edit Finishing</h2>
                                         <div className="flex justify-end gap-2">
                                             <button
@@ -1718,7 +1718,7 @@ export default function Setting() {
                                         <div className={`rounded-full aspect-square size-[15px] outline-1 [outline-style:solid] outline-black ${update ? 'bg-black' : 'bg-white'}`} onClick={() => setUpdate(!update)}></div>
                                         <span>Update In all the tackpacks including previous one</span>
                                     </div>
-                                    {update && <UpdateForm field="finishing" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
+                                    {update && <UpdateForm field="finishing" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} selectedFinishing={finishingEditBox.name} techpacks={techpacks} />}
 
                                 </div>
                             </div>
@@ -2102,7 +2102,7 @@ export default function Setting() {
     );
 };
 
-const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, categories, techpacks }) => {
+const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, categories, selectedSizeGender, selectedSizeCategory, techpacks, selectedConstruction, selectedFinishing, selectedParameter }) => {
 
     const handleCategoryChange = (e) => {
         const newCategory = e.target.value;
@@ -2133,10 +2133,6 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
             return { ...prev, styleNo: updatedStyleNo };
         });
     };
-    console.log("techpacks", techpacks)
-
-
-
 
 
     // search logic 
@@ -2170,6 +2166,24 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
         const isCategorySelected = selectedCategory.length === 0 || selectedCategory.includes(item.category);
         return isDesignerSelected && isGenderSelected && isCategorySelected;
     });
+    useEffect(() => {
+        // Set default values from selectedSizeGender and selectedSizeCategory
+        if (selectedSizeGender) {
+            setSelectedGender([selectedSizeGender]); // Ensure it's in an array
+        }
+        if (selectedSizeCategory) {
+            setSelectedCategory([selectedSizeCategory]); // Ensure it's in an array
+        }
+        if (selectedConstruction) {
+            setSelectedCategory([selectedConstruction]); // Ensure it's in an array
+        }
+        if (selectedFinishing) {
+            setSelectedCategory([selectedFinishing]); // Ensure it's in an array
+        }
+        if (selectedParameter) {
+            setSelectedCategory([selectedParameter]); // Ensure it's in an array
+        }
+    }, [selectedSizeGender, selectedSizeCategory, selectedConstruction, selectedFinishing, selectedParameter]); // Runs when these values change
 
     // Add this function to handle the "Check All" button click
     const handleSelectAll = (event) => {
@@ -2313,84 +2327,90 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
                         )}
                     </div>
                 </div>
-                <div className='flex flex-col gap-2 w-1/2'>
-                    <span>Gender</span>
-                    <div className="border bg-white border-black px-2  h-auto flex flex-col">
-                        <button
-                            type="button"
-                            className="w-full text-left py-1"
-                            onClick={() => setShowGenderOptions(!showGenderOptions)}
-                        >
-                            Select Gender
-                        </button>
+                {["constructionSheet", "parameter", "finishing", "trims"].includes(field) &&
+                    <div className='flex flex-col gap-2 w-1/2'>
+                        <span>Gender</span>
+                        <div className="border bg-white border-black px-2 h-auto flex flex-col">
+                            <button
+                                type="button"
+                                className="w-full text-left py-1"
+                                onClick={() => setShowGenderOptions(!showGenderOptions)}
+                            >
+                                Select Gender
+                            </button>
 
-                        {showGenderOptions && (
-                            <div className="flex flex-col space-y-2 mt-2">
-                                {uniqueGenders.map((gender, index) => (
-                                    <div key={index} className="flex items-center gap-3">
-                                        <input
-                                            type="checkbox"
-                                            id={`gender-${index}`}
-                                            value={gender}
-                                            checked={selectedGender.includes(gender)}
-                                            onChange={(e) => {
-                                                const { value, checked } = e.target;
-                                                if (checked) {
-                                                    setSelectedGender((prev) => [...prev, value]);
-                                                } else {
-                                                    setSelectedGender((prev) =>
-                                                        prev.filter((gender) => gender !== value)
-                                                    );
+                            {showGenderOptions && (
+                                <div className="flex flex-col space-y-2 mt-2">
+                                    {uniqueGenders.map((gender, index) => (
+                                        <div key={index} className="flex items-center gap-3">
+                                            <input
+                                                type="checkbox"
+                                                id={`gender-${index}`}
+                                                value={gender}
+                                                checked={
+                                                    selectedGender.includes(gender) || selectedSizeGender === gender
                                                 }
-                                            }}
-                                            className="mr-2"
-                                        />
-                                        <label htmlFor={`gender-${index}`}>{gender}</label>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div>
-                <div className='flex flex-col gap-2 w-1/2'>
-                    <span>Category</span>
-                    <div className="border bg-white border-black px-2  h-auto flex flex-col">
-                        <button
-                            type="button"
-                            className="w-full text-left py-1"
-                            onClick={() => setShowCategoryOptions(!showCategoryOptions)}
-                        >
-                            Select Category
-                        </button>
+                                                onChange={(e) => {
+                                                    const { value, checked } = e.target;
+                                                    if (checked) {
+                                                        setSelectedGender((prev) => [...prev, value]);
+                                                    } else {
+                                                        setSelectedGender((prev) =>
+                                                            prev.filter((g) => g !== value)
+                                                        );
+                                                    }
+                                                }}
+                                                className="mr-2"
+                                            />
+                                            <label htmlFor={`gender-${index}`}>{gender}</label>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>}
+                {["trims"].includes(field) &&
+                    <div className='flex flex-col gap-2 w-1/2'>
+                        <span>Category</span>
+                        <div className="border bg-white border-black px-2 h-auto flex flex-col">
+                            <button
+                                type="button"
+                                className="w-full text-left py-1"
+                                onClick={() => setShowCategoryOptions(!showCategoryOptions)}
+                            >
+                                Select Category
+                            </button>
 
-                        {showCategoryOptions && (
-                            <div className="flex flex-col space-y-2 mt-2">
-                                {uniqueCategory.map((category, index) => (
-                                    <div key={index} className="flex items-center gap-3">
-                                        <input
-                                            type="checkbox"
-                                            id={`category-${index}`}
-                                            value={category}
-                                            checked={selectedCategory.includes(category)}
-                                            onChange={(e) => {
-                                                const { value, checked } = e.target;
-                                                if (checked) {
-                                                    setSelectedCategory((prev) => [...prev, value]);
-                                                } else {
-                                                    setSelectedCategory((prev) =>
-                                                        prev.filter((category) => category !== value)
-                                                    );
+                            {showCategoryOptions && (
+                                <div className="flex flex-col space-y-2 mt-2">
+                                    {uniqueCategory.map((category, index) => (
+                                        <div key={index} className="flex items-center gap-3">
+                                            <input
+                                                type="checkbox"
+                                                id={`category-${index}`}
+                                                value={category}
+                                                checked={
+                                                    selectedCategory.includes(category) || selectedSizeCategory === category
                                                 }
-                                            }}
-                                            className="mr-2"
-                                        />
-                                        <label htmlFor={`category-${index}`}>{category}</label>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div>
+                                                onChange={(e) => {
+                                                    const { value, checked } = e.target;
+                                                    if (checked) {
+                                                        setSelectedCategory((prev) => [...prev, value]);
+                                                    } else {
+                                                        setSelectedCategory((prev) =>
+                                                            prev.filter((c) => c !== value)
+                                                        );
+                                                    }
+                                                }}
+                                                className="mr-2"
+                                            />
+                                            <label htmlFor={`category-${index}`}>{category}</label>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>}
             </div>
 
             {["constructionSheet", "parameter", "finishing", "trims", "sizeChart"].includes(field) &&
