@@ -1330,22 +1330,24 @@ export default function Setting() {
                                             </button>
                                         </div>
                                     </div>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter Name"
-                                        value={trimEditBox.name}
-                                        className="w-full p-2 border bg-slate-100 rounded mb-4"
-                                        // onChange={(e) => setTrimEditBox((prev) => ({ ...prev, "name": e.target.value }))}
-                                        disabled
-                                    />
-                                    <span>as</span>
-                                    <input
-                                        type="text"
-                                        // value={trimEditBox.displayAs}
-                                        placeholder={trimEditBox.name}
-                                        className="w-full p-2 border bg-slate-100 rounded mb-4"
-                                    // onChange={(e) => setTrimEditBox((prev) => ({ ...prev, "name": e.target.value }))}                                        
-                                    />
+                                    <div className="my-4 w-full flex items-center gap-4">
+                                        <input
+                                            type="text"
+                                            placeholder="Enter Name"
+                                            value={trimEditBox.name}
+                                            className="w-1/2 p-2 border bg-slate-100 rounded"
+                                            // onChange={(e) => setTrimEditBox((prev) => ({ ...prev, "name": e.target.value }))}
+                                            disabled
+                                        />
+                                        <span>as</span>
+                                        <input
+                                            type="text"
+                                            // value={trimEditBox.displayAs}
+                                            placeholder={trimEditBox.name}
+                                            className="w-1/2 p-2 border bg-slate-100 rounded"
+                                        // onChange={(e) => setTrimEditBox((prev) => ({ ...prev, "name": e.target.value }))}                                        
+                                        />
+                                    </div>
                                     <div className="mb-4">
                                         <label className="block mb-2 font-semibold">Images:</label>
                                         {trimEditBox.images?.map((image, index) => (
@@ -1418,13 +1420,25 @@ export default function Setting() {
                                             </button>
                                         </div>
                                     </div>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter Name"
-                                        value={trimAddBox.name}
-                                        onChange={(e) => setTrimAddBox((prev) => ({ ...prev, name: e.target.value }))}
-                                        className="w-full p-2 border bg-slate-100 rounded mb-4"
-                                    />
+                                    <div className="my-4 w-full flex items-center gap-4">
+                                        <input
+                                            type="text"
+                                            placeholder="Enter Name"
+                                            value={trimAddBox.name}
+                                            className="w-1/2 p-2 border bg-slate-100 rounded"
+                                            onChange={(e) => setTrimAddBox((prev) => ({ ...prev, name: e.target.value }))}
+                                            disabled
+                                        />
+                                        <span>as</span>
+                                        <input
+                                            type="text"
+                                            // value={trimAddBox.displayAs}
+                                            placeholder={trimAddBox.name}
+                                            className="w-1/2 p-2 border bg-slate-100 rounded"
+                                        // onChange={(e) => setTrimEditBox((prev) => ({ ...prev, "name": e.target.value }))}                                        
+                                        />
+                                    </div>
+
                                     <div className="mb-4">
                                         <label className="block mb-2 font-semibold">Images:</label>
                                         {trimAddBox.images?.map((image, index) => (
@@ -1666,7 +1680,7 @@ export default function Setting() {
                         {finishingEditBox && (
                             <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
                                 <div className="bg-white p-6 pt-3 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                    <div className="mb-4 flex justify-between items-center sticky z-50 top-[-24px] pt-5  left-0 bg-white w-full bg-white">
+                                    <div className="mb-4 flex justify-between items-center sticky z-50 top-[-24px] pt-5  left-0 w-full bg-white">
                                         <h2 className="text-lg font-bold mb-4">Edit Finishing</h2>
                                         <div className="flex justify-end gap-2">
                                             <button

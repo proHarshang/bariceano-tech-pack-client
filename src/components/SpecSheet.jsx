@@ -38,7 +38,7 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
         if (updateMode === "off" && selectedLabels && currentSubCategory && currentCategory) {
             updateInfoField(page, "Product Type", slide.data?.info?.find((item) => item.name === "Product Type").value, { "value": currentCategory })
             updateInfoField(page, "Gender", slide.data?.info?.find((item) => item.name === "Gender").value, { "value": currentSubCategory })
-            updateInfoField(page, "Trim", slide.data?.info?.find((item) => item.name === "Trim").value, { "value": selectedLabels })
+            updateInfoField(page, "Trim", slide.data?.info?.find((item) => item.name === "Trim").value, { "value": selectedLabels.join(', ') })
         }
     }, [updateMode, selectedLabels, currentCategory, currentSubCategory])
 
