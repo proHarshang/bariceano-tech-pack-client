@@ -871,10 +871,9 @@ export default function Setting() {
 
                     {/* Modal for adding an option */}
                     {isAdding && (
-                        <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
-                            <div className="bg-white p-6 rounded shadow-lg h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
+                        <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
+                            <div className="bg-white p-6 pt-3 rounded shadow-lg overflow-scroll w-[50%] max-w-[1000px]">
                                 <h2 className="text-xl mb-4">Add Size Guide</h2>
-
                                 {/* Select Category */}
                                 <div className="mb-3">
                                     <h3 className="mb-1">Select Category</h3>
@@ -952,7 +951,7 @@ export default function Setting() {
                                             </button>
                                         </div>
                                     ))}
-                                    <button type="button" className="w-full mb-4 border border-black" onClick={() => setOpenPopupId(`sizeChartBox`)}>Upload image</button>
+                                    <button type="button" className="w-fit px-6 py-2 mb-4 border border-black" onClick={() => setOpenPopupId(`sizeChartBox`)}>Upload image</button>
                                 </div>
 
                                 {/* Buttons */}
@@ -1079,7 +1078,7 @@ export default function Setting() {
                                             </button>
                                         </div>
                                     ))}
-                                    <button type="button" className="w-full mb-4 border border-black" onClick={() => setOpenPopupId(`sizeChartBox`)}>Upload image</button>
+                                    <button type="button" className="w-fit py-2 px-6 mb-4 border border-black" onClick={() => setOpenPopupId(`sizeChartBox`)}>Upload image</button>
                                 </div>
                                 <div className="flex gap-4 my-5 items-center">
                                     {update ?
@@ -1183,7 +1182,7 @@ export default function Setting() {
                                             </button>
                                         </div>
                                     ))}
-                                    <button type="button" className="w-full mb-4 border border-black" onClick={() => setOpenPopupId(`constructionSheetEditBox`)}>Upload image</button>
+                                    <button type="button" className="w-fit py-2 px-6 mb-4 border border-black" onClick={() => setOpenPopupId(`constructionSheetEditBox`)}>Upload image</button>
                                 </div>
                                 {error && console.error('Error:', error)}
                                 {error && <p className="text-red-500 mb-2">{error}</p>}
@@ -1377,7 +1376,7 @@ export default function Setting() {
                                         ))}
                                         <button
                                             type="button"
-                                            className="mt-5 px-3 py-1 bg-black text-white rounded-lg text-xs"
+                                            className="w-fit px-6 py-2 mb-4 border border-black"
                                             onClick={() => setOpenPopupId(`trimEditBox`)}
                                         >
                                             Add More
@@ -1468,7 +1467,7 @@ export default function Setting() {
                                         ))}
                                         <button
                                             type="button"
-                                            className="mt-5 px-3 py-1 bg-black text-white rounded-lg text-xs"
+                                            className="w-fit px-6 py-2 mb-4 border border-black"
                                             onClick={() => setOpenPopupId(`trimAddBox`)}
                                         >
                                             Add More
@@ -1604,7 +1603,7 @@ export default function Setting() {
                                         )))}
                                         <button
                                             type="button"
-                                            className="mt-5 px-3 py-1 bg-black text-white rounded-lg text-xs"
+                                            className="w-fit px-6 py-2 mb-4 border border-black"
                                             onClick={() => setOpenPopupId(`parameterEditBox`)}
                                         >
                                             Add More
@@ -1733,7 +1732,7 @@ export default function Setting() {
                                         )))}
                                         <button
                                             type="button"
-                                            className="mt-5 px-3 py-1 bg-black text-white rounded-lg text-xs"
+                                            className="w-fit px-6 py-2 mb-4 border border-black"
                                             onClick={() => setOpenPopupId(`finishingEditBox`)}
                                         >
                                             Add More
