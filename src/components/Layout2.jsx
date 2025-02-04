@@ -34,20 +34,20 @@ const Layout2 = ({ page }) => {
           ))}
         </div>
         <div className='flex justify-evenly gap-10'>
-          <div className='w-[35%] h-[150px]'>
-            <h1>Thread colour</h1>
+          <div>
+            <h1 className='ml-5 font-bold'>Thread colour</h1>
             <div className='w-full h-full flex justify-evenly gap-5'>
               {[0, 1].map((key, index) => (
                 <div
                   key={key}
-                  className='w-fit h-full rounded-2xl flex items-center justify-center min-w-[100px]'
+                  className='w-[151px] h-[151px] rounded-2xl flex items-center justify-center'
                 >
                   {slide.data?.threadColorImages?.find((item) => item.position === key).src ? (
                     <img
                       onClick={() => setOpenPopupId(`threadColorImages-${key}`)}
                       src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data?.threadColorImages?.find((item) => item.position === key).src}`}
                       alt={slide.data?.threadColorImages?.find((item) => item.position === key).src}
-                      className='object-fill h-full rounded-2xl cursor-pointer'
+                      className='object-fill h-full w-full rounded-2xl cursor-pointer'
                     />
                   ) : (
                     <label onClick={() => setOpenPopupId(`threadColorImages-${key}`)} className='bg-[#FCFCFC] rounded-2xl text-wrap px-3 text-[#DFDFDF] border-2 border-dashed text-center flex text-sm flex-col items-center justify-center w-full h-full cursor-pointer'>
@@ -58,13 +58,13 @@ const Layout2 = ({ page }) => {
               ))}
             </div>
           </div>
-          <div className='w-[35%] h-[150px]'>
-            <h1>Fabric colour</h1>
+          <div>
+            <h1 className='ml-5 font-bold'>Fabric colour</h1>
             <div className='w-full h-full flex justify-between gap-5'>
               {[0, 1].map((key, index) => (
                 <div
                   key={key}
-                  className='w-fit h-full rounded-2xl flex items-center justify-center min-w-[100px]'
+                  className='w-[151px] h-[151px] rounded-2xl flex items-center justify-center min-w-[100px]'
                 >
                   {slide.data?.fabricColorImages?.find((item) => item.position === key).src ? (
                     <img

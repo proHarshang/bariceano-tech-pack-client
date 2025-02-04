@@ -18,7 +18,8 @@ const TechPackPDFGenrate = (data) => {
 
     let lineY = 19;
     let secondColorImgY;
-    const colorImgHeight = 40;
+    const colorImgHeight = 50;
+    const colorHeight = 40;
 
     function headerSection(pageNumber, pageName) {
         pdf.setFontSize(12);
@@ -116,7 +117,7 @@ const TechPackPDFGenrate = (data) => {
                     const frontBackImgHeight = 110;
                     const colorImgX = 20;
                     const frontImgX = colorImgX + colorImgWidth - 25;
-                    pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.fabricColorImages[0].src}`, 'JPEG', colorImgX, firstRowY + 10, colorImgWidth, colorImgHeight);
+                    pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.fabricColorImages[0].src}`, 'JPEG', colorImgX, firstRowY + 10, colorImgWidth, colorHeight);
                     pdf.setFont('helvetica', 'bold');
                     if (Layout1[0].data.fabricColorImages[0].src) {
                         pdf.text('Fabric Image', 26, firstRowY + 56);
@@ -173,7 +174,7 @@ const TechPackPDFGenrate = (data) => {
                             );
                         }
                     });
-                    pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.threadColorImages[0].src}`, 'JPEG', colorImgX, secondColorImgY + 25, colorImgWidth, colorImgHeight);
+                    pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.threadColorImages[0].src}`, 'JPEG', colorImgX, secondColorImgY + 25, colorImgWidth, colorHeight);
                     if (Layout1[0].data.threadColorImages[0].src) {
                         pdf.text('Thread Color', 26, firstRowY + 118);
                     }
@@ -238,8 +239,8 @@ const TechPackPDFGenrate = (data) => {
                         );
                     }
                     // Thread color section
-                    const colorImageWidth = 30;
-                    const colorImageHeight = 37;
+                    const colorImageWidth = 40;
+                    const colorImageHeight = 40;
                     const colorTopMargin = largeImageTop + largeImageHeight + 20;
 
                     pdf.text("Thread colour", centerX - spacing - colorImageWidth - 55, colorTopMargin - 5);
@@ -275,8 +276,8 @@ const TechPackPDFGenrate = (data) => {
                         (image) => `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`
                     );
 
-                    const colorWidth = 25; // Decreased width
-                    const colorHeight = 33; // Increased height
+                    const colorWidth = 40; // Decreased width
+                    const colorHeight = 40; // Increased height
                     const colorSpacing = 10;
                     const colorMarginTop = 20; // Add margin between shirt and color swatches
                     const colorYStart = shirtY + shirtHeight + colorMarginTop + 10; // Start below shirt images
@@ -295,24 +296,24 @@ const TechPackPDFGenrate = (data) => {
 
                     // Add "Thread colour" and "Fabric colour" labels
                     pdf.setFontSize(12);
-                    pdf.text("Thread colour", threadColorXStart, threadColorLabelY);
-                    pdf.text("Fabric colour", fabricColorXStart, fabricColorLabelY);
+                    pdf.text("Thread colour", threadColorXStart - 5, threadColorLabelY);
+                    pdf.text("Fabric colour", fabricColorXStart - 15 , fabricColorLabelY);
 
-                    // Add color swatches under "Thread colour" (display based on number of images)
+                    // Adjust color swatch positions (Reduce spacing by 60% instead of 40%)
                     threadColorImages.forEach((image, index) => {
                         if (threadColorImages.length > 0) {
-                            const x = threadColorXStart + index * (colorWidth + colorSpacing);
+                            const x = threadColorXStart + index * (colorWidth + colorSpacing * 0.2) - 10; // Reduce spacing even more
                             pdf.addImage(image, "JPEG", x, colorYStart, colorWidth, colorHeight);
                         }
                     });
 
-                    // Add color swatches under "Fabric colour" (display based on number of images)
                     fabricColorImages.forEach((image, index) => {
                         if (fabricColorImages.length > 0) {
-                            const x = fabricColorXStart + index * (colorWidth + colorSpacing);
+                            const x = fabricColorXStart + index * (colorWidth + colorSpacing * 0.2) - 20; // Reduce spacing even more
                             pdf.addImage(image, "JPEG", x, colorYStart, colorWidth, colorHeight);
                         }
                     });
+
 
                 } else if (slide.type === "Layout0") {
 
