@@ -19,14 +19,14 @@ function App() {
             <Route path="/" element={<Auth />} />
             <Route path="/tech-pack" element={
               <PrivateRoute>
-                <TechPack />
+                <TechPackProvider>
+                  <TechPack />
+                </TechPackProvider>
               </PrivateRoute>
             } />
             <Route path='/tech-pack-data' element={
               <PrivateRoute>
-                <TechPackProvider>
-                  <TechPacksTable />
-                </TechPackProvider>
+                <TechPacksTable />
               </PrivateRoute>
             } />
             <Route path='/setting' element={
