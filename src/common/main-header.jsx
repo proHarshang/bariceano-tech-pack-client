@@ -128,7 +128,7 @@ const MainHeader = () => {
 
 
     return (
-        <div className="p-5 flex justify-between border-b pl-10 pr-0 max-w-[1500px] mx-auto">
+        <div className="p-5 flex justify-between border-b pl-10 pr-0 max-w-[1500px] mx-auto sticky top-0 right-0 bg-white z-50 invert">
             <div className='flex gap-5 items-center'>
                 <button
                     className={`flex gap-3 items-center border-black text-sm font-bold px-3 py-2 rounded-2xl uppercase hover:bg-black hover:text-white ${currentPath === "/tech-pack-data"
@@ -186,12 +186,12 @@ const MainHeader = () => {
 
 
                         {showCategories && (
-                            <div className="absolute mt-2 w-48 bg-white border border-gray-300 rounded shadow-md z-[100]">
+                            <div className="absolute mt-2 w-48 bg-white border border-t-0 border-x-0 border-gray-300 rounded shadow-md z-[100]">
                                 <div className="p-2 space-y-2">
                                     {menu.map((category) => (
                                         <div
                                             key={category}
-                                            className={`p-2 cursor-pointer hover:bg-gray-200 ${currentCategory === category && 'bg-gray-300'}`}
+                                            className={`p-2 cursor-pointer hover:bg-gray-500 ${currentCategory === category && 'bg-gray-400'}`}
                                             onClick={() => setCurrentCategory(category)}
                                         >
                                             {category}
@@ -202,12 +202,12 @@ const MainHeader = () => {
                         )}
 
                         {currentCategory && (
-                            <div className="absolute mt-2 left-52 w-48 bg-white border border-gray-300 rounded shadow-md z-50">
+                            <div className="absolute mt-2 left-52 w-48 bg-white border border-t-0 border-x-0 border-gray-300 rounded shadow-md z-50">
                                 <div className="p-2 space-y-2">
                                     {subCategories.map((subCategory) => (
                                         <div
                                             key={subCategory}
-                                            className={`p-2 cursor-pointer hover:bg-gray-200 ${currentSubCategory === subCategory && 'bg-gray-300'}`}
+                                            className={`p-2 cursor-pointer hover:bg-gray-500 ${currentSubCategory === subCategory && 'bg-gray-400'}`}
                                             onClick={() => setCurrentSubCategory(subCategory)}
                                         >
                                             {subCategory}
@@ -218,13 +218,13 @@ const MainHeader = () => {
                         )}
 
                         {currentSubCategory && (
-                            <div className="absolute mt-2 -right-[600px] w-64 bg-white border border-gray-300 rounded shadow-md z-50">
+                            <div className="absolute mt-2 -right-[610px] w-[270px] bg-white border border-t-0 border-x-0 border-gray-300 rounded shadow-md z-50">
                                 <div className="py-4 space-y-2">
                                     {labels.length > 0 ? (
                                         labels.map((label) => (
                                             <React.Fragment key={label}>
                                                 <div className="flex px-4 mb-3 w-full justify-between items-center">
-                                                    <label className="text-[#AEAEAE]">{label}</label>
+                                                    <label className="">{label}</label>
                                                     <input
                                                         type="checkbox"
                                                         name="checkbox"
