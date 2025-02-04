@@ -1389,8 +1389,27 @@ export default function Setting() {
                         {/* Popup Modal */}
                         {trimAddBox && (
                             <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
-                                <div className="bg-white p-6 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                    <h2 className="text-lg font-bold mb-4">Add Box</h2>
+                                <div className="bg-white p-6 pt-3 rounded shadow-md h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
+                                    <div className="flex items-center justify-between mb-4  sticky z-50 top-[-24px] pt-5 pb-2 left-0 bg-white">
+                                        <h2 className="text-lg font-bold mb-4">Add New Trims</h2>
+                                        <div className="flex justify-end gap-2">
+                                            <button
+                                                type="button"
+                                                className="px-4 py-2 border text-black rounded-lg text-sm"
+                                                onClick={() => setTrimAddBox(null)}
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="px-4 py-2 bg-black text-white rounded-lg text-sm"
+                                                onClick={handleTrimAdd}
+                                                disabled={trimLoading}
+                                            >
+                                                {trimLoading ? "Saving..." : "Save"}
+                                            </button>
+                                        </div>
+                                    </div>
                                     <input
                                         type="text"
                                         placeholder="Enter Name"
@@ -1432,33 +1451,16 @@ export default function Setting() {
                                             Add More
                                         </button>
                                     </div>
-                                    <div className="flex gap-4 my-5">
+                                    <div className="flex gap-4 my-5 items-center">
                                         {update ?
-                                            <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-black`} onClick={() => setUpdate(false)}></div>
+                                            <div className={`rounded-full aspect-square size-[15px] outline-1 [outline-style:solid]  outline-black bg-black`} onClick={() => setUpdate(false)}></div>
                                             :
-                                            <div className={`rounded-sm aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-white`} onClick={() => setUpdate(true)}></div>
+                                            <div className={`rounded-full aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-white`} onClick={() => setUpdate(true)}></div>
                                         }
                                         <span>Update In all the tackpacks including previous one</span>
                                     </div>
                                     {update && <UpdateForm field="trims" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} techpacks={techpacks} />}
-                                    <div className="flex justify-end gap-2">
-                                        <button
-                                            type="button"
-                                            className="px-4 py-2 border text-black rounded-lg text-sm"
-                                            onClick={() => setTrimAddBox(null)}
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="px-4 py-2 bg-black text-white rounded-lg text-sm"
-                                            onClick={handleTrimAdd}
-                                            disabled={trimLoading}
-                                        >
-                                            {trimLoading ? "Saving..." : "Save"}
-                                        </button>
 
-                                    </div>
                                 </div>
                             </div>
                         )}

@@ -18,7 +18,7 @@ const TechPackPDFGenrate = (data) => {
 
     let lineY = 19;
     let secondColorImgY;
-    const colorImgHeight = 50;
+    const colorImgHeight = 40;
 
     function headerSection(pageNumber, pageName) {
         pdf.setFontSize(12);
@@ -116,11 +116,10 @@ const TechPackPDFGenrate = (data) => {
                     const frontBackImgHeight = 110;
                     const colorImgX = 20;
                     const frontImgX = colorImgX + colorImgWidth - 25;
-                    const FabricColorImages = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.fabricColorImages[0].src}}`
                     pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.fabricColorImages[0].src}`, 'JPEG', colorImgX, firstRowY + 10, colorImgWidth, colorImgHeight);
                     pdf.setFont('helvetica', 'bold');
-                    if (FabricColorImages) {
-                        pdf.text('Fabric Image', 20, firstRowY + 66);
+                    if (Layout1[0].data.fabricColorImages[0].src) {
+                        pdf.text('Fabric Image', 26, firstRowY + 56);
                     }
                     pdf.setTextColor('black');
                     // Sort images based on their numeric position
@@ -174,10 +173,9 @@ const TechPackPDFGenrate = (data) => {
                             );
                         }
                     });
-                    pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.threadColorImages[0].src}`, 'JPEG', colorImgX, secondColorImgY + 20, colorImgWidth, colorImgHeight);
-                    const threadColorImages = `${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.threadColorImages[0].src}`
-                    if (threadColorImages) {
-                        pdf.text('Thread Color', 20, firstRowY + 133);
+                    pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.threadColorImages[0].src}`, 'JPEG', colorImgX, secondColorImgY + 25, colorImgWidth, colorImgHeight);
+                    if (Layout1[0].data.threadColorImages[0].src) {
+                        pdf.text('Thread Color', 26, firstRowY + 118);
                     }
 
 
