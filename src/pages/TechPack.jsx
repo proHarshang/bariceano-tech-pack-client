@@ -16,10 +16,7 @@ const TechPack = () => {
 
   const { construction, trims, requirements, finishing, sizecharts, getType, techPackData, isSettingDataFetched, updateField, addSlide, addSlideAtIndex, isUpdating, isUpdatingAs, updateAsTechPack, updateTechPack, getMaxPageNumber, updateMode, submitTechPack, isAdding, submitStatus, createUpdateTechPackSetup } = useTechPack();
 
-  const queryParams = new URLSearchParams(location.search);
-  const selectedLabels = queryParams.get('selectedLabels');
-  const currentCategory = queryParams.get('currentCategory');
-  const currentSubCategory = queryParams.get('currentSubCategory');
+  const { selectedLabels, currentCategory, currentSubCategory } = location.state || "";
 
   const [showPopup, setShowPopup] = useState(false);
   const [selectedPage, setSelectedPage] = useState(null);
@@ -28,6 +25,7 @@ const TechPack = () => {
   const hasRun = useRef(false)
 
   useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
     const id = queryParams.get('id');
     if (id) {
       createUpdateTechPackSetup(id)
@@ -70,7 +68,7 @@ const TechPack = () => {
             });
           })
         });
-        trims.filter(item => selectedLabels.split(", ").includes(item.name)).forEach(label => {
+        trims.filter(item => selectedLabels.includes(item.name)).forEach(label => {
           label.images.forEach(img => {
             currentPage += 1;
             addSlide({

@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { addTechPacks, fetchAll, getTechPacksById, updateTechPacks } from '../API/TechPacks';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const TechPackContext = createContext();
 
@@ -8,8 +8,6 @@ export const useTechPack = () => useContext(TechPackContext);
 
 export const TechPackProvider = ({ children }) => {
     const navigate = useNavigate();
-
-    const location = useLocation();
 
     const initialTechPackData = {
         designer: JSON.parse(localStorage.getItem('user')).Name || "",
@@ -652,12 +650,6 @@ export const TechPackProvider = ({ children }) => {
         return techPackData.slides.find((slide) => slide.page === pageNumber) || null;
     };
 
-    useEffect(() => {
-        if (location.pathname !== '/tech-pack-data') {
-            // setTechPackData(initialTechPackData);
-        }
-    }, [location.pathname]);
-
     // Submit the form data
     const submitTechPack = async () => {
         setIsAdding(true)
@@ -724,11 +716,6 @@ export const TechPackProvider = ({ children }) => {
         // setSizeCharts([]);
         // setIsSettingDataFetched(false);
     };
-
-    // Reset state when location changes
-    // useEffect(() => {
-    //     resetTechPack();
-    // }, [location.pathname]);
 
     useEffect(() => {
         if (submitStatus.status) {
