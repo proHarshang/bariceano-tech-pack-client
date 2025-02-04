@@ -297,7 +297,7 @@ const TechPackPDFGenrate = (data) => {
                     // Add "Thread colour" and "Fabric colour" labels
                     pdf.setFontSize(12);
                     pdf.text("Thread colour", threadColorXStart - 5, threadColorLabelY);
-                    pdf.text("Fabric colour", fabricColorXStart - 15 , fabricColorLabelY);
+                    pdf.text("Fabric colour", fabricColorXStart - 15, fabricColorLabelY);
 
                     // Adjust color swatch positions (Reduce spacing by 60% instead of 40%)
                     threadColorImages.forEach((image, index) => {
@@ -597,6 +597,7 @@ const TechPackPDFGenrate = (data) => {
                 }
                 else if (slide.type === "Silicon Label") {
                     if (SiliconLabel[0] && SiliconLabel[0].data.images && SiliconLabel[0].data.images.length > 0) {
+                        console.log("SiliconLabel", SiliconLabel)
                         SiliconLabel[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
                         const maxWidth = pdf.internal.pageSize.getWidth()
                         const imageWidth = 213;
