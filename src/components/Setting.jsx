@@ -1313,7 +1313,8 @@ export default function Setting() {
                                         placeholder="Enter Name"
                                         value={trimEditBox.name}
                                         className="w-full p-2 border bg-slate-100 rounded mb-4"
-                                        onChange={(e) => setTrimEditBox((prev) => ({ ...prev, "name": e.target.value }))}
+                                        // onChange={(e) => setTrimEditBox((prev) => ({ ...prev, "name": e.target.value }))}
+                                        disabled
                                     />
                                     <div className="mb-4">
                                         <label className="block mb-2 font-semibold">Images:</label>

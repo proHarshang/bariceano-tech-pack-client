@@ -264,9 +264,9 @@ export const TechPackProvider = ({ children }) => {
     }
 
     const createUpdateTechPackSetup = async (id) => {
+        setUpdateMode(id);
         try {
-            setUpdateMode(id);
-            if (id) {
+            if (updateMode !== "off") {
                 const techpack = await getTechPacksById(id);
                 setTechPackData({
                     designer: techpack.data.designer,
@@ -652,6 +652,12 @@ export const TechPackProvider = ({ children }) => {
         return techPackData.slides.find((slide) => slide.page === pageNumber) || null;
     };
 
+    useEffect(() => {
+        if (location.pathname !== '/tech-pack-data') {
+            setTechPackData(initialTechPackData);
+        }
+    }, [location.pathname]);
+
     // Submit the form data
     const submitTechPack = async () => {
         setIsAdding(true)
@@ -660,7 +666,7 @@ export const TechPackProvider = ({ children }) => {
             setSubmitStatus(response)
             console.log("response", response)
             if (response.status === true) {
-                window.location.href = '/tech-pack-data'
+                navigate('/tech-pack-data', { replace: true })
             }
         } catch (error) {
             throw new Error("Error creating TechPack:", error.message);
@@ -677,12 +683,12 @@ export const TechPackProvider = ({ children }) => {
             setSubmitStatus(response)
             console.log("response", response)
             if (response.status === true) {
-                window.location.href = '/tech-pack-data'
+                navigate('/tech-pack-data', { replace: true })
             }
         } catch (error) {
             throw new Error("Error creating TechPack:", error.message);
         } finally {
-            setIsUpdating(false)
+            setIsUpdating(false);
         }
 
     };
@@ -694,7 +700,7 @@ export const TechPackProvider = ({ children }) => {
             setSubmitStatus(response)
             console.log("response", response)
             if (response.status === true) {
-                navigate('/tech-pack-data')
+                navigate('/tech-pack-data', { replace: true })
             }
         } catch (error) {
             throw new Error("Error creating TechPack:", error.message);
@@ -704,12 +710,11 @@ export const TechPackProvider = ({ children }) => {
     };
 
     const resetTechPack = () => {
-        // window.location.reload();
-        if (updateMode === "on") {
-            createUpdateTechPackSetup(updateMode);
-        } else {
-            setTechPackData(initialTechPackData);
-        }
+        // if (updateMode === "on") {
+        //     createUpdateTechPackSetup(updateMode);
+        // } else {
+        //     setTechPackData(initialTechPackData);
+        // }
 
         console.log("♻ Form Reset")
         // setConstructionSheets([]);
@@ -721,9 +726,9 @@ export const TechPackProvider = ({ children }) => {
     };
 
     // Reset state when location changes
-    useEffect(() => {
-        resetTechPack();
-    }, [location.pathname]);
+    // useEffect(() => {
+    //     resetTechPack();
+    // }, [location.pathname]);
 
     useEffect(() => {
         if (submitStatus.status) {
@@ -737,7 +742,6 @@ export const TechPackProvider = ({ children }) => {
             return () => clearTimeout(timer);
         }
     }, [submitStatus]);
-
 
     useEffect(() => {
         setSubmitStatus({

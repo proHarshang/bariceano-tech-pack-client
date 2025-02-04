@@ -20,10 +20,10 @@ const MainHeader = () => {
     const [labels, setLabels] = useState([]);
     const [currentCategory, setCurrentCategory] = useState(null);
     const [currentSubCategory, setCurrentSubCategory] = useState(null);
-    const [selectedLabels, setSelectedLabels] = useState([]);
+    const [selectedLabels, setSelectedLabels] = useState("");
     const [showCategories, setShowCategories] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    const [collectionSelector, setCollectionSelector] = useState(false);
+    const [collectionSelector, setCollectionSelector] = useState(localStorage.getItem("currentCollection") || "all collection");
 
     const fetchMenuData = async () => {
         try {
@@ -48,7 +48,7 @@ const MainHeader = () => {
 
     useEffect(() => {
         if (labels) {
-            setSelectedLabels(labels)
+            setSelectedLabels(labels.join(", "))
         }
     }, [labels])
 
@@ -66,20 +66,22 @@ const MainHeader = () => {
     };
     const handleLabelChange = (label) => {
         if (selectedLabels.includes(label)) {
-            setSelectedLabels(selectedLabels.filter((l) => l !== label)); // Remove the label if already selected
+            setSelectedLabels(selectedLabels.filter((l) => l !== label).join(", ")); // Remove the label if already selected
         } else {
-            setSelectedLabels([...selectedLabels, label]); // Add the label if not selected
+            setSelectedLabels([...selectedLabels, label].join(", ")); // Add the label if not selected
         }
     };
     const handleClear = () => {
-        setSelectedLabels([true]);
+        setSelectedLabels("");
         setCurrentCategory(false)
         setShowCategories(false)
         setCurrentSubCategory(false)
     };
 
     const handleApply = () => {
-        navigate("/tech-pack", { state: { selectedLabels, currentCategory, currentSubCategory } })
+        navigate(`/tech-pack?selectedLabels=${selectedLabels}&currentCategory=${currentCategory}&currentSubCategory=${currentSubCategory}`)
+        // window.location.href = `/tech-pack?selectedLabels=${selectedLabels}&currentCategory=${currentCategory}&currentSubCategory=${currentSubCategory}`
+        // navigate("/tech-pack", { state: { selectedLabels, currentCategory, currentSubCategory } })
         setCurrentCategory(false)
         setShowCategories(false)
         setCurrentSubCategory(false)

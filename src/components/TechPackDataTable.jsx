@@ -5,7 +5,7 @@ import NewPdfGenerator from '../NewPDF';
 import { useForm } from "react-hook-form";
 import Pagination from '../common/Pagination.jsx';
 import { useTechPack } from "../context/TechPackContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
@@ -20,6 +20,8 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const selectedCollection = queryParams.get("collection");
+
+    const navigate = useNavigate();
 
     data = data?.filter(item => item.designCollection === selectedCollection || selectedCollection === "all collection" || queryParams.size === 0) || [];
 
@@ -244,7 +246,8 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
     };
 
     const handleEditClick = (itemId) => {
-        window.location.href = `/tech-pack?id=${itemId}`;
+        // window.location.href = `/tech-pack?id=${itemId}`
+        navigate(`/tech-pack?id=${itemId}`)
     };
 
     return (
