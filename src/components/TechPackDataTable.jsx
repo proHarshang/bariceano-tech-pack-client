@@ -4,7 +4,6 @@ import { handleCommentSubmit, deleteTechPack } from '../API/TechPacks';
 import NewPdfGenerator from '../NewPDF';
 import { useForm } from "react-hook-form";
 import Pagination from '../common/Pagination.jsx';
-import { useTechPack } from "../context/TechPackContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -15,8 +14,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isSidebarOpen, setIsSidebarOpen] = useState(null);
     const { register, watch } = useForm();
-    const isCommentChecked = watch("Comment"); // Watch the checkbox state
-    const { submitStatus } = useTechPack();
+    const isCommentChecked = watch("Comment"); // Watch the checkbox state    
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const selectedCollection = queryParams.get("collection");
@@ -449,11 +447,11 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                     </div>
                 </div>
                 <div className='w-full'>
-                    {submitStatus && (
+                    {/* {submitStatus && (
                         <p className={`fixed right-[40%] top-[20%] transform -translate-y-1/2 px-3 text-sm font-bold py-2 rounded-lg shadow-lg text-white ${submitStatus.message == null ? "hidden" : "visible"}  ${submitStatus?.status ? "bg-green-600" : "bg-red-600"} animate-slide-down-up`}>
                             {submitStatus?.message}
                         </p>
-                    )}
+                    )} */}
                     <div className="flex justify-between items-end">
                         <span>
                             Total {sortedData?.length} Tech Packs

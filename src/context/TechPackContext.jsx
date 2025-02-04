@@ -654,7 +654,7 @@ export const TechPackProvider = ({ children }) => {
 
     useEffect(() => {
         if (location.pathname !== '/tech-pack-data') {
-            setTechPackData(initialTechPackData);
+            // setTechPackData(initialTechPackData);
         }
     }, [location.pathname]);
 

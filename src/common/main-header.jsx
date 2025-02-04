@@ -23,7 +23,7 @@ const MainHeader = () => {
     const [selectedLabels, setSelectedLabels] = useState("");
     const [showCategories, setShowCategories] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    const [collectionSelector, setCollectionSelector] = useState(localStorage.getItem("currentCollection") || "all collection");
+    const [collectionSelector, setCollectionSelector] = useState("");
 
     const fetchMenuData = async () => {
         try {
@@ -112,7 +112,6 @@ const MainHeader = () => {
 
     useEffect(() => {
         if (collectionSelector) {
-            console.log("collectionSelector : ", collectionSelector)
             localStorage.setItem("currentCollection", collectionSelector);
             navigate(`/tech-pack-data?collection=${collectionSelector}`);
         }
@@ -123,7 +122,12 @@ const MainHeader = () => {
         const selectedCollection = queryParams.get("collection");
         if (selectedCollection) {
             setCollectionSelector(selectedCollection)
+            // } else if (localStorage.getItem("currentCollection")) {
+            //     setCollectionSelector(localStorage.getItem("currentCollection"))
+            // } else {
+            //     setCollectionSelector("all collection")
         }
+
     }, [location])
 
 
