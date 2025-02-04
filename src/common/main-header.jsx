@@ -126,7 +126,7 @@ const MainHeader = () => {
 
 
     return (
-        <div className="p-5 flex justify-between border-b pl-10 pr-0 max-w-[1500px] mx-auto">
+        <div className="p-5 flex justify-between border-b pl-10 pr-0 max-w-[1500px] mx-auto sticky top-0 right-0 bg-white z-50 invert">
             <div className='flex gap-5 items-center'>
                 <button
                     className={`flex gap-3 items-center border-black text-sm font-bold px-3 py-2 rounded-2xl uppercase hover:bg-black hover:text-white ${currentPath === "/tech-pack-data"

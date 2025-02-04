@@ -106,7 +106,6 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    console.log("data.filter", data.filter)
     // search logic 
     const [searchTerm, setSearchTerm] = useState('');
     const filteredBySearch = data.filter(techpack =>
