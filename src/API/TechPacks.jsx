@@ -410,9 +410,9 @@ export const trimAdd = async (updateFormData, data) => {
     }
 };
 
-export const trimEdit = async (updateFormFData, oldName, data) => {
+export const trimEdit = async (updateFormFData, data) => {
     try {
-        const response = await fetch(`${apiURL}/design/setting/trims/update/${oldName}`, {
+        const response = await fetch(`${apiURL}/design/setting/trims/update`, {
             method: 'POST',
             body: JSON.stringify({ "update": updateFormFData, "trim": data }),
             headers: {
