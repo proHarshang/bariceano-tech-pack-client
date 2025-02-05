@@ -308,7 +308,6 @@ export default function Setting() {
     const [trimAddBox, setTrimAddBox] = useState(null);
     const [trimEditBox, setTrimEditBox] = useState(null);
     const [trimLoading, setTrimLoading] = useState(false);
-    const [trimEditOldName, setTrimEditOldName] = useState(null);
 
     const handleTrimAdd = async () => {
         try {
@@ -333,7 +332,7 @@ export default function Setting() {
         try {
             setTrimLoading(true)
             // Use the categoryEdit hook to update the category
-            const updated = await trimEdit(updateFormData, trimEditOldName, trimEditBox);
+            const updated = await trimEdit(updateFormData, trimEditBox);
             if (updated.status) {
                 fetchAllSetting(); // Refetch the data
                 setTrimEditBox(null);
@@ -1226,7 +1225,7 @@ export default function Setting() {
                                         <div className="flex justify-between items-center pb-2">
                                             <h1 className="text-base whitespace-nowrap">{trim.name}</h1>
                                             <div className="hidden gap-2 group-hover:flex">
-                                                <button type="button" onClick={() => { setTrimEditBox(trim); setTrimEditOldName(trim.name) }}> <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <button type="button" onClick={() => setTrimEditBox(trim)}> <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path
                                                         d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
                                                         stroke="#0C2F2F"
@@ -1342,10 +1341,10 @@ export default function Setting() {
                                         <span>as</span>
                                         <input
                                             type="text"
-                                            // value={trimEditBox.displayAs}
+                                            value={trimEditBox.displayName}
                                             placeholder={trimEditBox.name}
                                             className="w-1/2 p-2 border bg-slate-100 rounded"
-                                        // onChange={(e) => setTrimEditBox((prev) => ({ ...prev, "name": e.target.value }))}                                        
+                                            onChange={(e) => setTrimEditBox((prev) => ({ ...prev, "displayName": e.target.value }))}
                                         />
                                     </div>
                                     <div className="mb-4">
@@ -1432,10 +1431,10 @@ export default function Setting() {
                                         <span>as</span>
                                         <input
                                             type="text"
-                                            // value={trimAddBox.displayAs}
+                                            value={trimAddBox.displayName}
                                             placeholder={trimAddBox.name}
                                             className="w-1/2 p-2 border bg-slate-100 rounded"
-                                        // onChange={(e) => setTrimEditBox((prev) => ({ ...prev, "name": e.target.value }))}                                        
+                                            onChange={(e) => setTrimEditBox((prev) => ({ ...prev, "displayName": e.target.value }))}
                                         />
                                     </div>
 
