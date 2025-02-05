@@ -596,30 +596,39 @@ const TechPackPDFGenrate = (data) => {
 
                 }
                 else if (slide.type === "Silicon Label") {
-                    if (SiliconLabel[0] && SiliconLabel[0].data.images && SiliconLabel[0].data.images.length > 0) {
-                        console.log("SiliconLabel", SiliconLabel)
-                        SiliconLabel[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
-                        const maxWidth = pdf.internal.pageSize.getWidth()
+                    if (slide && slide.data.images && slide.data.images.length > 0) {
+                        slide.data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
+                        const maxWidth = pdf.internal.pageSize.getWidth();
                         const imageWidth = 213;
                         const xPosition = (maxWidth - imageWidth) / 2;
-                        SiliconLabel[0].data.images.forEach((image, index) => {
+
+                        slide.data.images.forEach((image, index) => {
                             if (index > 0) {
                                 pdf.addPage();
                             }
+                            const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
+                            pdf.addImage(imagePath, "jpeg", xPosition, 23, imageWidth, 160);
 
                             if (index === 0) {
                                 pdf.setFont('helvetica', 'bold');
-                                pdf.setFontSize(10);
-                                pdf.text('PLACEMENT : ', 20, 30);
-                                pdf.setFont('helvetica', 'normal');
-                                pdf.setFontSize(10);
-                                pdf.text(SiliconLabel[0]?.data?.title.toUpperCase(), 46, 30);
+                                pdf.setFontSize(12); // Increase font size
+
+                                const placementText = 'PLACEMENT : tgtrgftyytgytgtgjjgggfgfffftfugtgyvyrvyrfrfrfryfryvrrvyrvrhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhrtfyy ';
+                                // const valueText = slide?.data?.title.toUpperCase(); // Value text
+
+                                // Calculate the width of both texts combined
+                                const totalTextWidth = pdf.getStringUnitWidth(placementText ) * pdf.getFontSize() / pdf.internal.scaleFactor;
+
+                                // Calculate x position to center the whole line
+                                const combinedTextX = (maxWidth - totalTextWidth) / 2;
+
+                                // Draw the combined text centered
+                                pdf.text(placementText , combinedTextX, 30);
                             }
 
-                            const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
-                            pdf.addImage(imagePath, "jpeg", xPosition, 45, imageWidth, 140);
                         });
-                    } else {
+                    }
+                    else {
                         console.log("No SiliconeLabel found")
                     }
                 }
