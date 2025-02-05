@@ -606,6 +606,8 @@ const TechPackPDFGenrate = (data) => {
                             if (index > 0) {
                                 pdf.addPage();
                             }
+                            const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
+                            pdf.addImage(imagePath, "jpeg", xPosition, 23, imageWidth, 160);
 
                             if (index === 0) {
                                 pdf.setFont('helvetica', 'bold');
@@ -624,8 +626,6 @@ const TechPackPDFGenrate = (data) => {
                                 pdf.text(placementText , combinedTextX, 30);
                             }
 
-                            const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
-                            pdf.addImage(imagePath, "jpeg", xPosition, 45, imageWidth, 140);
                         });
                     }
                     else {
