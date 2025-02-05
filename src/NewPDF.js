@@ -316,8 +316,11 @@ const TechPackPDFGenrate = (data) => {
 
 
                 } else if (slide.type === "Layout0") {
+                    const maxWidth = pdf.internal.pageSize.getWidth()
+                    const imageWidth = 213;
+                    const xPosition = (maxWidth - imageWidth) / 2;
 
-                    pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout0[0].data.images[0].src}`, 'JPEG', 10, 25, 213, 160);
+                    pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout0[0].data.images[0].src}`, 'JPEG', xPosition, 25, imageWidth, 160);
                 } else if (slide.type === "Information") {
 
                     const colWidth = (pageWidth - 20) / 4; // Divide into four equal columns
