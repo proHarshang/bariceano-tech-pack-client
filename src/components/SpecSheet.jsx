@@ -13,7 +13,7 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
         "Production",
     ]);
 
-    const { addInfoField, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
+    const { trims, addInfoField, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
 
     const slide = getSlideByPage(page);
 
@@ -38,7 +38,7 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
         if (updateMode === "off" && selectedLabels && currentSubCategory && currentCategory) {
             updateInfoField(page, "Product Type", slide.data?.info?.find((item) => item.name === "Product Type").value, { "value": currentCategory })
             updateInfoField(page, "Gender", slide.data?.info?.find((item) => item.name === "Gender").value, { "value": currentSubCategory })
-            updateInfoField(page, "Trim", slide.data?.info?.find((item) => item.name === "Trim").value, { "value": selectedLabels.join(', ') })
+            updateInfoField(page, "Trim", slide.data?.info?.find((item) => item.name === "Trim").value, { "value": trims.filter(t => selectedLabels.includes(t.name)).map(t => t.displayName ? t.displayName : t.name).join(', ') })
         }
     }, [updateMode, selectedLabels, currentCategory, currentSubCategory])
 
