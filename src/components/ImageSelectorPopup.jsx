@@ -278,7 +278,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                                                 </select>
                                             </div>
                                             {croppedAreaPixels && <span className='text-sm opacity-60'>{croppedAreaPixels.width} X {croppedAreaPixels.height}</span>}
-                                            <div className="relative w-80 h-80 bg-gray-200">
+                                            <div className="relative w-80 h-80 bg-gray-200 border border-black">
                                                 <Cropper
                                                     image={image}
                                                     crop={crop}
