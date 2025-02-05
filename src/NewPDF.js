@@ -105,7 +105,6 @@ const TechPackPDFGenrate = (data) => {
                 Information = [],
                 ArtworkPlacementSheet = [],
                 ArtWork = [],
-                SiliconLabel = [],
             } = filteredSlides;
 
 
@@ -302,8 +301,12 @@ const TechPackPDFGenrate = (data) => {
 
                     // Add "Thread colour" and "Fabric colour" labels
                     pdf.setFontSize(12);
-                    pdf.text("Thread colour", threadColorXStart - 5, threadColorLabelY);
-                    pdf.text("Fabric colour", fabricColorXStart - 15, fabricColorLabelY);
+                    if (Layout3[0].data.threadColorTitle) {
+                        pdf.text(Layout3[0].data.threadColorTitle, threadColorXStart - 5, threadColorLabelY);
+                    }
+                    if (Layout3[0].data.fabricColorTitle) {
+                        pdf.text(Layout3[0].data.fabricColorTitle, fabricColorXStart - 15, fabricColorLabelY);
+                    }
 
                     // Adjust color swatch positions (Reduce spacing by 60% instead of 40%)
                     threadColorImages.forEach((image, index) => {
@@ -340,13 +343,22 @@ const TechPackPDFGenrate = (data) => {
                     let currentY = 28; // Initial Y position for rows
 
                     // Helper function to draw cells
-                    const drawCell = (pdf, x, y, width, height, text, border = true, align = 'left', bold = false, uppercase = false) => {
+                    const drawCell = (pdf, x, y, width, height, text, border = true, align = 'left', bold = false, uppercase = true) => {
                         if (border) pdf.rect(x, y, width, height); // Draw cell border
+
                         const formattedText = uppercase ? text.toUpperCase() : text;
                         if (bold) pdf.setFont(undefined, 'bold');
-                        pdf.text(formattedText, x + 2, y + height / 2 + 3, { align }); // Align text
+
+                        // Calculate text Y position for vertical centering
+                        const textHeight = pdf.getTextDimensions(formattedText).h; // Get text height
+                        const textY = y + (height / 2) + (textHeight / 3); // Adjust Y to center text
+
+                        pdf.text(formattedText, x + 2, textY); // Keep text aligned to the left (x + 2 for slight padding)
+
                         if (bold) pdf.setFont(undefined, 'normal'); // Reset to normal font
                     };
+
+
 
                     // Source data
                     const rowData = Information[0].data.info;
@@ -397,10 +409,21 @@ const TechPackPDFGenrate = (data) => {
                     // Render lastRows spanning columns 2, 3, and 4
                     lastRows.forEach((row) => {
                         const contentWidth = colWidth * 3; // Span three columns
-                        const wrappedText = pdf.splitTextToSize(row.value, contentWidth - 5); // Wrap text
-                        const rowHeight = Math.max(cellHeight, wrappedText.length * pdf.getLineHeight()); // Calculate height
-                        drawCell(pdf, col1X, currentY, colWidth, rowHeight, row.name, true, 'left', true, true); // Name (bold, uppercase)
-                        drawCell(pdf, col2X, currentY, contentWidth, rowHeight, wrappedText.join('\n'), true, 'left'); // Merged value
+
+                        // Convert text to uppercase before wrapping
+                        const formattedValue = row.value.toUpperCase();
+                        const wrappedText = pdf.splitTextToSize(formattedValue, contentWidth - 5); // Wrap text properly
+
+                        // Calculate row height based on wrapped text
+                        const rowHeight = Math.max(cellHeight, wrappedText.length * pdf.getLineHeight() - 10);
+
+                        // Draw name cell (bold, uppercase)
+                        drawCell(pdf, col1X, currentY, colWidth, rowHeight, row.name.toUpperCase(), true, 'left', true, true);
+
+                        // Draw merged value cell with wrapped text
+                        drawCell(pdf, col2X, currentY, contentWidth, rowHeight, wrappedText.join('\n'), true, 'left');
+
+                        // Move Y position down
                         currentY += rowHeight;
 
                         // Page breaking logic
@@ -409,6 +432,7 @@ const TechPackPDFGenrate = (data) => {
                             currentY = 28; // Reset Y position for the new page
                         }
                     });
+
                 } else if (slide.type === "ArtworkPlacementSheet") {
                     if (ArtworkPlacementSheet[0] && ArtworkPlacementSheet[0].data.artworkPlacementSheet?.length > 0) {
                         // Adjust margins and table settings
