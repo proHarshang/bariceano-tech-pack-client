@@ -33,8 +33,6 @@ const TechPack = () => {
       if (!selectedLabels || !currentCategory || !currentSubCategory) {
         navigate('/', { replace: true });
       } else if (isSettingDataFetched) {
-        console.log("Selections from header ", selectedLabels, currentCategory, currentSubCategory)
-
 
         updateField("gender", currentSubCategory);
         updateField("category", currentCategory);
@@ -207,8 +205,11 @@ const TechPack = () => {
     }
   });
 
+  console.log("Selections from header ", selectedLabels, currentCategory, currentSubCategory)
   // Combine static and dynamic arrays
   const combinedArray = [...staticArray, ...dynamicArray];
+  console.log("techPackData", techPackData.slides)
+  console.log("combinedArray", combinedArray)
 
   return (
     <form className="w-[841px] mx-auto mt-10" >
@@ -232,19 +233,21 @@ const TechPack = () => {
             <h2 className="text-xl font-semibold mb-4">Add a Page</h2>
             <div className="flex flex-wrap gap-4">
               {combinedArray.map((page) => {
+                const isInTechPack = techPackData.slides.some(slide => slide.name === page.name);
+
                 return (
                   <div
                     key={page.name}
-                    className={`w-28 h-28 border-2 rounded-md flex justify-center items-center cursor-pointer ${(selectedPage && (selectedPage.name === page.name)) ? "bg-gray-200" : ""
-                      }`}
+                    className={`w-28 h-28 border-2 rounded-md flex justify-center items-center cursor-pointer 
+        ${selectedPage && selectedPage.name === page.name ? "bg-gray-800 text-white" : ""} 
+        ${isInTechPack ? "bg-gray-400 text-white" : ""}`}
                     onClick={() => setSelectedPage(page)}
                   >
-                    <span className="text-center text-sm">
-                      {page.name}
-                    </span>
+                    <span className="text-center text-sm">{page.name}</span>
                   </div>
-                )
+                );
               })}
+
             </div>
             <div className="flex justify-end mt-10 space-x-2">
               <button
