@@ -119,8 +119,9 @@ const TechPackPDFGenrate = (data) => {
                     const frontImgX = colorImgX + colorImgWidth - 25;
                     pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.fabricColorImages[0].src}`, 'JPEG', colorImgX, firstRowY + 10, colorImgWidth, colorHeight);
                     pdf.setFont('helvetica', 'bold');
-                    if (Layout1[0].data.fabricColorImages[0].src) {
-                        pdf.text('Fabric Image', 26, firstRowY + 56);
+                    console.log("Layout1[0].data.fabricColorTitle", Layout1[0].data.fabricColorTitle)
+                    if (Layout1[0].data.fabricColorTitle) {
+                        pdf.text(Layout1[0].data.fabricColorTitle, 26, firstRowY + 56);
                     }
                     pdf.setTextColor('black');
                     // Sort images based on their numeric position
@@ -175,10 +176,9 @@ const TechPackPDFGenrate = (data) => {
                         }
                     });
                     pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.threadColorImages[0].src}`, 'JPEG', colorImgX, secondColorImgY + 25, colorImgWidth, colorHeight);
-                    if (Layout1[0].data.threadColorImages[0].src) {
-                        pdf.text('Thread Color', 26, firstRowY + 127);
+                    if (Layout1[0].data.threadColorTitle) {
+                        pdf.text(Layout1[0].data.threadColorTitle, 26, firstRowY + 127);
                     }
-
 
                 } else if (slide.type === "Layout2") {
                     // Sorting the images in different categories
@@ -243,15 +243,17 @@ const TechPackPDFGenrate = (data) => {
                     const colorImageHeight = 40;
                     const colorTopMargin = largeImageTop + largeImageHeight + 20;
 
-                    pdf.text("Thread colour", centerX - spacing - colorImageWidth - 55, colorTopMargin - 5);
-
+                    if (Layout2[0].data.threadColorTitle) {
+                        pdf.text(Layout2[0].data.threadColorTitle, centerX - spacing - colorImageWidth - 55, colorTopMargin - 5);
+                    }
                     // Adding thread color images in sorted order
-                    Layout2[0].data.fabricColorImages.forEach((image, index) => {
+                    Layout2[0].data.threadColorImages.forEach((image, index) => {
                         pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`, "JPEG", centerX - spacing - colorImageWidth - 55 + (index * (colorImageWidth + 5)), colorTopMargin, colorImageWidth, colorImageHeight);
                     });
 
-                    // Fabric color section
-                    pdf.text("Fabric colour", centerX + spacing + colorImageWidth - 35, colorTopMargin - 5);
+                    if (Layout2[0].data.fabricColorTitle) {
+                        pdf.text(Layout2[0].data.fabricColorTitle, centerX + spacing + colorImageWidth - 35, colorTopMargin - 5);
+                    }
 
                     // Adding fabric color images in sorted order
                     Layout2[0].data.fabricColorImages.forEach((image, index) => {
