@@ -21,6 +21,8 @@ export const TechPackProvider = ({ children }) => {
             "name": "Spec Sheet",
             "type": "Layout2",
             "data": {
+                "threadColorTitle" : "Thread colour",
+                "fabricColorTitle" : "Fabric colour",
                 "fabricColorImages": [
                     {
                         "position": 0,

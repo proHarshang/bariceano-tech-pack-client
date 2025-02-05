@@ -35,7 +35,13 @@ const Layout2 = ({ page }) => {
         </div>
         <div className='flex justify-evenly gap-10'>
           <div>
-            <h1 className='ml-5 font-bold'>Thread colour</h1>
+            <input
+              type='text'
+              placeholder='Thread colour'
+              value={slide.data?.threadColorTitle}
+              onChange={(e) => updateSlideByPage(page, `data.threadColorTitle`, e.target.value)}
+              className='ml-5 font-bold'
+            />
             <div className='w-full h-full flex justify-evenly gap-5'>
               {[0, 1].map((key, index) => (
                 <div
@@ -59,7 +65,13 @@ const Layout2 = ({ page }) => {
             </div>
           </div>
           <div>
-            <h1 className='ml-5 font-bold'>Fabric colour</h1>
+            <input
+              type="text"
+              placeholder='Fabric colour'
+              value={slide.data?.fabricColorTitle}
+              onChange={(e) => updateSlideByPage(page, `data.fabricColorTitle`, e.target.value)}
+              className='ml-5 font-bold'
+            />
             <div className='w-full h-full flex justify-between gap-5'>
               {[0, 1].map((key, index) => (
                 <div

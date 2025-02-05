@@ -28,7 +28,13 @@ const Layout1 = ({ page }) => {
                                 </label>
                             )}
                         </div>
-                        <h4>Fabric Colour</h4>
+                        <input
+                            type='text'
+                            placeholder='Fabric colour'
+                            value={slide.data?.fabricColorTitle}
+                            onChange={(e) => updateSlideByPage(page, `data.fabricColorTitle`, e.target.value)}
+                            className='ml-5 font-bold'
+                        />
                     </div>
                     <div className='flex flex-col items-center'>
                         <div className='rounded-2xl h-[151px] w-[151px] flex items-center justify-center'>
@@ -45,7 +51,13 @@ const Layout1 = ({ page }) => {
                                 </label>
                             )}
                         </div>
-                        <h4>Thread Colour</h4>
+                        <input
+                            type='text'
+                            placeholder='Thread colour'
+                            value={slide.data?.threadColorTitle}
+                            onChange={(e) => updateSlideByPage(page, `data.threadColorTitle`, e.target.value)}
+                            className='ml-5 font-bold'
+                        />
                     </div>
                 </div>
                 <div className='w-[321px] h-[321px] mt-5 flex items-center justify-center rounded-2xl'>

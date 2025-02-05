@@ -26,7 +26,7 @@ const Layout3 = ({ page }) => {
                             />
                         ) : (
                             <div className='bg-[#FCFCFC] rounded-2xl text-[#DFDFDF] border-2 border-dashed text-center flex flex-col items-center justify-center w-full h-full cursor-pointer'>
-                            <button type='button' onClick={() => setOpenPopupId(`images-${key}`)}>Upload an image</button>
+                                <button type='button' onClick={() => setOpenPopupId(`images-${key}`)}>Upload an image</button>
                             </div>
                         )}
                     </div>
@@ -34,7 +34,13 @@ const Layout3 = ({ page }) => {
             </div>
             <div className='flex gap-14 mt-10'>
                 <div>
-                    <h1 className='font-bold ml-5'>Thread colour</h1>
+                    <input
+                        type='text'
+                        placeholder='Thread colour'
+                        value={slide.data?.threadColorTitle}
+                        onChange={(e) => updateSlideByPage(page, `data.threadColorTitle`, e.target.value)}
+                        className='ml-5 font-bold'
+                    />
                     <div className='w-full h-full flex'>
                         {[0, 1, 2].map((key, index) => (
                             <div key={key} className='w-[120px] h-[120px] rounded-2xl flex items-center justify-center'>
@@ -54,7 +60,13 @@ const Layout3 = ({ page }) => {
                     </div>
                 </div>
                 <div>
-                    <h1 className='font-bold ml-5'>Fabric colour</h1>
+                    <input
+                        type='text'
+                        placeholder='Fabric colour'
+                        value={slide.data?.fabricColorTitle}
+                        onChange={(e) => updateSlideByPage(page, `data.fabricColorTitle`, e.target.value)}
+                        className='ml-5 font-bold'
+                    />
                     <div className='w-full h-full flex'>
                         {[0, 1, 2].map((key, index) => (
                             <div key={index} className='w-[120px] h-[120px] rounded-2xl flex items-center'>
