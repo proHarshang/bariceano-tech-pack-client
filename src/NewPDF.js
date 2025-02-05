@@ -317,7 +317,7 @@ const TechPackPDFGenrate = (data) => {
 
                 } else if (slide.type === "Layout0") {
 
-                    pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout0[0].data.images[0].src}`, 'JPEG', 10, 25, 297 - 10, 167);
+                    pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout0[0].data.images[0].src}`, 'JPEG', 10, 25, 213, 160);
                 } else if (slide.type === "Information") {
 
                     const colWidth = (pageWidth - 20) / 4; // Divide into four equal columns
@@ -456,7 +456,7 @@ const TechPackPDFGenrate = (data) => {
                                 pdf.text(
                                     header.toUpperCase(),
                                     currentX + columnWidths[i] / 2,
-                                    startY + rowHeight / 4 - 7,
+                                    startY + rowHeight / 4 - 7 + 1,
                                     { align: 'center' }
                                 );
                                 currentX += columnWidths[i];
@@ -489,8 +489,9 @@ const TechPackPDFGenrate = (data) => {
                             currentX += columnWidths[0];
 
                             // Placement
-                            let placementLines = breakTextIntoLines(row.placement, 16);
-                            let placementY = currentY + rowHeight / 2 - (placementLines.length - 1) * 5;
+                            pdf.setFontSize(10); // Set smaller font size
+                            let placementLines = pdf.splitTextToSize(row.placement.toUpperCase(), columnWidths[1] - 10);
+                            let placementY = currentY + (rowHeight - (placementLines.length * 10)) / 2;
                             pdf.rect(currentX, currentY, columnWidths[1], rowHeight);
                             placementLines.forEach((line, index) => {
                                 pdf.text(line, currentX + 5, placementY + index * 10, { baseline: 'middle' });
@@ -512,7 +513,7 @@ const TechPackPDFGenrate = (data) => {
                             let techniqueY = currentY + rowHeight / 2 - (techniqueLines.length - 1) * 5;
                             pdf.rect(currentX, currentY, columnWidths[3], rowHeight);
                             techniqueLines.forEach((line, index) => {
-                                pdf.text(line, currentX + 5, techniqueY + index * 10, { baseline: 'middle' });
+                                pdf.text(line.toUpperCase(), currentX + 5, techniqueY + index * 10, { baseline: 'middle' });
                             });
                             currentX += columnWidths[3];
 
@@ -521,7 +522,7 @@ const TechPackPDFGenrate = (data) => {
                             let colorY = currentY + rowHeight / 2 - (colorLines.length - 1) * 5;
                             pdf.rect(currentX, currentY, columnWidths[4], rowHeight);
                             colorLines.forEach((line, index) => {
-                                pdf.text(line, currentX + 5, colorY + index * 10, { baseline: 'middle' });
+                                pdf.text(line.toUpperCase(), currentX + 5, colorY + index * 10, { baseline: 'middle' });
                             });
                             currentX += columnWidths[4];
 
@@ -612,8 +613,10 @@ const TechPackPDFGenrate = (data) => {
                             if (index === 0) {
                                 pdf.setFont('helvetica', 'bold');
                                 pdf.setFontSize(12); // Increase font size
-
-                                const placementText = 'PLACEMENT :' + slide?.data?.title.toUpperCase();
+                                console.log("slide?", slide)
+                                console.log("slide?.data", slide?.data)
+                                console.log("slide?.data?.title", slide?.data?.title)
+                                const placementText = 'PLACEMENT : ' + slide?.data?.title.toUpperCase();
 
                                 // Calculate the width of both texts combined
                                 const totalTextWidth = pdf.getStringUnitWidth(placementText) * pdf.getFontSize() / pdf.internal.scaleFactor;
