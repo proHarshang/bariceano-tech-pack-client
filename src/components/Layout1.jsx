@@ -11,11 +11,10 @@ const Layout1 = ({ page }) => {
 
     return (
         <article>
-            <div className='flex justify-evenly w-full gap-5'>
+            <div className='flex w-full'>
                 <div className='flex flex-col h-full'>
-                    <div className='w-full h-[140px] mb-12'>
-                        <h1 className='mb-2'>Fabric Colour</h1>
-                        <div className='rounded-2xl h-full w-full flex items-center justify-center'>
+                    <div className='mb-12 flex flex-col items-center'>
+                        <div className='rounded-2xl h-[151px] w-[151px] flex items-center justify-center'>
                             {slide.data?.fabricColorImages.find((item) => item.position === 0).src ? (
                                 <img
                                     onClick={() => setOpenPopupId(`fabricColorImages-0`)}
@@ -29,10 +28,10 @@ const Layout1 = ({ page }) => {
                                 </label>
                             )}
                         </div>
+                        <h4>Fabric Colour</h4>
                     </div>
-                    <div className='w-full h-[140px]'>
-                        <h1 className='mb-2'>Thread Colour</h1>
-                        <div className='rounded-2xl h-full w-full flex items-center justify-center'>
+                    <div className='flex flex-col items-center'>
+                        <div className='rounded-2xl h-[151px] w-[151px] flex items-center justify-center'>
                             {slide.data?.threadColorImages.find((item) => item.position === 0).src ? (
                                 <img
                                     onClick={() => setOpenPopupId(`threadColorImages-0`)}
@@ -46,9 +45,10 @@ const Layout1 = ({ page }) => {
                                 </label>
                             )}
                         </div>
+                        <h4>Thread Colour</h4>
                     </div>
                 </div>
-                <div className='w-[40%] h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
+                <div className='w-[321px] h-[321px] mt-5 flex items-center justify-center rounded-2xl'>
                     {slide.data?.images[0].src ? (
                         <img
                             onClick={() => setOpenPopupId(`images-0`)}
@@ -62,7 +62,7 @@ const Layout1 = ({ page }) => {
                         </label>
                     )}
                 </div>
-                <div className='w-[40%] cursor-pointer h-[330px] mt-5 flex items-center justify-center rounded-2xl'>
+                <div className='w-[321px] cursor-pointer h-[321px] mt-5 flex items-center justify-center rounded-2xl'>
                     {slide.data?.images[1].src ? (
                         <img
                             onClick={() => setOpenPopupId(`images-1`)}
