@@ -25,25 +25,29 @@ const TechPackPDFGenrate = (data) => {
         pdf.setFontSize(12);
         pdf.setFont('helvetica', 'bold');
         pdf.setTextColor(0, 0, 0);
+
+        // Left-aligned text
         pdf.text('BARISCEANO', 10, 8);
         pdf.setFont('helvetica', 'normal');
-        pdf.text(`${pageName}`, 10, 14);
+        pdf.text(`${pageName}`, 10, 14); // Adjusted spacing to match right side
 
+        // Center the Logo
         const imgWidth = 16;
         const imgHeight = 16;
         const imgX = (pageWidth - imgWidth) / 2;
         const imgY = 2;
         pdf.addImage('/logo512.png', 'PNG', imgX, imgY, imgWidth, imgHeight);
 
-        pdf.setFontSize(12);
-        const pgX = pageWidth - 35;
+        // Right-aligned text with adjusted spacing
+        const pgX = pageWidth - 45;
         const pgY = 8;
-        pdf.text(`Page - ${pageNumber} `, pgX, pgY);
+        pdf.text(`Page - ${pageNumber}`, pgX, pgY);
+        pdf.text(data.data.styleNo, pgX, pgY + 6); // Adjusted to match left side spacing
 
-        pdf.text(data.data.styleNo, pgX, pgY + 5);
-
+        // Horizontal line
         pdf.line(0, lineY, pageWidth, lineY);
     }
+
 
     const firstRowY = lineY + 10;
     secondColorImgY = firstRowY + colorImgHeight + 6; // Update secondColorImgY value
@@ -560,7 +564,7 @@ const TechPackPDFGenrate = (data) => {
                             // Add the header section with the page number
                             headerSection(ArtWork[0].page, slide.name);
                             const maxWidth = pdf.internal.pageSize.getWidth()
-                            const imageWidth = 213;
+                            const imageWidth = 233;
                             const xPosition = (maxWidth - imageWidth) / 2;
 
                             // Add the artwork image
@@ -568,9 +572,9 @@ const TechPackPDFGenrate = (data) => {
                                 `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`, // Image path
                                 'PNG', // Image format
                                 xPosition, // X position
-                                25, // Y position
+                                21.5, // Y position
                                 imageWidth, // Width (A4 width minus 10px margin on both sides)
-                                160 // Height
+                                175 // Height
                             );
 
                             // Add the footer section
@@ -593,7 +597,7 @@ const TechPackPDFGenrate = (data) => {
                                 const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
 
                                 // Add image to PDF with adjusted position and dimensions
-                                pdf.addImage(imagePath, "JPEG", xPosition, 25, imageWidth, 160);
+                                pdf.addImage(imagePath, "JPEG", xPosition, 21.5, imageWidth, 175);
                             });
                         } else {
                             console.warn(`No images found for page ${slide.page}. Skipping image addition.`);
