@@ -491,7 +491,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                                         <td>{item?.gender}</td>
                                         <td>{item?.category}</td>
                                         <td>
-                                            {item.comment?.message ? (
+                                            {item.comment?.message && item.comment?.message.trim() != "" ? (
                                                 <button type="button" className="m-auto px-3" onClick={() => toggleSidebar(item.styleNo, item.comment.message)}>
                                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M11.6666 10C11.6666 10.9205 10.9204 11.6667 9.99992 11.6667C9.07942 11.6667 8.33325 10.9205 8.33325 10C8.33325 9.07954 9.07942 8.33337 9.99992 8.33337C10.9204 8.33337 11.6666 9.07954 11.6666 10Z" fill="black" />
