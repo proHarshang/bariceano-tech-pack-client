@@ -176,7 +176,7 @@ const TechPackPDFGenrate = (data) => {
                     });
                     pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout1[0].data.threadColorImages[0].src}`, 'JPEG', colorImgX, secondColorImgY + 25, colorImgWidth, colorHeight);
                     if (Layout1[0].data.threadColorImages[0].src) {
-                        pdf.text('Thread Color', 26, firstRowY + 118);
+                        pdf.text('Thread Color', 26, firstRowY + 127);
                     }
 
 
@@ -454,7 +454,7 @@ const TechPackPDFGenrate = (data) => {
                                 pdf.setFillColor(0, 0, 0); // Black background
                                 pdf.rect(currentX, startY - 2, columnWidths[i], rowHeight / 2 - 12, 'F'); // Fill rectangle
                                 pdf.text(
-                                    header,
+                                    header.toUpperCase(),
                                     currentX + columnWidths[i] / 2,
                                     startY + rowHeight / 4 - 7,
                                     { align: 'center' }
@@ -613,17 +613,16 @@ const TechPackPDFGenrate = (data) => {
                                 pdf.setFont('helvetica', 'bold');
                                 pdf.setFontSize(12); // Increase font size
 
-                                const placementText = 'PLACEMENT : tgtrgftyytgytgtgjjgggfgfffftfugtgyvyrvyrfrfrfryfryvrrvyrvrhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhrtfyy ';
-                                // const valueText = slide?.data?.title.toUpperCase(); // Value text
+                                const placementText = 'PLACEMENT :' + slide?.data?.title.toUpperCase();
 
                                 // Calculate the width of both texts combined
-                                const totalTextWidth = pdf.getStringUnitWidth(placementText ) * pdf.getFontSize() / pdf.internal.scaleFactor;
+                                const totalTextWidth = pdf.getStringUnitWidth(placementText) * pdf.getFontSize() / pdf.internal.scaleFactor;
 
                                 // Calculate x position to center the whole line
                                 const combinedTextX = (maxWidth - totalTextWidth) / 2;
 
                                 // Draw the combined text centered
-                                pdf.text(placementText , combinedTextX, 30);
+                                pdf.text(placementText, combinedTextX, 30);
                             }
 
                         });
