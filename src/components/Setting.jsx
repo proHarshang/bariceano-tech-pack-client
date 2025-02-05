@@ -1425,8 +1425,7 @@ export default function Setting() {
                                             placeholder="Enter Name"
                                             value={trimAddBox.name}
                                             className="w-1/2 p-2 border bg-slate-100 rounded"
-                                            onChange={(e) => setTrimAddBox((prev) => ({ ...prev, name: e.target.value }))}
-                                            disabled
+                                            onChange={(e) => setTrimAddBox((prev) => ({ ...prev, name: e.target.value }))}                                            
                                         />
                                         <span>as</span>
                                         <input

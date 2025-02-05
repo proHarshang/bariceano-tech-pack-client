@@ -71,7 +71,7 @@ const TechPack = () => {
             currentPage += 1;
             addSlide({
               "page": currentPage,
-              "name": label.name,
+              "name": label.displayName,
               "type": getType(label, currentCategory, currentSubCategory),
               "data": {
                 "images": [
@@ -129,10 +129,10 @@ const TechPack = () => {
 
   const handleAddPage = () => {
     if (selectedPage.type === "Silicon Label") {
-      selectedPage.data.images.map(item => {
+      selectedPage.data.images.map(item => {        
         addSlideAtIndex(selectedIndex, {
           "page": 10,
-          "name": selectedPage.name,
+          "name": selectedPage.displayName ? selectedPage.displayName : selectedPage.name,
           "type": getType(selectedPage, currentCategory, currentSubCategory),
           "data": {
             "title": "",
@@ -149,7 +149,7 @@ const TechPack = () => {
       selectedPage.data.images.map(item => {
         addSlideAtIndex(selectedIndex, {
           "page": 10,
-          "name": selectedPage.name,
+          "name": selectedPage.displayName ? selectedPage.displayName : selectedPage.name,
           "type": getType(selectedPage, currentCategory, currentSubCategory),
           "data": {
             "images": [
@@ -195,9 +195,10 @@ const TechPack = () => {
   ];
 
   // Map the dynamic array to add the `type` property (same as `name`)
-  const dynamicArray = trims.map(item => {
+  const dynamicArray = trims.map(item => {    
     return {
       "name": item.name,
+      "displayName": item.displayName ? item.displayName : "item.name",
       "type": item.name,
       "data": {
         "images": item.images
