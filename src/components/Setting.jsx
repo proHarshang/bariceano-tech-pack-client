@@ -571,7 +571,7 @@ export default function Setting() {
                 <div>
                     <div className="flex gap-10 pb-5">
                         <div>
-                            <h1 className="font-bold text-xl">New Category</h1>
+                            <h1 className="font-bold text-xl">Category</h1>
                         </div>
                         <div className="flex gap-3">
                             <button type="button" className="underline" onClick={() => setCategoryAddBox(true)}>
@@ -695,7 +695,7 @@ export default function Setting() {
                 <div>
                     <div className="flex gap-10 pb-5">
                         <div>
-                            <h1 className="font-bold text-xl">Category (Gender wise)</h1>
+                            <h1 className="font-bold text-xl">Gender</h1>
                         </div>
                         <div className="flex gap-3">
                             <button type="button" className="underline" onClick={() => setGenderAddBox(true)}>
@@ -827,7 +827,7 @@ export default function Setting() {
             <div className="border-b p-10 space-y-10">
                 <div>
                     <div className="flex gap-10 pb-5">
-                        <h1 className="font-bold text-xl">Gender (size chart)</h1>
+                        <h1 className="font-bold text-xl">Size Chart</h1>
                         <div className="flex gap-5">
                             <button type="button" className="underline" onClick={handleAddOption}>Add</button>
                             {selectedOption && <button type="button" className="underline" onClick={handleDelete}>Delete</button>}
@@ -872,7 +872,7 @@ export default function Setting() {
                     {isAdding && (
                         <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
                             <div className="bg-white p-6 pt-3 rounded shadow-lg overflow-scroll w-[50%] max-w-[1000px]">
-                                <h2 className="text-xl mb-4">Add Size Guide</h2>
+                                <h2 className="text-xl mb-4">Add Size Chart</h2>
                                 {/* Select Category */}
                                 <div className="mb-3">
                                     <h3 className="mb-1">Select Category</h3>
@@ -919,7 +919,7 @@ export default function Setting() {
                                         name="name"
                                         value={formValues.name}
                                         className="p-2 rounded mb-4 w-full border border-black outline outline-1"
-                                        placeholder="Enter size guide name"
+                                        placeholder="Enter size chart name"
                                         disabled
                                     />
                                 </div>
@@ -960,7 +960,7 @@ export default function Setting() {
                                         disabled={loading}
                                         className="bg-black text-white px-4 py-2 rounded-lg"
                                     >
-                                        {loading ? 'Adding...' : 'Add Size Guide'}
+                                        {loading ? 'Adding...' : 'Add Size Chart'}
                                     </button>
                                     <button
                                         onClick={handleCancelAddOption}
@@ -974,17 +974,17 @@ export default function Setting() {
                                 {error && <p className="text-red-500 mt-2">{error}</p>}
 
                                 {/* Success Message */}
-                                {success && <p className="text-green-500 mt-2">Size guide added successfully!</p>}
+                                {success && <p className="text-green-500 mt-2">Size Chart added successfully!</p>}
                             </div>
                         </div>
                     )}
 
-                    {/* Modal for editing a size guide */}
+                    {/* Modal for editing a size Chart */}
                     {isEditing && (
                         <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
                             <div className="bg-white p-6 pt-3 rounded shadow-lg h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
                                 <div className="flex justify-between item-center mb-4  sticky z-50 top-[-24px] pt-5  left-0 bg-white">
-                                    <h2 className="text-xl">Edit Size Guide</h2>
+                                    <h2 className="text-xl">Edit Size Chart</h2>
                                     {/* Buttons */}
                                     <div className="flex gap-4">
                                         <button
@@ -992,7 +992,7 @@ export default function Setting() {
                                             onClick={handleEditOption}
                                             className="bg-black text-white px-4 py-2 rounded-lg"
                                         >
-                                            {loading ? 'Updating...' : 'Update Size Guide'}
+                                            {loading ? 'Updating...' : 'Update Size Chart'}
                                         </button>
                                         <button
                                             type="button"
@@ -1009,7 +1009,7 @@ export default function Setting() {
                                     name="name"
                                     value={formValues.name}
                                     className="outline p-2 rounded mb-4 w-full border"
-                                    placeholder="Enter updated size guide name"
+                                    placeholder="Enter updated size chart name"
                                     disabled
                                 />
 
