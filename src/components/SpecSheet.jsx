@@ -34,13 +34,13 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
         fetchAllSetting();
     }, []);
 
-    useEffect(() => {
+    useEffect(() => {        
         if (updateMode === "off" && selectedLabels && currentSubCategory && currentCategory) {
             updateInfoField(page, "Product Type", slide.data?.info?.find((item) => item.name === "Product Type").value, { "value": currentCategory })
             updateInfoField(page, "Gender", slide.data?.info?.find((item) => item.name === "Gender").value, { "value": currentSubCategory })
             updateInfoField(page, "Trim", slide.data?.info?.find((item) => item.name === "Trim").value, { "value": trims.filter(t => selectedLabels.includes(t.name)).map(t => t.displayName ? t.displayName : t.name).join(', ') })
         }
-    }, [updateMode, selectedLabels, currentCategory, currentSubCategory])
+    }, [updateMode, trims, selectedLabels, currentCategory, currentSubCategory])
 
     return (
         <section className='mx-auto mb-20 pl-7 pr-2'>
