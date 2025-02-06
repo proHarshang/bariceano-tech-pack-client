@@ -424,24 +424,32 @@ const TechPackPDFGenrate = (data) => {
 
                         // Check if text length is greater than 70 characters, wrap if needed
                         let wrappedText = [];
+                        let isWrapped = false;
                         if (formattedValue.length > 70) {
                             wrappedText = pdf.splitTextToSize(formattedValue, contentWidth - 5); // Wrap text properly if > 70 characters
+                            isWrapped = true;
                         } else {
                             wrappedText = [formattedValue]; // Single line if text is short enough
                         }
 
                         // Calculate row height based on the number of lines after wrapping
                         const textHeight = wrappedText.length * pdf.getLineHeight();
-                        const rowHeight = Math.max(cellHeight, textHeight); // Ensure row height is sufficient for wrapped text
+                        let rowHeight = Math.max(cellHeight, textHeight); // Ensure row height is sufficient for wrapped text
 
                         // Calculate space for vertical centering
-                        const marginTop = (rowHeight - textHeight) / 2; // Center the text vertically (top-bottom)
+                        const marginTop = (rowHeight - textHeight) * 0.1; // Reduce top space
+                        const marginBottom = (rowHeight - textHeight) * 0.1; // Add bottom space
+
+                        // Adjust row height if text is wrapped
+                        if (isWrapped) {
+                            rowHeight = textHeight + marginBottom; // Add bottom margin to row height
+                        }
 
                         // Draw name cell (bold, uppercase)
                         drawCell(pdf, col1X, currentY, colWidth, rowHeight, row.name.toUpperCase(), true, 'left', true, true);
 
                         // Draw merged value cell with wrapped text (centered vertically)
-                        drawCell(pdf, col2X, currentY + marginTop, contentWidth, rowHeight, wrappedText.join('\n'), true, 'center');
+                        drawCell(pdf, col2X, currentY + marginTop, contentWidth, rowHeight, wrappedText.join('\n'), true, 'center', false, true);
 
                         // Move Y position down
                         currentY += rowHeight;
