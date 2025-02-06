@@ -1,6 +1,9 @@
 import { jsPDF } from 'jspdf';
 import { useState } from 'react';
 import { AiOutlineLoading } from "react-icons/ai";
+import autoTable from 'jspdf-autotable'; // Import the autotable plugin
+jsPDF.autoTable = autoTable;
+
 
 const TechPackPDFGenrate = (data) => {
     const [isDownloading, setIsDownloading] = useState(false);
@@ -341,129 +344,65 @@ const TechPackPDFGenrate = (data) => {
                     pdf.addImage(`${process.env.REACT_APP_API_URL}/uploads/techpack/${Layout0[0].data.images[0].src}`, 'JPEG', xPosition, 25, imageWidth, 160);
                 } else if (slide.type === "Information") {
 
-                    const colWidth = (pageWidth - 20) / 4; // Divide into four equal columns
-                    const col1X = 10; // First column start
-                    const col2X = col1X + colWidth; // Second column start
-                    const col3X = col2X + colWidth; // Third column start
-                    const col4X = col3X + colWidth; // Fourth column start
-
-                    // Row configurations
-                    let cellHeight = 12; // Default cell height
-                    let currentY = 28; // Initial Y position for rows
-
-                    // Helper function to draw cells
-                    const drawCell = (pdf, x, y, width, height, text, border = true, align = 'left', bold = false, uppercase = true) => {
-                        if (border) pdf.rect(x, y, width, height); // Draw cell border
-
-                        const formattedText = uppercase ? text.toUpperCase() : text;
-                        if (bold) pdf.setFont(undefined, 'bold');
-
-                        // Calculate text Y position for vertical centering
-                        const textHeight = pdf.getTextDimensions(formattedText).h; // Get text height
-                        const textY = y + (height / 2) + (textHeight / 3); // Adjust Y to center text
-
-                        pdf.text(formattedText, x + 2, textY); // Keep text aligned to the left (x + 2 for slight padding)
-
-                        if (bold) pdf.setFont(undefined, 'normal'); // Reset to normal font
-                    };
-
-
-
-                    // Source data
                     const rowData = Information[0].data.info;
 
-                    // Separate rows: Last rows and others
+                    // Separate 'Last' rows and other rows
                     const nonLastRows = rowData.filter(row => row.position !== 'Last');
                     const lastRows = rowData.filter(row => row.position === 'Last');
 
-                    // Ensure nonLastRows is even
+                    // Ensure even number of rows in nonLastRows for alignment
                     if (nonLastRows.length % 2 !== 0) {
-                        nonLastRows.push({ name: '', value: '', position: '' }); // Add an empty row
+                        nonLastRows.push({ name: '', value: '', position: '' }); // Add an empty row for spacing
                     }
 
-                    // Split nonLastRows into two halves
+                    // Split nonLastRows into two columns
                     const midIndex = Math.ceil(nonLastRows.length / 2);
                     const firstHalf = nonLastRows.slice(0, midIndex);
                     const secondHalf = nonLastRows.slice(midIndex);
 
-                    // Render firstHalf into columns 1 and 2
-                    firstHalf.forEach((row) => {
-                        const rowHeight = cellHeight; // Default row height
-                        drawCell(pdf, col1X, currentY, colWidth, rowHeight, row.name, true, 'left', true, true); // Name (bold, uppercase)
-                        drawCell(pdf, col2X, currentY, colWidth, rowHeight, row.value, true, 'left'); // Value
-                        currentY += rowHeight;
+                    // Format nonLastRows for autoTable
+                    const formattedData = firstHalf.map((row, index) => [
+                        { content: row.name.toUpperCase(), styles: { fontStyle: 'bold', halign: 'left' } },
+                        row.value.toUpperCase(),
+                        secondHalf[index] ? { content: secondHalf[index].name.toUpperCase(), styles: { fontStyle: 'bold', halign: 'left' } } : '',
+                        secondHalf[index] ? secondHalf[index].value.toUpperCase() : ''
+                    ]);
 
-                        // Page breaking logic
-                        if (currentY > pdf.internal.pageSize.height - 20) {
-                            pdf.addPage();
-                            currentY = 28; // Reset Y position for the new page
-                        }
-                    });
+                    // Append 'Last' rows to the same table
+                    lastRows.forEach(row => {
+                        let formattedValue = row.value.toUpperCase();
 
-                    // Render secondHalf into columns 3 and 4
-                    currentY = 28; // Reset Y for the next column group
-                    secondHalf.forEach((row) => {
-                        const rowHeight = cellHeight; // Default row height
-                        drawCell(pdf, col3X, currentY, colWidth, rowHeight, row.name, true, 'left', true, true); // Name (bold, uppercase)
-                        drawCell(pdf, col4X, currentY, colWidth, rowHeight, row.value, true, 'left'); // Value
-                        currentY += rowHeight;
-
-                        // Page breaking logic
-                        if (currentY > pdf.internal.pageSize.height - 20) {
-                            pdf.addPage();
-                            currentY = 28; // Reset Y position for the new page
-                        }
-                    });
-
-                    // Render lastRows spanning columns 2, 3, and 4
-                    lastRows.forEach((row) => {
-                        const contentWidth = colWidth * 3; // Span three columns
-
-                        // Convert text to uppercase before wrapping
-                        const formattedValue = row.value.toUpperCase();
-
-                        // Check if text length is greater than 70 characters, wrap if needed
-                        let wrappedText = [];
-                        let isWrapped = false;
+                        // Wrap text only if it's longer than 70 characters
                         if (formattedValue.length > 70) {
-                            wrappedText = pdf.splitTextToSize(formattedValue, contentWidth - 5); // Wrap text properly if > 70 characters
-                            isWrapped = true;
-                        } else {
-                            wrappedText = [formattedValue]; // Single line if text is short enough
+                            formattedValue = pdf.splitTextToSize(formattedValue, 220);
                         }
 
-                        // Calculate row height based on the number of lines after wrapping
-                        const textHeight = wrappedText.length * pdf.getLineHeight();
-                        let rowHeight = Math.max(cellHeight, textHeight); // Ensure row height is sufficient for wrapped text
+                        formattedData.push([
+                            { content: row.name.toUpperCase(), styles: { fontStyle: 'bold', halign: 'left' } },
+                            { content: formattedValue, colSpan: 3, styles: { halign: 'left' } }
+                        ]);
+                    });
 
-                        // Calculate space for vertical centering
-                        const marginTop = (rowHeight - textHeight) * 0.1; // Reduce top space
-                        const marginBottom = (rowHeight - textHeight) * 0.1; // Add bottom space
-
-                        // Adjust row height if text is wrapped
-                        if (isWrapped) {
-                            rowHeight = textHeight + marginBottom; // Add bottom margin to row height
-                        }
-
-                        // Draw name cell (bold, uppercase)
-                        drawCell(pdf, col1X, currentY, colWidth, rowHeight, row.name.toUpperCase(), true, 'left', true, true);
-
-                        // Draw merged value cell with wrapped text (centered vertically)
-                        drawCell(pdf, col2X, currentY + marginTop, contentWidth, rowHeight, wrappedText.join('\n'), true, 'center', false, true);
-
-                        // Move Y position down
-                        currentY += rowHeight;
-
-                        // Page breaking logic
-                        if (currentY > pdf.internal.pageSize.height - 20) {
-                            pdf.addPage();
-                            currentY = 28; // Reset Y position for the new page
+                    // Generate the table
+                    pdf.autoTable({
+                        startY: 28,
+                        head: [['Name', 'Value', 'Name', 'Value']], // Header only once
+                        body: formattedData,
+                        theme: 'grid',
+                        styles: { fontSize: 10, cellPadding: 3 },
+                        headStyles: { fillColor: [0, 0, 0], textColor: 255, fontSize: 13, fontStyle: 'bold' },
+                        columnStyles: {
+                            0: { cellWidth: 60 },
+                            1: { cellWidth: 80 },
+                            2: { cellWidth: 60 },
+                            3: { cellWidth: 80 }
                         }
                     });
 
                 } else if (slide.type === "ArtworkPlacementSheet") {
                     if (ArtworkPlacementSheet[0] && ArtworkPlacementSheet[0].data.artworkPlacementSheet?.length > 0) {
                         // Adjust margins and table settings
+                        console.log("ArtworkPlacementSheet", ArtworkPlacementSheet[0])
                         const leftMargin = 10; // Left margin
                         const rightMargin = 10; // Right margin
                         const availableWidth = pageWidth - leftMargin - rightMargin;
@@ -564,9 +503,9 @@ const TechPackPDFGenrate = (data) => {
                             currentX += columnWidths[1];
 
                             // Artwork (Larger Image)
-                            pdf.rect(currentX, currentY, columnWidths[2], rowHeight);
+                            pdf.rect(currentX, currentY, 50, 50);
                             if (row.artwork) {
-                                pdf.addImage(row.artwork, 'JPEG', currentX + 10, currentY + 3, columnWidths[2] - 20, rowHeight - 6);
+                                pdf.addImage(row.artwork, 'JPEG', currentX, currentY, 50, 50);
                             } else {
                                 pdf.setTextColor(150, 150, 150);
                                 pdf.text('No Image', currentX + columnWidths[2] / 2, currentY + rowHeight / 2, {
@@ -594,9 +533,9 @@ const TechPackPDFGenrate = (data) => {
                             currentX += columnWidths[4];
 
                             // Placement Image (Larger Image)
-                            pdf.rect(currentX, currentY, columnWidths[5], rowHeight);
+                            pdf.rect(currentX, currentY, 50, 50);
                             if (row.placementImage) {
-                                pdf.addImage(row.placementImage, 'JPEG', currentX + 10, currentY + 3, columnWidths[5] - 20, rowHeight - 6);
+                                pdf.addImage(row.placementImage, 'JPEG', currentX, currentY + 3, 50, 50);
                             } else {
                                 pdf.setTextColor(150, 150, 150);
                                 pdf.text('No Image', currentX + columnWidths[5] / 2, currentY + rowHeight / 2, {

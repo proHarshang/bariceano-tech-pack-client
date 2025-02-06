@@ -108,14 +108,17 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     // search logic 
     const [searchTerm, setSearchTerm] = useState('');
+
     const filteredBySearch = data.filter(techpack =>
-        techpack.styleNo?.includes(searchTerm) ||
-        techpack.designer?.includes(searchTerm));
+        techpack.styleNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        techpack.designer?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
         setCurrentPage(1);
     };
+
 
     // filter logic
     const [selectedDesigner, setSelectedDesigner] = useState([]); // Array to hold selected designers

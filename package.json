@@ -16,6 +16,7 @@
     "cra-template": "1.2.0",
     "jpeg-js": "^0.4.4",
     "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.5",
