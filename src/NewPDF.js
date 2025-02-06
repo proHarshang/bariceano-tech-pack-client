@@ -546,26 +546,32 @@ const TechPackPDFGenrate = (data) => {
                             pdf.rect(currentX, currentY, columnWidths[0], rowHeight);
                             pdf.text((index + 1).toString(), currentX + columnWidths[0] / 2, currentY + rowHeight / 2, {
                                 align: 'center',
+                                baseline: 'middle',
                             });
                             currentX += columnWidths[0];
 
-                            // Placement
-                            pdf.setFontSize(10); // Set smaller font size
+                            // Placement (Centered Text)
+                            pdf.setFontSize(10);
                             let placementLines = pdf.splitTextToSize(row.placement.toUpperCase(), columnWidths[1] - 10);
-                            let placementY = currentY + (rowHeight - (placementLines.length * 10)) / 2;
+                            let totalPlacementHeight = placementLines.length * 10;
+                            let placementY = currentY + (rowHeight - totalPlacementHeight) / 2 + 5; // Adjusted for centering
                             pdf.rect(currentX, currentY, columnWidths[1], rowHeight);
-                            placementLines.forEach((line, index) => {
-                                pdf.text(line, currentX + 5, placementY + index * 10, { baseline: 'middle' });
+                            placementLines.forEach((line, idx) => {
+                                pdf.text(line, currentX + columnWidths[1] / 2, placementY + idx * 10, {
+                                    align: 'center',
+                                });
                             });
                             currentX += columnWidths[1];
 
-                            // Artwork (image cell)
+                            // Artwork (Larger Image)
                             pdf.rect(currentX, currentY, columnWidths[2], rowHeight);
                             if (row.artwork) {
-                                pdf.addImage(row.artwork, 'JPEG', currentX + 13, currentY + 5, columnWidths[2] - 25, rowHeight - 10);
+                                pdf.addImage(row.artwork, 'JPEG', currentX + 10, currentY + 3, columnWidths[2] - 20, rowHeight - 6);
                             } else {
                                 pdf.setTextColor(150, 150, 150);
-                                pdf.text('No Image', currentX + columnWidths[2] / 2, currentY + rowHeight / 2, { align: 'center' });
+                                pdf.text('No Image', currentX + columnWidths[2] / 2, currentY + rowHeight / 2, {
+                                    align: 'center',
+                                });
                             }
                             currentX += columnWidths[2];
 
@@ -587,18 +593,21 @@ const TechPackPDFGenrate = (data) => {
                             });
                             currentX += columnWidths[4];
 
-                            // Placement (image cell)
+                            // Placement Image (Larger Image)
                             pdf.rect(currentX, currentY, columnWidths[5], rowHeight);
                             if (row.placementImage) {
-                                pdf.addImage(row.placementImage, 'JPEG', currentX + 13, currentY + 5, columnWidths[5] - 25, rowHeight - 10);
+                                pdf.addImage(row.placementImage, 'JPEG', currentX + 10, currentY + 3, columnWidths[5] - 20, rowHeight - 6);
                             } else {
                                 pdf.setTextColor(150, 150, 150);
-                                pdf.text('No Image', currentX + columnWidths[5] / 2, currentY + rowHeight / 2, { align: 'center' });
+                                pdf.text('No Image', currentX + columnWidths[5] / 2, currentY + rowHeight / 2, {
+                                    align: 'center',
+                                });
                             }
 
                             // Move to next row
                             currentY += rowHeight;
                         });
+
 
                     } else {
                         console.warn("No artwork placement sheet data available. Skipping placement section.");
