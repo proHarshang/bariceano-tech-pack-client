@@ -383,13 +383,16 @@ const TechPackPDFGenrate = (data) => {
                         ]);
                     });
 
+                    const pageWidth = pdf.internal.pageSize.width;
+                    const tableWidth = 280; // Adjust based on your column widths
+                    const startX = (pageWidth - tableWidth) / 2; // Center table
                     // Generate the table
                     pdf.autoTable({
                         startY: 28,
-                        head: [['Name', 'Value', 'Name', 'Value']], // Header only once
+                        margin: { left: startX }, // Center the table horizontally
                         body: formattedData,
                         theme: 'grid',
-                        styles: { fontSize: 10, cellPadding: 3 },
+                        styles: { fontSize: 11, cellPadding: 3, textColor: [0, 0, 0] },
                         headStyles: { fillColor: [0, 0, 0], textColor: 255, fontSize: 13, fontStyle: 'bold' },
                         columnStyles: {
                             0: { cellWidth: 60 },
