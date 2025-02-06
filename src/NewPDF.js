@@ -61,8 +61,8 @@ const TechPackPDFGenrate = (data) => {
         pdf.setFontSize(8);
         pdf.setTextColor(0, 0, 0);
         pdf.setFont('helvetica', 'normal');
-        const leftMargin = 10;
-        const startNot = 40;
+        const leftMargin = 13;
+        const startNot = 43;
         const rightMargin = 10;
         const noteWidth = pageWidth - leftMargin - rightMargin - 35;
 
