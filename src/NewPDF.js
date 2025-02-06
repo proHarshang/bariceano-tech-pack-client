@@ -4,7 +4,6 @@ import { AiOutlineLoading } from "react-icons/ai";
 
 const TechPackPDFGenrate = (data) => {
     const [isDownloading, setIsDownloading] = useState(false);
-
     const pageWidth = 297;
     const pageHeight = 210;
 
@@ -23,20 +22,24 @@ const TechPackPDFGenrate = (data) => {
 
     function headerSection(pageNumber, pageName) {
         pdf.setFontSize(12);
-        pdf.setFont('helvetica', 'bold');
+        pdf.setFont('helvetica');
         pdf.setTextColor(0, 0, 0);
 
+        const modifiedAt = data.data.modifiedAt;
+        const date = new Date(modifiedAt);
+        const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
+
         // Left-aligned text
-        pdf.text('BARISCEANO', 10, 8);
+        pdf.text(formattedDate, 10, 8);
         pdf.setFont('helvetica', 'normal');
         pdf.text(`${pageName}`, 10, 14); // Adjusted spacing to match right side
 
         // Center the Logo
-        const imgWidth = 16;
+        const imgWidth = 52;
         const imgHeight = 16;
         const imgX = (pageWidth - imgWidth) / 2;
         const imgY = 2;
-        pdf.addImage('/logo512.png', 'PNG', imgX, imgY, imgWidth, imgHeight);
+        pdf.addImage('/logo2.png', 'PNG', imgX, imgY, imgWidth, imgHeight);
 
         // Right-aligned text with adjusted spacing
         const pgX = pageWidth - 45;
@@ -59,14 +62,20 @@ const TechPackPDFGenrate = (data) => {
         pdf.setTextColor(0, 0, 0);
         pdf.setFont('helvetica', 'normal');
         const leftMargin = 10;
+        const startNot = 40;
         const rightMargin = 10;
-        const noteWidth = pageWidth - leftMargin - rightMargin;
+        const noteWidth = pageWidth - leftMargin - rightMargin - 35;
 
-        const importantNote =
-            'IMPORTANT NOTE: This tech pack is confidential and is the sole property of BARISCEANO, to be utilised only for the purpose for which it has been sent and intended only for the information of the individual/entity to whom it is addressed. All artwork appearing in this bundle are trademarks owned by BARISCEANO and cannot be used, distributed, or copied.';
+        const importantNote = "IMPORTANT NOTE : "
+        pdf.text(importantNote, leftMargin, bottomLineY + 5, { align: 'justify' });
+        const Note =
+            'This tech pack is confidential and is the sole property of BARISCEANO, to be utilised only for the purpose for which it has been sent and intended only for the information of the individual/entity to whom it is addressed. All artwork appearing in this bundle are trademarks owned by BARISCEANO and cannot be used, distributed, or copied.';
 
-        pdf.text(importantNote, leftMargin, bottomLineY + 5, { maxWidth: noteWidth, align: 'justify' });
+        const lines = pdf.splitTextToSize(Note, noteWidth);
+        pdf.text(lines, startNot, bottomLineY + 5, { align: '' });
     }
+
+    // ...existing code...
 
     const generatePdf = async () => {
         setIsDownloading(true)
@@ -412,16 +421,27 @@ const TechPackPDFGenrate = (data) => {
 
                         // Convert text to uppercase before wrapping
                         const formattedValue = row.value.toUpperCase();
-                        const wrappedText = pdf.splitTextToSize(formattedValue, contentWidth - 5); // Wrap text properly
 
-                        // Calculate row height based on wrapped text
-                        const rowHeight = Math.max(cellHeight, wrappedText.length * pdf.getLineHeight() - 10);
+                        // Check if text length is greater than 70 characters, wrap if needed
+                        let wrappedText = [];
+                        if (formattedValue.length > 70) {
+                            wrappedText = pdf.splitTextToSize(formattedValue, contentWidth - 5); // Wrap text properly if > 70 characters
+                        } else {
+                            wrappedText = [formattedValue]; // Single line if text is short enough
+                        }
+
+                        // Calculate row height based on the number of lines after wrapping
+                        const textHeight = wrappedText.length * pdf.getLineHeight();
+                        const rowHeight = Math.max(cellHeight, textHeight); // Ensure row height is sufficient for wrapped text
+
+                        // Calculate space for vertical centering
+                        const marginTop = (rowHeight - textHeight) / 2; // Center the text vertically (top-bottom)
 
                         // Draw name cell (bold, uppercase)
                         drawCell(pdf, col1X, currentY, colWidth, rowHeight, row.name.toUpperCase(), true, 'left', true, true);
 
-                        // Draw merged value cell with wrapped text
-                        drawCell(pdf, col2X, currentY, contentWidth, rowHeight, wrappedText.join('\n'), true, 'left');
+                        // Draw merged value cell with wrapped text (centered vertically)
+                        drawCell(pdf, col2X, currentY + marginTop, contentWidth, rowHeight, wrappedText.join('\n'), true, 'center');
 
                         // Move Y position down
                         currentY += rowHeight;
