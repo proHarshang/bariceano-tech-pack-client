@@ -2,7 +2,6 @@ import { jsPDF } from 'jspdf';
 import { useState } from 'react';
 import { AiOutlineLoading } from "react-icons/ai";
 import autoTable from 'jspdf-autotable'; // Import the autotable plugin
-import { FmdGood } from '@mui/icons-material';
 jsPDF.autoTable = autoTable;
 
 
@@ -405,6 +404,7 @@ const TechPackPDFGenrate = (data) => {
 
                 } else if (slide.type === "ArtworkPlacementSheet") {
                     if (ArtworkPlacementSheet[0] && ArtworkPlacementSheet[0].data.artworkPlacementSheet?.length > 0) {
+
                         const leftMargin = 10;
                         const rightMargin = 10;
                         const pageWidth = pdf.internal.pageSize.width;
@@ -419,18 +419,21 @@ const TechPackPDFGenrate = (data) => {
                             columnWidths[i] *= scaleFactor;
                         }
 
-                        // Prepare Table Data
                         const rows = ArtworkPlacementSheet[0].data.artworkPlacementSheet.map((item, index) => [
                             index + 1,
                             item.placement.toUpperCase(),
-                            item.artworkimage && item.artworkimage[0]?.src ? `${process.env.REACT_APP_API_URL}/uploads/techpack/${item.artworkimage[0].src}` : '',
+                            item.artworkimage && item.artworkimage[0]?.src
+                                ? `${process.env.REACT_APP_API_URL}/uploads/techpack/${item.artworkimage[0].src}`
+                                : null,  // Use null instead of an empty string
                             item.technique.toUpperCase(),
                             item.color.toUpperCase(),
-                            item.placementimage && item.placementimage[0]?.src ? `${process.env.REACT_APP_API_URL}/uploads/techpack/${item.placementimage[0].src}` : ''
+                            item.placementimage && item.placementimage[0]?.src
+                                ? `${process.env.REACT_APP_API_URL}/uploads/techpack/${item.placementimage[0].src}`
+                                : null  // Use null instead of an empty string
                         ]);
 
-                        const rowLimitPerPage = 3; // Ensure 3 rows per page
-                        const startYOffset = 30; // Adjust for centering
+                        const rowLimitPerPage = 3;
+                        const startYOffset = 30;
                         const tableWidth = columnWidths.reduce((sum, width) => sum + width, 0);
                         const tableXOffset = (pageWidth - tableWidth) / 2;
 
@@ -442,24 +445,25 @@ const TechPackPDFGenrate = (data) => {
                             pdf.autoTable({
                                 head: [['#', 'PLACEMENT', 'ARTWORK', 'TECHNIQUE', 'COLOUR', 'PLACEMENT']],
                                 body: tableRows.map(row => [
-                                    row[0], // Index number
-                                    row[1], // Placement
-                                    row[2].startsWith('https') ? { image: row[2] } : row[2], // Artwork Image
-                                    row[3], // Technique
-                                    row[4], // Colour
-                                    row[5].startsWith('https') ? { image: row[5] } : row[5], // Placement Image
+                                    row[0], // #
+                                    row[1], // PLACEMENT
+                                    row[2] ? ' ' : '', // ARTWORK (Prevent text from showing)
+                                    row[3], // TECHNIQUE
+                                    row[4], // COLOUR
+                                    row[5] ? ' ' : '' // PLACEMENT (Prevent text from showing)
                                 ]),
                                 startY: startY - 5,
-                                margin: { left: tableXOffset }, // Center table
+                                margin: { left: tableXOffset },
                                 styles: {
                                     fontSize: 11,
                                     cellPadding: 2,
                                     valign: 'middle',
                                     minCellHeight: 50,
                                     textColor: [0, 0, 0],
-                                    fillColor: [255, 255, 255],
+                                    fillColor: false,
                                     lineWidth: 0.2,
                                     lineColor: [0, 0, 0],
+                                    overflow: 'linebreak'
                                 },
                                 headStyles: {
                                     fontSize: 11,
@@ -469,26 +473,37 @@ const TechPackPDFGenrate = (data) => {
                                     lineWidth: 0.2,
                                     lineColor: [0, 0, 0],
                                     halign: 'center',
-                                    align: 'center',
+                                    align: 'center'
                                 },
                                 columnStyles: {
                                     0: { cellWidth: columnWidths[0], halign: 'center' },
                                     1: { cellWidth: columnWidths[1], halign: 'center' },
-                                    2: { cellWidth: columnWidths[2], halign: 'center' },
+                                    2: { cellWidth: columnWidths[2], halign: 'center', overflow: 'hidden' }, // ARTWORK
                                     3: { cellWidth: columnWidths[3], halign: 'center' },
                                     4: { cellWidth: columnWidths[4], halign: 'center' },
-                                    5: { cellWidth: columnWidths[5], halign: 'center' }
+                                    5: { cellWidth: columnWidths[5], halign: 'center', overflow: 'hidden' } // PLACEMENT
                                 },
-                                didDrawCell: async (data) => {
-                                    if ((data.column.index === 2 || data.column.index === 5) && data.cell.raw?.image) {
-                                        console.log("base64Image")
-                                        try {
-                                            let base64Image = await getBase64ImageFromURL(data.cell.raw.image);
-                                            pdf.addImage(base64Image, 'PNG', data.cell.x + 2, data.cell.y + 2, data.cell.height - 4, data.cell.height - 4);
-                                        } catch (error) {
-                                            console.error(`Failed to load image: ${data.cell.raw.image}`, error);
+                                didDrawCell: function (data) {
+                                    if (data.row.index !== undefined) {
+                                        let rowData = tableRows[data.row.index];
+
+                                        // Store the image positions, but don't add them yet
+                                        if (data.column.index === 2 && rowData[2]) {
+                                            rowData.imageArtworkPosition = { x: data.cell.x + 5, y: data.cell.y + 5 };
+                                        }
+                                        if (data.column.index === 5 && rowData[5]) {
+                                            rowData.imagePlacementPosition = { x: data.cell.x + 5, y: data.cell.y + 5 };
                                         }
                                     }
+                                }
+
+                            });
+                            tableRows.forEach(rowData => {
+                                if (rowData.imageArtworkPosition && rowData[2]) {
+                                    pdf.addImage(rowData[2], 'JPEG', rowData.imageArtworkPosition.x, rowData.imageArtworkPosition.y, 50, 40);
+                                }
+                                if (rowData.imagePlacementPosition && rowData[5]) {
+                                    pdf.addImage(rowData[5], 'JPEG', rowData.imagePlacementPosition.x, rowData.imagePlacementPosition.y, 50, 40);
                                 }
                             });
 
@@ -497,29 +512,12 @@ const TechPackPDFGenrate = (data) => {
                                 startY = startYOffset;
                             }
                         }
+
                     } else {
                         console.warn("No artwork placement sheet data available. Skipping placement section.");
                     }
 
-                    // Function to Convert Image URL to Base64
-                    async function getBase64ImageFromURL(url) {
-                        return new Promise((resolve, reject) => {
-                            let img = new Image();
-                            img.crossOrigin = "Anonymous";
-                            img.src = url;
-                            img.onload = function () {
-                                let canvas = document.createElement('canvas');
-                                canvas.width = img.width;
-                                canvas.height = img.height;
-                                let ctx = canvas.getContext('2d');
-                                ctx.drawImage(img, 0, 0);
-                                resolve(canvas.toDataURL('image/png'));
-                            };
-                            img.onerror = function (error) {
-                                reject(error);
-                            };
-                        });
-                    }
+
 
                 }
                 else if (slide.type === "ArtWork") {
@@ -644,7 +642,6 @@ const TechPackPDFGenrate = (data) => {
         }
 
     }
-
 
     return (
         <button
