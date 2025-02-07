@@ -2,6 +2,7 @@ import { jsPDF } from 'jspdf';
 import { useState } from 'react';
 import { AiOutlineLoading } from "react-icons/ai";
 import autoTable from 'jspdf-autotable'; // Import the autotable plugin
+import { FmdGood } from '@mui/icons-material';
 jsPDF.autoTable = autoTable;
 
 
@@ -404,155 +405,120 @@ const TechPackPDFGenrate = (data) => {
 
                 } else if (slide.type === "ArtworkPlacementSheet") {
                     if (ArtworkPlacementSheet[0] && ArtworkPlacementSheet[0].data.artworkPlacementSheet?.length > 0) {
-                        // Adjust margins and table settings
-                        console.log("ArtworkPlacementSheet", ArtworkPlacementSheet[0])
-                        const leftMargin = 10; // Left margin
-                        const rightMargin = 10; // Right margin
+                        const leftMargin = 10;
+                        const rightMargin = 10;
+                        const pageWidth = pdf.internal.pageSize.width;
                         const availableWidth = pageWidth - leftMargin - rightMargin;
 
-                        // Adjust column widths to fit within available width
-                        const columnWidths = [10, 50, 80, 60, 60, 80];
+                        const columnWidths = [10, 45, 54, 53, 53, 54];
                         const totalWidth = columnWidths.reduce((a, b) => a + b, 0);
-
-                        // Scale column widths to fit available space
                         const scaleFactor = availableWidth / totalWidth;
+
+                        // Adjust column widths to fit within the available space
                         for (let i = 0; i < columnWidths.length; i++) {
                             columnWidths[i] *= scaleFactor;
                         }
 
-                        function breakTextIntoLines(text, maxLength) {
-                            let lines = [];
-                            while (text.length > maxLength) {
-                                let line = text.substring(0, maxLength);
-                                lines.push(line);
-                                text = text.substring(maxLength);
-                            }
-                            lines.push(text);
-                            return lines;
-                        }
+                        // Prepare Table Data
+                        const rows = ArtworkPlacementSheet[0].data.artworkPlacementSheet.map((item, index) => [
+                            index + 1,
+                            item.placement.toUpperCase(),
+                            item.artworkimage && item.artworkimage[0]?.src ? `${process.env.REACT_APP_API_URL}/uploads/techpack/${item.artworkimage[0].src}` : '',
+                            item.technique.toUpperCase(),
+                            item.color.toUpperCase(),
+                            item.placementimage && item.placementimage[0]?.src ? `${process.env.REACT_APP_API_URL}/uploads/techpack/${item.placementimage[0].src}` : ''
+                        ]);
 
-                        const rows = ArtworkPlacementSheet[0].data.artworkPlacementSheet.map((item) => ({
-                            placement: item.placement,
-                            technique: item.technique,
-                            color: item.color,
-                            artwork: item.artworkimage && item.artworkimage[0]?.src
-                                ? `${process.env.REACT_APP_API_URL}/uploads/techpack/${item.artworkimage[0].src}`
-                                : null, // Use null if no image is provided
-                            placementImage: item.placementimage && item.placementimage[0]?.src
-                                ? `${process.env.REACT_APP_API_URL}/uploads/techpack/${item.placementimage[0].src}`
-                                : null, // Use null if no image is provided
-                        }));
+                        const rowLimitPerPage = 3; // Ensure 3 rows per page
+                        const startYOffset = 30; // Adjust for centering
+                        const tableWidth = columnWidths.reduce((sum, width) => sum + width, 0);
+                        const tableXOffset = (pageWidth - tableWidth) / 2;
 
-                        const rowHeight = 50; // Row height for readability
-                        const startY = 27; // Start position for the table
-                        const maxRowsPerPage = 3; // Adjusted to allow 3 rows per page
+                        let startY = startYOffset;
 
-                        // Table headers
-                        const drawHeaders = () => {
-                            pdf.setFontSize(14);
-                            pdf.setTextColor(255, 255, 255); // White text
-                            let currentX = leftMargin;
-                            const headers = ['#', 'Placement', 'Artwork', 'Technique', 'Colour', 'Placement'];
-                            headers.forEach((header, i) => {
-                                pdf.setFillColor(0, 0, 0); // Black background
-                                pdf.rect(currentX, startY - 2, columnWidths[i], rowHeight / 2 - 12, 'F'); // Fill rectangle
-                                pdf.text(
-                                    header.toUpperCase(),
-                                    currentX + columnWidths[i] / 2,
-                                    startY + rowHeight / 4 - 7 + 1,
-                                    { align: 'center' }
-                                );
-                                currentX += columnWidths[i];
+                        for (let i = 0; i < rows.length; i += rowLimitPerPage) {
+                            let tableRows = rows.slice(i, i + rowLimitPerPage);
+
+                            pdf.autoTable({
+                                head: [['#', 'PLACEMENT', 'ARTWORK', 'TECHNIQUE', 'COLOUR', 'PLACEMENT']],
+                                body: tableRows.map(row => [
+                                    row[0], // Index number
+                                    row[1], // Placement
+                                    row[2].startsWith('https') ? { image: row[2] } : row[2], // Artwork Image
+                                    row[3], // Technique
+                                    row[4], // Colour
+                                    row[5].startsWith('https') ? { image: row[5] } : row[5], // Placement Image
+                                ]),
+                                startY: startY - 5,
+                                margin: { left: tableXOffset }, // Center table
+                                styles: {
+                                    fontSize: 11,
+                                    cellPadding: 2,
+                                    valign: 'middle',
+                                    minCellHeight: 50,
+                                    textColor: [0, 0, 0],
+                                    fillColor: [255, 255, 255],
+                                    lineWidth: 0.2,
+                                    lineColor: [0, 0, 0],
+                                },
+                                headStyles: {
+                                    fontSize: 11,
+                                    fillColor: [0, 0, 0],
+                                    textColor: [255, 255, 255],
+                                    minCellHeight: 10,
+                                    lineWidth: 0.2,
+                                    lineColor: [0, 0, 0],
+                                    halign: 'center',
+                                    align: 'center',
+                                },
+                                columnStyles: {
+                                    0: { cellWidth: columnWidths[0], halign: 'center' },
+                                    1: { cellWidth: columnWidths[1], halign: 'center' },
+                                    2: { cellWidth: columnWidths[2], halign: 'center' },
+                                    3: { cellWidth: columnWidths[3], halign: 'center' },
+                                    4: { cellWidth: columnWidths[4], halign: 'center' },
+                                    5: { cellWidth: columnWidths[5], halign: 'center' }
+                                },
+                                didDrawCell: async (data) => {
+                                    if ((data.column.index === 2 || data.column.index === 5) && data.cell.raw?.image) {
+                                        console.log("base64Image")
+                                        try {
+                                            let base64Image = await getBase64ImageFromURL(data.cell.raw.image);
+                                            pdf.addImage(base64Image, 'PNG', data.cell.x + 2, data.cell.y + 2, data.cell.height - 4, data.cell.height - 4);
+                                        } catch (error) {
+                                            console.error(`Failed to load image: ${data.cell.raw.image}`, error);
+                                        }
+                                    }
+                                }
                             });
-                        };
-                        drawHeaders();
 
-                        // Draw table rows
-                        let currentY = startY + rowHeight / 2 - 14; // Start below headers
-                        rows.forEach((row, index) => {
-                            // Add a new page and redraw headers if the current page is full
-                            if (index % maxRowsPerPage === 0 && index !== 0) {
+                            if (i + rowLimitPerPage < rows.length) {
                                 pdf.addPage();
-                                headerSection(ArtworkPlacementSheet[0].page + 1, ArtworkPlacementSheet[0].name);
-                                drawHeaders(); // Redraw headers on the new page
-
-                                // Adjust currentY to reduce the row margin on new pages
-                                currentY = startY + rowHeight / 2 - 15; // Reduced by 20
+                                startY = startYOffset;
                             }
-
-                            let currentX = leftMargin; // Reset to left margin for each row
-
-                            // Row number
-                            pdf.setFontSize(13);
-                            pdf.setTextColor(0, 0, 0);
-                            pdf.rect(currentX, currentY, columnWidths[0], rowHeight);
-                            pdf.text((index + 1).toString(), currentX + columnWidths[0] / 2, currentY + rowHeight / 2, {
-                                align: 'center',
-                                baseline: 'middle',
-                            });
-                            currentX += columnWidths[0];
-
-                            // Placement (Centered Text)
-                            pdf.setFontSize(10);
-                            let placementLines = pdf.splitTextToSize(row.placement.toUpperCase(), columnWidths[1] - 10);
-                            let totalPlacementHeight = placementLines.length * 10;
-                            let placementY = currentY + (rowHeight - totalPlacementHeight) / 2 + 5; // Adjusted for centering
-                            pdf.rect(currentX, currentY, columnWidths[1], rowHeight);
-                            placementLines.forEach((line, idx) => {
-                                pdf.text(line, currentX + columnWidths[1] / 2, placementY + idx * 10, {
-                                    align: 'center',
-                                });
-                            });
-                            currentX += columnWidths[1];
-
-                            // Artwork (Larger Image)
-                            pdf.rect(currentX, currentY, 50, 50);
-                            if (row.artwork) {
-                                pdf.addImage(row.artwork, 'JPEG', currentX, currentY, 50, 50);
-                            } else {
-                                pdf.setTextColor(150, 150, 150);
-                                pdf.text('No Image', currentX + columnWidths[2] / 2, currentY + rowHeight / 2, {
-                                    align: 'center',
-                                });
-                            }
-                            currentX += columnWidths[2];
-
-                            // Technique
-                            let techniqueLines = breakTextIntoLines(row.technique, 16);
-                            let techniqueY = currentY + rowHeight / 2 - (techniqueLines.length - 1) * 5;
-                            pdf.rect(currentX, currentY, columnWidths[3], rowHeight);
-                            techniqueLines.forEach((line, index) => {
-                                pdf.text(line.toUpperCase(), currentX + 5, techniqueY + index * 10, { baseline: 'middle' });
-                            });
-                            currentX += columnWidths[3];
-
-                            // Colour
-                            let colorLines = breakTextIntoLines(row.color, 16);
-                            let colorY = currentY + rowHeight / 2 - (colorLines.length - 1) * 5;
-                            pdf.rect(currentX, currentY, columnWidths[4], rowHeight);
-                            colorLines.forEach((line, index) => {
-                                pdf.text(line.toUpperCase(), currentX + 5, colorY + index * 10, { baseline: 'middle' });
-                            });
-                            currentX += columnWidths[4];
-
-                            // Placement Image (Larger Image)
-                            pdf.rect(currentX, currentY, 50, 50);
-                            if (row.placementImage) {
-                                pdf.addImage(row.placementImage, 'JPEG', currentX, currentY + 3, 50, 50);
-                            } else {
-                                pdf.setTextColor(150, 150, 150);
-                                pdf.text('No Image', currentX + columnWidths[5] / 2, currentY + rowHeight / 2, {
-                                    align: 'center',
-                                });
-                            }
-
-                            // Move to next row
-                            currentY += rowHeight;
-                        });
-
-
+                        }
                     } else {
                         console.warn("No artwork placement sheet data available. Skipping placement section.");
+                    }
+
+                    // Function to Convert Image URL to Base64
+                    async function getBase64ImageFromURL(url) {
+                        return new Promise((resolve, reject) => {
+                            let img = new Image();
+                            img.crossOrigin = "Anonymous";
+                            img.src = url;
+                            img.onload = function () {
+                                let canvas = document.createElement('canvas');
+                                canvas.width = img.width;
+                                canvas.height = img.height;
+                                let ctx = canvas.getContext('2d');
+                                ctx.drawImage(img, 0, 0);
+                                resolve(canvas.toDataURL('image/png'));
+                            };
+                            img.onerror = function (error) {
+                                reject(error);
+                            };
+                        });
                     }
 
                 }
