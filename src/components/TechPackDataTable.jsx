@@ -532,7 +532,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                                         </td>
                                         <td className="flex items-center gap-2 w-full">
                                             <div className="action-buttons w-1/2">
-                                                <button type="button" className="copy-button hover:bg-zinc-300" onClick={() => handleCopy(item)}                                            >Copy</button>
+                                                <button type="button" className="copy-button hover:bg-zinc-300" onClick={() => handleCopy(item)}>Copy</button>
                                                 <button type="button" className="edit-button hover:bg-zinc-300" onClick={() => handleEditClick(item._id)}>Edit</button>
                                             </div>
                                             <div className="action-buttons w-1/2">

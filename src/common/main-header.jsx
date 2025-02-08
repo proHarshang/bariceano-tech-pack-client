@@ -130,181 +130,183 @@ const MainHeader = () => {
 
 
     return (
-        <div className="p-5 flex justify-between border-b pl-10 pr-0 max-w-[1500px] mx-auto sticky top-0 right-0 bg-white z-50 invert">
-            <div className='flex gap-5 items-center'>
-                <button
-                    className={`flex gap-3 items-center border-black text-sm font-bold px-3 py-2 rounded-2xl uppercase hover:bg-black hover:text-white ${currentPath === "/tech-pack-data"
-                        ? "bg-black text-white"
-                        : "border text-black"
-                        }`}
-                >
-                    <select
-                        name="Collection"
-                        id="collectionSelect"
-                        className={`!border-none focus:outline-none bg-transparent ${currentPath === "/tech-pack-data" ? "bg-black text-white" : ""
-                            }`}
-                        onChange={handleNavigation}
-                        value={collectionSelector}
-                    >
-                        <option className='bg-black text-white' value="all collection">All Collection</option>
-                        {collection.map((option, index) => (
-                            <option className='bg-black text-white' key={index} value={option}>
-                                {option}
-                            </option>
-                        ))}
-                    </select>
-                </button>
-
-                <a href="/setting">
+        <nav className='sticky top-0 right-0 bg-white z-50 w-screen invert'>
+            <div className="p-5 flex justify-between border-b pl-10 pr-0 max-w-[1500px] mx-auto">
+                <div className='flex gap-5 items-center'>
                     <button
-                        className={`border-[1px] text-sm font-bold px-3 py-2 rounded-2xl uppercase hover:bg-black hover:text-white  ${currentPath === "/setting"
+                        className={`flex gap-3 items-center border-black text-sm font-bold px-3 py-2 rounded-2xl uppercase hover:bg-black hover:text-white ${currentPath === "/tech-pack-data"
                             ? "bg-black text-white"
-                            : "border-black"
+                            : "border text-black"
                             }`}
                     >
-                        Setting
-                    </button>
-                </a>
-
-                {location.pathname !== '/tech-pack' && (
-                    <div className="relative">
-
-                        <button
-                            className={`flex gap-2 invert hover:invert-0 border bg-black text-white items-center text-sm font-bold px-3 py-2 rounded-2xl uppercase`}
-                            onClick={() => handlenew()}
+                        <select
+                            name="Collection"
+                            id="collectionSelect"
+                            className={`!border-none focus:outline-none bg-transparent ${currentPath === "/tech-pack-data" ? "bg-black text-white" : ""
+                                }`}
+                            onChange={handleNavigation}
+                            value={collectionSelector}
                         >
-                            <svg
-                                width="13"
-                                height="13"
-                                viewBox="0 0 13 13"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path d="M6.5 0V13" stroke="white" strokeWidth="2" />
-                                <path d="M0 6.5L13 6.5" stroke="white" strokeWidth="2" />
-                            </svg>
-                            <span>New</span>
+                            <option className='bg-black text-white' value="all collection">All Collection</option>
+                            {collection.map((option, index) => (
+                                <option className='bg-black text-white' key={index} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
+                    </button>
+
+                    <a href="/setting">
+                        <button
+                            className={`border-[1px] text-sm font-bold px-3 py-2 rounded-2xl uppercase hover:bg-black hover:text-white  ${currentPath === "/setting"
+                                ? "bg-black text-white"
+                                : "border-black"
+                                }`}
+                        >
+                            Setting
                         </button>
+                    </a>
+
+                    {location.pathname !== '/tech-pack' && (
+                        <div className="relative">
+
+                            <button
+                                className={`flex gap-2 invert hover:invert-0 border bg-black text-white items-center text-sm font-bold px-3 py-2 rounded-2xl uppercase`}
+                                onClick={() => handlenew()}
+                            >
+                                <svg
+                                    width="13"
+                                    height="13"
+                                    viewBox="0 0 13 13"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path d="M6.5 0V13" stroke="white" strokeWidth="2" />
+                                    <path d="M0 6.5L13 6.5" stroke="white" strokeWidth="2" />
+                                </svg>
+                                <span>New</span>
+                            </button>
 
 
-                        {showCategories && (
-                            <div className="absolute mt-2 w-48 bg-white border border-t-0 border-x-0 border-gray-300 rounded shadow-md z-[100]">
-                                <div className="p-2 space-y-2">
-                                    {menu.map((category) => (
-                                        <div
-                                            key={category}
-                                            className={`p-2 cursor-pointer hover:bg-gray-500 ${currentCategory === category && 'bg-gray-400'}`}
-                                            onClick={() => setCurrentCategory(category)}
-                                        >
-                                            {category}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {currentCategory && (
-                            <div className="absolute mt-2 left-52 w-48 bg-white border border-t-0 border-x-0 border-gray-300 rounded shadow-md z-50">
-                                <div className="p-2 space-y-2">
-                                    {subCategories.map((subCategory) => (
-                                        <div
-                                            key={subCategory}
-                                            className={`p-2 cursor-pointer hover:bg-gray-500 ${currentSubCategory === subCategory && 'bg-gray-400'}`}
-                                            onClick={() => setCurrentSubCategory(subCategory)}
-                                        >
-                                            {subCategory}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {currentSubCategory && (
-                            <div className="absolute mt-2 -right-[610px] w-[270px] bg-white border border-t-0 border-x-0 border-gray-300 rounded shadow-md z-50">
-                                <div className="py-4 space-y-2">
-                                    {labels.length > 0 ? (
-                                        labels.map((label) => (
-                                            <React.Fragment key={label}>
-                                                <div className="flex px-4 mb-3 w-full justify-between items-center">
-                                                    <label className="">{label}</label>
-                                                    <input
-                                                        type="checkbox"
-                                                        name="checkbox"
-                                                        checked={selectedLabels.includes(label)} // Check by default
-                                                        onChange={() => handleLabelChange(label)}
-                                                        className="mr-2 w-7 h-7 pl-[1px] bg-slate-200 pointer-events-auto"
-                                                    />
-                                                </div>
-                                                <hr className="w-full h-1 !px-0" />
-                                            </React.Fragment>
-                                        ))
-                                    ) : (
-                                        <p className="text-gray-500 text-center">No labels available</p>
-                                    )}
-                                    <div className="flex gap-2 !mt-5 justify-center">
-                                        <button
-                                            className="px-3 py-[2px] text-sm border-2 border-[#868686] rounded-lg"
-                                            onClick={handleClear}
-                                        >
-                                            Clear
-                                        </button>
-                                        <button
-                                            className="bg-black px-3 py-[2px] text-sm text-white rounded-lg"
-                                            onClick={handleApply}
-                                        >
-                                            Apply
-                                        </button>
+                            {showCategories && (
+                                <div className="absolute mt-2 w-48 bg-white border border-t-0 border-x-0 border-gray-300 rounded shadow-md z-[100]">
+                                    <div className="p-2 space-y-2">
+                                        {menu.map((category) => (
+                                            <div
+                                                key={category}
+                                                className={`p-2 cursor-pointer hover:bg-gray-500 ${currentCategory === category && 'bg-gray-400'}`}
+                                                onClick={() => setCurrentCategory(category)}
+                                            >
+                                                {category}
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
-                            </div>
+                            )}
+
+                            {currentCategory && (
+                                <div className="absolute mt-2 left-52 w-48 bg-white border border-t-0 border-x-0 border-gray-300 rounded shadow-md z-50">
+                                    <div className="p-2 space-y-2">
+                                        {subCategories.map((subCategory) => (
+                                            <div
+                                                key={subCategory}
+                                                className={`p-2 cursor-pointer hover:bg-gray-500 ${currentSubCategory === subCategory && 'bg-gray-400'}`}
+                                                onClick={() => setCurrentSubCategory(subCategory)}
+                                            >
+                                                {subCategory}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {currentSubCategory && (
+                                <div className="absolute mt-2 -right-[610px] w-[270px] bg-white border border-t-0 border-x-0 border-gray-300 rounded shadow-md z-50">
+                                    <div className="py-4 space-y-2">
+                                        {labels.length > 0 ? (
+                                            labels.map((label) => (
+                                                <React.Fragment key={label}>
+                                                    <div className="flex px-4 mb-3 w-full justify-between items-center">
+                                                        <label className="">{label}</label>
+                                                        <input
+                                                            type="checkbox"
+                                                            name="checkbox"
+                                                            checked={selectedLabels.includes(label)} // Check by default
+                                                            onChange={() => handleLabelChange(label)}
+                                                            className="mr-2 w-7 h-7 pl-[1px] bg-slate-200 pointer-events-auto"
+                                                        />
+                                                    </div>
+                                                    <hr className="w-full h-1 !px-0" />
+                                                </React.Fragment>
+                                            ))
+                                        ) : (
+                                            <p className="text-gray-500 text-center">No labels available</p>
+                                        )}
+                                        <div className="flex gap-2 !mt-5 justify-center">
+                                            <button
+                                                className="px-3 py-[2px] text-sm border-2 border-[#868686] rounded-lg"
+                                                onClick={handleClear}
+                                            >
+                                                Clear
+                                            </button>
+                                            <button
+                                                className="bg-black px-3 py-[2px] text-sm text-white rounded-lg"
+                                                onClick={handleApply}
+                                            >
+                                                Apply
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                </div>
+                <div className="flex items-center gap-3 pr-10 cursor-pointer" onClick={toggleLogout}>
+                    <CgProfile className="size-9" />
+                    <div>
+                        {user ? (
+                            <>
+                                <h1>{user.Name}</h1>
+                                <h5 className="text-xs">{user.Role}</h5>
+                            </>
+                        ) : (
+                            <h1>Guest</h1>
                         )}
                     </div>
+                </div>
+                {isOpen && (
+                    <div ref={logoutRef} className="absolute right-0 top-[60px] mt-2 mr-3 w-[250px] bg-white dark:bg-gray-800 rounded-lg shadow-lg z-10">
+                        <ul className="py-2">
+                            {/* Additional items can be added here */}
+                            <li>
+                                <h1
+                                    className="flex items-center p-2 pb-1 text-gray-900 rounded-lg dark:text-white group">
+                                    <span className="ms-3 whitespace-nowrap text-sm uppercase">{user.Role}</span>
+                                </h1>
+                            </li>
+                            <li>
+                                <h1
+                                    className="flex items-center p-2 pt-0 text-gray-900 rounded-lg dark:text-gray-400 group">
+                                    <span className="ms-3 whitespace-nowrap text-sm">{user.email}</span>
+                                </h1>
+                            </li>
+                            <li>
+                                <Link
+                                    className="flex items-center p-2 mt-4 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                                    to="/logout">
+                                    <span className="ms-3 whitespace-nowrap">
+                                        <MdOutlineLogout />
+                                    </span>
+                                    <span className="ms-3 whitespace-nowrap">Logout</span>
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
                 )}
-
-            </div>
-            <div className="flex items-center gap-3 pr-10 cursor-pointer" onClick={toggleLogout}>
-                <CgProfile className="size-9" />
-                <div>
-                    {user ? (
-                        <>
-                            <h1>{user.Name}</h1>
-                            <h5 className="text-xs">{user.Role}</h5>
-                        </>
-                    ) : (
-                        <h1>Guest</h1>
-                    )}
-                </div>
-            </div>
-            {isOpen && (
-                <div ref={logoutRef} className="absolute right-0 top-[60px] mt-2 mr-3 w-[250px] bg-white dark:bg-gray-800 rounded-lg shadow-lg z-10">
-                    <ul className="py-2">
-                        {/* Additional items can be added here */}
-                        <li>
-                            <h1
-                                className="flex items-center p-2 pb-1 text-gray-900 rounded-lg dark:text-white group">
-                                <span className="ms-3 whitespace-nowrap text-sm uppercase">{user.Role}</span>
-                            </h1>
-                        </li>
-                        <li>
-                            <h1
-                                className="flex items-center p-2 pt-0 text-gray-900 rounded-lg dark:text-gray-400 group">
-                                <span className="ms-3 whitespace-nowrap text-sm">{user.email}</span>
-                            </h1>
-                        </li>
-                        <li>
-                            <Link
-                                className="flex items-center p-2 mt-4 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                                to="/logout">
-                                <span className="ms-3 whitespace-nowrap">
-                                    <MdOutlineLogout />
-                                </span>
-                                <span className="ms-3 whitespace-nowrap">Logout</span>
-                            </Link>
-                        </li>
-                    </ul>
-                </div>
-            )}
-        </div >
+            </div >
+        </nav>
     );
 };
 

@@ -129,7 +129,7 @@ const TechPack = () => {
 
   const handleAddPage = () => {
     if (selectedPage.type === "Silicon Label") {
-      selectedPage.data.images.map(item => {        
+      selectedPage.data.images.map(item => {
         addSlideAtIndex(selectedIndex, {
           "page": 10,
           "name": selectedPage.displayName ? selectedPage.displayName : selectedPage.name,
@@ -195,7 +195,7 @@ const TechPack = () => {
   ];
 
   // Map the dynamic array to add the `type` property (same as `name`)
-  const dynamicArray = trims.map(item => {    
+  const dynamicArray = trims.map(item => {
     return {
       "name": item.name,
       "displayName": item.displayName ? item.displayName : "item.name",
@@ -225,8 +225,7 @@ const TechPack = () => {
             <AddButton index={index} setShowPopup={setShowPopup} setSelectedIndex={setSelectedIndex} />
           </div>
         )
-      }
-      )}
+      })}
 
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
