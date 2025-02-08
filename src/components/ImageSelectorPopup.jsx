@@ -65,6 +65,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
     const [images, setImages] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
 
     const [selectedFile, setSelectedFile] = useState(null);
 
@@ -80,6 +81,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
 
     const uploadCompressedImage = async (files) => {
         try {
+            setIsUploading(true)
             // Compress the image
             const options = {
                 maxSizeMB: 3,
@@ -101,6 +103,8 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
             alert("Something Went Wrong! Ask Harshang")
             console.error('Error uploading image:', error);
             throw error;
+        } finally {
+            setIsUploading(false)
         }
     };
 
@@ -267,7 +271,7 @@ const ImageSelectorPopup = ({ isOpen, closeModal, onImageSelect }) => {
                                 </div>
 
                                 {image && (
-                                    <div className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white z-50 h-[90vh] w-[90vw] flex items-center justify-center'>
+                                    <div className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white z-50 h-[90vh] w-[90vw] flex items-center justify-center ${isUploading ? 'pointer-events-none contrast-50 cursor-progress' : 'pointer-events-auto'}`}>
                                         <div className='flex flex-col justify-center items-center gap-y-5'>
                                             {/* Aspect Ratio Selection */}
                                             <div className="flex gap-2">
