@@ -103,7 +103,7 @@ export const deleteTechPack = async (id) => {
     }
 };
 
-const handleCommentSubmit = async (styleNo, comment) => {
+const handleCommentSubmit = async (styleNo, comment) => {    
     try {
         const response = await fetch(`${apiURL}/design/comment`, {
             method: 'POST',

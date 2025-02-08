@@ -54,6 +54,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
         if (styleNo) {
             setIsSidebarOpen(styleNo); // Open sidebar with styleNo
             const comment = data.find(tp => tp.styleNo === styleNo)?.comment
+            
             setComment(comment ? {
                 name: comment.name || "",
                 message: comment.message || "",
@@ -81,13 +82,11 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
             date: new Date().toISOString(), // Automatically set the current date
         }));
     };
-    const handleApply = () => {
+
+    const handleApply = async () => {
         toggleSidebar(false)
-        window.location.reload();
-        fetchTechPacks();
+        await fetchTechPacks();
     }
-
-
 
     // -- to close sidebar by clicking outside of div --
     useEffect(() => {
