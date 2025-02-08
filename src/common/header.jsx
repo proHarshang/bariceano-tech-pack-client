@@ -9,7 +9,7 @@ function Header({ name, page }) {
             <article className='relative flex items-start justify-between py-5 pb-12 px-10 pr-24'>
                 <div>
                     <h1 className='font-bold'>BARISCEANO</h1>
-                    <div className='absolute z-50'>
+                    <div className='absolute z-40'>
                         <input
                             type="text"
                             placeholder={name}
