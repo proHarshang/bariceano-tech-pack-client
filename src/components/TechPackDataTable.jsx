@@ -54,7 +54,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
         if (styleNo) {
             setIsSidebarOpen(styleNo); // Open sidebar with styleNo
             const comment = data.find(tp => tp.styleNo === styleNo)?.comment
-            
+
             setComment(comment ? {
                 name: comment.name || "",
                 message: comment.message || "",
@@ -236,14 +236,11 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
     // delete button
     const handleDeleteTechpack = async (id) => {
         // Use the categoryDelete hook to delete the TechPack
-        const deleted = await deleteTechPack(id);
+        const deleted = await deleteTechPack(id, user.Name);
         if (deleted.status) {
-            // Remove the deleted TechPack from the state
-            data = ((prevTechPacks) =>
-                prevTechPacks.filter((TechPack) => TechPack !== id)
-            );
             window.location.reload();
         } else {
+            alert(deleted.message)
             console.error('Failed to delete TechPack');
         }
     };
