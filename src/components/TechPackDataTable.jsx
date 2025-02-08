@@ -520,7 +520,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                                         <td>{item?.gender}</td>
                                         <td>{item?.category}</td>
                                         <td>
-                                            {item.comment?.message && item.comment?.message.trim() != "" ? (
+                                            {item.comment?.message ? (
                                                 <button type="button" className="m-auto px-3" onClick={() => toggleSidebar(item.styleNo, item.comment.message)}>
                                                     <FaCommentDots className="size-6" />
 
