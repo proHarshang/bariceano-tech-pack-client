@@ -13,7 +13,7 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
         "Production",
     ]);
 
-    const { trims, addInfoField, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
+    const { techPackData, trims, addInfoField, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
 
     const slide = getSlideByPage(page);
 
@@ -34,13 +34,28 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
         fetchAllSetting();
     }, []);
 
-    useEffect(() => {        
-        if (updateMode === "off" && selectedLabels && currentSubCategory && currentCategory) {
+    useEffect(() => {
+        if (updateMode === "off" && trims && selectedLabels && currentSubCategory && currentCategory) {
             updateInfoField(page, "Product Type", slide.data?.info?.find((item) => item.name === "Product Type").value, { "value": currentCategory })
             updateInfoField(page, "Gender", slide.data?.info?.find((item) => item.name === "Gender").value, { "value": currentSubCategory })
             updateInfoField(page, "Trim", slide.data?.info?.find((item) => item.name === "Trim").value, { "value": trims.filter(t => selectedLabels.includes(t.name)).map(t => t.displayName ? t.displayName : t.name).join(', ') })
         }
     }, [updateMode, trims, selectedLabels, currentCategory, currentSubCategory])
+
+    // // Function to update Trim value
+    // const updateTrimValue = () => {
+    //     const trimValue = slide.data?.info?.find((item) => item.name === "Trim").value;
+    //     const existingTrimValue = slide.data?.info?.find((item) => item.name === "Trim").value;
+    //     const updatedTrimValue = trims.filter(t => trimValue.includes(t.name) || trimValue.includes(t.displayName)).map(t => t.displayName ? t.displayName : t.name).join(', ');
+    //     if (updatedTrimValue !== existingTrimValue) {
+    //         updateInfoField(page, "Trim", trimValue, { "value": updatedTrimValue });
+    //     }
+    // };
+
+    // // Effect to handle slide or page addition/deletion
+    // useEffect(() => {
+    //     updateTrimValue();
+    // }, [techPackData.slides]);
 
     return (
         <section className='mx-auto mb-20 pl-7 pr-2'>

@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { FaCommentDots } from "react-icons/fa";
+import generatePdf from "../utility/generatePDF";
 
 const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
     const { user } = useAuth();
@@ -253,21 +254,19 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
         navigate(`/tech-pack?id=${itemId}`)
     };
 
-    const [isGenerating, setIsGenerating] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(null);
 
     const generateAllPDFs = async () => {
-        setIsGenerating(true);
+        setIsDownloading(true);
 
         for (let i = 0; i < sortedData.length; i++) {
             setCurrentIndex(i); // Set the current object to process
-
-            // Wait for the PDF to be fully processed before moving to the next one
-            await new Promise((resolve) => setTimeout(resolve, 1500)); // Adjust timing as needed
+            await generatePdf(sortedData[i], setIsDownloading)
         }
 
         setCurrentIndex(null);
-        setIsGenerating(false);
+        setIsDownloading(false);
     };
 
 
@@ -489,7 +488,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                             </button>
 
                             {/* Show progress while generating PDFs */}
-                            {isGenerating && currentIndex !== null && (
+                            {isDownloading && currentIndex !== null && (
                                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                                     <div className="bg-white p-4 rounded shadow-lg">
                                         <p>Downloading PDF {currentIndex + 1} of {sortedData.length}...</p>
