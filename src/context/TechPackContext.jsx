@@ -16,194 +16,195 @@ export const TechPackProvider = ({ children }) => {
         state: "Sample",
         gender: "",
         category: "",
-        slides: [{
-            "page": 1,
-            "name": "Spec Sheet",
-            "type": "Layout2",
-            "data": {
-                "threadColorTitle" : "Thread colour",
-                "fabricColorTitle" : "Fabric colour",
-                "fabricColorImages": [
-                    {
-                        "position": 0,
-                        "src": ""
-                    },
-                    {
-                        "position": 1,
-                        "src": ""
-                    },
-                    {
-                        "position": 2,
-                        "src": ""
-                    }
-                ],
-                "threadColorImages": [
-                    {
-                        "position": 0,
-                        "src": ""
-                    },
-                    {
-                        "position": 1,
-                        "src": ""
-                    },
-                    {
-                        "position": 2,
-                        "src": " "
-                    }
-                ],
-                "images": [
-                    {
-                        "position": 0,
-                        "src": ""
-                    },
-                    {
-                        "position": 1,
-                        "src": ""
-                    },
-                    {
-                        "position": 2,
-                        "src": ""
-                    }
-                ]
+        slides: [
+            {
+                "page": 1,
+                "name": "Spec Sheet",
+                "type": "Layout2",
+                "data": {
+                    "threadColorTitle": "Thread colour",
+                    "fabricColorTitle": "Fabric colour",
+                    "fabricColorImages": [
+                        {
+                            "position": 0,
+                            "src": ""
+                        },
+                        {
+                            "position": 1,
+                            "src": ""
+                        },
+                        {
+                            "position": 2,
+                            "src": ""
+                        }
+                    ],
+                    "threadColorImages": [
+                        {
+                            "position": 0,
+                            "src": ""
+                        },
+                        {
+                            "position": 1,
+                            "src": ""
+                        },
+                        {
+                            "position": 2,
+                            "src": " "
+                        }
+                    ],
+                    "images": [
+                        {
+                            "position": 0,
+                            "src": ""
+                        },
+                        {
+                            "position": 1,
+                            "src": ""
+                        },
+                        {
+                            "position": 2,
+                            "src": ""
+                        }
+                    ]
+                },
             },
-        },
-        {
-            "page": 2,
-            "name": "Spec Sheet",
-            "type": "Information",
-            "data": {
-                "info": [
-                    {
-                        "position": "1",
-                        "name": "Style No",
-                        "value": ""
-                    },
-                    {
-                        "position": "Last",
-                        "name": "Fabric color",
-                        "value": ""
-                    },
-                    {
-                        "position": "3",
-                        "name": "Gender",
-                        "value": ""
-                    },
-                    {
-                        "position": "3",
-                        "name": "Collection",
-                        "value": localStorage.getItem("currentCollection")
-                    },
-                    {
-                        "position": "4",
-                        "name": "State",
-                        "value": "Sample"
-                    },
-                    {
-                        "position": "4",
-                        "name": "Fit",
-                        "value": "Oversize"
-                    },
-                    {
-                        "position": "Last",
-                        "name": "Trim",
-                        "value": ""
-                    },
-                    {
-                        "position": "Last",
-                        "name": "Fabric",
-                        "value": "select"
-                    },
-                    {
-                        "position": "Last",
-                        "name": "Description",
-                        "value": ""
-                    },
-                    {
-                        "position": "Last",
-                        "name": "Note",
-                        "value": ""
-                    },
-                    {
-                        "position": "5",
-                        "name": "Product Type",
-                        "value": ""
-                    },
-                    {
-                        "position": "6",
-                        "name": "Category",
-                        "value": "Top"
-                    },
-                    {
-                        "position": "3",
-                        "name": "Size",
-                        "value": "S,M,L,XL"
-                    },
-                    {
-                        "position": "3",
-                        "name": "Ratio",
-                        "value": "1:1:1:1"
-                    }
-                ]
-            }
-        },
-        {
-            "page": 3,
-            "name": "Artwork Placement Sheet",
-            "type": "ArtworkPlacementSheet",
-            "data": {
-                "artworkPlacementSheet": [
-                    {
-                        "sNo": 1,
-                        "placement": "",
-                        "technique": "",
-                        "color": "",
-                        "artworkimage": [
-                            {
-                                "position": 0,
-                                "src": ""
-                            }
-                        ],
-                        "placementimage": [
-                            {
-                                "position": 0,
-                                "src": ""
-                            }
-                        ]
-                    },
-                    {
-                        "sNo": 2,
-                        "placement": "",
-                        "technique": "",
-                        "color": "",
-                        "artworkimage": [
-                            {
-                                "position": "0",
-                                "src": ""
-                            }
-                        ],
-                        "placementimage": [
-                            {
-                                "position": "0",
-                                "src": ""
-                            }
-                        ]
-                    }
-                ]
-            }
-        },
-        {
-            "page": 4,
-            "name": "Art Work Sheet",
-            "type": "ArtWork",
-            "data": {
-                "images": [
-                    {
-                        "position": 0,
-                        "src": ""
-                    }
-                ]
-            }
-        },
+            {
+                "page": 2,
+                "name": "Spec Sheet",
+                "type": "Information",
+                "data": {
+                    "info": [
+                        {
+                            "position": "1",
+                            "name": "Style No",
+                            "value": ""
+                        },
+                        {
+                            "position": "Last",
+                            "name": "Fabric color",
+                            "value": ""
+                        },
+                        {
+                            "position": "3",
+                            "name": "Gender",
+                            "value": ""
+                        },
+                        {
+                            "position": "3",
+                            "name": "Collection",
+                            "value": localStorage.getItem("currentCollection")
+                        },
+                        {
+                            "position": "4",
+                            "name": "State",
+                            "value": "Sample"
+                        },
+                        {
+                            "position": "4",
+                            "name": "Fit",
+                            "value": "Oversize"
+                        },
+                        {
+                            "position": "Last",
+                            "name": "Trim",
+                            "value": ""
+                        },
+                        {
+                            "position": "Last",
+                            "name": "Fabric",
+                            "value": "select"
+                        },
+                        {
+                            "position": "Last",
+                            "name": "Description",
+                            "value": ""
+                        },
+                        {
+                            "position": "Last",
+                            "name": "Note",
+                            "value": ""
+                        },
+                        {
+                            "position": "5",
+                            "name": "Product Type",
+                            "value": ""
+                        },
+                        {
+                            "position": "6",
+                            "name": "Category",
+                            "value": "Top"
+                        },
+                        {
+                            "position": "3",
+                            "name": "Size",
+                            "value": "S,M,L,XL"
+                        },
+                        {
+                            "position": "3",
+                            "name": "Ratio",
+                            "value": "1:1:1:1"
+                        }
+                    ]
+                }
+            },
+            {
+                "page": 3,
+                "name": "Artwork Placement Sheet",
+                "type": "ArtworkPlacementSheet",
+                "data": {
+                    "artworkPlacementSheet": [
+                        {
+                            "sNo": 1,
+                            "placement": "",
+                            "technique": "",
+                            "color": "",
+                            "artworkimage": [
+                                {
+                                    "position": 0,
+                                    "src": ""
+                                }
+                            ],
+                            "placementimage": [
+                                {
+                                    "position": 0,
+                                    "src": ""
+                                }
+                            ]
+                        },
+                        {
+                            "sNo": 2,
+                            "placement": "",
+                            "technique": "",
+                            "color": "",
+                            "artworkimage": [
+                                {
+                                    "position": "0",
+                                    "src": ""
+                                }
+                            ],
+                            "placementimage": [
+                                {
+                                    "position": "0",
+                                    "src": ""
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "page": 4,
+                "name": "Art Work Sheet",
+                "type": "ArtWork",
+                "data": {
+                    "images": [
+                        {
+                            "position": 0,
+                            "src": ""
+                        }
+                    ]
+                }
+            },
         ],
     }
 
