@@ -54,7 +54,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
         if (styleNo) {
             setIsSidebarOpen(styleNo); // Open sidebar with styleNo
             const comment = data.find(tp => tp.styleNo === styleNo)?.comment
-            
+
             setComment(comment ? {
                 name: comment.name || "",
                 message: comment.message || "",
@@ -510,7 +510,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                         <tbody>
                             {currentItems?.map((item, index) => {
                                 return (
-                                    <tr key={item._id}>
+                                    <tr key={item._id} className={item?.modifiedAt > item?.downloadAt ? "bg-orange-300" : ""}>
                                         <td>{indexOfFirstItem + index + 1}</td>
                                         <td>{item.styleNo}</td>
                                         <td>{formatDate(item?.modifiedAt)}</td>

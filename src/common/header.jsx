@@ -3,12 +3,12 @@ import { LuSquareArrowUp, LuSquareArrowDown } from "react-icons/lu";
 
 function Header({ name, page }) {
     const { techPackData, updateSlideByPage, duplicateSlide, deleteSlideByPage, moveSlideUp, moveSlideDown } = useTechPack();
-
+    console.log("techPackDatas==", techPackData)
     return (
         <section className='border-b-2 border-black relative'>
             <article className='relative flex items-start justify-between py-5 pb-12 px-10 pr-24'>
                 <div>
-                    <h1 className='font-bold'>BARISCEANO</h1>
+                    <h4 className='font-bold'>{techPackData.designer}</h4>
                     <div className='absolute z-40'>
                         <input
                             type="text"
@@ -19,8 +19,8 @@ function Header({ name, page }) {
                         />
                     </div>
                 </div>
-                <div className='h-[46px] absolute right-0 w-full'>
-                    <img src="/logo192.png" alt="Bariceano" draggable="false" className='select-none w-full h-full object-contain' onClick={() => console.log("📁 TechPackData : ", techPackData)} />
+                <div className='h-[60px] absolute right-0 w-full'>
+                    <img src="/logo2.png" alt="Bariceano" draggable="false" className='select-none w-full h-full object-contain' onClick={() => console.log("📁 TechPackData : ", techPackData)} />
                 </div>
                 <div className='flex flex-col items-end justify-end'>
                     <div className='relative'>
