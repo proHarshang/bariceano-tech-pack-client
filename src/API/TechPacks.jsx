@@ -82,7 +82,7 @@ const getUploadedImage = async () => {
 
 }
 
-export const deleteTechPack = async (id) => {
+export const deleteTechPack = async (id, designer) => {
     try {
         const response = await fetch(`${apiURL}/design/techpacks/delete/${id}`, {
             method: 'DELETE',
@@ -90,7 +90,7 @@ export const deleteTechPack = async (id) => {
                 'Content-Type': 'application/json',
                 'api-key': apiKey,
             },
-            body: JSON.stringify({ id }), // Send the category name for deletion
+            body: JSON.stringify({ id, designer }), // Send the category name for deletion
         });
 
         if (response.ok) {
