@@ -27,8 +27,7 @@ export default async function generatePdf(data, setIsDownloading) {
         pdf.setFontSize(12);
         pdf.setFont('helvetica');
         pdf.setTextColor(0, 0, 0);
-
-        const modifiedAt = data.modifiedAt;
+        const modifiedAt = (data.modifiedAt === undefined || data.modifiedAt === null || isNaN(new Date(data.modifiedAt).getTime())) ? data.createdAt : data.modifiedAt;
         const date = new Date(modifiedAt);
         const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
 
@@ -53,7 +52,7 @@ export default async function generatePdf(data, setIsDownloading) {
         // Horizontal line
         pdf.line(0, lineY, pageWidth, lineY);
     }
-    
+
     const firstRowY = lineY + 10;
     secondColorImgY = firstRowY + colorImgHeight + 6; // Update secondColorImgY value
 
@@ -123,7 +122,7 @@ export default async function generatePdf(data, setIsDownloading) {
 
             headerSection(slide.page, slide.name, data);
             if (slide.type === "Layout1") {
-                
+
                 const colorImgWidth = 40;
                 const frontBackImgHeight = 110;
                 const colorImgX = 20;

@@ -193,7 +193,7 @@ export const TechPackProvider = ({ children }) => {
         },
         {
             "page": 4,
-            "name": "Art Work",
+            "name": "Art Work Sheet",
             "type": "ArtWork",
             "data": {
                 "images": [

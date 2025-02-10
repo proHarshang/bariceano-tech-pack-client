@@ -537,7 +537,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                                                 </div>
                                                 <button type="button" onClick={() => {
                                                     const confirmDelete = window.confirm(
-                                                        "Are you sure you want to delete this TechPack?"
+                                                        `You want to delete this techpack => ${item.styleNo} ?`
                                                     );
                                                     const id = item._id
                                                     if (confirmDelete) {
