@@ -31,19 +31,36 @@ const UploadImage = () => {
     const filteredImages = images.filter(image =>
         image.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    console.log("filteredImages", filteredImages)
     const [activePopup, setActivePopup] = useState(null);
 
-    const handleDownload = (image) => {
+    const handleOpen = (image) => {
         const link = document.createElement("a");
         link.href = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image}`;
         link.target = "_blank"; // Opens the link in a new tab
         link.download = image;
         link.click();
     };
+    const handleDownload = async (image) => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/uploads/techpack/${image}`);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", image); // Force download
+            document.body.appendChild(link);
+            link.click();
+
+            // Cleanup
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error downloading the image:", error);
+        }
+    };
 
     const handleDelete = async (image) => {
-        console.log("first")
         try {
             const response = await fetch(`${apiURL}/design/techpacks/images/delete`, {
                 method: 'DELETE', // Use DELETE method
@@ -69,12 +86,10 @@ const UploadImage = () => {
             console.error('Error deleting image:', error);
             alert('An error occurred while deleting the image.');
         }
-        console.log("image image",image)
     };
 
     const selectimage = (image) => {
         setIsModalOpen(false);
-        console.log("this image selected", image)
     }
     const { uploadImage, loading, error } = useUploadImage();
 
@@ -178,7 +193,7 @@ const UploadImage = () => {
                                             <h1 className="font-bold text-base px-4 py-2 break-words border-b">{image}</h1>
                                             <button
                                                 className="block w-full text-left px-4 py-2 text-sm"
-                                                onClick={() => handleDownload(image)}
+                                                onClick={() => handleOpen(image)}
                                             >
                                                 Open
                                             </button>
