@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchAll, categoryAdd, categoryEdit, categoryDelete, getTechPacks, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, constructionSheetEdit, useDeleteTrims, fabricEdit, fabricAdd, fabricDelete, collectionEdit, collectionAdd, collectionDelete, parameterEdit, finishingEdit, trimEdit } from "../API/TechPacks";
+import { fetchAll, categoryAdd, categoryEdit, categoryDelete, getTechPacks, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, constructionSheetEdit, useDeleteTrims, fabricEdit, fabricAdd, fabricDelete, collectionEdit, collectionAdd, collectionDelete, parameterEdit, finishingEdit, trimEdit, fabricColorAdd, fabriColorcDelete, fabricColorEdit, fitAdd, fitEdit, fitDelete, notDelete, noteEdit, noteAdd, categorytypeDelete, categorytypeEdit, categorytypeAdd } from "../API/TechPacks";
 import ImageSelectorPopup from "./ImageSelectorPopup";
 
 export default function Setting() {
@@ -20,10 +20,12 @@ export default function Setting() {
     const [finishing, setFinishing] = useState([]);
     const [collections, setCollections] = useState([]);
     const [fabrics, setFabrics] = useState([]);
+    const [fabricColors, setFabricsColors] = useState([]);
+    const [fit, setFit] = useState([]);
+    const [notes, setNotes] = useState([]);
+    const [Categorys, setCategory] = useState([]);
     const [techpacks, setTechpacks] = useState([]);
-
     const [submitStatus, setSubmitStatus] = useState(null);
-
     const [openPopupId, setOpenPopupId] = useState(null);
     const [update, setUpdate] = useState(false);
     const [updateFormData, setUpdateFormFData] = useState(initialUpdateFormData);
@@ -58,6 +60,10 @@ export default function Setting() {
                 setFinishing(data.techPack.finishing); // Set the fetched categories
                 setCollections(data.techPack.collections); // Set the fetched categories
                 setFabrics(data.techPack.fabric); // Set the fetched categories
+                setFabricsColors(data.techPack.fabricColor); // Set the fetched categories
+                setFit(data.techPack.fit); // Set the fetched categories
+                setNotes(data.techPack.note); // Set the fetched categories
+                setCategory(data.techPack.categoryType); // Set the fetched categories
             } else {
                 console.error('Failed to fetch categories');
             }
@@ -191,7 +197,6 @@ export default function Setting() {
     const [formValues, setFormValues] = useState({});
     const [isAdding, setIsAdding] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-
     const { addSizeChart, success, error } = useAddSizeChart();
     const { editSizeChart, } = useEditSizeChart();
     const { deleteSizeChart } = useDeleteSizeChart();
@@ -468,6 +473,232 @@ export default function Setting() {
     };
     // Fabric Logic Over
 
+    // Fabric Color Logic Start
+    const [editFabricColor, setEditFabricColor] = useState(null);
+    const [addFabricColor, setAddFabricColor] = useState(null);
+    const [loadingFabricColor, setLoadingFabricColor] = useState(false);
+    const [fabricColorEditOldName, setFabricColorEditOldName] = useState(null);
+
+    const handleEditFabricColor = async () => {
+        try {
+            setLoadingFabricColor(true)
+            // Use the fabricEdit hook to update the fabric
+            const updated = await fabricColorEdit(fabricColorEditOldName, editFabricColor);
+            if (updated.status) {
+                fetchAllSetting();
+                setEditFabricColor(null)
+                setSubmitStatus(updated)
+            } else {
+                console.error('Failed to edit fabric Color');
+            }
+        } catch (error) {
+            console.log("error in fabric Color editing: ", error)
+        } finally {
+            setLoadingFabricColor(false)
+        }
+    };
+
+    const handleDeleteFabricColor = async (fabricColors) => {
+        // Use the fabricDelete hook to delete the fabricColors
+        const deleted = await fabriColorcDelete(fabricColors);
+        if (deleted.status) {
+            // Remove the deleted fabricColors from the state
+            setFabricsColors((prevFabrics) => prevFabrics.filter((item) => item !== fabricColors));
+            window.location.reload();
+        } else {
+            console.error('Failed to delete fabric Colors');
+        }
+    };
+
+    const handleSaveNewFabricColor = async () => {
+        try {
+            setLoadingFabricColor(true);
+            // Use the fabricAdd hook to add a new fabric
+            const newFabricColor = await fabricColorAdd(addFabricColor);
+            if (newFabricColor.status) {
+                fetchAllSetting();
+                setAddFabricColor(null)
+                setSubmitStatus(newFabricColor)
+            } else {
+                console.error('Failed to add fabric');
+            }
+        } catch (error) {
+            console.log("error in fabric creating: ", error)
+        } finally {
+            setLoadingFabricColor(false)
+        }
+    };
+    // Fabric Color Logic Over
+
+    // Fit Logic Start
+    const [editFit, setEditFit] = useState(null);
+    const [addFit, setAddFit] = useState(null);
+    const [loadingFit, setLoadingFit] = useState(false);
+    const [fitEditOldName, setFitEditOldName] = useState(null);
+
+    const handleEditFit = async () => {
+        try {
+            setLoadingFit(true)
+            // Use the fabricEdit hook to update the fabric
+            const updated = await fitEdit(fitEditOldName, editFit);
+            if (updated.status) {
+                fetchAllSetting();
+                setEditFit(null)
+                setSubmitStatus(updated)
+            } else {
+                console.error('Failed to edit fit');
+            }
+        } catch (error) {
+            console.log("error in fit editing: ", error)
+        } finally {
+            setLoadingFit(false)
+        }
+    };
+
+    const handleDeleteFit = async (fit) => {
+        // Use the fabricDelete hook to delete the fit
+        const deleted = await fitDelete(fit);
+        if (deleted.status) {
+            // Remove the deleted fit from the state
+            setFabrics((prevFit) => prevFit.filter((item) => item !== fit));
+            window.location.reload();
+        } else {
+            console.error('Failed to delete fit');
+        }
+    };
+
+    const handleSaveNewFit = async () => {
+        try {
+            setLoadingFit(true);
+            // Use the fabricAdd hook to add a new fit
+            const newFabric = await fitAdd(addFit);
+            if (newFabric.status) {
+                fetchAllSetting();
+                setAddFit(null)
+                setSubmitStatus(newFabric)
+            } else {
+                console.error('Failed to add fit');
+            }
+        } catch (error) {
+            console.log("error in fit creating: ", error)
+        } finally {
+            setLoadingFit(false)
+        }
+    };
+    // Fit Logic Over
+
+    // Note Logic Start
+    const [editNote, setEditNote] = useState(null);
+    const [addNote, setAddNote] = useState(null);
+    const [loadingNote, setLoadingNote] = useState(false);
+    const [noteEditOldName, setNoteEditOldName] = useState(null);
+
+    const handleEditNote = async () => {
+        try {
+            setLoadingNote(true)
+            // Use the fabricEdit hook to update the note
+            const updated = await noteEdit(noteEditOldName, editNote);
+            if (updated.status) {
+                fetchAllSetting();
+                setEditNote(null)
+                setSubmitStatus(updated)
+            } else {
+                console.error('Failed to edit note');
+            }
+        } catch (error) {
+            console.log("error in note editing: ", error)
+        } finally {
+            setLoadingNote(false)
+        }
+    };
+
+    const handleDeleteNote = async (note) => {
+        // Use the fabricDelete hook to delete the note
+        const deleted = await notDelete(note);
+        if (deleted.status) {
+            // Remove the deleted note from the state
+            setFabrics((prevFabrics) => prevFabrics.filter((item) => item !== note));
+        } else {
+            console.error('Failed to delete note');
+        }
+    };
+
+    const handleSaveNewNote = async () => {
+        try {
+            setLoadingNote(true);
+            // Use the fabricAdd hook to add a new note
+            const newNote = await noteAdd(addNote);
+            if (newNote.status) {
+                fetchAllSetting();
+                setAddNote(null)
+                setSubmitStatus(newNote)
+            } else {
+                console.error('Failed to add note');
+            }
+        } catch (error) {
+            console.log("error in note creating: ", error)
+        } finally {
+            setLoadingNote(false)
+        }
+    };
+    // Note Logic Over
+
+    // Categorys Logic Start
+    const [editCategorys, setEditCategorys] = useState(null);
+    const [addCategorys, setAddCategorys] = useState(null);
+    const [loadingCategorys, setLoadingCategorys] = useState(false);
+    const [categorysEditOldName, setCategorysEditOldName] = useState(null);
+
+    const handleEditCategorys = async () => {
+        try {
+            setLoadingCategorys(true)
+            // Use the fabricEdit hook to update the Categorys
+            const updated = await categorytypeEdit(categorysEditOldName, editCategorys);
+            if (updated.status) {
+                fetchAllSetting();
+                setEditFabric(null)
+                setSubmitStatus(updated)
+            } else {
+                console.error('Failed to edit Categorys');
+            }
+        } catch (error) {
+            console.log("error in Categorys editing: ", error)
+        } finally {
+            setLoadingCategorys(false)
+        }
+    };
+
+    const handleDeleteCategorys = async (Categorys) => {
+        // Use the fabricDelete hook to delete the Categorys
+        const deleted = await categorytypeDelete(Categorys);
+        if (deleted.status) {
+            // Remove the deleted Categorys from the state
+            setFabrics((prevCategory) => prevCategory.filter((item) => item !== Categorys));
+        } else {
+            console.error('Failed to delete Categorys');
+        }
+    };
+
+    const handleSaveNewCategorys = async () => {
+        try {
+            setLoadingCategorys(true);
+            // Use the fabricAdd hook to add a new Categorys
+            const newCategory = await categorytypeAdd(addCategorys);
+            if (newCategory.status) {
+                fetchAllSetting();
+                setAddCategorys(null)
+                setSubmitStatus(newCategory)
+            } else {
+                console.error('Failed to add Categorys');
+            }
+        } catch (error) {
+            console.log("error in Categorys creating: ", error)
+        } finally {
+            setLoadingCategorys(false)
+        }
+    };
+    // Fabric Logic Over
+
 
     // Collection Logic Start
 
@@ -571,7 +802,7 @@ export default function Setting() {
                 <div>
                     <div className="flex gap-10 pb-5">
                         <div>
-                            <h1 className="font-bold text-xl">Category</h1>
+                            <h1 className="font-bold text-xl">PRODUCT TYPE</h1>
                         </div>
                         <div className="flex gap-3">
                             <button type="button" className="underline" onClick={() => setCategoryAddBox(true)}>
@@ -1425,7 +1656,7 @@ export default function Setting() {
                                             placeholder="Enter Name"
                                             value={trimAddBox.name}
                                             className="w-1/2 p-2 border bg-slate-100 rounded"
-                                            onChange={(e) => setTrimAddBox((prev) => ({ ...prev, name: e.target.value }))}                                            
+                                            onChange={(e) => setTrimAddBox((prev) => ({ ...prev, name: e.target.value }))}
                                         />
                                         <span>as</span>
                                         <input
@@ -1907,6 +2138,665 @@ export default function Setting() {
                                     className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
                                 >
                                     Save Fabric
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+            {/* Fabric */}
+            <div className="border-b p-10 flex flex-col gap-10">
+                <div>
+                    <div className="flex gap-10 pb-5">
+                        <div>
+                            <h1 className="font-bold text-xl">Fabric Colour</h1>
+                        </div>
+                        <div className="flex gap-3">
+                            <button type="button" className="underline" onClick={() => setAddFabricColor("fabriccolor")}>
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                    <div className="flex gap-x-4 flex-wrap">
+                        {fabricColors.map((fabricColor) => (
+                            <div
+                                key={fabricColor}
+                                className="flex w-1/4 mb-4 items-center border-2 rounded-xl px-4 py-5 text-center text-lg"
+                            >
+                                <textarea
+                                    value={fabricColor}
+                                    readOnly={true}
+                                    rows={5} // Allows for 2-3 lines
+                                    className="border-none w-full text-sm text-center text-black outline-none resize-none"
+                                />
+                                <div className="gap-4 ml-3 flex flex-col border bg-white py-2 px-3">
+                                    {/* Edit Button */}
+                                    <button type="button" onClick={() => { setEditFabricColor(fabricColor); setFabricColorEditOldName(fabricColor) }}>
+                                        <span><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
+                                                stroke="#0C2F2F"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M11.875 9.375V11.25C11.875 11.9404 11.3154 12.5 10.625 12.5H3.75C3.05964 12.5 2.5 11.9404 2.5 11.25V4.375C2.5 3.68464 3.05964 3.125 3.75 3.125H5.625"
+                                                stroke="#0C2F2F"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg></span>
+                                    </button>
+
+                                    {/* Delete Button */}
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const confirmDelete = window.confirm(
+                                                'Are you sure you want to delete this fabricColor?'
+                                            );
+                                            if (confirmDelete) {
+                                                handleDeleteFabricColor(fabricColor);
+                                            }
+                                        }}
+                                    >
+                                        <span><svg
+                                            width="18"
+                                            height="18"
+                                            viewBox="0 0 13 15"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M1.625 3.54541H2.70833H11.375"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M10.2923 3.54528V11.818C10.2923 12.1314 10.1782 12.432 9.97502 12.6537C9.77185 12.8753 9.4963 12.9998 9.20898 12.9998H3.79232C3.505 12.9998 3.22945 12.8753 3.02629 12.6537C2.82312 12.432 2.70898 12.1314 2.70898 11.818V3.54528M4.33398 3.54528V2.36346C4.33398 2.05002 4.44812 1.74942 4.65129 1.52779C4.85445 1.30615 5.13 1.18164 5.41732 1.18164H7.58398C7.8713 1.18164 8.14685 1.30615 8.35002 1.52779C8.55318 1.74942 8.66732 2.05002 8.66732 2.36346V3.54528"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M5.41602 6.5V10.0455"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M7.58398 6.5V10.0455"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg></span>
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* FabricColor add Popup */}
+                    {addFabricColor && (
+                        <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
+                            <div className="bg-white p-6 rounded-lg w-[80%] max-w-[1000px]">
+                                <h3 className="mb-4">New Fabric Colour</h3>
+                                <textarea
+                                    placeholder="Enter Fabric Color Name"
+                                    value={addFabricColor}
+                                    onChange={(e) => setAddFabricColor(e.target.value)}
+                                    required
+                                    rows={3}
+                                    className="p-2  rounded w-full mb-4 resize-none border border-black"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setAddFabricColor(null)}
+                                    className="border px-4 text-sm py-2 rounded-lg"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled={loadingFabric}
+                                    onClick={handleSaveNewFabricColor}
+                                    className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
+                                >
+                                    Save Fabric Color
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* FabricColor edit Popup */}
+                    {editFabricColor && (
+                        <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
+                            <div className="bg-white p-6 rounded-lg overflow-scroll w-[80%] max-w-[1000px]">
+                                <h3 className="mb-4">Edit Fabric Colour</h3>
+                                <textarea
+                                    placeholder="Enter Fabric Coloir Name"
+                                    value={editFabricColor}
+                                    onChange={(e) => setEditFabricColor(e.target.value)}
+                                    required
+                                    rows={3}
+                                    className="p-2  rounded w-full mb-4 resize-none border border-black"
+                                />
+
+                                <button
+                                    type="button"
+                                    onClick={() => setEditFabricColor(null)}
+                                    className="border px-4 text-sm py-2 rounded-lg"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled={loadingFabricColor}
+                                    onClick={handleEditFabricColor}
+                                    className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
+                                >
+                                    Save Fabric Color
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Fit */}
+            <div className="border-b p-10 flex flex-col gap-10">
+                <div>
+                    <div className="flex gap-10 pb-5">
+                        <div>
+                            <h1 className="font-bold text-xl">Fit</h1>
+                        </div>
+                        <div className="flex gap-3">
+                            <button type="button" className="underline" onClick={() => setAddFit("fit")}>
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                    <div className="flex gap-x-4 flex-wrap">
+                        {fit.map((fit) => (
+                            <div
+                                key={fit}
+                                className="flex w-1/4 mb-4 items-center border-2 rounded-xl px-4 py-5 text-center text-lg"
+                            >
+                                <textarea
+                                    value={fit}
+                                    readOnly={true}
+                                    rows={5} // Allows for 2-3 lines
+                                    className="border-none w-full text-sm text-center text-black outline-none resize-none"
+                                />
+                                <div className="gap-4 ml-3 flex flex-col border bg-white py-2 px-3">
+                                    {/* Edit Button */}
+                                    <button type="button" onClick={() => { setEditFit(fit); setFitEditOldName(fit) }}>
+                                        <span><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
+                                                stroke="#0C2F2F"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M11.875 9.375V11.25C11.875 11.9404 11.3154 12.5 10.625 12.5H3.75C3.05964 12.5 2.5 11.9404 2.5 11.25V4.375C2.5 3.68464 3.05964 3.125 3.75 3.125H5.625"
+                                                stroke="#0C2F2F"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg></span>
+                                    </button>
+
+                                    {/* Delete Button */}
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const confirmDelete = window.confirm(
+                                                'Are you sure you want to delete this fit?'
+                                            );
+                                            if (confirmDelete) {
+                                                handleDeleteFit(fit);
+                                            }
+                                        }}
+                                    >
+                                        <span><svg
+                                            width="18"
+                                            height="18"
+                                            viewBox="0 0 13 15"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M1.625 3.54541H2.70833H11.375"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M10.2923 3.54528V11.818C10.2923 12.1314 10.1782 12.432 9.97502 12.6537C9.77185 12.8753 9.4963 12.9998 9.20898 12.9998H3.79232C3.505 12.9998 3.22945 12.8753 3.02629 12.6537C2.82312 12.432 2.70898 12.1314 2.70898 11.818V3.54528M4.33398 3.54528V2.36346C4.33398 2.05002 4.44812 1.74942 4.65129 1.52779C4.85445 1.30615 5.13 1.18164 5.41732 1.18164H7.58398C7.8713 1.18164 8.14685 1.30615 8.35002 1.52779C8.55318 1.74942 8.66732 2.05002 8.66732 2.36346V3.54528"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M5.41602 6.5V10.0455"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M7.58398 6.5V10.0455"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg></span>
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* fit add Popup */}
+                    {addFit && (
+                        <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
+                            <div className="bg-white p-6 rounded-lg w-[80%] max-w-[1000px]">
+                                <h3 className="mb-4">New Fit</h3>
+                                <textarea
+                                    placeholder="Enter Fit Name"
+                                    value={addFit}
+                                    onChange={(e) => setAddFit(e.target.value)}
+                                    required
+                                    rows={3}
+                                    className="p-2  rounded w-full mb-4 resize-none border border-black"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setAddFit(null)}
+                                    className="border px-4 text-sm py-2 rounded-lg"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled={loadingFit}
+                                    onClick={handleSaveNewFit}
+                                    className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
+                                >
+                                    Save Fit
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* fit edit Popup */}
+                    {editFit && (
+                        <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
+                            <div className="bg-white p-6 rounded-lg overflow-scroll w-[80%] max-w-[1000px]">
+                                <h3 className="mb-4">Edit Fit</h3>
+                                <textarea
+                                    placeholder="Enter Fit Name"
+                                    value={editFit}
+                                    onChange={(e) => setEditFit(e.target.value)}
+                                    required
+                                    rows={3}
+                                    className="p-2  rounded w-full mb-4 resize-none border border-black"
+                                />
+
+                                <button
+                                    type="button"
+                                    onClick={() => setEditFit(null)}
+                                    className="border px-4 text-sm py-2 rounded-lg"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled={loadingFit}
+                                    onClick={handleEditFit}
+                                    className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
+                                >
+                                    Save Fit
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/*Note */}
+            <div className="border-b p-10 flex flex-col gap-10">
+                <div>
+                    <div className="flex gap-10 pb-5">
+                        <div>
+                            <h1 className="font-bold text-xl">Note</h1>
+                        </div>
+                        <div className="flex gap-3">
+                            <button type="button" className="underline" onClick={() => setAddNote("Enter Note")}>
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                    <div className="flex gap-x-4 flex-wrap">
+                        {notes.map((note) => (
+                            <div
+                                key={note}
+                                className="flex w-1/4 mb-4 items-center border-2 rounded-xl px-4 py-5 text-center text-lg"
+                            >
+                                <textarea
+                                    value={note}
+                                    readOnly={true}
+                                    rows={5} // Allows for 2-3 lines
+                                    className="border-none w-full text-sm text-center text-black outline-none resize-none"
+                                />
+                                <div className="gap-4 ml-3 flex flex-col border bg-white py-2 px-3">
+                                    {/* Edit Button */}
+                                    <button type="button" onClick={() => { setEditNote(note); setNoteEditOldName(note) }}>
+                                        <span><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
+                                                stroke="#0C2F2F"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M11.875 9.375V11.25C11.875 11.9404 11.3154 12.5 10.625 12.5H3.75C3.05964 12.5 2.5 11.9404 2.5 11.25V4.375C2.5 3.68464 3.05964 3.125 3.75 3.125H5.625"
+                                                stroke="#0C2F2F"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg></span>
+                                    </button>
+
+                                    {/* Delete Button */}
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const confirmDelete = window.confirm(
+                                                'Are you sure you want to delete this note?'
+                                            );
+                                            if (confirmDelete) {
+                                                handleDeleteNote(note);
+                                            }
+                                        }}
+                                    >
+                                        <span><svg
+                                            width="18"
+                                            height="18"
+                                            viewBox="0 0 13 15"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M1.625 3.54541H2.70833H11.375"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M10.2923 3.54528V11.818C10.2923 12.1314 10.1782 12.432 9.97502 12.6537C9.77185 12.8753 9.4963 12.9998 9.20898 12.9998H3.79232C3.505 12.9998 3.22945 12.8753 3.02629 12.6537C2.82312 12.432 2.70898 12.1314 2.70898 11.818V3.54528M4.33398 3.54528V2.36346C4.33398 2.05002 4.44812 1.74942 4.65129 1.52779C4.85445 1.30615 5.13 1.18164 5.41732 1.18164H7.58398C7.8713 1.18164 8.14685 1.30615 8.35002 1.52779C8.55318 1.74942 8.66732 2.05002 8.66732 2.36346V3.54528"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M5.41602 6.5V10.0455"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M7.58398 6.5V10.0455"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg></span>
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* note add Popup */}
+                    {addNote && (
+                        <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
+                            <div className="bg-white p-6 rounded-lg w-[80%] max-w-[1000px]">
+                                <h3 className="mb-4">New note</h3>
+                                <textarea
+                                    placeholder="Enter Fabric Color Name"
+                                    value={addNote}
+                                    onChange={(e) => setAddNote(e.target.value)}
+                                    required
+                                    rows={3}
+                                    className="p-2  rounded w-full mb-4 resize-none border border-black"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setAddNote(null)}
+                                    className="border px-4 text-sm py-2 rounded-lg"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled={loadingNote}
+                                    onClick={handleSaveNewNote}
+                                    className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
+                                >
+                                    Save note
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* note edit Popup */}
+                    {editNote && (
+                        <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
+                            <div className="bg-white p-6 rounded-lg overflow-scroll w-[80%] max-w-[1000px]">
+                                <h3 className="mb-4">Edit Note</h3>
+                                <textarea
+                                    placeholder="Enter Note Name"
+                                    value={editNote}
+                                    onChange={(e) => setEditNote(e.target.value)}
+                                    required
+                                    rows={3}
+                                    className="p-2  rounded w-full mb-4 resize-none border border-black"
+                                />
+
+                                <button
+                                    type="button"
+                                    onClick={() => setEditNote(null)}
+                                    className="border px-4 text-sm py-2 rounded-lg"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled={loadingNote}
+                                    onClick={handleEditNote}
+                                    className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
+                                >
+                                    Save note
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Category */}
+            <div className="border-b p-10 flex flex-col gap-10">
+                <div>
+                    <div className="flex gap-10 pb-5">
+                        <div>
+                            <h1 className="font-bold text-xl">Categorys</h1>
+                        </div>
+                        <div className="flex gap-3">
+                            <button type="button" className="underline" onClick={() => setAddCategorys("Enter Categorys")}>
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                    <div className="flex gap-x-4 flex-wrap">
+                        {Categorys.map((Categorys) => (
+                            <div
+                                key={Categorys}
+                                className="flex w-1/4 mb-4 items-center border-2 rounded-xl px-4 py-5 text-center text-lg"
+                            >
+                                <textarea
+                                    value={Categorys}
+                                    readOnly={true}
+                                    rows={5} // Allows for 2-3 lines
+                                    className="border-none w-full text-sm text-center text-black outline-none resize-none"
+                                />
+                                <div className="gap-4 ml-3 flex flex-col border bg-white py-2 px-3">
+                                    {/* Edit Button */}
+                                    <button type="button" onClick={() => { setEditCategorys(Categorys); setCategorysEditOldName(Categorys) }}>
+                                        <span><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M10.2966 3.38001L11.6198 4.70327M11.1474 2.21431L7.56787 5.79378C7.38319 5.97851 7.25725 6.21379 7.206 6.46994L6.875 8.125L8.53006 7.794C8.78619 7.74275 9.0215 7.61681 9.20619 7.43213L12.7857 3.85264C13.2381 3.40023 13.2381 2.66673 12.7857 2.21431C12.3332 1.7619 11.5997 1.76189 11.1474 2.21431Z"
+                                                stroke="#0C2F2F"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M11.875 9.375V11.25C11.875 11.9404 11.3154 12.5 10.625 12.5H3.75C3.05964 12.5 2.5 11.9404 2.5 11.25V4.375C2.5 3.68464 3.05964 3.125 3.75 3.125H5.625"
+                                                stroke="#0C2F2F"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg></span>
+                                    </button>
+
+                                    {/* Delete Button */}
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const confirmDelete = window.confirm(
+                                                'Are you sure you want to delete this Categorys?'
+                                            );
+                                            if (confirmDelete) {
+                                                handleDeleteCategorys(Categorys);
+                                            }
+                                        }}
+                                    >
+                                        <span><svg
+                                            width="18"
+                                            height="18"
+                                            viewBox="0 0 13 15"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M1.625 3.54541H2.70833H11.375"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M10.2923 3.54528V11.818C10.2923 12.1314 10.1782 12.432 9.97502 12.6537C9.77185 12.8753 9.4963 12.9998 9.20898 12.9998H3.79232C3.505 12.9998 3.22945 12.8753 3.02629 12.6537C2.82312 12.432 2.70898 12.1314 2.70898 11.818V3.54528M4.33398 3.54528V2.36346C4.33398 2.05002 4.44812 1.74942 4.65129 1.52779C4.85445 1.30615 5.13 1.18164 5.41732 1.18164H7.58398C7.8713 1.18164 8.14685 1.30615 8.35002 1.52779C8.55318 1.74942 8.66732 2.05002 8.66732 2.36346V3.54528"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M5.41602 6.5V10.0455"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M7.58398 6.5V10.0455"
+                                                stroke="black"
+                                                strokeWidth="0.6"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg></span>
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Categorys add Popup */}
+                    {addCategorys && (
+                        <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
+                            <div className="bg-white p-6 rounded-lg w-[80%] max-w-[1000px]">
+                                <h3 className="mb-4">New Categorys</h3>
+                                <textarea
+                                    placeholder="Enter Fabric Color Name"
+                                    value={addCategorys}
+                                    onChange={(e) => setAddCategorys(e.target.value)}
+                                    required
+                                    rows={3}
+                                    className="p-2  rounded w-full mb-4 resize-none border border-black"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setAddCategorys(null)}
+                                    className="border px-4 text-sm py-2 rounded-lg"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled={loadingCategorys}
+                                    onClick={handleSaveNewCategorys}
+                                    className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
+                                >
+                                    Save Categorys
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Categorys edit Popup */}
+                    {editCategorys && (
+                        <div className="fixed inset-0 bg-gray-500 z-50 h-full bg-opacity-50 flex justify-center items-center">
+                            <div className="bg-white p-6 rounded-lg overflow-scroll w-[80%] max-w-[1000px]">
+                                <h3 className="mb-4">Edit Categorys</h3>
+                                <textarea
+                                    placeholder="Enter Categorys Name"
+                                    value={editCategorys}
+                                    onChange={(e) => setEditCategorys(e.target.value)}
+                                    required
+                                    rows={3}
+                                    className="p-2  rounded w-full mb-4 resize-none border border-black"
+                                />
+
+                                <button
+                                    type="button"
+                                    onClick={() => setEditCategorys(null)}
+                                    className="border px-4 text-sm py-2 rounded-lg"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled={loadingCategorys}
+                                    onClick={handleEditCategorys}
+                                    className="bg-black text-white ml-3 text-sm px-4 py-2 rounded-lg"
+                                >
+                                    Save Categorys
                                 </button>
                             </div>
                         </div>

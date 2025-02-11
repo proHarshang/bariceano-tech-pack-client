@@ -5,6 +5,10 @@ import { useState, useEffect } from "react";
 
 const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }) => {
     const [fabric, setFabric] = useState([]);
+    const [fabricColours, setFabricColours] = useState([]);
+    const [fit, setFit] = useState([]);
+    const [category, setCategory] = useState([]);
+    const [note, setNote] = useState([]);
     const [collections, setCollections] = useState([]);
 
     const [states] = useState([
@@ -23,6 +27,10 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                 const data = await fetchAll(); // Use the categoryFetch hook                                    
                 if (data.status) {
                     setFabric(data.techPack.fabric); // Set the fetched fabric                    
+                    setFabricColours(data.techPack.fabricColor); // Set the fetched fabric                    
+                    setFit(data.techPack.fit); // Set the fetched fabric                    
+                    setCategory(data.techPack.categoryType); // Set the fetched fabric                    
+                    setNote(data.techPack.note); // Set the fetched fabric                    
                     setCollections(data.techPack.collections); // Set the fetched categories
                 } else {
                     console.error('Failed to fetch fabric');
@@ -56,6 +64,33 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
     // useEffect(() => {
     //     updateTrimValue();
     // }, [techPackData.slides]);
+
+    const [selectedNote, setSelectedNote] = useState("");
+    const [editableNote, setEditableNote] = useState("");
+
+    const handleSelectChange = (e) => {
+        const selectedValue = e.target.value;
+        setSelectedNote(selectedValue);
+        setEditableNote(selectedValue); // Prefill input with selected option
+        updateField("Note", selectedValue);
+        updateInfoField(page, "Note", slide.data?.info?.find((item) => item.name === "Note")?.value, { "value": selectedValue });
+    };
+
+    const handleInputChange = (e) => {
+        setEditableNote(e.target.value);
+        updateField("Note", e.target.value);
+        updateInfoField(page, "Note", selectedNote, { "value": e.target.value });
+    };
+    const [inputValue, setInputValue] = useState(
+        slide.data?.info?.find((item) => item.name === "Note")?.value || ""
+    );
+
+    const handleChange = (e) => {
+        setInputValue(e.target.value);
+        updateField("Note", e.target.value);
+        updateInfoField(page, "Note", slide.data?.info?.find((item) => item.name === "Note")?.value, { "value": e.target.value });
+    };
+
 
     return (
         <section className='mx-auto mb-20 pl-7 pr-2'>
@@ -162,6 +197,78 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                     </select>
                 </div>
                 <div className="form__group field w-[45%] relative group">
+                    <label className="form__label capitalize">Fabric Colour</label>
+                    <input
+                        list="fabricColour-options"
+                        value={slide.data?.info?.find((item) => item.name === "Fabric Colour")?.value || ""}
+                        onChange={(e) => {
+                            updateField("Fabric Colour", e.target.value);
+                            updateInfoField(page, "Fabric Colour", slide.data?.info?.find((item) => item.name === "Fabric Colour")?.value, { "value": e.target.value });
+                        }}
+                        className="form__field break-words text-wrap p-2 border rounded w-full"
+                        required
+                    />
+                    <datalist id="fabricColour-options">
+                        {fabricColours.map((FabricColour) => (
+                            <option key={FabricColour} value={FabricColour} />
+                        ))}
+                    </datalist>
+                </div>
+
+                <div className="form__group field w-[45%] relative group">
+                    <label className="form__label capitalize">Fit</label>
+                    <input
+                        list="fit-options"
+                        value={slide.data?.info?.find((item) => item.name === "Fit")?.value || ""}
+                        onChange={(e) => {
+                            updateField("Fit", e.target.value);
+                            updateInfoField(page, "Fit", slide.data?.info?.find((item) => item.name === "Fit")?.value, { "value": e.target.value });
+                        }}
+                        className="form__field break-words text-wrap p-2 border rounded w-full"
+                        required
+                    />
+                    <datalist id="fit-options">
+                        {fit.map((fit) => (
+                            <option key={fit} value={fit} />
+                        ))}
+                    </datalist>
+                </div>
+
+                <div className="form__group field w-[45%] relative group">
+                    <label className="form__label capitalize">Category</label>
+                    <input
+                        list="category-options"
+                        value={slide.data?.info?.find((item) => item.name === "Category")?.value || ""}
+                        onChange={(e) => {
+                            updateField("Category", e.target.value);
+                            updateInfoField(page, "Category", slide.data?.info?.find((item) => item.name === "Category")?.value, { "value": e.target.value });
+                        }}
+                        className="form__field break-words text-wrap p-2 border rounded w-full"
+                        required
+                    />
+                    <datalist id="category-options">
+                        {category.map((category) => (
+                            <option key={category} value={category} />
+                        ))}
+                    </datalist>
+                </div>
+
+                <div className="form__group field w-[45%] relative group">
+                    <label className="form__label capitalize">Note</label>
+                    <input
+                        list="note-options"
+                        value={inputValue}
+                        onChange={handleChange}
+                        className="form__field break-words text-wrap p-2 border rounded w-full"
+                        required
+                    />
+                    <datalist id="note-options">
+                        {note.map((noteItem) => (
+                            <option key={noteItem} value={noteItem} />
+                        ))}
+                    </datalist>
+                </div>
+                <div className="form__group field w-[45%] relative group">
                     <label className="form__label capitalize">Trim</label>
                     <textarea
                         type="text"
@@ -182,7 +289,7 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                     />
                 </div>
                 {slide.data?.info?.map((field, index) => {
-                    if (["Style No", "Size", "Gender", "State", "Fabric", "Collection", "Trim", "Product Type"].includes(field.name)) {
+                    if (["Style No", "Size", "Gender", "State", "Fabric", "Collection", "Trim", "Product Type", "Fabric Colour", "Fit", "Category", "Note"].includes(field.name)) {
                         return null;
                     }
                     return (

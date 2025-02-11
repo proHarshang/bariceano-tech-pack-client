@@ -782,6 +782,262 @@ export const fabricDelete = async (name) => {
     }
 };
 
+export const fabricColorAdd = async (name) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/fabriccolor/add`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to add fabriccolor');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while adding the fabriccolor');
+    }
+};
+
+export const fabricColorEdit = async (oldName, newName) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/fabriccolor/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ oldName, newName }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to edit fabriccolor');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while editing the fabriccolor');
+    }
+};
+
+export const fabriColorcDelete = async (name) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/fabriccolor/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to delete fabriccolor');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while deleting the fabriccolor');
+    }
+};
+
+
+export const fitAdd = async (name) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/fit/add`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to add fit');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while adding the fit');
+    }
+};
+
+export const fitEdit = async (oldName, newName) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/fit/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ oldName, newName }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to edit fit');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while editing the fit');
+    }
+};
+
+export const fitDelete = async (name) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/fit/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to delete fit');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while deleting the fit');
+    }
+};
+
+
+export const noteAdd = async (name) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/note/add`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to add note');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while adding the note');
+    }
+};
+
+export const noteEdit = async (oldName, newName) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/note/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ oldName, newName }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to edit note');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while editing the note');
+    }
+};
+
+export const notDelete = async (name) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/note/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to delete note');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while deleting the note');
+    }
+};
+
+
+export const categorytypeAdd = async (name) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/categorytype/add`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to add category');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while adding the category');
+    }
+};
+
+export const categorytypeEdit = async (oldName, newName) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/categorytype/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ oldName, newName }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to edit category');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while editing the category');
+    }
+};
+
+export const categorytypeDelete = async (name) => {
+    try {
+        const response = await fetch(`${apiURL}/design/setting/categorytype/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({ name }),
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw new Error('Failed to delete category');
+        }
+    } catch (error) {
+        throw new Error(error.message || 'An error occurred while deleting the category');
+    }
+};
+
+
 
 export const collectionAdd = async (name) => {
     try {
@@ -803,7 +1059,6 @@ export const collectionAdd = async (name) => {
         throw new Error(error.message || 'An error occurred while adding the collection');
     }
 };
-
 
 export const collectionEdit = async (oldName, newName) => {
     try {

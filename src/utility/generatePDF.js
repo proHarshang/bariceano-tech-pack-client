@@ -438,6 +438,7 @@ export default async function generatePdf(data, setIsDownloading) {
                         let tableRows = rows.slice(i, i + rowLimitPerPage);
 
                         pdf.autoTable({
+                            theme: 'grid',
                             head: [['#', 'PLACEMENT', 'ARTWORK', 'TECHNIQUE', 'COLOUR', 'PLACEMENT']],
                             body: tableRows.map(row => [
                                 row[0], // #
@@ -484,10 +485,10 @@ export default async function generatePdf(data, setIsDownloading) {
 
                                     // Store the image positions, but don't add them yet
                                     if (data.column.index === 2 && rowData[2]) {
-                                        rowData.imageArtworkPosition = { x: data.cell.x + 5, y: data.cell.y + 5 };
+                                        rowData.imageArtworkPosition = { x: data.cell.x + 5, y: data.cell.y + 3 };
                                     }
                                     if (data.column.index === 5 && rowData[5]) {
-                                        rowData.imagePlacementPosition = { x: data.cell.x + 5, y: data.cell.y + 5 };
+                                        rowData.imagePlacementPosition = { x: data.cell.x + 5, y: data.cell.y + 3 };
                                     }
                                 }
                             }
@@ -495,12 +496,13 @@ export default async function generatePdf(data, setIsDownloading) {
                         });
                         tableRows.forEach(rowData => {
                             if (rowData.imageArtworkPosition && rowData[2]) {
-                                pdf.addImage(rowData[2], 'JPEG', rowData.imageArtworkPosition.x, rowData.imageArtworkPosition.y, 50, 40);
+                                pdf.addImage(rowData[2], 'JPEG', rowData.imageArtworkPosition.x, rowData.imageArtworkPosition.y, 46, 45);
                             }
                             if (rowData.imagePlacementPosition && rowData[5]) {
-                                pdf.addImage(rowData[5], 'JPEG', rowData.imagePlacementPosition.x, rowData.imagePlacementPosition.y, 50, 40);
+                                pdf.addImage(rowData[5], 'JPEG', rowData.imagePlacementPosition.x, rowData.imagePlacementPosition.y, 46, 45);
                             }
                         });
+
 
                         if (i + rowLimitPerPage < rows.length) {
                             pdf.addPage();

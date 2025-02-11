@@ -8,6 +8,8 @@ const PreviewPage = () => {
     console.log("previewData", previewData);
     console.log("slides", slides);
 
+
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
             {slides.length > 0 ? (
@@ -34,8 +36,63 @@ const PreviewPage = () => {
                         </section>
 
                         {/* Slide Content */}
-                        <div className="flex-1 flex items-center justify-center text-center p-4">
-                            <p>{JSON.stringify(slide, null, 2)}</p>
+                        <div>
+                            {slide.type === "Layout1" ? (
+                                <div className="flex w-[95%] mx-auto">
+                                    <div className="w-[30%] flex flex-col justify-between">
+                                        <div className="flex flex-col items-center">
+                                            <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.fabricColorImages[0].src}`} alt="" className="w-[150px] h-[150px]" />
+                                            <h5 className="font-bold">{slide.data.fabricColorTitle}</h5>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.threadColorImages[0].src}`} alt="" className="w-[150px] h-[150px]" />
+                                            <h5 className="font-bold ">{slide.data.threadColorTitle}</h5>
+                                        </div>
+                                    </div>
+                                    <div className="w-[70%] flex justify-between gap-5">
+                                        <div className="w-[400px] h-[400px]">
+                                            <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0].src}`} alt="" className="w-full h-full" />
+                                        </div>
+                                        <div className="w-[400px] h-[400px]">
+                                            <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[1].src}`} alt="" className="w-full h-full" />
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : slide.type === "Layout2" ? (
+                                <p>Layout 2 Content</p>
+                            ) :
+                                slide.type === "Layout3" ? (
+                                    <p>Default Layout</p>
+                                ) :
+                                    slide.type === "Layout0" ? (
+                                        <p>Default Layout</p>
+                                    ) :
+                                        slide.type === "Information" ? (
+                                            <p>Default Layout</p>
+                                        ) :
+                                            slide.type === "ArtworkPlacementSheet" ? (
+                                                <p>Default Layout</p>
+                                            ) :
+                                                slide.type === "ArtWork" ? (
+                                                    <div className="flex justify-center">
+                                                        <div className="w-[805px] h-[604px]">
+                                                            <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0].src}`} alt="" />
+                                                        </div>
+                                                    </div>
+                                                ) :
+                                                    slide.type === "Page" ? (
+                                                        <p>Default Layout</p>
+                                                    ) :
+                                                        slide.type === "Silicon Label" ? (
+                                                            <p>Default Layout</p>
+                                                        ) :
+                                                            (
+                                                                <div className="flex justify-center">
+                                                                    <div className="w-[805px] h-[604px]">
+                                                                        <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0].src}`} alt="" />
+                                                                    </div>
+                                                                </div>
+                                                            )}
                         </div>
 
                         {/* Footer */}
