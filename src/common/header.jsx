@@ -3,7 +3,6 @@ import { LuSquareArrowUp, LuSquareArrowDown } from "react-icons/lu";
 
 function Header({ name, page }) {
     const { techPackData, updateSlideByPage, duplicateSlide, deleteSlideByPage, moveSlideUp, moveSlideDown } = useTechPack();
-    console.log("techPackDatas==", techPackData.slides.type)
     return (
         <section className='border-b-2 border-black relative'>
             <article className='relative flex items-start justify-between py-5 pb-12 px-10 pr-24'>

@@ -192,9 +192,21 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                                 className="form__field"
                                 value={field.value}
                                 rows={1}
-                                onChange={(e) => updateInfoField(page, field.name, field.value, { "value": e.target.value })}
+                                onChange={(e) => {
+                                    updateInfoField(page, field.name, field.value, { "value": e.target.value });
+
+                                    // Adjust height dynamically
+                                    e.target.style.height = "auto"; // Reset height
+                                    e.target.style.height = `${e.target.scrollHeight}px`; // Set new height based on content
+                                }}
+                                style={{
+                                    overflow: "hidden",
+                                    resize: "none",
+                                    minHeight: "30px", // Adjust as per your row height
+                                }} // Prevent manual resizing
                                 required
                             />
+
                             <button
                                 className="text-xs text-right w-full hidden leading-[10px] group-hover:flex absolute left-[95%]"
                                 onClick={() => deleteInfoField(page, field.name, field.value)}

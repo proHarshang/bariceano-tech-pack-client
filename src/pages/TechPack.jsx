@@ -206,11 +206,8 @@ const TechPack = () => {
     }
   });
 
-  console.log("Selections from header ", selectedLabels, currentCategory, currentSubCategory)
   // Combine static and dynamic arrays
   const combinedArray = [...staticArray, ...dynamicArray];
-  console.log("techPackData", techPackData.slides)
-  console.log("combinedArray", combinedArray)
 
   return (
     <form className="w-[841px] mx-auto mt-10" >
