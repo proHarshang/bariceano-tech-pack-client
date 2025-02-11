@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import AddTechpack from './pages/AddTechpack';
 import PrivateRoute from './components/PrivateRoute';
 import Logout from './pages/Logout';
+import PreviewPage from './pages/PreviewPage';
 import { TechPackProvider } from './context/TechPackContext';
 
 function App() {
@@ -27,6 +28,11 @@ function App() {
             <Route path='/tech-pack-data' element={
               <PrivateRoute>
                 <TechPacksTable />
+              </PrivateRoute>
+            } />
+            <Route path='/preview' element={
+              <PrivateRoute>
+                <PreviewPage />
               </PrivateRoute>
             } />
             <Route path='/setting' element={

@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { FaCommentDots } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 import generatePdf from "../utility/generatePDF";
 
 const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
@@ -265,6 +266,9 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
         setIsDownloading(false);
     };
 
+    const handlePreviewClick = (index) => {
+        navigate("/preview", { state: { data: currentItems[index] } });
+    };
 
     return (
         <>
@@ -535,16 +539,20 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                                                 <div className="flex justify-center items-center download-button hover:bg-green-300">
                                                     <NewPdfGenerator data={currentItems[index]} />
                                                 </div>
-                                                <button type="button" onClick={() => {
-                                                    const confirmDelete = window.confirm(
-                                                        `You want to delete this techpack => ${item.styleNo} ?`
-                                                    );
-                                                    const id = item._id
-                                                    if (confirmDelete) {
-                                                        handleDeleteTechpack(id);
-                                                    }
-                                                }} className="delete-button  hover:bg-red-300">Delete</button>
+                                                <button type="button" className="preview-button" onClick={() => handlePreviewClick(index)}>
+                                                    Preview
+                                                </button>
+
                                             </div>
+                                            <button type="button" title="Delete" onClick={() => {
+                                                const confirmDelete = window.confirm(
+                                                    `You want to delete this techpack => ${item.styleNo} ?`
+                                                );
+                                                const id = item._id
+                                                if (confirmDelete) {
+                                                    handleDeleteTechpack(id);
+                                                }
+                                            }} className="text-red-500 size-6"><MdDelete /></button>
                                         </td>
                                         {isSidebarOpen && (
                                             <div ref={sidebarRef} className="fixed top-0 right-0 h-full w-1/4 max-w-sm bg-white shadow-lg z-50 p-6">
