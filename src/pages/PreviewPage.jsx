@@ -81,7 +81,11 @@ const PreviewPage = () => {
                                                     </div>
                                                 ) :
                                                     slide.type === "Page" ? (
-                                                        <p>Default Layout</p>
+                                                        <div className="flex justify-center">
+                                                            <div className="w-[805px] h-[604px]">
+                                                                <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0].src}`} alt="" />
+                                                            </div>
+                                                        </div>
                                                     ) :
                                                         slide.type === "Silicon Label" ? (
                                                             <p>Default Layout</p>
