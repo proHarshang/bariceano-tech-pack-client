@@ -611,14 +611,14 @@ export default async function generatePdf(data, setIsDownloading) {
                 // Check if slide.data exists and contains images
                 if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0) {
                     const maxWidth = pdf.internal.pageSize.getWidth()
-                    const imageWidth = 213;
+                    const imageWidth = 233;
                     const xPosition = (maxWidth - imageWidth) / 2;
 
                     // Loop through images within slide.data
                     slide.data.images.forEach((image) => {
                         const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
                         // Add image to PDF with adjusted position and dimensions
-                        pdf.addImage(imagePath, "JPEG", xPosition, 25, imageWidth, 160);
+                        pdf.addImage(imagePath, "JPEG", xPosition, 25, imageWidth, 175);
                     });
                 } else {
                     console.warn(`No images found for page ${slide.page}. Skipping image addition.`);
