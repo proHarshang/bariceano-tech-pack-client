@@ -618,7 +618,7 @@ export default async function generatePdf(data, setIsDownloading) {
                     slide.data.images.forEach((image) => {
                         const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
                         // Add image to PDF with adjusted position and dimensions
-                        pdf.addImage(imagePath, "JPEG", xPosition, 25, imageWidth, 175);
+                        pdf.addImage(imagePath, "JPEG", xPosition, 21.5, imageWidth, 175);
                     });
                 } else {
                     console.warn(`No images found for page ${slide.page}. Skipping image addition.`);
