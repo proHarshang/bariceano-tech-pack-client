@@ -51,7 +51,7 @@ const PreviewPage = () => {
                         </section>
 
                         {/* Slide Content */}
-                        <div>
+                        <div className="py-2">
                             {slide.type === "Layout1" ? (
                                 <div className="flex w-[95%] mx-auto py-10">
                                     <div className="w-[30%] flex flex-col justify-between">
