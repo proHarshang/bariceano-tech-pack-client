@@ -145,7 +145,22 @@ const TechPack = () => {
           }
         });
       })
-    } else {
+    } if(selectedPage.type === "ArtWork") {
+      addSlideAtIndex(selectedIndex, {
+        "page": 10,
+        "name": "Art Work Sheet",
+        "type": "ArtWork",
+        "data": {
+          "title": "",
+          "images": [
+            {
+              "position": 0,
+              "src": ""
+            }
+          ]
+        }
+      });
+    }else {
       selectedPage.data.images.map(item => {
         addSlideAtIndex(selectedIndex, {
           "page": 10,
