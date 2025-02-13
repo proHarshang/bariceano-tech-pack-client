@@ -185,7 +185,7 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                     <select
                         value={slide.data?.info?.find((item) => item.name === "Fabric").value}
                         onChange={(e) => {
-                            updateField("fabric", e.target.value);
+                            // updateField("fabric", e.target.value);
                             updateInfoField(page, "Fabric", slide.data?.info?.find((item) => item.name === "Fabric").value, { "value": e.target.value })
                         }}
                         className="form__field break-words text-wrap"
@@ -202,7 +202,7 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                         list="fabricColour-options"
                         value={slide.data?.info?.find((item) => item.name === "Fabric Colour")?.value || ""}
                         onChange={(e) => {
-                            updateField("Fabric Colour", e.target.value);
+                            // updateField("Fabric Colour", e.target.value);
                             updateInfoField(page, "Fabric Colour", slide.data?.info?.find((item) => item.name === "Fabric Colour")?.value, { "value": e.target.value });
                         }}
                         className="form__field break-words text-wrap p-2 border rounded w-full"
@@ -257,8 +257,11 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                     <label className="form__label capitalize">Note</label>
                     <input
                         list="note-options"
-                        value={inputValue}
-                        onChange={handleChange}
+                        value={slide.data?.info?.find((item) => item.name === "Note")?.value || ""}
+                        onChange={(e) => {
+                            updateField("Note", e.target.value);
+                            updateInfoField(page, "Note", slide.data?.info?.find((item) => item.name === "Note")?.value, { "value": e.target.value });
+                        }}
                         className="form__field break-words text-wrap p-2 border rounded w-full"
                         required
                     />
