@@ -257,7 +257,7 @@ export const TechPackProvider = ({ children }) => {
             return label.name;
         } else if (["Construction Sheet", "Requirements", "Finishing"].includes(label.name)) {
             return `${label.name} - ${category}`;
-        } else if (label.name === "Size Chart") {
+        } else if (label.name === "Size Chart" || label.name === "Size chart") {
             return sizecharts.find(item => item.gender === gender && item.category === category).name;
         } else {
             return "Page";
