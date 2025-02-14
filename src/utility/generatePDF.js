@@ -628,7 +628,11 @@ export default async function generatePdf(data, setIsDownloading) {
             footerSection(data);
             return slide; // Modify as needed
         });
-        pdf.save(`${data.styleNo}.pdf`);
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getFullYear()}`;
+
+        pdf.save(`${data.styleNo}_${formattedDate}.pdf`);
+
 
     }
     catch (error) {
