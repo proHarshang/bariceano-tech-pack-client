@@ -17,7 +17,7 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
         "Production",
     ]);
 
-    const { techPackData, trims, addInfoField, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
+    const { trims, genders, addInfoField, updateSizechart, updateMode, getSlideByPage, updateInfoField, deleteInfoField, updateField } = useTechPack();
 
     const slide = getSlideByPage(page);
 
@@ -135,16 +135,20 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                 <div className="flex w-[45%] gap-5">
                     <div className="form__group field w-1/2 relative group">
                         <label className="form__label capitalize">Gender</label>
-                        <input
-                            disabled={true}
+                        <select                            
                             value={slide.data?.info?.find((item) => item.name === "Gender").value}
-                            // onChange={(e) => {
-                            //     updateField("gender", e.target.value);
-                            //     updateInfoField(page, "Gender", slide.data?.info?.find((item) => item.name === "Gender").value, { "value": e.target.value })
-                            // }}
-                            className="form__field break-words text-wrap cursor-not-allowed"
-                            required>
-                        </input>
+                            onChange={(e) => {
+                                updateField("gender", e.target.value);
+                                updateInfoField(page, "Gender", slide.data?.info?.find((item) => item.name === "Gender").value, { "value": e.target.value })
+                                updateSizechart()
+                            }}
+                            className="form__field break-words text-wrap"
+                            required
+                            >
+                            {genders.map((gender) => (
+                                <option key={gender} className="break-words text-wrap text-sm overflow-x-auto" value={gender}>{gender}</option>
+                            ))}    
+                        </select>
                     </div>
                     <div className="form__group field w-1/2 relative group">
                         <label className="form__label capitalize">Collection</label>

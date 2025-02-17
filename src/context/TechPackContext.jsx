@@ -213,6 +213,7 @@ export const TechPackProvider = ({ children }) => {
     const [requirements, setRequirements] = useState([]);
     const [finishing, setFinishing] = useState([]);
     const [sizecharts, setSizeCharts] = useState([]);
+    const [genders, setGenders] = useState([]);
 
     const [isAdding, setIsAdding] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
@@ -234,6 +235,7 @@ export const TechPackProvider = ({ children }) => {
                 setRequirements(data.techPack.requirements);
                 setFinishing(data.techPack.finishing);
                 setSizeCharts(data.techPack.sizeCharts);
+                setGenders(data.techPack.gender);
                 setIsSettingDataFetched(true);
             } else {
                 console.error('Failed to fetch categories');
@@ -263,6 +265,42 @@ export const TechPackProvider = ({ children }) => {
             return "Page";
         }
     }
+
+    // Update sizechart based on gender
+    const updateSizechart = () => {
+        setTechPackData((prev) => {
+            // Find the index of the first existing size chart slide
+            const firstSizeChartIndex = prev.slides.findIndex(slide => sizecharts.map(sizechart => sizechart.name).includes(slide.type));
+
+            // Filter out existing size chart slides
+            const filteredSlides = prev.slides.filter(slide => !sizecharts.map(sizechart => sizechart.name).includes(slide.type));
+
+            // Find the new size chart based on gender and category
+            const sizechart = sizecharts.find(item => item.gender === prev.gender && item.category === prev.category);
+
+            // Add new size chart slides if found
+            if (sizechart) {
+                sizechart.images.forEach((img, index) => {
+                    filteredSlides.splice(firstSizeChartIndex + index, 0, {
+                        page: firstSizeChartIndex + index + 1,
+                        name: "Size Chart",
+                        type: sizechart.name,
+                        data: {
+                            images: [img]
+                        }
+                    });
+                });
+            }
+
+            // Reassign page numbers to ensure continuity
+            const updatedSlides = filteredSlides.map((slide, index) => ({
+                ...slide,
+                page: index + 1
+            }));
+
+            return { ...prev, slides: updatedSlides };
+        });
+    };
 
     const createUpdateTechPackSetup = async (id) => {
         setUpdateMode(id);
@@ -748,6 +786,8 @@ export const TechPackProvider = ({ children }) => {
                 requirements,
                 finishing,
                 sizecharts,
+                genders,
+                updateSizechart,
                 setConstructionSheets,
                 setTrims,
                 setRequirements,
