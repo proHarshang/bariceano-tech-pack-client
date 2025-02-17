@@ -640,6 +640,7 @@ export default async function generatePdf(data, setIsDownloading) {
         alert(`Could not download - ${data.styleNo} due to ${error}`)
     } finally {
         setIsDownloading(false)
+        window.location.reload()
     }
 
 }
