@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { handleCommentSubmit, deleteTechPack } from '../API/TechPacks';
+import { handleCommentSubmit, deleteTechPack, updateDownloadDate } from '../API/TechPacks';
 // import TechPackPdfGenerator from '../TechPackPdfGenerator';
 import NewPdfGenerator from '../NewPDF';
 import { useForm } from "react-hook-form";
@@ -249,6 +249,11 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
     const handleEditClick = (itemId) => {
         // window.location.href = `/tech-pack?id=${itemId}`
         navigate(`/tech-pack?id=${itemId}`)
+    };
+
+    const handleDownloadClick = async (styleNo) => {
+        // Call the function to update the download date
+        await updateDownloadDate(styleNo);
     };
 
     const [isDownloading, setIsDownloading] = useState(false);
@@ -511,7 +516,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                         <tbody>
                             {currentItems?.map((item, index) => {
                                 return (
-                                    <tr key={item._id} className={item?.modifiedAt > item?.downloadAt ? "bg-orange-300" : ""}>
+                                    <tr key={item._id} className={(item.modifiedAt > item.downloadedAt) ? "bg-gradient-to-r from-orange-200 via-white to-white" : ""}>
                                         <td>{indexOfFirstItem + index + 1}</td>
                                         <td>{item.styleNo}</td>
                                         <td>{formatDate(item?.modifiedAt)}</td>
@@ -536,8 +541,8 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                                                 <button type="button" className="edit-button hover:bg-zinc-300" onClick={() => handleEditClick(item._id)}>Edit</button>
                                             </div>
                                             <div className="action-buttons w-1/2">
-                                                <div className="flex justify-center items-center download-button hover:bg-green-300">
-                                                    <NewPdfGenerator data={currentItems[index]} />
+                                                <div className="flex justify-center items-center download-button hover:bg-green-300" onClick={() => handleDownloadClick(item.styleNo)}>
+                                                    <NewPdfGenerator data={currentItems[index]}/>
                                                 </div>
                                                 <button type="button" className="preview-button" onClick={() => handlePreviewClick(index)}>
                                                     Preview

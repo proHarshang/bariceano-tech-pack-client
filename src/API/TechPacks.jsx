@@ -1103,5 +1103,31 @@ export const collectionDelete = async (name) => {
 };
 
 
+export const updateDownloadDate = async (styleNo) => {
+    try {
+        const response = await fetch(`${apiURL}/design/techpacks/add/downloaddate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': apiKey,
+            },
+            body: JSON.stringify({
+                styleNo,
+                downloadedAt: new Date().toISOString(), // Fix the key name
+            }),
+        });
 
-export { getTechPacks, getTechPacksById, addTechPacks, updateTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, getUploadedImage, useUploadImage }
+        if (!response.ok) {
+            throw new Error('Failed to update download date');
+        }
+
+        const result = await response.json();
+        console.log('Download date updated successfully:', result);
+    } catch (error) {
+        console.error('Error updating download date:', error);
+    }
+};
+
+export { getTechPacks, getTechPacksById, addTechPacks, updateTechPacks, handleCommentSubmit, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, useDeleteTrims, getUploadedImage, useUploadImage ,}
+
+
