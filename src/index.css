@@ -288,13 +288,13 @@ select:focus-visible {
   /* Adjust color as needed */
 }
 
-.techPack-table tbody tr:nth-child(even) {
+/* .techPack-table tbody tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
 .techPack-table tbody tr:nth-child(odd) {
   background-color: white;
-}
+} */
 
 /* .techPack-table tbody tr:hover {
     background-color: white;
