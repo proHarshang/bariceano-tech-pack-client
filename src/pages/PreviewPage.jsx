@@ -5,9 +5,6 @@ const PreviewPage = () => {
     const previewData = location.state?.data;
     const slides = location.state?.data?.slides || [];
 
-    console.log("previewData", previewData);
-    console.log("slides", slides);
-
     const informationSlide = slides.find(slide => slide.type === "Information");
     const nonLastRows = informationSlide.data.info.filter((row) => row.position !== "Last");
     const lastRows = informationSlide.data.info.filter((row) => row.position === "Last");
