@@ -272,7 +272,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
     };
 
     const handlePreviewClick = (index) => {
-        navigate("/preview", { state: { data: currentItems[index] } });
+        navigate(`/preview/${currentItems[index]._id}`);
     };
 
     return (
@@ -542,7 +542,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                                             </div>
                                             <div className="action-buttons w-1/2">
                                                 <div className="flex justify-center items-center download-button hover:bg-green-300" onClick={() => handleDownloadClick(item.styleNo)}>
-                                                    <NewPdfGenerator data={currentItems[index]}/>
+                                                    <NewPdfGenerator data={currentItems[index]} />
                                                 </div>
                                                 <button type="button" className="preview-button" onClick={() => handlePreviewClick(index)}>
                                                     Preview

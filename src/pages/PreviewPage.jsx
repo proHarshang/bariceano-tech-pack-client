@@ -1,13 +1,33 @@
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const PreviewPage = () => {
-    const location = useLocation();
-    const previewData = location.state?.data;
-    const slides = location.state?.data?.slides || [];
+    const { id } = useParams();
+    const [previewData, setPreviewData] = useState(null);
+    const [slides, setSlides] = useState([]);
+    
+    useEffect(() => {
+        const fetchTechPack = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/design/techpacks/fetch/${id}`);
+                if (response.data.status) {
+                    setPreviewData(response.data.data);
+                    setSlides(response.data.data.slides || []);
+                } else {
+                    console.error(response.data.message);
+                }
+            } catch (error) {
+                console.error("Error fetching tech pack:", error);
+            }
+        };
+
+        fetchTechPack();
+    }, [id]);
 
     const informationSlide = slides.find(slide => slide.type === "Information");
-    const nonLastRows = informationSlide.data.info.filter((row) => row.position !== "Last");
-    const lastRows = informationSlide.data.info.filter((row) => row.position === "Last");
+    const nonLastRows = informationSlide?.data.info.filter((row) => row.position !== "Last") || [];
+    const lastRows = informationSlide?.data.info.filter((row) => row.position === "Last") || [];
 
     // Ensure even number of rows in nonLastRows for alignment
     if (nonLastRows.length % 2 !== 0) {
@@ -18,7 +38,6 @@ const PreviewPage = () => {
     const midIndex = Math.ceil(nonLastRows.length / 2);
     const firstHalf = nonLastRows.slice(0, midIndex);
     const secondHalf = nonLastRows.slice(midIndex);
-
 
     const artworkData = slides.find(slide => slide.type === "ArtworkPlacementSheet");
 
