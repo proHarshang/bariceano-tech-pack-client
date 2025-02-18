@@ -11,6 +11,8 @@ import Logout from './pages/Logout';
 import PreviewPage from './pages/PreviewPage';
 import { TechPackProvider } from './context/TechPackContext';
 import PageNotFound from './pages/PageNotFound';
+import { Navigate } from 'react-router-dom';
+
 function App() {
   return (
     <AuthProvider>
@@ -52,7 +54,8 @@ function App() {
               }
             />
 
-            <Route path="*" element={<PageNotFound />} />
+<Route path="/404" element={<PageNotFound />} />
+<Route path="*" element={<Navigate to="/404" />} />
           </Routes>
         </MainLayout>
       </Router>
