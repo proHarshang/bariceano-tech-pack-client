@@ -135,7 +135,7 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                 <div className="flex w-[45%] gap-5">
                     <div className="form__group field w-1/2 relative group">
                         <label className="form__label capitalize">Gender</label>
-                        <select                            
+                        <select
                             value={slide.data?.info?.find((item) => item.name === "Gender").value}
                             onChange={(e) => {
                                 updateField("gender", e.target.value);
@@ -144,10 +144,10 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                             }}
                             className="form__field break-words text-wrap"
                             required
-                            >
+                        >
                             {genders.map((gender) => (
                                 <option key={gender} className="break-words text-wrap text-sm overflow-x-auto" value={gender}>{gender}</option>
-                            ))}    
+                            ))}
                         </select>
                     </div>
                     <div className="form__group field w-1/2 relative group">
@@ -295,8 +295,21 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
                         disabled
                     />
                 </div>
+                {slide.data?.info?.find((item) => item.name === "AI Link") &&
+                    <div className="form__group field w-[45%] relative group">
+                        <label className="form__label capitalize">AI Link</label>
+                        <input
+                            type="text"
+                            value={slide.data?.info?.find((item) => item.name === "AI Link").value || ""}
+                            className="form__field"
+                            placeholder="http://"
+                            onChange={(e) => {
+                                updateInfoField(page, "AI Link", slide.data?.info?.find((item) => item.name === "AI Link")?.value, { "value": e.target.value });
+                            }}
+                        />
+                    </div>}
                 {slide.data?.info?.map((field, index) => {
-                    if (["Style No", "Size", "Gender", "State", "Fabric", "Collection", "Trim", "Product Type", "Fabric Colour", "Fit", "Category", "Note"].includes(field.name)) {
+                    if (["Style No", "Size", "Gender", "State", "Fabric", "Collection", "Trim", "Product Type", "Fabric Colour", "Fit", "Category", "Note", "AI Link"].includes(field.name)) {
                         return null;
                     }
                     return (

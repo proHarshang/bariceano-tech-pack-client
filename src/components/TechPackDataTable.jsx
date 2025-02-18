@@ -272,9 +272,9 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
     };
 
     const handlePreviewClick = (index) => {
+        console.log("currentItems[index]",currentItems[index])
         navigate(`/preview/${currentItems[index]._id}`);
     };
-
     return (
         <>
             <div className='w-full mx-auto max-w-[1500px] table px-10 pb-10'>
