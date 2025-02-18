@@ -130,7 +130,7 @@ const MainHeader = () => {
 
 
     return (
-        <nav className='sticky top-0 right-0 bg-white z-50 w-screen invert'>
+        <nav className='sticky top-0 right-0 bg-white z-50 w-screen'>
             <div className="p-5 flex justify-between border-b pl-10 pr-0 max-w-[1500px] mx-auto">
                 <div className='flex gap-5 items-center'>
                     <button
