@@ -1,13 +1,12 @@
 import { useLocation } from 'react-router-dom';
 import MainHeader from '../common/main-header';
-// import Footer from '../common/Footer';
-
+import PageNotFound from '../pages/PageNotFound';
 
 const MainLayout = ({ children }) => {
 
     const { pathname } = useLocation();
 
-    const shouldDisplayNavbar = !['/', '/logout'].includes(pathname) && !/^\/preview\/[^/]+$/.test(pathname);
+    const shouldDisplayNavbar = !['/', '/logout'].includes(pathname) && !/^\/preview\/[^/]+$/.test(pathname) && !children.type === PageNotFound;
 
     return (
         <>

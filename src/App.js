@@ -10,7 +10,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Logout from './pages/Logout';
 import PreviewPage from './pages/PreviewPage';
 import { TechPackProvider } from './context/TechPackContext';
-
+import PageNotFound from './pages/PageNotFound';
 function App() {
   return (
     <AuthProvider>
@@ -31,9 +31,7 @@ function App() {
               </PrivateRoute>
             } />
             <Route path='/preview/:id' element={
-              <PrivateRoute>
-                <PreviewPage />
-              </PrivateRoute>
+              <PreviewPage />
             } />
             <Route path='/setting' element={
               <PrivateRoute>
@@ -53,6 +51,8 @@ function App() {
                 </PrivateRoute>
               }
             />
+
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </MainLayout>
       </Router>
