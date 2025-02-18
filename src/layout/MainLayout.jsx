@@ -6,7 +6,7 @@ const MainLayout = ({ children }) => {
 
     const { pathname } = useLocation();
 
-    const shouldDisplayNavbar = !['/', '/logout'].includes(pathname) && !/^\/preview\/[^/]+$/.test(pathname) && !children.type === PageNotFound;
+    const shouldDisplayNavbar = !['/', '/logout'].includes(pathname);
 
     return (
         <>

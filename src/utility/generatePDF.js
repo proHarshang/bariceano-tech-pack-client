@@ -342,7 +342,7 @@ export default async function generatePdf(data, setIsDownloading) {
                 const rowData = Information[0].data.info;
 
                 // Separate 'Last' rows and other rows
-                const nonLastRows = rowData.filter(row => row.position !== 'Last');
+                const nonLastRows = rowData.filter(row => row.position !== 'Last' && row.position !== "LINK");
                 const lastRows = rowData.filter(row => row.position === 'Last');
 
                 // Ensure even number of rows in nonLastRows for alignment

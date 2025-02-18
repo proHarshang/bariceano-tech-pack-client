@@ -143,6 +143,11 @@ export const TechPackProvider = ({ children }) => {
                             "position": "3",
                             "name": "Ratio",
                             "value": "1:1:1:1"
+                        },
+                        {
+                            "position": "LINK",
+                            "name": "AI Link",
+                            "value": ""
                         }
                     ]
                 }

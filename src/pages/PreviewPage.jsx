@@ -1,18 +1,23 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import NewPdfGenerator from '../NewPDF';
+
+
 
 const PreviewPage = () => {
     const { id } = useParams();
     const [previewData, setPreviewData] = useState(null);
     const [slides, setSlides] = useState([]);
-    
+    const [data, setData] = useState([]);
+
     useEffect(() => {
         const fetchTechPack = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/design/techpacks/fetch/${id}`);
                 if (response.data.status) {
                     setPreviewData(response.data.data);
+                    setData(response.data.data);
                     setSlides(response.data.data.slides || []);
                 } else {
                     console.error(response.data.message);
@@ -26,9 +31,10 @@ const PreviewPage = () => {
     }, [id]);
 
     const informationSlide = slides.find(slide => slide.type === "Information");
-    const nonLastRows = informationSlide?.data.info.filter((row) => row.position !== "Last") || [];
+    const nonLastRows = informationSlide?.data.info.filter((row) => row.position !== "Last" && row.position !== "LINK") || [];
     const lastRows = informationSlide?.data.info.filter((row) => row.position === "Last") || [];
-
+    const Link = informationSlide?.data.info.find(row => row.position === "LINK");
+    console.log("Link", Link)
     // Ensure even number of rows in nonLastRows for alignment
     if (nonLastRows.length % 2 !== 0) {
         nonLastRows.push({ name: "", value: "", position: "" });
@@ -40,12 +46,22 @@ const PreviewPage = () => {
     const secondHalf = nonLastRows.slice(midIndex);
 
     const artworkData = slides.find(slide => slide.type === "ArtworkPlacementSheet");
-
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+            <div className="flex justify-center items-center bg-black text-white w-[100px] py-2 hover:bg-green-300  fixed z-10 top-[90%] left-[90%] rounded-2xl">
+                <NewPdfGenerator data={data} />
+            </div>
+            {Link ? (
+                <div>
+                    <a href={Link.value.startsWith('http') ? Link.value : `http://${Link.value}`} target="_blank" rel="noopener noreferrer" className="w-[100px] py-2 text-center fixed z-10 top-[80%] left-[90%] bg-yellow-400 rounded-2xl">
+                        AI File
+                    </a>
+                </div>
+            ) : ""}
+
             {slides.length > 0 ? (
                 slides.map((slide, index) => (
-                    <div key={index} className="w-[11.7in]  bg-white shadow-lg rounded-lg p-6 py-0 px-0 mb-6 flex flex-col justify-between">
+                    <div key={index} className="max-w-[10.5in]  bg-white shadow-lg rounded-lg p-6 py-0 px-0 mb-6 flex flex-col justify-between">
                         {/* Header */}
                         <section className='border-b-2 border-black relative'>
                             <article className='relative flex items-center justify-between py-5 px-10 pr-24'>
