@@ -516,8 +516,8 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                         <tbody>
                             {currentItems?.map((item, index) => {
                                 return (
-                                    <tr key={item._id} className={(item.modifiedAt > item.downloadedAt) ? "bg-gradient-to-r from-orange-200 via-white to-white" : ""}>
-                                        <td>{indexOfFirstItem + index + 1}</td>
+                                    <tr key={item._id} >
+                                        <td>{indexOfFirstItem + index + 1}{(item.modifiedAt > item.downloadedAt) ? "*" :""}</td>
                                         <td>{item.styleNo}</td>
                                         <td>{formatDate(item?.modifiedAt)}</td>
                                         <td>{item.designer}</td>
