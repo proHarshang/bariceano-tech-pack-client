@@ -34,7 +34,6 @@ const PreviewPage = () => {
     const nonLastRows = informationSlide?.data.info.filter((row) => row.position !== "Last" && row.position !== "LINK") || [];
     const lastRows = informationSlide?.data.info.filter((row) => row.position === "Last") || [];
     const Link = informationSlide?.data.info.find(row => row.position === "LINK");
-    console.log("Link", Link)
     // Ensure even number of rows in nonLastRows for alignment
     if (nonLastRows.length % 2 !== 0) {
         nonLastRows.push({ name: "", value: "", position: "" });
@@ -46,6 +45,8 @@ const PreviewPage = () => {
     const secondHalf = nonLastRows.slice(midIndex);
 
     const artworkData = slides.find(slide => slide.type === "ArtworkPlacementSheet");
+
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
             <div className="flex justify-center items-center bg-black text-white w-[100px] py-2 hover:bg-green-300  fixed z-10 top-[90%] left-[90%] rounded-2xl">
@@ -87,7 +88,7 @@ const PreviewPage = () => {
                             {slide.type === "Layout1" ? (
                                 <div className="flex w-[95%] mx-auto py-10">
                                     <div className="w-[30%] flex flex-col justify-between">
-                                        <div className="flex flex-col items-center">
+                                        <div className="flex flex-col items-center mb-10">
                                             <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.fabricColorImages[0].src}`} alt="" className="w-[150px] h-[150px]" />
                                             <h5 className="font-bold">{slide.data.fabricColorTitle}</h5>
                                         </div>
@@ -97,11 +98,10 @@ const PreviewPage = () => {
                                         </div>
                                     </div>
                                     <div className="w-[70%] flex justify-between gap-5">
-                                        <div className="w-[400px] h-[400px]">
-
+                                        <div className="w-1/2 h-full">
                                             <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0].src}`} alt="" className="w-full h-full" />
                                         </div>
-                                        <div className="w-[400px] h-[400px]">
+                                        <div className="w-1/2 h-full">
                                             <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[1].src}`} alt="" className="w-full h-full" />
                                         </div>
                                     </div>
