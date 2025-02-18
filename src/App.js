@@ -30,7 +30,7 @@ function App() {
                 <TechPacksTable />
               </PrivateRoute>
             } />
-            <Route path='/preview' element={
+            <Route path='/preview/:id' element={
               <PrivateRoute>
                 <PreviewPage />
               </PrivateRoute>
