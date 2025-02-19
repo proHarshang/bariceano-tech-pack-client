@@ -12,12 +12,15 @@ import PreviewPage from './pages/PreviewPage';
 import { TechPackProvider } from './context/TechPackContext';
 import PageNotFound from './pages/PageNotFound';
 import { Navigate } from 'react-router-dom';
+import { Toaster } from "react-hot-toast";
+
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <MainLayout>
+            <Toaster />
           <Routes>
             <Route path="/" element={<Auth />} />
             <Route path="/tech-pack" element={
@@ -54,8 +57,8 @@ function App() {
               }
             />
 
-<Route path="/404" element={<PageNotFound />} />
-<Route path="*" element={<Navigate to="/404" />} />
+            <Route path="/404" element={<PageNotFound />} />
+            <Route path="*" element={<Navigate to="/404" />} />
           </Routes>
         </MainLayout>
       </Router>

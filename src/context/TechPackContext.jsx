@@ -1,6 +1,8 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { addTechPacks, fetchAll, getTechPacksById, updateTechPacks } from '../API/TechPacks';
 import { useNavigate } from 'react-router-dom';
+import { toast } from "react-hot-toast";
+
 
 const TechPackContext = createContext();
 
@@ -702,9 +704,18 @@ export const TechPackProvider = ({ children }) => {
         try {
             const response = await addTechPacks(techPackData)
             setSubmitStatus(response)
-            console.log("response", response)
             if (response.status === true) {
                 navigate('/tech-pack-data', { replace: true })
+            }
+            if (response.status === true) {
+
+                toast.success(` ${techPackData.styleNo} Created!`, {
+                    position: "top-center",
+                    style: {
+                        background: "#333",
+                        color: "#fff",
+                    },
+                });
             }
         } catch (error) {
             throw new Error("Error creating TechPack:", error.message);

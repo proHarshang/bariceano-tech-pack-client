@@ -10,6 +10,8 @@ import { FaRegCommentDots } from "react-icons/fa6";
 import { FaCommentDots } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import generatePdf from "../utility/generatePDF";
+import { toast } from "react-hot-toast";
+
 
 const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
     const { user } = useAuth();
@@ -231,6 +233,13 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                 console.error("Unexpected error while copying the TechPack:", error);
                 alert("An unexpected error occurred while copying the TechPack.");
             }
+            toast.success("Copy success", {
+                position: "top-right",
+                style: {
+                    background: "#333",
+                    color: "#fff",
+                },
+            });
         }
     };
 
@@ -240,6 +249,13 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
         const deleted = await deleteTechPack(id, user.Name);
         if (deleted.status) {
             window.location.reload();
+            toast.success(`Techpack Deleted!`, {
+                position: "top-right",
+                style: {
+                    background: "#333",
+                    color: "#fff",
+                },
+            });
         } else {
             alert(deleted.message)
             console.error('Failed to delete TechPack');
@@ -556,6 +572,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                                                 const id = item._id
                                                 if (confirmDelete) {
                                                     handleDeleteTechpack(id);
+
                                                 }
                                             }} className="text-red-500 size-6"><MdDelete /></button>
                                         </td>
@@ -580,6 +597,13 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                                                     <button type="button" onClick={() => {
                                                         handleCommentSubmit(isSidebarOpen, comment);
                                                         handleApply();
+                                                        toast.success("Comment added!", {
+                                                            position: "top-right",
+                                                            style: {
+                                                                background: "#333",
+                                                                color: "#fff",
+                                                            },
+                                                        });
                                                     }} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
                                                         Apply
                                                     </button>

@@ -9,6 +9,8 @@ import Footer from '../common/footer';
 import { useTechPack } from '../context/TechPackContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import NewPdfGenerator from '../NewPDF';
+import { toast } from "react-hot-toast";
+
 
 const TechPack = () => {
   const navigate = useNavigate();
@@ -180,6 +182,14 @@ const TechPack = () => {
 
     setShowPopup(false);
     setSelectedPage(null);
+
+    toast.success(`${selectedPage.type}  added!`, {
+      position: "top-right",
+      style: {
+          background: "#333",
+          color: "#fff",
+      },
+  });
   };
 
   const staticArray = [

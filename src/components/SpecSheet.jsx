@@ -2,6 +2,8 @@ import { MdDelete } from "react-icons/md";
 import { useTechPack } from '../context/TechPackContext';
 import { fetchAll } from "../API/TechPacks";
 import { useState, useEffect } from "react";
+import { toast } from "react-hot-toast";
+
 
 const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }) => {
     const [fabric, setFabric] = useState([]);
@@ -96,13 +98,23 @@ const SpecSheet = ({ page, currentCategory, currentSubCategory, selectedLabels }
         <section className='mx-auto mb-20 pl-7 pr-2'>
             <div className="text-xs flex gap-5 justify-end mt-10">
                 <button
-                    className="px-3 py-1 border rounded-lg border-black"
+                    className="px-3 py-1 border rounded-lg border-black hover:bg-slate-200 hover:scale-90"
                     type="button"
-                    onClick={() => addInfoField(page, {
-                        position: "7",
-                        name: "New Field",
-                        value: "New Value",
-                    })}
+                    onClick={() => {
+                        addInfoField(page, {
+                            position: "7",
+                            name: "New Field",
+                            value: "New Value",
+                        });
+
+                        toast.success("New field added!", {
+                            position: "top-right",
+                            style: {
+                                background: "#333",
+                                color: "#fff",
+                            },
+                        });
+                    }}
                 >
                     Add new
                 </button>

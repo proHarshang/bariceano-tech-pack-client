@@ -1,6 +1,8 @@
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable'; // Import the autotable plugin
+import { toast } from "react-hot-toast";
 jsPDF.autoTable = autoTable;
+
 
 // ...existing code...
 
@@ -640,7 +642,13 @@ export default async function generatePdf(data, setIsDownloading) {
         alert(`Could not download - ${data.styleNo} due to ${error}`)
     } finally {
         setIsDownloading(false)
-        window.location.reload()
+        toast.success(`${data.styleNo} Downloaded`, {
+            position: "top-center",
+            style: {
+                background: "#333",
+                color: "#fff",
+            },
+        });
     }
 
 }
