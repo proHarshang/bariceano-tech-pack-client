@@ -3061,22 +3061,26 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
 
     // filter logic
     const [selectedDesigner, setSelectedDesigner] = useState([]); // Array to hold selected designers
+    const [selectedCollection, setSelectedCollection] = useState([]); // Array to hold selected designers
     const [selectedGender, setSelectedGender] = useState(""); // State for gender filter
     const [selectedCategory, setSelectedCategory] = useState(""); // State for gender filter
     const [showDesignerOptions, setShowDesignerOptions] = useState(false); // State to control visibility of designer options
+    const [showCollectionOptions, setShowCollectionOptions] = useState(false); // State to control visibility of designer options
     const [showGenderOptions, setShowGenderOptions] = useState(false); // State to control visibility of designer options
     const [showCategoryOptions, setShowCategoryOptions] = useState(false); // State to control visibility of designer options
 
     const uniqueDesigners = Array.from(new Set(filteredBySearch.map(item => item.designer)));
+    const uniqueCollection = Array.from(new Set(filteredBySearch.map(item => item.designCollection)));
     const uniqueGenders = Array.from(new Set(filteredBySearch.map(item => item.gender)));
     const uniqueCategory = Array.from(new Set(filteredBySearch.map(item => item.category)));
 
     // Filter data based on selected designer and gender
     const filteredData = filteredBySearch.filter(item => {
         const isDesignerSelected = selectedDesigner.length === 0 || selectedDesigner.includes(item.designer);
+        const isCollectionSelected = selectedCollection.length === 0 || selectedCollection.includes(item.designCollection);
         const isGenderSelected = selectedGender.length === 0 || selectedGender.includes(item.gender);
         const isCategorySelected = selectedCategory.length === 0 || selectedCategory.includes(item.category);
-        return isDesignerSelected && isGenderSelected && isCategorySelected;
+        return isDesignerSelected && isCollectionSelected && isGenderSelected && isCategorySelected;
     });
     useEffect(() => {
         // Set default values from selectedSizeGender and selectedSizeCategory
@@ -3187,7 +3191,7 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
                 </div>
             }
 
-            <div className='w-full flex gap-10 my-5'>
+            <div className='w-full flex gap-5 my-5'>
                 <div className="flex flex-col w-full gap-2">
                     <span>Search</span>
                     <div className="border bg-white border-black px-1 md:px-[7px] h-8 md:h-8 flex justify-start">
@@ -3198,6 +3202,45 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
                             onChange={handleSearch} // Ensure state update
                             className="w-full"
                         />
+                    </div>
+                </div>
+                <div className='flex flex-col w-1/2 gap-2'>
+                    <span>Collection</span>
+                    <div className="border bg-white border-black px-2  h-auto flex flex-col">
+                        <button
+                            type="button"
+                            className="w-full text-left py-1"
+                            onClick={() => setShowCollectionOptions(!showCollectionOptions)}
+                        >
+                            {selectedCollection.length > 0 ? `${selectedCollection.length} Selected` : 'Collection'}
+                        </button>
+
+                        {showCollectionOptions && (
+                            <div className="flex flex-col space-y-2 mt-2">
+                                {uniqueCollection.map((collection, index) => (
+                                    <div key={index} className="flex items-center gap-3">
+                                        <input
+                                            type="checkbox"
+                                            id={`collection-${index}`}
+                                            value={collection}
+                                            checked={selectedCollection.includes(collection)}
+                                            onChange={(e) => {
+                                                const { value, checked } = e.target;
+                                                if (checked) {
+                                                    setSelectedCollection((prev) => [...prev, value]);
+                                                } else {
+                                                    setSelectedCollection((prev) =>
+                                                        prev.filter((collection) => collection !== value)
+                                                    );
+                                                }
+                                            }}
+                                            className="mr-2"
+                                        />
+                                        <label htmlFor={`collection-${index}`}>{collection}</label>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className='flex flex-col w-1/2 gap-2'>
@@ -3239,6 +3282,7 @@ const UpdateForm = ({ field, updateFormData, setUpdateFormFData, genders, catego
                         )}
                     </div>
                 </div>
+
                 {["constructionSheet", "parameter", "finishing", "trims"].includes(field) &&
                     <div className='flex flex-col gap-2 w-1/2'>
                         <span>Gender</span>
