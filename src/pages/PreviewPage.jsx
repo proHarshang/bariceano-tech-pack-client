@@ -86,7 +86,7 @@ const PreviewPage = () => {
                         {/* Slide Content */}
                         <div className="py-2">
                             {slide.type === "Layout1" ? (
-                                <div className="flex w-[95%] mx-auto py-10">
+                                <div className="flex w-[95%] items-center mx-auto py-10">
                                     <div className="w-[30%] flex flex-col justify-between">
                                         <div className="flex flex-col items-center mb-10">
                                             <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.fabricColorImages[0].src}`} alt="" className="w-[150px] h-[150px]" />
@@ -98,11 +98,11 @@ const PreviewPage = () => {
                                         </div>
                                     </div>
                                     <div className="w-[70%] flex justify-between gap-5">
-                                        <div className="w-1/2 h-full">
-                                            <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0].src}`} alt="" className="w-full h-full" />
+                                        <div className="w-1/2">
+                                            <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0].src}`} alt="" className="w-full object-cover" />
                                         </div>
-                                        <div className="w-1/2 h-full">
-                                            <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[1].src}`} alt="" className="w-full h-full" />
+                                        <div className="w-1/2">
+                                            <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[1].src}`} alt="" className="w-full object-cover" />
                                         </div>
                                     </div>
                                 </div>
