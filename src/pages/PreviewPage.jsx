@@ -108,20 +108,20 @@ const PreviewPage = () => {
                                 </div>
                             ) : slide.type === "Layout2" ? (
                                 <div className="flex flex-col justify-between gap-10 w-[95%] h-[604] mx-auto py-10">
-                                    <div className="h-[50%] flex mx-auto">
+                                    <div className="flex justify-center mx-auto">
                                         {slide.data.images[0]?.src ?
-                                            <div className="w-[330px] h-[330px]">
-                                                <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0]?.src}`} className="w-full h-full" alt="" />
+                                            <div className="w-[32%]">
+                                                <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0]?.src}`} className="w-full object-fill" alt="" />
                                             </div> : null
                                         }
                                         {slide.data.images[1]?.src ?
-                                            <div className="w-[330px] h-[330px]">
-                                                <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[1]?.src}`} className="w-full h-full" alt="" />
+                                            <div className="w-[32%]">
+                                                <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[1]?.src}`} className="w-full object-fill" alt="" />
                                             </div> : null
                                         }
                                         {slide.data.images[2]?.src ?
-                                            <div className="w-[330px] h-[330px]">
-                                                <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[2]?.src}`} className="w-full h-full" alt="" />
+                                            <div className="w-[32%]">
+                                                <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[2]?.src}`} className="w-full object-fill" alt="" />
                                             </div> : null
                                         }
                                     </div>
