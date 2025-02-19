@@ -48,7 +48,7 @@ const PreviewPage = () => {
 
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 ">
             <div className="flex justify-center items-center bg-black text-white w-[100px] py-2 hover:bg-green-300  fixed z-10 top-[90%] left-[90%] rounded-2xl">
                 <NewPdfGenerator data={data} />
             </div>
