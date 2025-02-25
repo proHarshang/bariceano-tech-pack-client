@@ -336,9 +336,9 @@ const PreviewPage = () => {
                                                             </div>
                                                         </div>
                                                     ) :
-                                                        slide.formate === "double" ? (
+                                                        slide.data.formate === "double" ? (
                                                             <div>
-
+<h1>UNDER DEVELOPING</h1>
                                                             </div>
                                                         ) :
                                                             slide.type === "Page" ? (
