@@ -652,9 +652,11 @@ export default async function generatePdf(data, setIsDownloading) {
                 const yPosition = 10;
 
                 let tableData = [...slide.data.table];
-                const halfIndex = Math.ceil(tableData.length / 2);
-                let leftTable = tableData.slice(0, halfIndex);
-                let rightTable = tableData.slice(halfIndex);
+                const totalRows = tableData.length;
+                const firstHalfSize = Math.ceil(totalRows * 0.51); // Ensures 51% goes to the first half
+                const leftTable = tableData.slice(0, firstHalfSize);
+                const rightTable = tableData.slice(firstHalfSize);
+
 
                 // Extract dynamic headers
                 let allColumns = new Set();
@@ -700,10 +702,9 @@ export default async function generatePdf(data, setIsDownloading) {
                 const tableStartY = yPosition + 23;
 
                 // Determine row height dynamically
-                const totalRows = tableData.length;
                 const pageHeight = pdf.internal.pageSize.getHeight();
                 const availableHeight = pageHeight - tableStartY - 20; // Space available after table start
-                const rowHeight = totalRows > 0 ? availableHeight / totalRows + 3 : 10; // Adjust based on rows
+                const rowHeight = totalRows > 0 ? availableHeight / totalRows + (totalRows < 23 ? 4 : 0) : 7; // Adjust based on rows
                 console.log("first", rowHeight)
                 // Add left table
                 pdf.autoTable({
