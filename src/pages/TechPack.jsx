@@ -17,7 +17,6 @@ const TechPack = () => {
   const location = useLocation();
 
   const { construction, trims, requirements, finishing, sizecharts, getType, techPackData, isSettingDataFetched, updateField, addSlide, addSlideAtIndex, isUpdating, isUpdatingAs, updateAsTechPack, updateTechPack, getMaxPageNumber, updateMode, submitTechPack, isAdding, submitStatus, createUpdateTechPackSetup } = useTechPack();
-
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || "";
 
   const [showPopup, setShowPopup] = useState(false);
@@ -47,27 +46,52 @@ const TechPack = () => {
         const constructionMaterial = { "name": "Construction Sheet", "images": construction.filter(item => item.name === currentCategory).map(item => item.images).flat() };
         const requirementsMaterial = { "name": "Requirements", "images": requirements.filter(item => item.name === currentCategory).map(item => item.images).flat() };
         const finishingMaterial = { "name": "Finishing", "images": finishing.filter(item => item.name === currentCategory).map(item => item.images).flat() };
-        const sizechartsMaterial = { "name": "Size chart", "images": sizecharts.filter(item => item.gender === currentSubCategory && item.category === currentCategory).map(item => item.images).flat() };
+        const sizechartsMaterial = sizecharts.filter(item => item.gender === currentSubCategory && item.category === currentCategory).map(item => ({
+          "name": "Size chart",
+          "images": item.images,
+          "formate": item.formate,
+          "table": item.table
+        }));
         let currentPage = getMaxPageNumber(); // Get the current max page number
 
-        [constructionMaterial, sizechartsMaterial].forEach(label => {
-          label.images.forEach(img => {
-            currentPage += 1;
-            addSlide({
+        constructionMaterial.images.forEach(img => {
+          currentPage += 1;
+          addSlide({
               "page": currentPage,
-              "name": label.name,
-              "type": getType(label, currentCategory, currentSubCategory),
+              "name": constructionMaterial.name,
+              "type": getType(constructionMaterial, currentCategory, currentSubCategory),
               "data": {
-                "images": [
-                  {
-                    "position": 0,
-                    "src": img.src
-                  }
-                ]
+                  "images": [
+                      {
+                          "position": 0,
+                          "src": img.src
+                      }
+                  ]
               }
-            });
-          })
-        });
+          });
+      });
+
+      // Handle sizecharts material
+      sizechartsMaterial.forEach(label => {
+          label.images.forEach(img => {
+              currentPage += 1;
+              addSlide({
+                  "page": currentPage,
+                  "name": label.name,
+                  "type": getType(label, currentCategory, currentSubCategory),
+                  "data": {
+                      "images": [
+                          {
+                              "position": 0,
+                              "src": img.src
+                          }
+                      ],
+                      "formate": label.formate,
+                      "table": label.table
+                  }
+              });
+          });
+      });
         trims.filter(item => selectedLabels.includes(item.name)).forEach(label => {
           label.images.forEach(img => {
             currentPage += 1;
@@ -147,7 +171,7 @@ const TechPack = () => {
           }
         });
       })
-    } if(selectedPage.type === "ArtWork") {
+    } if (selectedPage.type === "ArtWork") {
       addSlideAtIndex(selectedIndex, {
         "page": 10,
         "name": "Art Work Sheet",
@@ -162,7 +186,7 @@ const TechPack = () => {
           ]
         }
       });
-    }else {
+    } else {
       selectedPage.data.images.map(item => {
         addSlideAtIndex(selectedIndex, {
           "page": 10,
@@ -186,10 +210,10 @@ const TechPack = () => {
     toast.success(`${selectedPage.type}  added!`, {
       position: "top-right",
       style: {
-          background: "#333",
-          color: "#fff",
+        background: "#333",
+        color: "#fff",
       },
-  });
+    });
   };
 
   const staticArray = [

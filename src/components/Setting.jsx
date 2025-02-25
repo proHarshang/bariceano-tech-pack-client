@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { fetchAll, categoryAdd, categoryEdit, categoryDelete, getTechPacks, genderAdd, genderEdit, genderDelete, trimAdd, useAddSizeChart, useDeleteSizeChart, useEditSizeChart, constructionSheetEdit, useDeleteTrims, fabricEdit, fabricAdd, fabricDelete, collectionEdit, collectionAdd, collectionDelete, parameterEdit, finishingEdit, trimEdit, fabricColorAdd, fabriColorcDelete, fabricColorEdit, fitAdd, fitEdit, fitDelete, notDelete, noteEdit, noteAdd, categorytypeDelete, categorytypeEdit, categorytypeAdd } from "../API/TechPacks";
 import ImageSelectorPopup from "./ImageSelectorPopup";
+import { MdDelete } from "react-icons/md";
+import { IoIosClose } from "react-icons/io";
+
+
 
 export default function Setting() {
 
@@ -194,8 +198,16 @@ export default function Setting() {
 
     // Sizechart Logic Start
     const [selectedOption, setSelectedOption] = useState("");
-    const [formValues, setFormValues] = useState({});
+    const [formValues, setFormValues] = useState({
+        category: '',
+        gender: '',
+        formate: '',
+        name: '',
+        table: [],
+        images: [],
+    });
     const [isAdding, setIsAdding] = useState(false);
+    const [isTableOpen, setIsTableOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const { addSizeChart, success, error } = useAddSizeChart();
     const { editSizeChart, } = useEditSizeChart();
@@ -210,20 +222,13 @@ export default function Setting() {
             }
             return updatedValues;
         });
+
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (formValues && formValues.name) {
-            try {
-                const added = await addSizeChart(formValues);
-                fetchAllSetting();
-                setSubmitStatus(added)
-                setIsAdding(false);
-            } catch (err) {
-                alert("Could not Save!")
-            }
-        }
+    const handleCellChange = (rowIndex, colKey, value) => {
+        const updatedRows = [...rows];
+        updatedRows[rowIndex][colKey] = value;
+        setRows(updatedRows);
     };
 
     // Prefill form fields on size chart edit 
@@ -234,27 +239,36 @@ export default function Setting() {
                 name: selectedData.name,
                 category: selectedData.category,
                 gender: selectedData.gender,
-                images: selectedData.images
+                formate: selectedData.formate,
+                images: selectedData.images,
+                table: selectedData.table || []
             });
+            setRows(selectedData.table || []);
         } else {
-            setFormValues({})
+            setFormValues({});
+            setRows([]);
         }
     }, [isEditing, selectedOption, sizecharts]);
 
     const handleEditOption = async () => {
         if (selectedOption) {
             try {
-                const updated = await editSizeChart(updateFormData, formValues);
+                const updated = await editSizeChart(updateFormData, { 
+                    ...formValues, 
+                    table: rows 
+                });
                 fetchAllSetting();
-                setSubmitStatus(updated)
+                setSubmitStatus(updated);
                 setIsEditing(false);
             } catch (err) {
-                alert("Could not Update!")
+                alert("Could not Update!");
             }
         } else {
             alert("Please select a size chart to edit.");
         }
     };
+    
+
 
     const handleDelete = async () => {
         if (selectedOption) {
@@ -280,6 +294,65 @@ export default function Setting() {
     const handleCancelEdit = () => {
         setIsEditing(false);
     }
+
+
+    const [columns, setColumns] = useState([
+        { key: "position", label: "Position" },
+        { key: "name", label: "Name" },
+        { key: "S", label: "S" },
+        { key: "M", label: "M" },
+        { key: "L", label: "L" },
+        { key: "XL", label: "XL" }
+    ]);
+
+    const [rows, setRows] = useState([{ id: 1, position: "A", name: "", S: "", M: "", L: "", XL: "" }]);
+
+    const addRow = () => {
+        const newPosition = String.fromCharCode(65 + rows.length); // Calculate position based on row length
+        setRows([...rows, { id: rows.length + 1, position: newPosition, name: "", S: "", M: "", L: "", XL: "" }]);
+    };
+
+    const deleteRow = (index) => {
+        setRows(rows.filter((_, i) => i !== index));
+    };
+
+    const handleHeaderChange = (colIndex, newLabel) => {
+        const updatedColumns = [...columns];
+        updatedColumns[colIndex].label = newLabel;
+        setColumns(updatedColumns);
+    };
+
+    const addColumn = () => {
+        const newKey = `col${columns.length}`;
+        setColumns([...columns, { key: newKey, label: newKey }]);
+        setRows(rows.map(row => ({ ...row, [newKey]: "" })));
+    };
+
+    const deleteColumn = (colKey) => {
+        setColumns(columns.filter(col => col.key !== colKey));
+        setRows(rows.map(row => {
+            const { [colKey]: _, ...rest } = row;
+            return rest;
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const finalData = {
+            ...formValues,
+            table: rows, // Include the rows state here
+        };
+        try {
+            const added = await addSizeChart(finalData);
+            fetchAllSetting();
+            setSubmitStatus(added);
+            setIsAdding(false);
+        } catch (err) {
+            alert("Could not Save!");
+        }
+    };
+
+
 
     // Sizechart Logic Over
 
@@ -1092,7 +1165,57 @@ export default function Setting() {
                             ) : (
                                 <p className="flex items-center justify-center border-2 w-[300px] h-[150px] text-gray-400 border-dashed border-gray-300 bg-[#FCFCFC]">No Image</p>
                             )}
+
+                            {sizecharts.find(item => item.name === selectedOption) ? (
+                                <button className="border px-6 py-2 border-black" onClick={() => setIsTableOpen(true)}>
+                                    SHOW TABLE
+                                </button>
+                            ) : null}
                         </div>
+                        {isTableOpen && (
+                            <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
+                                <div className="bg-white p-6 pt-3 rounded shadow-lg h-[95%] overflow-scroll w-[90%] max-w-[1500px]">
+                                    <div className="flex justify-between w-full">
+                                        <h4>
+                                            SizeChart Table
+                                        </h4>
+                                        <button className="text-left text-bold text-3xl" onClick={() => setIsTableOpen(false)}><IoIosClose /></button>
+                                    </div>
+                                    {sizecharts.find(item => item.name === selectedOption) ? (
+                                        (() => {
+                                            const tableData = sizecharts.find(item => item.name === selectedOption).table;
+                                            return (
+                                                <table className="w-full border-collapse border border-gray-300">
+                                                    <thead>
+                                                        <tr className="bg-black text-white uppercase">
+                                                            {Object.keys(tableData[0]).map((col, index) =>
+                                                                col !== "_id" && (
+                                                                    <th key={index} className={`border border-gray-300 p-2 text-left ${col === "postion" ? "w-10" : ""}`}>{col}</th>
+                                                                )
+                                                            )}
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {tableData.map((row, rowIndex) => (
+                                                            <tr key={rowIndex}>
+                                                                {Object.keys(row).map((key, colIndex) =>
+                                                                    key !== "_id" && (
+                                                                        <td key={colIndex} className={`border border-gray-300 p-2 ${colIndex === 0 ? "w-10 text-center" : colIndex === 1 ? "w-80" : "w-10"}`}>{row[key]}</td>
+                                                                    )
+                                                                )}
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            );
+                                        })()
+                                    ) : (
+                                        <p className="text-center text-gray-500">No Table</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
                     </div>
 
                     {error && <p className="text-red-500">{error}</p>}
@@ -1101,8 +1224,8 @@ export default function Setting() {
 
                     {/* Modal for adding an option */}
                     {isAdding && (
-                        <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
-                            <div className="bg-white p-6 pt-3 rounded shadow-lg overflow-scroll w-[50%] max-w-[1000px]">
+                        <div className="fixed z-50 inset-0  flex justify-center items-center bg-gray-500 bg-opacity-50">
+                            <div className="bg-white p-6 pt-3 rounded shadow-lg h-[95%] overflow-scroll w-[90%] max-w-[1500px]">
                                 <h2 className="text-xl mb-4">Add Size Chart</h2>
                                 {/* Select Category */}
                                 <div className="mb-3">
@@ -1139,6 +1262,25 @@ export default function Setting() {
                                                 <label className="text-nowrap">{gen}</label>
                                             </div>
                                         ))}
+                                    </div>
+                                </div>
+
+                                {/* Select Formate */}
+                                <div className="mb-3">
+                                    <h3 className="mb-1">Select Formate</h3>
+                                    <div className="flex gap-5">
+                                        <div className="flex gap-2 items-center">
+                                            <input type="radio" name="formate" id="single" value="single" onChange={handleInputChange} />
+                                            <label className="text-nowrap">Single</label>
+                                        </div>
+                                        <div className="flex gap-2 items-center">
+                                            <input type="radio" name="formate" id="double" value="double" onChange={handleInputChange} />
+                                            <label className="text-nowrap">Double</label>
+                                        </div>
+                                        <div className="flex gap-2 items-center">
+                                            <input type="radio" name="formate" id="blank" value="blank" onChange={handleInputChange} />
+                                            <label className="text-nowrap">Blank</label>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1184,6 +1326,57 @@ export default function Setting() {
                                     <button type="button" className="w-fit px-6 py-2 mb-4 border border-black" onClick={() => setOpenPopupId(`sizeChartBox`)}>Upload image</button>
                                 </div>
 
+                                <div className="w-[70%]">
+                                    <button onClick={addRow} className="bg-black text-xs text-white px-2 py-1 rounded">Add Row</button>
+                                    <button onClick={addColumn} className="bg-black text-xs text-white px-2 py-1 ml-2 rounded">Add Column</button>
+                                    <table className="w-full my-5 border-collapse border border-gray-400 text-sm">
+                                        <thead>
+                                            <tr className="bg-black text-white">
+                                                <th className="border p-1 w-10">Sno</th>
+                                                {columns.map((col, colIndex) => (
+                                                    <th key={col.key} className={`border text-nowrap relative w-10 p-1 ${col.key === "name" ? "w-44" : ""}`}>
+                                                        <input
+                                                            type="text"
+                                                            value={col.label}
+                                                            onChange={(e) => handleHeaderChange(colIndex, e.target.value)}
+                                                            className="w-full text-center border p-1"
+                                                        />
+                                                        {col.key !== "position" && (
+                                                            <button onClick={() => deleteColumn(col.key)} className="text-red-500 absolute mt-1 right-[10%] text-lg">
+                                                                <IoIosClose />
+                                                            </button>
+                                                        )}
+                                                    </th>
+                                                ))}
+                                                <th className="border p-1 w-10">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {rows.map((row, rowIndex) => (
+                                                <tr key={row.id}>
+                                                    <td className="border p-1 w-10 text-center bg-black text-white">{rowIndex + 1}</td>
+                                                    {columns.map((col) => (
+                                                        <td key={col.key} className={`border w-10 p-1 ${col.key === "name" ? "w-44" : ""}`}>
+                                                            <input
+                                                                type="text"
+                                                                value={row[col.key] || ""}
+                                                                onChange={(e) => handleCellChange(rowIndex, col.key, e.target.value)}
+                                                                className={`w-full text-center border p-1`}
+                                                                disabled={col.key === "position"} // Disable editing for position column
+                                                            />
+                                                        </td>
+                                                    ))}
+                                                    <td className="border p-1 text-center w-10">
+                                                        <button onClick={() => deleteRow(rowIndex)} className="text-red-500" title="delete row">
+                                                            <MdDelete />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
                                 {/* Buttons */}
                                 <div className="flex gap-4">
                                     <button
@@ -1214,7 +1407,7 @@ export default function Setting() {
                     {isEditing && (
                         <div className="fixed z-50 inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
                             <div className="bg-white p-6 pt-3 rounded shadow-lg h-[85vh] overflow-scroll w-[80%] max-w-[1000px]">
-                                <div className="flex justify-between item-center mb-4  sticky z-50 top-[-24px] pt-5  left-0 bg-white">
+                                <div className="flex justify-between item-center mb-4 sticky z-50 top-[-24px] pt-5 left-0 bg-white">
                                     <h2 className="text-xl">Edit Size Chart</h2>
                                     {/* Buttons */}
                                     <div className="flex gap-4">
@@ -1310,6 +1503,74 @@ export default function Setting() {
                                     ))}
                                     <button type="button" className="w-fit py-2 px-6 mb-4 border border-black" onClick={() => setOpenPopupId(`sizeChartBox`)}>Upload image</button>
                                 </div>
+                                {/* Select Formate */}
+                                <div className="mb-3">
+                                    <h3 className="mb-1 text-bold">Change Formate</h3>
+                                    <div className="flex gap-5">
+                                        <div className="flex gap-2 items-center">
+                                            <input type="radio" name="formate" id="single" value="single" onChange={handleInputChange} checked={formValues.formate === 'single'} />
+                                            <label className="text-nowrap">Single</label>
+                                        </div>
+                                        <div className="flex gap-2 items-center">
+                                            <input type="radio" name="formate" id="double" value="double" onChange={handleInputChange} checked={formValues.formate === 'double'} />
+                                            <label className="text-nowrap">Double</label>
+                                        </div>
+                                        <div className="flex gap-2 items-center">
+                                            <input type="radio" name="formate" id="blank" value="blank" onChange={handleInputChange} checked={formValues.formate === 'blank'} />
+                                            <label className="text-nowrap">Blank</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="w-[70%]">
+                                    <button onClick={addRow} className="bg-black text-xs text-white px-2 py-1 rounded">Add Row</button>
+                                    <button onClick={addColumn} className="bg-black text-xs text-white px-2 py-1 ml-2 rounded">Add Column</button>
+                                    <table className="w-full my-5 border-collapse border border-gray-400 text-sm">
+                                        <thead>
+                                            <tr className="bg-black text-white">
+                                                <th className="border p-1 w-10">Sno</th>
+                                                {columns.map((col, colIndex) => (
+                                                    <th key={col.key} className={`border text-nowrap relative w-10 p-1 ${col.key === "name" ? "w-44" : ""}`}>
+                                                        <input
+                                                            type="text"
+                                                            value={col.label}
+                                                            onChange={(e) => handleHeaderChange(colIndex, e.target.value)}
+                                                            className="w-full text-center border p-1"
+                                                        />
+                                                        {col.key !== "position" && (
+                                                            <button onClick={() => deleteColumn(col.key)} className="text-red-500 absolute mt-1 right-[10%] text-lg">
+                                                                <IoIosClose />
+                                                            </button>
+                                                        )}
+                                                    </th>
+                                                ))}
+                                                <th className="border p-1 w-10">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {rows.map((row, rowIndex) => (
+                                                <tr key={row.id}>
+                                                    <td className="border p-1 w-10 text-center bg-black text-white">{rowIndex + 1}</td>
+                                                    {columns.map((col) => (
+                                                        <td key={col.key} className={`border w-10 p-1 ${col.key === "name" ? "w-44" : ""}`}>
+                                                            <input
+                                                                type="text"
+                                                                value={row[col.key] || ""}
+                                                                onChange={(e) => handleCellChange(rowIndex, col.key, e.target.value)}
+                                                                className={`w-full text-center border p-1`}
+                                                                disabled={col.key === "position"} // Disable editing for position column
+                                                            />
+                                                        </td>
+                                                    ))}
+                                                    <td className="border p-1 text-center w-10">
+                                                        <button onClick={() => deleteRow(rowIndex)} className="text-red-500" title="delete row">
+                                                            <MdDelete />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <div className="flex gap-4 my-5 items-center">
                                     {update ?
                                         <div className={`rounded-full aspect-square size-[15px] outline-1 [outline-style:solid] outline-black bg-black`} onClick={() => setUpdate(false)}></div>
@@ -1319,7 +1580,6 @@ export default function Setting() {
                                     <span>Update In all the tackpacks including previous one</span>
                                 </div>
                                 {update && <UpdateForm field="sizeChart" updateFormData={updateFormData} setUpdateFormFData={setUpdateFormFData} genders={genders} categories={categories} selectedSizeCategory={formValues.category} selectedSizeGender={formValues.gender} techpacks={techpacks} />}
-
                             </div>
                         </div>
                     )}

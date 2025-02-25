@@ -255,6 +255,7 @@ export const TechPackProvider = ({ children }) => {
     useEffect(() => {
         fetchAllSetting();
     }, [])
+    console.log("sizecharts", sizecharts)
 
     const getType = (label, category, gender) => {
         // console.log(`${label.name} - ${techPackData.category}`)
@@ -292,7 +293,9 @@ export const TechPackProvider = ({ children }) => {
                         page: firstSizeChartIndex + index + 1,
                         name: "Size Chart",
                         type: sizechart.name,
+                        formate: sizechart.formate, // Add formate field
                         data: {
+                            table: sizechart.table, // Add table field
                             images: [img]
                         }
                     });
