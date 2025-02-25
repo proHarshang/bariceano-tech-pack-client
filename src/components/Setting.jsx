@@ -253,9 +253,9 @@ export default function Setting() {
     const handleEditOption = async () => {
         if (selectedOption) {
             try {
-                const updated = await editSizeChart(updateFormData, { 
-                    ...formValues, 
-                    table: rows 
+                const updated = await editSizeChart(updateFormData, {
+                    ...formValues,
+                    table: rows
                 });
                 fetchAllSetting();
                 setSubmitStatus(updated);
@@ -267,7 +267,7 @@ export default function Setting() {
             alert("Please select a size chart to edit.");
         }
     };
-    
+
 
 
     const handleDelete = async () => {
@@ -1337,7 +1337,7 @@ export default function Setting() {
                                                     <th key={col.key} className={`border text-nowrap relative w-10 p-1 ${col.key === "name" ? "w-44" : ""}`}>
                                                         <input
                                                             type="text"
-                                                            value={col.label}
+                                                            value={col.label || ""}
                                                             onChange={(e) => handleHeaderChange(colIndex, e.target.value)}
                                                             className="w-full text-center border p-1"
                                                         />
@@ -1532,7 +1532,7 @@ export default function Setting() {
                                                     <th key={col.key} className={`border text-nowrap relative w-10 p-1 ${col.key === "name" ? "w-44" : ""}`}>
                                                         <input
                                                             type="text"
-                                                            value={col.label}
+                                                            value={col.label || ""}
                                                             onChange={(e) => handleHeaderChange(colIndex, e.target.value)}
                                                             className="w-full text-center border p-1"
                                                         />

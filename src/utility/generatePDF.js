@@ -657,7 +657,6 @@ export default async function generatePdf(data, setIsDownloading) {
                 const leftTable = tableData.slice(0, firstHalfSize);
                 const rightTable = tableData.slice(firstHalfSize);
 
-
                 // Extract dynamic headers
                 let allColumns = new Set();
                 tableData.forEach(row => {
@@ -668,8 +667,8 @@ export default async function generatePdf(data, setIsDownloading) {
                     });
                 });
 
-                // Ensure "Position" and "Name" are always present, preserving the original format
-                let dynamicHeaders = ["position", "name", ...Array.from(allColumns)];
+                // Ensure "SNo" and "Name" are always present, preserving the original format
+                let dynamicHeaders = ["SNo", "Name", ...Array.from(allColumns)];
 
                 // Adding static text above the table
                 pdf.setFont("helvetica");
@@ -679,21 +678,24 @@ export default async function generatePdf(data, setIsDownloading) {
 
                 // Function to generate table data dynamically
                 const formatTableData = (table) => {
-                    return table.map(row => {
-                        const rowData = [row.position.toUpperCase(), row.name.toUpperCase()];
-                        let allEmpty = true;
+                    return table.map((row, index) => {
+                        const rowData = [index + 1, row.name.toUpperCase()];
+                        let shouldMerge = false;
+                        let mergeContent = "";
+
                         dynamicHeaders.slice(2).forEach(header => {
-                            if (row[header]) {
-                                allEmpty = false;
-                                rowData.push(row[header].toUpperCase());
-                            } else {
-                                rowData.push(""); // Fill missing data with empty string
+                            if (row[header] && row[header].length > 4) {
+                                shouldMerge = true;
+                                mergeContent = row[header].toUpperCase();
                             }
+                            rowData.push(row[header] ? row[header].toUpperCase() : ""); // Fill missing data with empty string
                         });
-                        // If all columns except "position" and "name" are empty, merge them and fill with the name
-                        if (allEmpty) {
-                            rowData.splice(1, rowData.length - 1, { content: row.name.toUpperCase(), colSpan: dynamicHeaders.length - 1, styles: { halign: "center" } });
+
+                        // If any column except "SNo" and "Name" has a value longer than 4 characters, merge them
+                        if (shouldMerge) {
+                            rowData.splice(2, rowData.length - 2, { content: mergeContent, colSpan: dynamicHeaders.length - 2, styles: { halign: "center" } });
                         }
+
                         return rowData;
                     });
                 };
@@ -705,6 +707,7 @@ export default async function generatePdf(data, setIsDownloading) {
                 const pageHeight = pdf.internal.pageSize.getHeight();
                 const availableHeight = pageHeight - tableStartY - 20; // Space available after table start
                 const rowHeight = totalRows > 0 ? availableHeight / totalRows + (totalRows < 23 ? 4 : 0) : 7; // Adjust based on rows
+
                 // Add left table
                 pdf.autoTable({
                     startY: yPosition + 22,
@@ -714,7 +717,7 @@ export default async function generatePdf(data, setIsDownloading) {
                     margin: { left: 10 },
                     tableWidth: sectionWidth - 20,
                     styles: {
-                        halign: "center",
+                        halign: "left",
                         valign: "middle",
                         cellPadding: 2,
                         minCellHeight: rowHeight
@@ -729,7 +732,11 @@ export default async function generatePdf(data, setIsDownloading) {
                         whiteSpace: "nowrap"
                     },
                     columnStyles: {
-                        0: { fillColor: [0, 0, 0], textColor: [255, 255, 255], halign: "center" }
+                        0: { fillColor: [0, 0, 0], textColor: [255, 255, 255], halign: "center" },
+                        ...Array.from(allColumns).reduce((acc, col, index) => {
+                            acc[index + 2] = { cellWidth: 15, halign: "center" }; // Increase width by 10mm
+                            return acc;
+                        }, {})
                     }
                 });
 
@@ -742,7 +749,7 @@ export default async function generatePdf(data, setIsDownloading) {
                     margin: { left: sectionWidth + 10 },
                     tableWidth: sectionWidth - 20,
                     styles: {
-                        halign: "center",
+                        halign: "left",
                         valign: "middle",
                         cellPadding: 2,
                         minCellHeight: rowHeight
@@ -757,8 +764,11 @@ export default async function generatePdf(data, setIsDownloading) {
                         whiteSpace: "nowrap"
                     },
                     columnStyles: {
-                        0: { fillColor: [0, 0, 0], textColor: [255, 255, 255], halign: "center" }
-                    }
+                        0: { fillColor: [0, 0, 0], textColor: [255, 255, 255], halign: "center" },
+                        ...Array.from(allColumns).reduce((acc, col, index) => {
+                            acc[index + 2] = { cellWidth: 15, halign: "center" }; // Increase width by 10mm
+                            return acc;
+                        }, {})                    }
                 });
 
                 // Add footer to the page with the table
