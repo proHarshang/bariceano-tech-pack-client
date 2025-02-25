@@ -330,7 +330,7 @@ const PreviewPage = () => {
                                                                     <img
                                                                         src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0].src}`}
                                                                         alt="Size Chart"
-                                                                        className="h-[175px] w-[115px]"
+                                                                        className="h-auto w-full"
                                                                     />
                                                                 )}
                                                             </div>
