@@ -85,7 +85,6 @@ export default async function generatePdf(data, setIsDownloading) {
 
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
-
         const slides = data.slides
 
         const types = [
@@ -116,12 +115,10 @@ export default async function generatePdf(data, setIsDownloading) {
             ArtWork = [],
         } = filteredSlides;
 
-
         slides.map((slide, index) => {
             if (index > 0) {
                 pdf.addPage();
             }
-
             headerSection(slide.page, slide.name, data);
             if (slide.type === "Layout1") {
 
@@ -520,36 +517,292 @@ export default async function generatePdf(data, setIsDownloading) {
 
             }
             else if (slide.type === "ArtWork") {
-                if (ArtWork.length > 0 && ArtWork[0]?.data?.images?.length > 0) {
-
+                if (slide?.data?.images?.length > 0) {
                     // Sort artwork images by position
-                    ArtWork[0].data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
+                    slide.data.images.sort((a, b) => parseInt(a.position) - parseInt(b.position));
 
-                    ArtWork[0].data.images.forEach((image, index) => {
-                        // Add a new page for each image
-                        // Add the header section with the page number
-                        headerSection(ArtWork[0].page, slide.name, data);
+                    slide.data.images.forEach((image, index) => {
+                        try {
+                            // Add a new page for each image
+                            if (index > 0) {
+                                pdf.addPage();
+                            }
+                            // Add the header section with the page number
+                            headerSection(slide.page, slide.name, data);
+                            const maxWidth = pdf.internal.pageSize.getWidth();
+                            const imageWidth = 233;
+                            const xPosition = (maxWidth - imageWidth) / 2;
+
+                            // Add the artwork image
+                            const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
+                            pdf.addImage(
+                                imagePath, // Image path
+                                'PNG', // Image format
+                                xPosition, // X position
+                                21.5, // Y position
+                                imageWidth, // Width (A4 width minus 10px margin on both sides)
+                                175 // Height
+                            );
+
+                            // Add the footer section
+                            footerSection(data);
+                        } catch (error) {
+                            console.error(`Failed to add image ${image.src} to PDF:`, error);
+                            pdf.text(`Failed to load image: ${image.src}`, 10, 30);
+                        }
+                    });
+                } else {
+                    console.warn("No artwork images available. Skipping artwork section.");
+                    pdf.text("No artwork images available.", 10, 30);
+                }
+            }
+            else if (slide.data.formate === "single") {
+                const maxWidth = pdf.internal.pageSize.getWidth();
+                const sectionWidth = maxWidth / 2; // Divide into two equal sections
+                const yPosition = 10;
+
+                // Adding static text above the table
+                pdf.setFont("helvetica");
+                pdf.setFontSize(12);
+                pdf.text("Measurements in CM", 10, yPosition + 19); // Positioning text above table
+                pdf.text(data.gender + "-" + data.category, 110, yPosition + 19); // Positioning text above table
+
+                // Extract dynamic headers
+                let allColumns = new Set();
+                slide.data.table.forEach(row => {
+                    Object.keys(row).forEach(key => {
+                        if (key !== "position" && key !== "name" && key !== "_id") {
+                            allColumns.add(key.toUpperCase());
+                        }
+                    });
+                });
+
+                // Ensure "SNo" and "Size" are always present
+                let dynamicHeaders = ["SNo", "Size", ...Array.from(allColumns)];
+
+                const tableRows = [];
+
+                // Preparing table rows
+                slide.data.table.forEach((row) => {
+                    if (row.name === "Shoulder Drop") {
+                        const rowData = [row.position, row.name, { content: row.S, colSpan: dynamicHeaders.length - 2, styles: { halign: "center" } }];
+                        tableRows.push(rowData);
+                    } else {
+                        const rowData = [row.position, row.name];
+                        dynamicHeaders.slice(2).forEach(header => {
+                            rowData.push(row[header] || ""); // Fill missing data with empty string
+                        });
+                        tableRows.push(rowData);
+                    }
+                });
+
+                // Define Y position for table
+                const tableStartY = yPosition + 23;
+
+                // Determine row height dynamically
+                const totalRows = tableRows.length;
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                const availableHeight = pageHeight - tableStartY - 20; // Space available after table start
+                const rowHeight = totalRows > 0 ? availableHeight / totalRows - 1.4 : 10; // Adjust based on rows
+
+                pdf.autoTable({
+                    head: [dynamicHeaders],
+                    body: tableRows,
+                    theme: "grid",
+                    startY: yPosition + 22,
+                    margin: { left: 10 },
+                    tableWidth: sectionWidth - 20,
+                    styles: {
+                        halign: "left",
+                        valign: "middle",
+                        cellPadding: 2, // Slightly increase padding for better spacing
+                        minCellHeight: rowHeight, // Slightly increase row height (2-3mm more)
+                    },
+                    headStyles: {
+                        fillColor: [0, 0, 0],
+                        textColor: [255, 255, 255],
+                        fontSize: 11, // Slightly increase font size
+                        cellPadding: 2, // Increase header padding slightly
+                        halign: "center",
+                        overflow: "hidden", // Prevent text from wrapping
+                        whiteSpace: "nowrap" // Ensure text remains in a single line
+                    },
+                    columnStyles: {
+                        0: { fillColor: [0, 0, 0], textColor: [255, 255, 255], halign: "center" }
+                    }
+                });
+
+                // Render image in the right half
+                if (slide.data.images.length > 0) {
+                    const imageXPosition = sectionWidth + 20; // Start from the right half
+                    // const imageWidth = sectionWidth - 20; // Fit into half width
+                    pdf.addImage(
+                        `${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0].src}`,
+                        "PNG",
+                        imageXPosition,
+                        yPosition + 20, // Same Y position as the table
+                        115,
+                        160
+                    );
+                }
+            }
+            else if (slide.data.formate === "double") {
+                const maxWidth = pdf.internal.pageSize.getWidth();
+                const sectionWidth = maxWidth / 2;
+                const yPosition = 10;
+
+                let tableData = [...slide.data.table];
+                const halfIndex = Math.ceil(tableData.length / 2);
+                let leftTable = tableData.slice(0, halfIndex);
+                let rightTable = tableData.slice(halfIndex);
+
+                // Extract dynamic headers
+                let allColumns = new Set();
+                tableData.forEach(row => {
+                    Object.keys(row).forEach(key => {
+                        if (key !== "position" && key !== "name" && key !== "_id") {
+                            allColumns.add(key.toUpperCase());
+                        }
+                    });
+                });
+
+                // Ensure "Position" and "Name" are always present, preserving the original format
+                let dynamicHeaders = ["position", "name", ...Array.from(allColumns)];
+
+                // Adding static text above the table
+                pdf.setFont("helvetica");
+                pdf.setFontSize(12);
+                pdf.text("Measurements in CM".toUpperCase(), 10, yPosition + 19);
+                pdf.text((data.gender + "-" + data.category).toUpperCase(), 90, yPosition + 19);
+
+                // Function to generate table data dynamically
+                const formatTableData = (table) => {
+                    return table.map(row => {
+                        const rowData = [row.position.toUpperCase(), row.name.toUpperCase()];
+                        let allEmpty = true;
+                        dynamicHeaders.slice(2).forEach(header => {
+                            if (row[header]) {
+                                allEmpty = false;
+                                rowData.push(row[header].toUpperCase());
+                            } else {
+                                rowData.push(""); // Fill missing data with empty string
+                            }
+                        });
+                        // If all columns except "position" and "name" are empty, merge them and fill with the name
+                        if (allEmpty) {
+                            rowData.splice(1, rowData.length - 1, { content: row.name.toUpperCase(), colSpan: dynamicHeaders.length - 1, styles: { halign: "center" } });
+                        }
+                        return rowData;
+                    });
+                };
+
+                // Define Y position for table
+                const tableStartY = yPosition + 23;
+
+                // Determine row height dynamically
+                const totalRows = tableData.length;
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                const availableHeight = pageHeight - tableStartY - 20; // Space available after table start
+                const rowHeight = totalRows > 0 ? availableHeight / totalRows + 3 : 10; // Adjust based on rows
+                console.log("first", rowHeight)
+                // Add left table
+                pdf.autoTable({
+                    startY: yPosition + 22,
+                    head: [dynamicHeaders],
+                    body: formatTableData(leftTable),
+                    theme: 'grid',
+                    margin: { left: 10 },
+                    tableWidth: sectionWidth - 20,
+                    styles: {
+                        halign: "center",
+                        valign: "middle",
+                        cellPadding: 2,
+                        minCellHeight: rowHeight
+                    },
+                    headStyles: {
+                        fillColor: [0, 0, 0],
+                        textColor: [255, 255, 255],
+                        fontSize: 11,
+                        cellPadding: 2,
+                        halign: "center",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap"
+                    },
+                    columnStyles: {
+                        0: { fillColor: [0, 0, 0], textColor: [255, 255, 255], halign: "center" }
+                    }
+                });
+
+                // Add right table
+                pdf.autoTable({
+                    startY: yPosition + 22,
+                    head: [dynamicHeaders],
+                    body: formatTableData(rightTable),
+                    theme: 'grid',
+                    margin: { left: sectionWidth + 10 },
+                    tableWidth: sectionWidth - 20,
+                    styles: {
+                        halign: "center",
+                        valign: "middle",
+                        cellPadding: 2,
+                        minCellHeight: rowHeight
+                    },
+                    headStyles: {
+                        fillColor: [0, 0, 0],
+                        textColor: [255, 255, 255],
+                        fontSize: 11,
+                        cellPadding: 2,
+                        halign: "center",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap"
+                    },
+                    columnStyles: {
+                        0: { fillColor: [0, 0, 0], textColor: [255, 255, 255], halign: "center" }
+                    }
+                });
+
+                // Add footer to the page with the table
+                footerSection(data);
+
+                const imageWidth = 233;
+                const xPosition = (maxWidth - imageWidth) / 2;
+
+                // Add a new page for each image
+                slide.data.images.forEach((image, index) => {
+                    pdf.addPage();
+                    // Add the header section with the page number
+                    headerSection(slide.page, slide.name, data);
+                    pdf.addImage(
+                        `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`,
+                        "PNG",
+                        xPosition, 21.5, imageWidth, 175
+                    );
+                });
+            }
+            else if (
+                slide.data.formate === "blank"
+            ) {
+                // Render image in the right half
+                if (slide.data.images.length > 0) {
+                    // Check if slide.data exists and contains images
+                    if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0) {
                         const maxWidth = pdf.internal.pageSize.getWidth()
                         const imageWidth = 233;
                         const xPosition = (maxWidth - imageWidth) / 2;
 
-                        // Add the artwork image
-                        pdf.addImage(
-                            `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`, // Image path
-                            'PNG', // Image format
-                            xPosition, // X position
-                            21.5, // Y position
-                            imageWidth, // Width (A4 width minus 10px margin on both sides)
-                            175 // Height
-                        );
+                        // Loop through images within slide.data
+                        slide.data.images.forEach((image) => {
+                            const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
 
-                        // Add the footer section
-                        footerSection(data);
-                    });
-                } else {
-                    console.warn("No artwork images available. Skipping artwork section.");
+                            // Add image to PDF with adjusted position and dimensions
+                            pdf.addImage(imagePath, "JPEG", xPosition, 21.5, imageWidth, 175);
+                        });
+                    } else {
+                        console.warn(`No images found for page ${slide.page}. Skipping image addition.`);
+                    }
                 }
             }
+
             else if (slide.type === "Page") {
                 if (slide.type === "Page") {
                     // Check if slide.data exists and contains images
@@ -588,9 +841,6 @@ export default async function generatePdf(data, setIsDownloading) {
                         if (index === 0) {
                             pdf.setFont('helvetica', 'bold');
                             pdf.setFontSize(12); // Increase font size
-                            console.log("slide?", slide)
-                            console.log("slide?.data", slide?.data)
-                            console.log("slide?.data?.title", slide?.data?.title)
                             const placementText = 'PLACEMENT : ' + slide?.data?.title.toUpperCase();
 
                             // Calculate the width of both texts combined
@@ -635,13 +885,6 @@ export default async function generatePdf(data, setIsDownloading) {
 
         pdf.save(`${data.styleNo}_${formattedDate}.pdf`);
 
-
-    }
-    catch (error) {
-        console.log(error)
-        alert(`Could not download - ${data.styleNo} due to ${error}`)
-    } finally {
-        setIsDownloading(false)
         toast.success(`${data.styleNo} Downloaded`, {
             position: "top-center",
             style: {
@@ -649,6 +892,13 @@ export default async function generatePdf(data, setIsDownloading) {
                 color: "#fff",
             },
         });
+    }
+    catch (error) {
+        console.log(error)
+        alert(`Could not download - ${data.styleNo} due to ${error}`)
+    } finally {
+        setIsDownloading(false)
+
     }
 
 }

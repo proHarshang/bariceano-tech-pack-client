@@ -613,12 +613,12 @@ const useEditSizeChart = () => {
 
         try {
             const response = await fetch(`${apiURL}/design/setting/sizeChart/update`, {
-                method: 'POST',  // Assuming your API uses PUT for updates
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'api-key': apiKey,
                 },
-                body: JSON.stringify({ "update": updateFormFData, sizeCharts }),
+                body: JSON.stringify({ update: updateFormFData, sizeCharts }),
             });
 
             const data = await response.json();
