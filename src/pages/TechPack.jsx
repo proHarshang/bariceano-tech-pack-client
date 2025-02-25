@@ -11,10 +11,28 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import NewPdfGenerator from '../NewPDF';
 import { toast } from "react-hot-toast";
 
-
 const TechPack = () => {
+
   const navigate = useNavigate();
   const location = useLocation();
+  useEffect(() => {
+    const handleBackButton = (event) => {
+      event.preventDefault();
+      const confirmLeave = window.confirm("Are you sure you want to leave without saving?");
+      if (!confirmLeave) {
+        window.history.pushState(null, "", window.location.pathname);
+      } else {
+        navigate(-1); // Allows navigation if confirmed
+      }
+    };
+
+    window.history.pushState(null, "", window.location.pathname);
+    window.addEventListener("popstate", handleBackButton);
+
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, [navigate]);
 
   const { construction, trims, requirements, finishing, sizecharts, getType, techPackData, isSettingDataFetched, updateField, addSlide, addSlideAtIndex, isUpdating, isUpdatingAs, updateAsTechPack, updateTechPack, getMaxPageNumber, updateMode, submitTechPack, isAdding, submitStatus, createUpdateTechPackSetup } = useTechPack();
   const { selectedLabels, currentCategory, currentSubCategory } = location.state || "";

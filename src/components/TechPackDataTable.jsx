@@ -127,10 +127,42 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
 
 
     // filter logic
-    const [selectedDesigner, setSelectedDesigner] = useState([]); // Array to hold selected designers
-    const [selectedGender, setSelectedGender] = useState(""); // State for gender filter
-    const [selectedCategory, setSelectedCategory] = useState(""); // State for gender filter
-    const [selectedStatus, setSelectedStatus] = useState(""); // State for gender filter
+    const [selectedDesigner, setSelectedDesigner] = useState(() => {
+        const saved = localStorage.getItem('selectedDesigner');
+        return saved ? JSON.parse(saved) : [];
+    });
+    const [selectedGender, setSelectedGender] = useState(() => {
+        const saved = localStorage.getItem('selectedGender');
+        return saved ? JSON.parse(saved) : "";
+    });
+    const [selectedCategory, setSelectedCategory] = useState(() => {
+        const saved = localStorage.getItem('selectedCategory');
+        return saved ? JSON.parse(saved) : "";
+    });
+    const [selectedStatus, setSelectedStatus] = useState(() => {
+        const saved = localStorage.getItem('selectedStatus');
+        return saved ? JSON.parse(saved) : "";
+    });
+    // State for gender filter
+
+
+    useEffect(() => {
+        localStorage.setItem('selectedDesigner', JSON.stringify(selectedDesigner));
+    }, [selectedDesigner]);
+
+    useEffect(() => {
+        localStorage.setItem('selectedGender', JSON.stringify(selectedGender));
+    }, [selectedGender]);
+
+    useEffect(() => {
+        localStorage.setItem('selectedCategory', JSON.stringify(selectedCategory));
+    }, [selectedCategory]);
+
+    useEffect(() => {
+        localStorage.setItem('selectedStatus', JSON.stringify(selectedStatus));
+    }, [selectedStatus]);
+
+
     const [showDesignerOptions, setShowDesignerOptions] = useState(false); // State to control visibility of designer options
     const [showGenderOptions, setShowGenderOptions] = useState(false); // State to control visibility of designer options
     const [showCategoryOptions, setShowCategoryOptions] = useState(false); // State to control visibility of designer options
@@ -149,6 +181,8 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
         const isStatusSelected = selectedStatus.length === 0 || selectedStatus.includes(item.state);
         return isDesignerSelected && isGenderSelected && isCategorySelected && isStatusSelected;
     });
+
+
 
     // shorting logic
     const [isTimeAscending, setIsTimeAscending] = useState(false); // For time (modifiedAt) sorting
@@ -288,13 +322,13 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
     };
 
     const handlePreviewClick = (index) => {
-        console.log("currentItems[index]",currentItems[index])
+        console.log("currentItems[index]", currentItems[index])
         navigate(`/preview/${currentItems[index]._id}`);
     };
     return (
         <>
             <div className='w-full mx-auto max-w-[1500px] table px-10 pb-10'>
-                <div className='w-full flex gap-10 my-5'>
+                <div className='w-full flex gap-5 my-5'>
                     <div className="flex flex-col w-full gap-2">
                         <span>Search</span>
                         <div className="border bg-white border-black px-1 md:px-[7px] h-8 md:h-8 flex justify-start">
@@ -354,7 +388,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                                 className="w-full text-left py-1"
                                 onClick={() => setShowGenderOptions(!showGenderOptions)}
                             >
-                                Select Gender
+                                {selectedGender.length > 0 ? `${selectedGender.length} Selected` : 'Select Gender'}
                             </button>
 
                             {showGenderOptions && (
@@ -393,13 +427,13 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                                 className="w-full text-left py-1"
                                 onClick={() => setShowCategoryOptions(!showCategoryOptions)}
                             >
-                                Select Category
+                                {selectedCategory.length > 0 ? `${selectedCategory.length} Selected` : 'Select Category'}
                             </button>
 
                             {showCategoryOptions && (
                                 <div className="flex flex-col space-y-2 mt-2">
                                     {uniqueCategory.map((category, index) => (
-                                        <div key={index} className="flex items-center gap-3">
+                                        <div key={index} className="flex items-center gap-2">
                                             <input
                                                 type="checkbox"
                                                 id={`category-${index}`}
@@ -432,13 +466,13 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                                 className="w-full text-left py-1"
                                 onClick={() => setShowCategoryStatus(!showCategoryStatus)}
                             >
-                                Select Status
+                                {selectedStatus.length > 0 ? `${selectedStatus.length} Selected` : 'Select Status'}
                             </button>
 
                             {showCategoryStatus && (
                                 <div className="flex flex-col space-y-2 mt-2">
                                     {uniqueStatus.map((status, index) => (
-                                        <div key={index} className="flex items-center gap-3">
+                                        <div key={index} className="flex items-center gap-2">
                                             <input
                                                 type="checkbox"
                                                 id={`status-${index}`}
@@ -477,6 +511,21 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                                 <FaRegCommentDots className="size-7" />
                             )}
                         </label>
+                    </div>
+                    <div className="flex flex-col gap-2 w-1/2 pt-[32px]">
+                        <button
+                            type="button"
+                            className="border py-1 bg-black text-white text-nowrap flex gap-2 px-4"
+                            onClick={() => {
+                                setSelectedDesigner([]);
+                                setSelectedGender([]);
+                                setSelectedCategory([]);
+                                setSelectedStatus([]);
+                                setSearchTerm('');
+                            }}
+                        >
+                            Clear All Filters
+                        </button>
                     </div>
                 </div>
                 <div className='w-full'>
@@ -533,7 +582,7 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                             {currentItems?.map((item, index) => {
                                 return (
                                     <tr key={item._id} >
-                                        <td>{indexOfFirstItem + index + 1}{(item.modifiedAt > item.downloadedAt) ? "*" :""}</td>
+                                        <td>{indexOfFirstItem + index + 1}{(item.modifiedAt > item.downloadedAt) ? "*" : ""}</td>
                                         <td>{item.styleNo}</td>
                                         <td>{formatDate(item?.modifiedAt)}</td>
                                         <td>{item.designer}</td>
