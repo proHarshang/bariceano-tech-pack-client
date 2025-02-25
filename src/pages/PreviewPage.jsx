@@ -3,13 +3,12 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import NewPdfGenerator from '../NewPDF';
 
-
-
 const PreviewPage = () => {
     const { id } = useParams();
     const [previewData, setPreviewData] = useState(null);
     const [slides, setSlides] = useState([]);
     const [data, setData] = useState([]);
+
 
     useEffect(() => {
         const fetchTechPack = async () => {
@@ -45,7 +44,7 @@ const PreviewPage = () => {
     const secondHalf = nonLastRows.slice(midIndex);
 
     const artworkData = slides.find(slide => slide.type === "ArtworkPlacementSheet");
-
+console.log("slides",slides)
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 ">
@@ -286,6 +285,53 @@ const PreviewPage = () => {
                                                             <img src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0].src}`} alt="" />
                                                         </div>
                                                     </div>
+                                                ) :
+                                                slide.formate === "single" ? (
+                                                    <div className="flex justify-center w-full p-4 gap-5">
+                                                    <div className="w-1/2 overflow-x-auto">
+                                                      <table className="w-full border border-gray-300 text-white">
+                                                        <thead className="bg-black">
+                                                          <tr>
+                                                            <th className="border border-gray-500 p-2">SNo</th>
+                                                            <th className="border border-gray-500 p-2">Size</th>
+                                                            <th className="border border-gray-500 p-2">S</th>
+                                                            <th className="border border-gray-500 p-2">M</th>
+                                                            <th className="border border-gray-500 p-2">L</th>
+                                                            <th className="border border-gray-500 p-2">XL</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody className="text-black">
+                                                          {slide.data.table.map((row, index) => (
+                                                            <tr key={index} className="border border-gray-300">
+                                                              <td className="border border-gray-500 p-2 bg-black text-white text-center">{row.position}</td>
+                                                              <td className="border border-gray-500 p-2">{row.name}</td>
+                                                              {row.position === "MERGE" ? (
+                                                                <td className="border border-gray-500 p-2 text-center" colSpan={4}>
+                                                                  {row.S}
+                                                                </td>
+                                                              ) : (
+                                                                <>
+                                                                  <td className="border border-gray-500 p-2">{row.S}</td>
+                                                                  <td className="border border-gray-500 p-2">{row.M}</td>
+                                                                  <td className="border border-gray-500 p-2">{row.L}</td>
+                                                                  <td className="border border-gray-500 p-2">{row.XL}</td>
+                                                                </>
+                                                              )}
+                                                            </tr>
+                                                          ))}
+                                                        </tbody>
+                                                      </table>
+                                                    </div>
+                                                    <div className="w-1/2 flex justify-center items-center">
+                                                      {slide.data.images.length > 0 && (
+                                                        <img
+                                                          src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${slide.data.images[0].src}`}
+                                                          alt="Size Chart"
+                                                          className="max-w-full h-auto"
+                                                        />
+                                                      )}
+                                                    </div>
+                                                  </div>
                                                 ) :
                                                     slide.type === "Page" ? (
                                                         <div className="flex justify-center">
