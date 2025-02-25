@@ -642,7 +642,7 @@ export default async function generatePdf(data, setIsDownloading) {
                         imageXPosition,
                         yPosition + 20, // Same Y position as the table
                         115,
-                        160
+                        175
                     );
                 }
             }
@@ -705,7 +705,6 @@ export default async function generatePdf(data, setIsDownloading) {
                 const pageHeight = pdf.internal.pageSize.getHeight();
                 const availableHeight = pageHeight - tableStartY - 20; // Space available after table start
                 const rowHeight = totalRows > 0 ? availableHeight / totalRows + (totalRows < 23 ? 4 : 0) : 7; // Adjust based on rows
-                console.log("first", rowHeight)
                 // Add left table
                 pdf.autoTable({
                     startY: yPosition + 22,
