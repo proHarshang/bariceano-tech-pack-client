@@ -44,7 +44,7 @@ const PreviewPage = () => {
     const secondHalf = nonLastRows.slice(midIndex);
 
     const artworkData = slides.find(slide => slide.type === "ArtworkPlacementSheet");
-    console.log("slides", slides)
+    console.log("slides", data)
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 ">
@@ -289,6 +289,10 @@ const PreviewPage = () => {
                                                     slide.data.formate === "single" ? (
                                                         <div className="flex justify-center w-full p-4 gap-5">
                                                             <div className="w-1/2 overflow-x-auto">
+                                                                <div className="flex justify-between">
+                                                                    <h4>MEASUREMENTS IN CM</h4>
+                                                                    <h4>{data.gender} - {data.category}</h4>
+                                                                </div>
                                                                 <table className="w-full border border-gray-300 text-white">
                                                                     <thead className="bg-black">
                                                                         <tr>
@@ -305,7 +309,6 @@ const PreviewPage = () => {
                                                                         {slide.data.table.map((row, index) => {
                                                                             const dynamicKeys = Object.keys(row).filter(key => key !== "position" && key !== "name" && key !== "_id");
                                                                             const shouldMerge = dynamicKeys.some(key => row[key] && row[key].length > 4);
-
                                                                             return (
                                                                                 <tr key={index} className="border border-gray-300">
                                                                                     <td className="border border-gray-500 p-2 bg-black text-white text-center">{row.position}</td>
@@ -338,8 +341,107 @@ const PreviewPage = () => {
                                                     ) :
                                                         slide.data.formate === "double" ? (
                                                             <div>
-<h1>UNDER DEVELOPING</h1>
+                                                                 <div className="flex justify-between p-4 w-1/2 pb-0">
+                                                                    <h4>MEASUREMENTS IN CM</h4>
+                                                                    <h4>{data.gender} - {data.category}</h4>
+                                                                </div>
+                                                                <div className="w-full overflow-x-auto p-4 flex justify-between gap-5">
+                                                                    
+                                                                    {/* Left & Right Table */}
+                                                                    {["left", "right"].map((side, i) => (
+                                                                        <div key={side} className="w-1/2">
+                                                                            <table className="w-full border border-gray-300">
+                                                                                <thead className="bg-black text-white">
+                                                                                    <tr>
+                                                                                        <th className="border border-gray-500 p-2">SNo</th>
+                                                                                        <th className="border border-gray-500 p-2">NAME</th>
+                                                                                        {Object.keys(slide.data.table[0]).map(
+                                                                                            (key) =>
+                                                                                                key !== "_id" &&
+                                                                                                key !== "position" &&
+                                                                                                key !== "name" && (
+                                                                                                    <th key={key} className="border border-gray-500 p-2">
+                                                                                                        {key.toUpperCase()}
+                                                                                                    </th>
+                                                                                                )
+                                                                                        )}
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    {slide.data.table
+                                                                                        .slice(
+                                                                                            i === 0 ? 0 : Math.ceil(slide.data.table.length * 0.51),
+                                                                                            i === 0 ? Math.ceil(slide.data.table.length * 0.51) : undefined
+                                                                                        )
+                                                                                        .map((row, index) => {
+                                                                                            // Find a column (excluding name & position) with a long value (>4 characters)
+                                                                                            const mergeCell = Object.entries(row).find(
+                                                                                                ([key, value]) =>
+                                                                                                    key !== "_id" &&
+                                                                                                    key !== "position" &&
+                                                                                                    key !== "name" &&
+                                                                                                    typeof value === "string" &&
+                                                                                                    value.length > 4
+                                                                                            );
+
+                                                                                            return (
+                                                                                                <tr key={index} className="border border-gray-300">
+                                                                                                    {/* Position column (always separate) */}
+                                                                                                    <td className="border border-gray-500 p-2 bg-black text-white text-center">
+                                                                                                        {row.position}
+                                                                                                    </td>
+
+                                                                                                    {/* Name column (always separate) */}
+                                                                                                    <td className="border border-gray-500 p-2">{row.name}</td>
+
+                                                                                                    {/* If there's a long value, merge all empty columns into it */}
+                                                                                                    {mergeCell ? (
+                                                                                                        <td
+                                                                                                            colSpan={Object.keys(row).length - 3} // Excluding "position" and "name"
+                                                                                                            className="border border-gray-500 p-2 text-center"
+                                                                                                        >
+                                                                                                            {mergeCell[1]}
+                                                                                                        </td>
+                                                                                                    ) : (
+                                                                                                        // Otherwise, display columns normally
+                                                                                                        Object.keys(row).map(
+                                                                                                            (key) =>
+                                                                                                                key !== "_id" &&
+                                                                                                                key !== "position" &&
+                                                                                                                key !== "name" && (
+                                                                                                                    <td key={key} className="border border-gray-500 p-2">
+                                                                                                                        {row[key]}
+                                                                                                                    </td>
+                                                                                                                )
+                                                                                                        )
+                                                                                                    )}
+                                                                                                </tr>
+                                                                                            );
+                                                                                        })}
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                                <div className="flex justify-center flex-wrap gap-4">
+                                                                    {slide.data.images.map((image, index) => (
+                                                                        <div key={index} className="w-[805px] h-[604px]">
+                                                                            <img
+                                                                                src={`${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`}
+                                                                                alt={`${index + 1}`}
+                                                                                className="w-full h-full object-cover"
+                                                                            />
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+
+
                                                             </div>
+
+
+
+
+
                                                         ) :
                                                             slide.type === "Page" ? (
                                                                 <div className="flex justify-center">
