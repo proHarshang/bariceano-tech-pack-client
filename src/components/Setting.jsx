@@ -314,6 +314,19 @@ export default function Setting() {
             return "1";
         } else if (index === 27) {
             return "2";
+        } else if (index === 28) {
+            return "3";
+        }else if (index === 29) {
+            return "4";
+        }
+        else if (index === 30) {
+            return "5";
+        }
+        else if (index === 31) {
+            return "6";
+        }
+        else if (index === 32) {
+            return "7";
         }
         return ""; // Fallback (shouldn't happen)
     };
