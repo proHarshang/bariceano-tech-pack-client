@@ -311,13 +311,12 @@ export default function Setting() {
         if (index < 26) {
             return String.fromCharCode(65 + index); // A-Z
         } else if (index === 26) {
-            return "λ";
+            return "\u03BB";
         } else if (index === 27) {
-            return "Ω";
+            return "\u03A9";
         }
         return ""; // Fallback (shouldn't happen)
     };
-
     const addRow = () => {
         const newPosition = generateNextPosition(rows.length); // Generate position based on row index
         setRows([...rows, { id: rows.length + 1, position: newPosition, name: "", S: "", M: "", L: "", XL: "" }]);

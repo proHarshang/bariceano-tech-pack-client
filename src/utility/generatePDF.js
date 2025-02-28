@@ -668,11 +668,12 @@ export default async function generatePdf(data, setIsDownloading) {
                 });
 
                 // Ensure "SNo" and "Name" are always present, preserving the original format
-                let dynamicHeaders = ["λ", "Ω", ...Array.from(allColumns)];
+                let dynamicHeaders = ["SNo", "Name", ...Array.from(allColumns)];
 
                 // Adding static text above the table
                 pdf.setFont("helvetica");
                 pdf.setFontSize(12);
+                
                 pdf.text("Measurements in CM".toUpperCase(), 10, yPosition + 19);
                 pdf.text((data.gender + "-" + data.category).toUpperCase(), 90, yPosition + 19);
 
@@ -707,8 +708,7 @@ export default async function generatePdf(data, setIsDownloading) {
                         return rowData;
                     });
                 };
-                                
-                
+                               
 
                 // Define Y position for table
                 const tableStartY = yPosition + 23;
