@@ -668,7 +668,7 @@ export default async function generatePdf(data, setIsDownloading) {
                 });
 
                 // Ensure "SNo" and "Name" are always present, preserving the original format
-                let dynamicHeaders = ["SNo", "Name", ...Array.from(allColumns)];
+                let dynamicHeaders = ["λ", "Ω", ...Array.from(allColumns)];
 
                 // Adding static text above the table
                 pdf.setFont("helvetica");

@@ -307,12 +307,21 @@ export default function Setting() {
 
     const [rows, setRows] = useState([{ id: 1, position: "A", name: "", S: "", M: "", L: "", XL: "" }]);
 
-    const addRow = () => {
-        const newPosition = String.fromCharCode(65 + rows.length); // Calculate position based on row length
-        setRows([...rows, { id: rows.length + 1, position: newPosition, name: "", S: "", M: "", L: "", XL: "" }]);
+    const generateNextPosition = (index) => {
+        if (index < 26) {
+            return String.fromCharCode(65 + index); // A-Z
+        } else if (index === 26) {
+            return "λ";
+        } else if (index === 27) {
+            return "Ω";
+        }
+        return ""; // Fallback (shouldn't happen)
     };
 
-
+    const addRow = () => {
+        const newPosition = generateNextPosition(rows.length); // Generate position based on row index
+        setRows([...rows, { id: rows.length + 1, position: newPosition, name: "", S: "", M: "", L: "", XL: "" }]);
+    };
 
     const deleteRow = (index) => {
         setRows(rows.filter((_, i) => i !== index));
