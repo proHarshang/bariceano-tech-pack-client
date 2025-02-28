@@ -678,11 +678,11 @@ export default async function generatePdf(data, setIsDownloading) {
 
                 // Function to generate table data dynamically
                 const formatTableData = (table) => {
-                    return table.map((row, index) => {
-                        const rowData = [index + 1, row.name.toUpperCase()];
+                    return table.map((row) => {
+                        const rowData = [row.position, row.name.toUpperCase()]; // Keeping original structure
                         let shouldMerge = false;
                         let mergeContent = "";
-
+                
                         dynamicHeaders.slice(2).forEach(header => {
                             if (row[header] && row[header].length > 4) {
                                 shouldMerge = true;
@@ -690,15 +690,25 @@ export default async function generatePdf(data, setIsDownloading) {
                             }
                             rowData.push(row[header] ? row[header].toUpperCase() : ""); // Fill missing data with empty string
                         });
-
-                        // If any column except "SNo" and "Name" has a value longer than 4 characters, merge them
+                
+                        // **Only increase width if merging**
                         if (shouldMerge) {
-                            rowData.splice(2, rowData.length - 2, { content: mergeContent, colSpan: dynamicHeaders.length - 2, styles: { halign: "center" } });
+                            rowData.splice(2, rowData.length - 2, { 
+                                content: mergeContent, 
+                                colSpan: dynamicHeaders.length - 2, 
+                                styles: { 
+                                    halign: "center", 
+                                    cellWidth: 50,  // Give extra width only to merged cells
+                                    minCellHeight: 10 // Optional: Adjust height for better spacing
+                                }  
+                            });
                         }
-
+                
                         return rowData;
                     });
                 };
+                                
+                
 
                 // Define Y position for table
                 const tableStartY = yPosition + 23;

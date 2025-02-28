@@ -312,6 +312,8 @@ export default function Setting() {
         setRows([...rows, { id: rows.length + 1, position: newPosition, name: "", S: "", M: "", L: "", XL: "" }]);
     };
 
+
+
     const deleteRow = (index) => {
         setRows(rows.filter((_, i) => i !== index));
     };
