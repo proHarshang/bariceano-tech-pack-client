@@ -311,9 +311,9 @@ export default function Setting() {
         if (index < 26) {
             return String.fromCharCode(65 + index); // A-Z
         } else if (index === 26) {
-            return "\u03BB";
+            return "1";
         } else if (index === 27) {
-            return "\u03A9";
+            return "2";
         }
         return ""; // Fallback (shouldn't happen)
     };
