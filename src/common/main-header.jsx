@@ -133,6 +133,9 @@ const MainHeader = () => {
         <nav className='sticky top-0 right-0 bg-white z-50 w-screen'>
             <div className="p-5 flex justify-between border-b pl-10 pr-0 max-w-[1500px] mx-auto">
                 <div className='flex gap-5 items-center'>
+                    <div className='h-[40px]'>
+                        <img src="/Header.png" alt="Bariceano" draggable="false" className='select-none w-full h-full object-contain' onClick={() => navigate('/tech-pack-data?collection=all%20collection')} />
+                    </div>
                     <button
                         className={`flex gap-3 items-center border-black text-sm font-bold px-3 py-2 rounded-2xl uppercase hover:bg-black hover:text-white ${currentPath === "/tech-pack-data"
                             ? "bg-black text-white"

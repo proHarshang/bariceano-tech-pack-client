@@ -11,7 +11,7 @@ import { FaCommentDots } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import generatePdf from "../utility/generatePDF";
 import { toast } from "react-hot-toast";
-
+import { IoClose } from "react-icons/io5";
 
 const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
     const { user } = useAuth();
@@ -311,7 +311,6 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
 
     const generateAllPDFs = async () => {
         setIsDownloading(true);
-
         for (let i = 0; i < sortedData.length; i++) {
             setCurrentIndex(i); // Set the current object to process
             await generatePdf(sortedData[i], setIsDownloading)
@@ -541,7 +540,11 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                         <div>
                             <button
                                 className="border py-1 bg-black text-white text-nowrap flex gap-2 px-4"
-                                onClick={generateAllPDFs}
+                                onClick={() => {
+                                    if (window.confirm("You Want to Download All PDF ?")) {
+                                        generateAllPDFs();
+                                    }
+                                }}
                             >
                                 Generate PDFs
                             </button>
@@ -549,8 +552,13 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                             {/* Show progress while generating PDFs */}
                             {isDownloading && currentIndex !== null && (
                                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                                    <div className="bg-white p-4 rounded shadow-lg">
+                                    <div className="bg-white p-5 pr-10 rounded shadow-lg relative">
                                         <p>Downloading PDF {currentIndex + 1} of {sortedData.length}...</p>
+                                        <IoClose className="text-black size-5 right-0 top-0 m-2 absolute cursor-pointer transition-transform ease-in-out transform hover:scale-150"
+                                            onClick={() => {
+                                                window.location.reload();
+                                            }}
+                                        />
                                     </div>
                                 </div>
                             )}

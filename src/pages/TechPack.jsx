@@ -75,41 +75,41 @@ const TechPack = () => {
         constructionMaterial.images.forEach(img => {
           currentPage += 1;
           addSlide({
-              "page": currentPage,
-              "name": constructionMaterial.name,
-              "type": getType(constructionMaterial, currentCategory, currentSubCategory),
-              "data": {
-                  "images": [
-                      {
-                          "position": 0,
-                          "src": img.src
-                      }
-                  ]
-              }
+            "page": currentPage,
+            "name": constructionMaterial.name,
+            "type": getType(constructionMaterial, currentCategory, currentSubCategory),
+            "data": {
+              "images": [
+                {
+                  "position": 0,
+                  "src": img.src
+                }
+              ]
+            }
           });
-      });
+        });
 
-      // Handle sizecharts material
-      sizechartsMaterial.forEach(label => {
+        // Handle sizecharts material
+        sizechartsMaterial.forEach(label => {
           label.images.forEach(img => {
-              currentPage += 1;
-              addSlide({
-                  "page": currentPage,
-                  "name": label.name,
-                  "type": getType(label, currentCategory, currentSubCategory),
-                  "data": {
-                      "images": [
-                          {
-                              "position": 0,
-                              "src": img.src
-                          }
-                      ],
-                      "formate": label.formate,
-                      "table": label.table
+            currentPage += 1;
+            addSlide({
+              "page": currentPage,
+              "name": label.name,
+              "type": getType(label, currentCategory, currentSubCategory),
+              "data": {
+                "images": [
+                  {
+                    "position": 0,
+                    "src": img.src
                   }
-              });
+                ],
+                "formate": label.formate,
+                "table": label.table
+              }
+            });
           });
-      });
+        });
         trims.filter(item => selectedLabels.includes(item.name)).forEach(label => {
           label.images.forEach(img => {
             currentPage += 1;
@@ -395,7 +395,12 @@ const TechPack = () => {
           <button
             type="button"
             className="text-sm px-6 py-2 bg-white rounded-full border border-black transition-all duration-300 ease-in-out transform hover:scale-105"
-            onClick={() => navigate('/tech-pack-data')}
+            onClick={() => {
+              const confirmLeave = window.confirm("Are you sure you want to leave without saving changes ?");
+              if (confirmLeave) {
+                navigate('/tech-pack-data');
+              }
+            }}
             disabled={isAdding || isUpdating || isUpdatingAs}
           >
             Back
