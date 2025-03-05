@@ -826,17 +826,21 @@ export default async function generatePdf(data, setIsDownloading) {
             else if (slide.type === "Page") {
                 if (slide.type === "Page") {
                     // Check if slide.data exists and contains images
-                    if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0) {
+                    if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0 ) {
                         const maxWidth = pdf.internal.pageSize.getWidth()
                         const imageWidth = 233;
                         const xPosition = (maxWidth - imageWidth) / 2;
 
                         // Loop through images within slide.data
                         slide.data.images.forEach((image) => {
-                            const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
+                            if(image.src){
+                                const imagePath = `${process.env.REACT_APP_API_URL}/uploads/techpack/${image.src}`;
+                                pdf.addImage(imagePath, "JPEG", xPosition, 21.5, imageWidth, 175);
+                            }else{
+                                console.warn(`Image source is missing for page ${slide.page}. Skipping image addition.`)
+                            }
 
                             // Add image to PDF with adjusted position and dimensions
-                            pdf.addImage(imagePath, "JPEG", xPosition, 21.5, imageWidth, 175);
                         });
                     } else {
                         console.warn(`No images found for page ${slide.page}. Skipping image addition.`);
@@ -881,7 +885,7 @@ export default async function generatePdf(data, setIsDownloading) {
             }
             else {
                 // Check if slide.data exists and contains images
-                if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0) {
+                if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0 && slide.data.images.src.length > 0) {
                     const maxWidth = pdf.internal.pageSize.getWidth()
                     const imageWidth = 233;
                     const xPosition = (maxWidth - imageWidth) / 2;

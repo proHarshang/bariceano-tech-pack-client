@@ -5,7 +5,6 @@ import { MdDelete } from "react-icons/md";
 import { IoIosClose } from "react-icons/io";
 
 
-
 export default function Setting() {
 
     const initialUpdateFormData = {
@@ -141,12 +140,10 @@ export default function Setting() {
         }
         setLoading(false);
     };
-
     // Category Logic Over
 
 
     // Gender Logic Start
-
     const [editedGender, setEditedGender] = useState('');
     const [genderAddBox, setGenderAddBox] = useState(false);
 
@@ -192,7 +189,6 @@ export default function Setting() {
         }
         setLoading(false);
     };
-
     // Gender Logic Over
 
 
@@ -267,8 +263,6 @@ export default function Setting() {
             alert("Please select a size chart to edit.");
         }
     };
-
-
 
     const handleDelete = async () => {
         if (selectedOption) {
@@ -483,7 +477,6 @@ export default function Setting() {
             setParameterLoading(false)
         }
     }
-
     // Requirment Parameter Over
 
 

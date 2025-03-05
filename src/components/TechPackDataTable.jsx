@@ -654,13 +654,6 @@ const TechPackDataTable = ({ data = [], fetchTechPacks }) => {
                                                     <button type="button" onClick={() => {
                                                         handleCommentSubmit(isSidebarOpen, comment);
                                                         handleApply();
-                                                        toast.success("Comment added!", {
-                                                            position: "top-right",
-                                                            style: {
-                                                                background: "#333",
-                                                                color: "#fff",
-                                                            },
-                                                        });
                                                     }} className="mt-4 p-5 pt-0 text-xl text-blue-500 hover:underline">
                                                         Apply
                                                     </button>
