@@ -822,7 +822,6 @@ export default async function generatePdf(data, setIsDownloading) {
                     }
                 }
             }
-
             else if (slide.type === "Page") {
                 if (slide.type === "Page") {
                     // Check if slide.data exists and contains images
