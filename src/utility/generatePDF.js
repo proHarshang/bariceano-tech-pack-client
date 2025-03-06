@@ -885,7 +885,7 @@ export default async function generatePdf(data, setIsDownloading) {
             }
             else {
                 // Check if slide.data exists and contains images
-                if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0 && slide.data.images.src.length > 0) {
+                if (slide.data && Array.isArray(slide.data.images) && slide.data.images.length > 0) {
                     const maxWidth = pdf.internal.pageSize.getWidth()
                     const imageWidth = 233;
                     const xPosition = (maxWidth - imageWidth) / 2;
