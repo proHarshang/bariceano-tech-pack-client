@@ -23,47 +23,62 @@ const Auth = () => {
     };
 
     return (
-        <div className="bg-[#F1F3F8] w-full h-screen pt-0">
-            <h1 className="text-center text-3xl font-bold pt-20 pb-5">TechPacks Word</h1>
-            <div className="bg-[#D6E0F0] text-white p-8 rounded-lg max-w-md mx-auto">
-                <form className="space-y-6" onSubmit={handleLogin} >
-                    <div>
-                        <label className="block text-sm font-medium mb-2 text-black" htmlFor="email">
-                            Email:
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            className="w-full p-2.5 border border-gray-700 rounded-md bg-[#8D93AB] focus:border-indigo-500 focus:ring-indigo-500"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="flex items-center justify-center content-center gap-5">
-                        <div className="relative w-full">
-                            <label className="block text-sm text-black font-medium mb-2" htmlFor="password">
-                                Password:
-                            </label>
-                            <input
-                                type="password"
-                                id="password"
-                                className="w-full p-2.5 border border-gray-700 rounded-md bg-[#8D93AB] focus:border-indigo-500 focus:ring-indigo-500"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
-                    </div>
-                    <div className="flex justify-center">
-                        <button type="submit" className="w-fit border bg-black text-white px-4 py-2">
-                            Login
-                        </button>
-                    </div>
-                </form>
+        <div className="min-h-screen bg-[#F5F1EB] flex items-center justify-center px-4">
+          <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-10 border border-[#E8E2D9]">
+            
+            {/* Heading */}
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-semibold text-black tracking-wide">
+                TechPack Generator
+              </h1>
+              <p className="text-sm text-gray-500 mt-2">
+                Welcome back. Please login to continue.
+              </p>
             </div>
+      
+            <form className="space-y-6" onSubmit={handleLogin}>
+      
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-[#FAF8F4] focus:outline-none focus:ring-2 focus:ring-black transition duration-300"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+      
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-[#FAF8F4] focus:outline-none focus:ring-2 focus:ring-black transition duration-300"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+      
+              {/* Button */}
+              <button
+                type="submit"
+                className="w-full bg-black text-white py-3 rounded-xl font-medium tracking-wide hover:bg-[#2E2E2E] transition duration-300 shadow-md"
+              >
+                Sign In
+              </button>
+            </form>
+      
+            
+          </div>
         </div>
-    );
+      );
 };
 
 export default Auth;
